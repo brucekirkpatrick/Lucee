@@ -59,6 +59,7 @@ import javax.servlet.jsp.tagext.TryCatchFinally;
 import lucee.commons.db.DBUtil;
 import lucee.commons.io.BodyContentStack;
 import lucee.commons.io.CharsetUtil;
+import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.cache.exp.CacheException;
 import lucee.commons.io.log.Log;
@@ -120,6 +121,7 @@ import lucee.runtime.exp.PageExceptionBox;
 import lucee.runtime.exp.RequestTimeoutException;
 import lucee.runtime.ext.tag.TagImpl;
 import lucee.runtime.functions.dynamicEvaluation.Serialize;
+import lucee.runtime.functions.other.CreatePageContext;
 import lucee.runtime.interpreter.CFMLExpressionInterpreter;
 import lucee.runtime.interpreter.VariableInterpreter;
 import lucee.runtime.listener.AppListenerSupport;
@@ -153,6 +155,7 @@ import lucee.runtime.security.ScriptProtect;
 import lucee.runtime.tag.Login;
 import lucee.runtime.tag.TagHandlerPool;
 import lucee.runtime.tag.TagUtil;
+import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.thread.ThreadsImpl;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.Collection;
@@ -3662,4 +3665,95 @@ public final class PageContextImpl extends PageContext {
 	    parentTags.add(tagName);
 	}
     }
+	public synchronized void copyStateToNewThread(PageContextImpl other) {
+		// cfid (we do this that way, otherwise we only have the same cfid if the current pc has defined cfid in cookie or url)
+		getCFID();
+		other.cfid = cfid;
+		other.cftoken = cftoken;
+
+		// private Debugger debugger=new DebuggerImpl();
+		other.requestTimeout = requestTimeout;
+		other.locale = locale;
+		other.timeZone = timeZone;
+		other.fdEnabled = fdEnabled;
+		other.useSpecialMappings = useSpecialMappings;
+		other.serverPassword = serverPassword;
+		other.requestDialect = requestDialect;
+		other.currentTemplateDialect = currentTemplateDialect;
+
+		hasFamily = true;
+		other.hasFamily = true;
+		other.parent = this;
+		if(children == null)
+			children = new ArrayList<PageContext>();
+		children.add(other);
+		other.applicationContext = applicationContext;
+		//other.thread = Thread.currentThread();
+		other.startTime = System.currentTimeMillis();
+
+		// path
+		other.base = base;
+		java.util.Iterator<PageSource> it = includePathList.iterator();
+		while(it.hasNext()) {
+			other.includePathList.add(it.next());
+		}
+		it = pathList.iterator();
+		while(it.hasNext()) {
+			other.pathList.add(it.next());
+		}
+
+		// scopes
+		other.req = req;
+		other.request = request;
+		other.form = form;
+		other.url = url;
+		other.urlForm = urlForm;
+		other._url = _url;
+		other._form = _form;
+		other.variables = variables;
+		other.application=application;
+		other.cgiR=cgiR;
+		other.cgiRW=cgiRW;
+		other.session=session;
+		other.server=server;
+		other.cluster=cluster;
+		other.cookie = new CookieImpl();
+		other.client=client;
+		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.
+		//other.undefined = new UndefinedImpl(other, (short)other.undefined.getType());
+
+		// writers
+		//other.bodyContentStack.init(config.getCFMLWriter(this, other.req, other.rsp));
+		//other.bodyContentStack.init(config.getCFMLWriter(other, other.req, other.rsp));
+//		other.bodyContentStack.init(other.req,other.rsp,other.config.isSuppressWhitespace(),other.config.closeConnection(),
+//		 other.config.isShowVersion(),config.contentLength(),config.allowCompression());
+		other.local=LocalNotSupportedScope.getInstance();
+		//other.writer = other.bodyContentStack.getWriter();
+		//other.forceWriter = other.writer;
+
+		other._psq = _psq;
+		other.gatewayContext = gatewayContext;
+
+		// initialize stuff
+		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.
+		//other.undefined.initialize(other);
+	}
+
+	public PageContext copyPageContext() throws PageException {
+
+		PageContextImpl pc2 = ThreadUtil.createPageContext(
+				getConfig(),
+				DevNullOutputStream.DEV_NULL_OUTPUT_STREAM,
+				"lucee",
+				"",
+				"",
+				CreatePageContext.toCookies(new StructImpl()),
+				CreatePageContext.toPair(new StructImpl(), true),
+				null,
+				CreatePageContext.toPair(new StructImpl(), true),
+				CreatePageContext.castValuesToString(new StructImpl()), true, -1);
+		pc2.copyStateToNewThread((PageContextImpl) this);
+		return pc2;
+
+	}
 }
