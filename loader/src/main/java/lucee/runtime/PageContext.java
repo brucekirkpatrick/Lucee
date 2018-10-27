@@ -1177,4 +1177,6 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      * scope
      */
     public abstract boolean ignoreScopes();
+
+    public abstract PageContext copyPageContext() throws PageException;
 }
