@@ -18,7 +18,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 ,field("Charts","metrics_charts","HeapChart,NonHeapChart,WholeSystem",false,"Select the chart to show on metrics Tab. It will show only if the metrics tabs is enabled","checkbox","HeapChart,NonHeapChart,WholeSystem")
 ,group("Reference Tab","",2)
 ,field("Reference","tab_Reference","Enabled",true,"Select the Reference tab to show on DebugOutput","checkbox","Enabled")
-);
+); 
 		string function getLabel(){
 			return "Modern";
 		}
@@ -716,7 +716,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 		<cfargument name="context"   type="string" default="web">
 	</cffunction>
 
-	<cffunction name="readDebug" returntype="void"  >
+	<cffunction name="readDebug" locamode="modern" returntype="void"  >
 		<cfargument name="custom" required="true" type="struct" />
 		<cfargument name="debugging" required="true" type="struct" />
 		<cfargument name="context" type="string" default="web" />
@@ -1019,7 +1019,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 							<tr>
 								<th>
 									<cfif (sCookieSort ?: '-') neq 'id'>
-										<a onclick="__LUCEE.debug.setSortOrder(this, 'id')" class="sortby" title="Order by ID (starting with the next request)">ID</a>
+										<a onclick="__LUCEE.debug.setSortOrder(this, 'id')" class="sortby" title="Order by ID (starting with the next request)" style="color:##000 !important;">ID</a>
 									<cfelse>
 										ID
 									</cfif>
@@ -1034,7 +1034,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 								<cfloop collection="#stColumns#" index="local.lstHead" item="local.stColumn">
 									<th align="center">
 										<cfif (sCookieSort ?: '-') neq stColumn.field>
-											<a onclick="__LUCEE.debug.setSortOrder(this, '#stColumn.field#')" class="sortby" title="Order by #stColumn.title# (starting with the next request)">#stColumn.title#</a>
+											<a onclick="__LUCEE.debug.setSortOrder(this, '#stColumn.field#')" class="sortby" title="Order by #stColumn.title# (starting with the next request)" style="color:##000 !important;">#stColumn.title#</a>
 										<cfelse>
 											#stColumn.title#
 										</cfif>
@@ -1043,7 +1043,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 								</cfloop>
 								<th>
 									<cfif (sCookieSort ?: '-') neq 'src'>
-										<a onclick="__LUCEE.debug.setSortOrder(this, 'src')" class="sortby" title="Order by Template (starting with the next request)">Template</a>
+										<a onclick="__LUCEE.debug.setSortOrder(this, 'src')" class="sortby" title="Order by Template (starting with the next request)" style="color:##000 !important;">Template</a>
 									<cfelse>
 										Template
 									</cfif>
@@ -1060,127 +1060,87 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 										</cfloop>
 									</cfif>
 								</th>
-								<th>Filter</th>
+								<!--- <th>Filter</th> --->
 							</tr>
 							<cfset loa=0 />
 							<cfset tot=0 />
-							<cfset q=0 />
-							<cfloop query="pages" group="src">
-									<cfset page.stckTrace = []>
-									<cfset arrayAppend(page.stckTrace, listLast(pages.src))>
-									<cfquery dbtype="query" name="resultQry">
-										select * from pages where src='#pages.src#' AND id != '#pages.id#'
-									</cfquery>
-									<cfloop query="resultQry">
-										<cfset pages.total += resultQry.total>
-										<cfset pages.count += resultQry.count>
-										<cfset pages.avg += resultQry.avg>
-										<cfset pages.query += resultQry.query>
-										<cfset pages.total += resultQry.total>
-										<cfset pages.app += resultQry.app>
-										<cfset arrayAppend(page.stckTrace, listLast(resultQry.src, "$"))>
-									</cfloop>
-									<cfset tot += pages.total - (pages.count * pages.avg) />
-									<cfset q += pages.query />
-									<cfif pages.avg LT arguments.custom.minimal*1000>
-										<cfcontinue>
+							<cfset q=0 /> 
+							<cfloop query="pages">
+								<cfset page.stckTrace = []>
+								<cfset arrayAppend(page.stckTrace, listLast(pages.src))>  
+								<cfset tot += pages.total - (pages.count * pages.avg) />
+								<cfset q += pages.query />
+								<cfif pages.avg LT arguments.custom.minimal*1000>
+									<cfcontinue>
+								</cfif>
+								<cfset bad = pages.avg GTE arguments.custom.highlight*1000 />
+								<cfset loa += pages.load />
+								<cfset local.iPctTotal = pages.total / (iTotalTime eq 0 ? 1 : iTotalTime)>
+								<cfset local.iPctCount = pages.count / (iTotalCount eq 0 ? 1 : iTotalCount)>
+								<cfset local.iPctQuery = pages.query / (iTotalQuery eq 0 ? 1 : iTotalQuery)>
+								<cfset local.iPctLucee = pages.app / (iTotalLucee eq 0 ? 1 : iTotalLucee)>
+								<cfset local.iPctAvg   = pages.avg / (iTotalAvg eq 0 ? 1 : iTotalAvg)>
+								<cfset local.sColor    = RGBtoHex(255 * iPctTotal, 160 * (1 - iPctTotal), 0)>
+
+
+								<cfset sStyle = ''>
+								<cfif arguments.custom.colorHighlight>
+									<cfset sStyle = sColor>
+								</cfif>
+								<cfif bad><cfset sStyle = "red"></cfif>
+								<tr class="#bad ? 'red': ''#">
+									<td class="txt-r faded #sCookieSort eq 'id' ? 'sorted' : ''#" title="#pages.id#">#ordermap[pages.id]#</td>
+									<td align="right" class="tblContent #sCookieSort eq 'total' ? 'sorted' : ''#">
+										<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.app + pages.query)#</font>
+										<cfif !bDisplayLongExec AND bad>
+											<cfset bDisplayLongExec = true>
+										</cfif>
+									</td>
+									<cfif arguments.custom.displayPercentages>
+										<td align="right" class="tblContent" style="#sStyle#">
+											<font color="#sStyle#">#numberFormat(iPctTotal*100, '999.9')#</font>
+										</td>
 									</cfif>
-									<cfset bad = pages.avg GTE arguments.custom.highlight*1000 />
-									<cfset loa += pages.load />
-									<cfset local.iPctTotal = pages.total / (iTotalTime eq 0 ? 1 : iTotalTime)>
-									<cfset local.iPctCount = pages.count / (iTotalCount eq 0 ? 1 : iTotalCount)>
-									<cfset local.iPctQuery = pages.query / (iTotalQuery eq 0 ? 1 : iTotalQuery)>
-									<cfset local.iPctLucee = pages.app / (iTotalLucee eq 0 ? 1 : iTotalLucee)>
-									<cfset local.iPctAvg   = pages.avg / (iTotalAvg eq 0 ? 1 : iTotalAvg)>
-									<cfset local.sColor    = RGBtoHex(255 * iPctTotal, 160 * (1 - iPctTotal), 0)>
-
-
-									<cfset sStyle = ''>
-									<cfif arguments.custom.colorHighlight>
-										<cfset sStyle = sColor>
+									<td align="right" class="tblContent #sCookieSort eq 'query' ? 'sorted' : ''#" style="#sStyle#">
+										<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.query)#</font>
+									</td>
+									<cfif arguments.custom.displayPercentages>
+										<td align="right" class="tblContent" style="#sStyle#">
+											<font color="#sStyle#">#numberFormat(iPctQuery*100, '999.9')#</font>
+										</td>
 									</cfif>
-									<cfif bad><cfset sStyle = "red"></cfif>
-									<tr class="#bad ? 'red': ''#">
-										<td class="txt-r faded #sCookieSort eq 'id' ? 'sorted' : ''#" title="#pages.id#">#ordermap[pages.id]#</td>
-										<td align="right" class="tblContent #sCookieSort eq 'total' ? 'sorted' : ''#">
-											<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.app + pages.query)#</font>
-											<cfif !bDisplayLongExec AND bad>
-												<cfset bDisplayLongExec = true>
-											</cfif>
+									<td align="right" class="tblContent #sCookieSort eq 'app' ? 'sorted' : ''#" style="#sStyle#">
+										<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.app)#</font>
+									</td>
+									<cfif arguments.custom.displayPercentages>
+										<td align="right" class="tblContent" style="#sStyle#">
+											<font color="#sStyle#">#numberFormat(iPctLucee*100, '999.9')#</font>
 										</td>
-										<cfif arguments.custom.displayPercentages>
-											<td align="right" class="tblContent" style="#sStyle#">
-												<font color="#sStyle#">#numberFormat(iPctTotal*100, '999.9')#</font>
-											</td>
-										</cfif>
-										<td align="right" class="tblContent #sCookieSort eq 'query' ? 'sorted' : ''#" style="#sStyle#">
-											<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.query)#</font>
+									</cfif>
+									<td align="center" class="tblContent #sCookieSort eq 'count' ? 'sorted' : ''#" style="#sStyle#">
+										<font color="#sStyle#">#pages.count#</font>
+									</td>
+									<cfif arguments.custom.displayPercentages>
+										<td align="right" class="tblContent" style="#sStyle#">
+											<font color="#sStyle#">#numberFormat(iPctCount*100, '999.9')#</font>
 										</td>
-										<cfif arguments.custom.displayPercentages>
-											<td align="right" class="tblContent" style="#sStyle#">
-												<font color="#sStyle#">#numberFormat(iPctQuery*100, '999.9')#</font>
-											</td>
-										</cfif>
-										<td align="right" class="tblContent #sCookieSort eq 'app' ? 'sorted' : ''#" style="#sStyle#">
-											<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.app)#</font>
+									</cfif>
+									<td align="right" class="tblContent #sCookieSort eq 'avg' ? 'sorted' : ''#" style="#sStyle#">
+										<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.avg)#</font>
+									</td>
+									<cfif arguments.custom.displayPercentages>
+										<td align="right" class="tblContent" style="#sStyle#">
+											<font color="#sStyle#">#numberFormat(iPctAvg*100, '999.9')#</font>
 										</td>
-										<cfif arguments.custom.displayPercentages>
-											<td align="right" class="tblContent" style="#sStyle#">
-												<font color="#sStyle#">#numberFormat(iPctLucee*100, '999.9')#</font>
-											</td>
-										</cfif>
-										<td align="center" class="tblContent #sCookieSort eq 'count' ? 'sorted' : ''#" style="#sStyle#">
-											<font color="#sStyle#">#pages.count#</font>
-										</td>
-										<cfif arguments.custom.displayPercentages>
-											<td align="right" class="tblContent" style="#sStyle#">
-												<font color="#sStyle#">#numberFormat(iPctCount*100, '999.9')#</font>
-											</td>
-										</cfif>
-										<td align="right" class="tblContent #sCookieSort eq 'avg' ? 'sorted' : ''#" style="#sStyle#">
-											<font color="#sStyle#">#unitFormat(arguments.custom.unit, pages.avg)#</font>
-										</td>
-										<cfif arguments.custom.displayPercentages>
-											<td align="right" class="tblContent" style="#sStyle#">
-												<font color="#sStyle#">#numberFormat(iPctAvg*100, '999.9')#</font>
-											</td>
-										</cfif>
-										<td align="left" class="tblContent #sCookieSort eq 'src' ? 'sorted' : ''#" style="#sStyle#" title="#pages.path#">
-											<font color="#sStyle#">#listFirst(pages.src, "$")#</font>
-										</td>
-										<td align="left" class="tblContent" style="#sStyle#">
-											<table>
-												<cfloop array="#page.stckTrace#" index="i">
-													<tr>
-														<td>
-														<font color="#sStyle#">
-															<cfif arguments.custom.callStack>
-																<div style="width:80px;float:left"><b>Stacktrace:</b></div>
-																<div style="float:left">#dspCallStackTrace(pages.id, stPages, arguments.debugging.history)#</div>
-															</cfif>
-
-															<cfif listLen(i, "$") gt 1><br>
-																<div style="width:80px;float:left"><b>Method:</b></div>
-																<div style="float:left">#listLast(i, "$")#</div>
-															</cfif>
-														</font>
-														</td>
-													</tr>
-												</cfloop>
-											</table>
-										</td>
-										<cfset local.sPage = replace(listFirst(pages.path, '$'), '\', '/', 'ALL')>
-										<td>
-											<a onClick="__LUCEE.debug.setTemplateFilter('#sPage#', 0)" title="Debug this file only.">
-												<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98KEwgeMjUl220AAAEISURBVDjLxZM9SgNxEMV/M/nASEDFLJJOPIO92wmWsbdZNugRRLCwySXcxtia1jIL6g08RbLgVlFh9z8Wi8JKSGATyGuHefPemxnYBHauXji4fAOgXoWgkWXkTgDQVdUsJfCCGC+Ie5UJUEB58sLxNZj8LwtAJ4gBzqxmE3W2r0JqQptcugCmMgQw7GF367OffrW+cUIS+UWIUui4k5xXp3qM2btDDlU5LU+Ti4/Z9lHDaS9TN60WolKyUQcwB8Ct1Zioc88qpCLWJpfHkgVjuNeahb8W/jJYuIUwLnqNm+T+ZABinXBMKYOFKNSdJ5E/mldeSjCNfIBR9TtY9RLnodnMQGU9n/kD+19X1oivU2EAAAAASUVORK5CYII="/>
-											</a>
-											&nbsp;
-											<a onClick="__LUCEE.debug.setTemplateFilter('#sPage#', 1)" title="Debug this file and all included ones.">
-												<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98KEwglA1hJNG8AAAGuSURBVDjL3ZI9aFNhFIaf80WDQ7c0QjepuKc4FCnFm9LJUekQbTE2iSCKIJihmFAtpqAp+EuX9NafNjYiKU4OLt5iFQfBDp0KtkJ1aTpER02+41BuG+mtq+A7Hc7hvN9zXj741xK/aE95J8TwQi0Dm67zanR2UScXGgBccvYzeqZHggyMX2hIN7C6oiHdAJhcaDCXjZFLdPLQ+wVAOjWsMzNPtdVg37aT1Yg1ptNYGwHIdDdIFJcAON/doFCCKXdaptzpYAIj1I3qVyPUAcbT/TJy5B3f7nTdyg10Hd4rg50ThDYrclCFNr/3symYcLj//uvVz9GMp9GMp4XKh+ATaEqHMbTTlI7WjB/cu3t0YuUYc9kYy+vfKVTWADiXPKvHnfgOQZCa1nIlOyIXew2J4hKFyhoXerZmjx4/kWQyKRJNeScxVHdtW05dPvS2ms/n5W+PmJrrzFtLrrWpqtdqrjPvb068/KR+BrerHzX4I6XflEXktGLLm6W+QYCxG9f1QDhEcbWXZ1djLK/XGX/+hVrJkaGhQY3H+/7EiQx7P4Iwb5bfbxOMzS4q/5d+A67apf+Ijp6WAAAAAElFTkSuQmCC"/>
-											</a>
-										</td>
-									</tr>
-							</cfloop>
+									</cfif>
+									<td align="left" class="tblContent #sCookieSort eq 'src' ? 'sorted' : ''#" style="#sStyle#" title="#pages.path#">
+										<font color="#sStyle#">#listFirst(pages.path, "$")#</font>
+									</td>
+									<td align="left" class="tblContent" style="#sStyle#">
+										<cfif pages.path CONTAINS "$">#listlast(pages.path, "$")# </cfif>
+									</td> 
+								</tr>
+							</cfloop> 
 						</table>
 						<cfif bDisplayLongExec>
 							<font color="red">
@@ -1210,8 +1170,214 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 
 			<cfset this.doMore( arguments.custom, arguments.debugging, arguments.context )>
 
-			<!--- Queries --->
+<!--- Unique Queries --->
 			<cfif queries.recordcount>
+				<cfset sectionId = "QueryGrouped">
+				<cfset isOpen = this.isSectionOpen( sectionId, "debugging" )>
+				<cfset local.total  =0>
+				<cfset local.records=0>
+				<cfloop query="queries">
+					<cfset total   += queries.time>
+					<cfset records += queries.count>
+				</cfloop>
+				<cfscript>
+				uniqueQuery={};
+				arrQuery=[];
+				loop query="queries"{
+					hasCachetype=ListFindNoCase(queries.columnlist,"cachetype") gt 0;
+					bUsage = listFindNoCase(queries.columnlist, 'usage') && isStruct(queries.usage);
+
+					if(bUsage){
+						usage=queries.usage;
+						usageNotRead = [];
+						usageRead  = [];
+						if(not isStruct(queries.usage)){
+							stUsage = {};
+						}else{
+							stUsage = queries.usage;
+						}
+						for(item in stUsage){
+							if(!value){
+								arrayAppend( usageNotRead, item );
+							}else{
+								arrayAppend( usageRead, item );
+							}
+						}
+						iRSp = (arrayLen(usageRead) ? 1 : 0) + (arrayLen(usageNotRead) ? 1 : 0);
+						arrLenU = arrayLen( usageRead );
+						arrLenN = arrayLen( usageNotRead );
+						iPct    = arrLenU+arrLenN eq 0 ? 0 : arrLenU/(arrLenU+arrLenN) * 100;
+					}
+
+					isOpen = this.isSectionOpen( queries.currentRow, "debugging" );
+                    
+					ts={};
+					ts.name=queries.name;
+            		ts.count=queries.count;
+            		ts.millisecondsNumber=queries.time;
+            		ts.milliseconds=unitFormat(arguments.custom.unit, queries.time,prettify);
+            		if(total neq 0){
+						ts.percentExecutionTimeNumber=queries.time / total * 100;
+						ts.percentExecutionTime=unitFormat(arguments.custom.unit, ts.percentExecutionTimeNumber, prettify);
+					}else{
+            			ts.percentExecutionTimeNumber=0;
+						ts.percentExecutionTime=unitFormat(arguments.custom.unit, 0, prettify);
+					}
+					ts.percentUsage="";
+					ts.percentUsageNumber=0;
+					if(bUsage){
+                        if(iPct gte 0){
+							ts.percentUsage=numberFormat(iPct, "999.9")&" %";
+							ts.percentUsageNumber=numberFormat(iPct, "999.9");
+						}else if(iPct lt -1){
+                            ts.percentUsage="Empty";
+                        }else{
+                        	ts.percentUsage="DDL SQL";
+                        } 
+                    }
+                    ts.datasource=queries.datasource;
+                    ts.src=queries.src;
+                    ts.line=queries.line;
+                    ts.source=contractPath(queries.src)&":"&queries.line;
+                    ts.cacheType="";
+                    if(hasCachetype){
+                    	ts.cacheType=isEmpty(queries.cacheType)?"none":queries.cacheType;
+                    }
+                    arrValue=[];
+
+                    arrayAppend(arrValue, '<table style="width:100%;">');
+					if(arrLenU ?: 0){
+                        arrayAppend(arrValue, '<tr>
+                                <th>Used:</th>
+                            <td colspan="8">#arrayToList(usageRead, ', ')#</td>
+                        </tr>');
+                    }
+                    if(arrLenN ?: 0){
+                        arrayAppend(arrValue, '    <tr>
+                                <th>Not Used:</th>
+                            <td colspan="8" class="red">#arrayToList(usageNotRead, ', ')#</td>
+                        </tr>');
+                    }
+					sSQL = replace(queries.sql, chr(9), "&nbsp;&nbsp;", "ALL");
+					sSQL = replace(sSQL, chr(10), "<br>", "ALL");
+                    arrayAppend(arrValue, '<tr>
+                        <th class="label">SQL:</th>
+                            <td id="-lucee-debug-query-sql-#queries.currentRow#" colspan="8" onclick="__LUCEE.debug.selectText( this.id );">
+                    <div class="__sql">#trim( sSQL )#</div>
+	                </td>
+	                </tr>
+	                </table>');
+	                ts.firstValue=arrayToList(arrValue, "");
+	                if(not structkeyexists(uniqueQuery, ts.name)){
+	                	uniqueQuery[ts.name]=[];
+	                	arrayAppend(arrQuery, ts.name);
+	                }
+	                arrayAppend(uniqueQuery[ts.name], ts);
+				}
+				// build the grouped summary statistics
+				arrFinalQuery=[];
+				for(name in arrQuery){
+					arrTemp=uniqueQuery[name];
+					ts={
+						avgCount:0,
+						avgMilliseconds:0,
+						avgPercentExecutionTime:0,
+						avgPercentUsage:0,
+						executions:0
+					};
+					ts.executions=arrayLen(arrTemp);
+					structAppend(ts, arrTemp[1]);
+					for(q in arrTemp){
+						ts.avgMilliseconds+=q.millisecondsNumber;
+						ts.avgCount+=q.count;
+						ts.avgPercentExecutionTime+=q.percentExecutionTimeNumber;
+						ts.avgPercentUsage+=q.percentUsageNumber;
+					}
+					ts.avgMilliseconds=round(ts.avgMilliseconds/arrayLen(arrTemp));
+					ts.avgCount=round(ts.avgCount/arrayLen(arrTemp));
+					ts.avgPercentExecutionTime/=arrayLen(arrTemp);
+					ts.avgPercentUsage/=arrayLen(arrTemp);
+					arrayAppend(arrFinalQuery, ts);
+				}
+				/*
+				fields to output:
+				name, count, milliseconds, percentExecutionTime, percentUsage, datasource, source, cacheType, value
+				
+				*/
+				</cfscript>
+
+                <div class="section-title">SQL Queries (grouped by name)</div>
+                <p>Note: Only the usage and sql for first query of each unique query name is displayed.</p>
+                <table>
+				<cfset renderSectionHeadTR( sectionId, "debugging", "#queries.recordcount# Quer#queries.recordcount GT 1 ? 'ies' : 'y'# Executed (Total Records: #records#; Total Time: #unitFormat( arguments.custom.unit, total ,prettify)#)" )>
+
+                <tr>
+                    <td id="-lucee-debug-#sectionId#" class="#isOpen ? '' : 'collapsed'#">
+            			<table><tr><td>
+							<cfset hasCachetype=ListFindNoCase(queries.columnlist,"cachetype") gt 0>
+							<cfset local.bUsage = listFindNoCase(queries.columnlist, 'usage') && isStruct(queries.usage)>
+			                <table class="details">
+			                <tr>
+			                    <th></th>
+			                    <th>Name</th>
+			                    <th>Executions</th>
+			                    <th>Avg Records</th>
+			                    <th>Avg Time</th>
+			                    <th>Avg %</th>
+								<cfif bUsage>
+				                    <th>Avg Usage</th>
+								</cfif>
+			                    <th>Datasource</th>
+			                    <th>Source</th>
+							<cfif hasCachetype><th>Cache Type</th></cfif>
+			                </tr>
+							<cfloop from="1" to="#arrayLen(arrFinalQuery)#" index="i">
+								<cfscript>
+								row=arrFinalQuery[i];
+								</cfscript>
+			                    <tr>
+								<cfset isOpen = this.isSectionOpen( i, "debugging" )>
+			                    <th>
+			                            <a id="-lucee-debug-btn-qrygroup-#i#"
+			                        class="-lucee-icon-#isOpen ? 'minus' : 'plus'#"
+			                        onclick="__LUCEE.debug.toggleSection( 'qrygroup-#i#', 'debugging' );">&nbsp;</a>
+				                </th>
+				                <td>#row.name#</td>
+				                <td>#row.executions#</td>
+				                <td class="txt-r">#row.avgCount#</td>
+				                <td class="txt-r">#unitFormat(arguments.custom.unit, row.avgMilliseconds,prettify)#</td>
+				                <td class="txt-r">#unitFormat(arguments.custom.unit, row.avgPercentExecutionTime,prettify)#</td>
+								<cfif bUsage>
+		                            <td class="txt-r" style="color:#getPctColor(row.avgPercentUsage)#">
+										<cfif iPct gte 0>
+											#numberFormat(row.avgPercentUsage, "999.9")# %
+											<cfelseif iPct lt -1>
+			                                    Empty
+										<cfelse>
+			                                    DDL SQL
+										</cfif>
+			                        </td>
+								</cfif>
+			                    <td>#row.datasource#</td>
+			                        <td title="#row.src#:#row.line#">#row.source#</td>
+								<cfif hasCachetype><td>#isEmpty(row.cacheType)?"none":row.cacheType#</td></cfif>
+			                    </tr>
+			                    <tr id="-lucee-debug-qrygroup-#i#" class="#isOpen ? '' : 'collapsed'#">
+			                    <th>&nbsp;</th><td colspan="8">
+					                #row.firstValue#
+	                			</td></tr>
+							</cfloop>
+                	</table>
+
+                </tr></td></table>
+                </td><!--- #-lucee-debug-#sectionId# !--->
+                </tr>
+                </table>
+			</cfif>
+
+
+			<!--- Queries --->
+			<!--- <cfif queries.recordcount>
 				<cfset sectionId = "Query">
 				<cfset isOpen = this.isSectionOpen( sectionId, "debugging" )>
 				<cfset local.total  =0>
@@ -1331,7 +1497,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 						</td><!--- #-lucee-debug-#sectionId# !--->
 					</tr>
 				</table>
-			</cfif>
+			</cfif> --->
 
 			<!--- Exceptions --->
 			<cfif structKeyExists( arguments.debugging, "exceptions" ) && arrayLen( arguments.debugging.exceptions )>
@@ -1377,6 +1543,8 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 			<cfset local.appSettings = getApplicationSettings()>
 			<cfif structKeyExists( arguments.debugging, "scope" )>
 				<div class="section-title">Scopes</div>
+				<!---
+				this code was too unstable for large dumps
 				<cfif  structKeyExists( arguments.debugging.scope, "Application" )>
 					<cfset sectionId = "Application">
 					<cfset isOpen = this.isSectionOpen( sectionId, "debugging" )>
@@ -1389,7 +1557,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 						<td>
 						</tr>
 					</table>
-				</cfif>
+				</cfif> --->
 
 				<cfif  structKeyExists( arguments.debugging.scope, "Session" ) && local.appSettings.sessionManagement>
 					<cfset sectionId = "Session">
@@ -1462,6 +1630,8 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 					</table>
 				</cfif>
 
+				<!---
+				this code doesn't help a developer, because we don't have access to the real request scope that existed during the request, or maybe it was cleared?
 				<cfif  structKeyExists( arguments.debugging.scope, "Request" )>
 					<cfset sectionId = "Request">
 					<cfset isOpen = this.isSectionOpen( sectionId, "debugging" )>
@@ -1474,7 +1644,7 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 						<td>
 						</tr>
 					</table>
-				</cfif>
+				</cfif> --->
 
 				<cfif  structKeyExists( arguments.debugging.scope, "cookie" )>
 					<cfset sectionId = "Cookie">

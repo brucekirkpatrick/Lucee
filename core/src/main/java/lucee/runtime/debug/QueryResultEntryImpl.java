@@ -35,7 +35,7 @@ public final class QueryResultEntryImpl implements QueryEntry {
     private final String name;
     private final int recordcount;
     private final String datasource;
-    private final QueryResult qr;
+    private final QueryResult qr=null;
     private final long startTime;
     private TemplateLine tl;
 
@@ -55,7 +55,7 @@ public final class QueryResultEntryImpl implements QueryEntry {
 	this.tl = tl;
 	this.sql = sql;
 	this.exe = exe;
-	this.qr = qr;
+	//this.qr = qr;
     }
 
     @Override

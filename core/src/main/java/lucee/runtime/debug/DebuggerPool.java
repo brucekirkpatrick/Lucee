@@ -27,11 +27,12 @@ import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Duplicator;
-import lucee.runtime.type.Array;
-import lucee.runtime.type.ArrayImpl;
-import lucee.runtime.type.Struct;
+import lucee.runtime.type.*;
+
+import static lucee.runtime.type.util.KeyConstants._remote_addr;
 
 public class DebuggerPool {
+	public static final Collection.Key _lucee_debug = KeyImpl._const("LuceeDebug");
 
     // private Resource storage;
     private LinkedList<Struct> queue = new LinkedList<Struct>();
@@ -43,6 +44,9 @@ public class DebuggerPool {
 
     public void store(PageContext pc, Debugger debugger) {
 	if (ReqRspUtil.getScriptName(pc, pc.getHttpServletRequest()).indexOf("/lucee/") == 0) return;
+	if(!pc.urlFormScope().containsKey(_lucee_debug)){
+		return; // don't store debug info unless ?LUCEEDEBUG=1 exists
+	}
 	synchronized (queue) {
 	    try {
 		queue.add((Struct) Duplicator.duplicate(debugger.getDebuggingData(pc, true), true));
