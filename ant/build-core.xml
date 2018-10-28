@@ -687,8 +687,7 @@
     
     <!-- Create the time stamp -->
     <tstamp/>
-    
-    <delete dir="${temp}"/>
+
     
     <!-- Create the  directory structure needed -->
     <mkdir dir="${core}"/>
@@ -1416,8 +1415,7 @@
     <currentTime property="ct" />
     <echo file="${outputDir}/lucee/version" message="${version}:${ct}" encoding="UTF-8"/>
 
-    
-    <delete dir="${temp}"/>
+
     <echots message="done with the ant part, now maven build the loader"/>
     
   </target>
@@ -1462,7 +1460,6 @@
       manifest="${goal}/META-INF/MANIFEST.MF"/>
 
 
-    <delete dir="${temp}"/>
     <echots message="done"/>
     
   </target>
