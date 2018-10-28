@@ -1611,7 +1611,7 @@ public abstract class ConfigImpl implements Config {
      * 
      * @param _debug debug or not
      */
-    protected void setDebug(int _debug) {
+    public void setDebug(int _debug) {
 	this._debug = _debug;
     }
 

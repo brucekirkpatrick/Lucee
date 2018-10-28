@@ -262,6 +262,7 @@ public final class PageContextImpl extends PageContext {
     private URLForm urlForm = new UrlFormImpl(_form, _url);
     private URL url;
     private Form form;
+	public static final lucee.runtime.type.Collection.Key _lucee_debug = KeyImpl._const("LuceeDebug");
 
     private RequestImpl request = new RequestImpl();
     private CGIImplReadOnly cgiR = new CGIImplReadOnly();
@@ -494,6 +495,11 @@ public final class PageContextImpl extends PageContext {
 
 	undefined.initialize(this);
 	timeoutStacktrace = null;
+	if(urlForm.containsKey(_lucee_debug)){
+		this.config.setDebug(0);
+	}else{
+		this.config.setDebug(1); // disable debug
+	}
 	return this;
     }
 

@@ -638,12 +638,14 @@ public final class DebuggerImpl implements Debugger {
 	// sopes
 	Struct scopes = new StructImpl();
 	try {
-	    scopes.setEL("application", pc.applicationScope());
+		// application scope is dangerous to send
+	    //scopes.setEL("application", pc.applicationScope());
 	    scopes.setEL("session", pc.sessionScope());
 	    scopes.setEL("client", pc.clientScope());
 	}
 	catch (PageException e) {}
-	scopes.setEL("request", pc.requestScope());
+	// request scope is always empty here
+	//scopes.setEL("request", pc.requestScope());
 	scopes.setEL("cookie", pc.cookieScope());
 	scopes.setEL("cgi", pc.cgiScope());
 	scopes.setEL("form", pc.formScope());
