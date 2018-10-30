@@ -1726,6 +1726,58 @@ sort direction:
 			<type>struct</type>
 		</return>
 	</function>
+
+
+	<function>
+		<name>OSGIBundleList</name>
+		<class bundle-name="{bundle-name}" bundle-version="{bundle-version}">lucee.runtime.functions.system.OSGIBundleList</class>
+		<keywords>OSGIBundleList</keywords>
+		<description>Returns a list of installed OSGi Bundles.</description>
+		<argument>
+			<name>bundleFilePath</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The absolute path for the OSGi Bundle you want to reload.</description>
+		</argument>
+		<return>
+			<type>array</type>
+			<!--can be void, number, string, etc-->
+		</return>
+	</function>
+
+	<function>
+		<name>OSGIBundleInstall</name>
+		<class bundle-name="{bundle-name}" bundle-version="{bundle-version}">lucee.runtime.functions.system.OSGIBundleInstall</class>
+		<keywords>OSGIBundleInstall</keywords>
+		<description>Reloads the OSGi extension.</description>
+		<argument>
+			<name>bundleFilePath</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The absolute path for the OSGi Bundle you want to reload.</description>
+		</argument>
+		<return>
+			<type>org.osgi.framework.Bundle</type>
+			<!--can be void, number, string, etc-->
+		</return>
+	</function>
+
+	<function>
+		<name>OSGiBundleUninstall</name>
+		<class bundle-name="{bundle-name}" bundle-version="{bundle-version}">lucee.runtime.functions.system.OSGiBundleUninstall</class>
+		<keywords>OSGiBundleUninstall</keywords>
+		<description>Uninstalls the OSGi extension.</description>
+		<argument>
+			<name>bundle</name>
+			<type>org.osgi.framework.Bundle</type>
+			<required>yes</required>
+			<description>An existing OSGi Bundle you wish to uninstall.</description>
+		</argument>
+		<return>
+			<type>void</type>
+			<!--can be void, number, string, etc-->
+		</return>
+	</function>
 		
 	<!-- CacheClear -->
 	<function>
@@ -9071,6 +9123,41 @@ ormEvictQueries([cacheName])</description>
 		<description>Returns ORM session factory instance</description>
 		<return>
 			<type>void</type>
+		</return>
+	</function>
+
+	<!-- OSGiBundleInstall -->
+	<function>
+		<name>OSGIBundleInstall</name>
+		<class bundle-name="{bundle-name}" bundle-version="{bundle-version}">com.jetendo.extension.reloadLuceeExtension.functions.OSGIBundleInstall</class>
+		<keywords>OSGIBundleInstall</keywords>
+		<description>Reloads the OSGi extension.</description>
+		<argument>
+			<name>bundleFilePath</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The absolute path for the OSGi Bundle you want to reload.</description>
+		</argument>
+		<return>
+			<type>org.osgi.framework.Bundle</type>
+			<!--can be void, number, string, etc-->
+		</return>
+	</function>
+
+	<function>
+		<name>OSGiBundleUninstall</name>
+		<class bundle-name="{bundle-name}" bundle-version="{bundle-version}">com.jetendo.extension.reloadLuceeExtension.functions.UninstallOSGIExtension</class>
+		<keywords>UninstallOSGIExtension</keywords>
+		<description>Uninstalls the OSGi extension.</description>
+		<argument>
+			<name>bundle</name>
+			<type>org.osgi.framework.Bundle</type>
+			<required>yes</required>
+			<description>An existing OSGi Bundle you wish to uninstall.</description>
+		</argument>
+		<return>
+			<type>void</type>
+			<!--can be void, number, string, etc-->
 		</return>
 	</function>
 	

@@ -689,6 +689,7 @@
     <tstamp/>
 
     
+    <delete dir="${temp}"/>
     <!-- Create the  directory structure needed -->
     <mkdir dir="${core}"/>
     <mkdir dir="${loader}"/>
@@ -1415,6 +1416,7 @@
     <currentTime property="ct" />
     <echo file="${outputDir}/lucee/version" message="${version}:${ct}" encoding="UTF-8"/>
 
+    <delete dir="${temp}"/>
 
     <echots message="done with the ant part, now maven build the loader"/>
     
@@ -1459,6 +1461,7 @@
       jarfile="${trgLoader}/lucee-${version}.jar" 
       manifest="${goal}/META-INF/MANIFEST.MF"/>
 
+    <delete dir="${temp}"/>
 
     <echots message="done"/>
     
