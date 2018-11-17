@@ -37,6 +37,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.w3c.dom.Node;
+
 import lucee.commons.lang.CFTypes;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
@@ -53,9 +55,7 @@ import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.i18n.LocaleFactory;
 import lucee.runtime.java.JavaObject;
-import lucee.runtime.listener.ApplicationContext;
 import lucee.runtime.listener.ApplicationContextSupport;
-import lucee.runtime.listener.ModernApplicationContext;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
 import lucee.runtime.orm.ORMUtil;
@@ -77,9 +77,6 @@ import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.ComponentUtil;
 
-import lucee.runtime.type.util.KeyConstants;
-import org.w3c.dom.Node;
-
 /**
  * class to serialize and desirilize WDDX Packes
  */
@@ -88,20 +85,27 @@ public final class JSONConverter extends ConverterSupport {
     private static final Collection.Key REMOTING_FETCH = KeyImpl.intern("remotingFetch");
 
     private static final Key TO_JSON = KeyImpl.intern("_toJson");
-    private static final Object NULL = new Object();
     private static final String NULL_STRING = "";
 
     private boolean ignoreRemotingFetch;
 
     private CharsetEncoder charsetEncoder;
 
+    private String pattern;
+
     /**
      * @param ignoreRemotingFetch
      * @param charset if set, characters not supported by the charset are escaped.
+     * @param patternCf
      */
     public JSONConverter(boolean ignoreRemotingFetch, Charset charset) {
+	this(ignoreRemotingFetch, charset, JSONDateFormat.PATTERN_CF);
+    }
+
+    public JSONConverter(boolean ignoreRemotingFetch, Charset charset, String pattern) {
 	this.ignoreRemotingFetch = ignoreRemotingFetch;
 	charsetEncoder = charset != null ? charset.newEncoder() : null;// .canEncode("string");
+	this.pattern = pattern;
     }
 
     /**
@@ -135,7 +139,7 @@ public final class JSONConverter extends ConverterSupport {
 	    // setters
 	    Method[] setters = Reflector.getSetters(clazz);
 	    for (int i = 0; i < setters.length; i++) {
-		sct.setEL(setters[i].getName().substring(3), NULL);
+		sct.setEL(setters[i].getName().substring(3), CollectionUtil.NULL);
 	    }
 	    // getters
 	    Method[] getters = Reflector.getGetters(clazz);
@@ -178,7 +182,7 @@ public final class JSONConverter extends ConverterSupport {
      */
     private void _serializeDateTime(DateTime dateTime, StringBuilder sb) {
 
-	sb.append(StringUtil.escapeJS(JSONDateFormat.format(dateTime, null), '"', charsetEncoder));
+	sb.append(StringUtil.escapeJS(JSONDateFormat.format(dateTime, null, pattern), '"', charsetEncoder));
 
 	/*
 	 * try { sb.append(goIn()); sb.append("createDateTime(");
@@ -513,7 +517,7 @@ public final class JSONConverter extends ConverterSupport {
     private void _serialize(PageContext pc, Set test, Object object, StringBuilder sb, boolean serializeQueryByColumns, Set done) throws ConverterException {
 
 	// NULL
-	if (object == null || object == NULL) {
+	if (object == null || object == CollectionUtil.NULL) {
 	    sb.append(goIn());
 	    sb.append("null");
 	    return;

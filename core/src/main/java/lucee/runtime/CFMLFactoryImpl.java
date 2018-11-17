@@ -48,7 +48,6 @@ import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.SizeOf;
 import lucee.commons.lang.SystemOut;
 import lucee.loader.engine.CFMLEngine;
-import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
@@ -62,8 +61,6 @@ import lucee.runtime.exp.PageExceptionImpl;
 import lucee.runtime.exp.RequestTimeoutException;
 import lucee.runtime.functions.string.Hash;
 import lucee.runtime.op.Caster;
-import lucee.runtime.spooler.SpoolerEngineImpl;
-import lucee.runtime.spooler.Task;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.ArrayImpl;
 import lucee.runtime.type.Struct;
@@ -192,28 +189,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
      */
     @Override
     public void releaseLuceePageContext(PageContext pc, boolean unregisterFromThread) {
-	releaseLuceePageContext(pc, unregisterFromThread, false);
-    }
-
-    public void releaseLuceePageContext(PageContext pc, boolean unregisterFromThread, boolean async) {
 	if (pc.getId() < 0) return;
-
-	((PageContextImpl) pc).releaseInSync();
-
-	if (async) {
-	    SpoolerEngineImpl spooler = (SpoolerEngineImpl) pc.getConfig().getSpoolerEngine();
-	    spooler.add(new ReleaseTask(this, pc));
-	}
-	else {
-	    _execute(this, pc);
-	}
-
-	// SystemUtil.sleep(1000);
-	if (unregisterFromThread) ThreadLocalPageContext.release();
-
-    }
-
-    private static Object _execute(CFMLFactoryImpl factory, PageContext pc) {
 	boolean isChild = pc.getParentPageContext() != null; // we need to get this check before release is executed
 
 	// when pc was registered with an other thread, we register with this thread when calling release
@@ -228,41 +204,21 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    pc.release();
 	}
 	catch (Exception e) {
-	    e.printStackTrace();
 	    releaseFailed = true;
-	    pc.getConfig().getLog("application").error("release page context", e);
+	    config.getLog("application").error("release page context", e);
 	}
-	finally {
-	    if (tmpRegister) ThreadLocalPageContext.register(beforePC);
-	}
+	if (tmpRegister) ThreadLocalPageContext.register(beforePC);
+	if (unregisterFromThread) ThreadLocalPageContext.release();
 
-	factory.runningPcs.remove(Integer.valueOf(pc.getId()));
+	runningPcs.remove(Integer.valueOf(pc.getId()));
 	if (isChild) {
-	    factory.runningChildPcs.remove(Integer.valueOf(pc.getId()));
+	    runningChildPcs.remove(Integer.valueOf(pc.getId()));
 	}
-	if (factory.pcs.size() < 100 && !pc.hasFamily() && ((PageContextImpl) pc).getTimeoutStackTrace() == null && !releaseFailed)// not more than 100 PCs
-	    factory.pcs.push((PageContextImpl) pc);
+	if (pcs.size() < 100 && !pc.hasFamily() && ((PageContextImpl) pc).getTimeoutStackTrace() == null && !releaseFailed)// not more than 100 PCs
+	    pcs.push((PageContextImpl) pc);
 
-	if (factory.runningPcs.size() > MAX_SIZE) factory.clean(factory.runningPcs);
-	if (factory.runningChildPcs.size() > MAX_SIZE) factory.clean(factory.runningChildPcs);
-
-	return null;
-    }
-
-    private static class ReleaseTask implements Task {
-
-	private CFMLFactoryImpl factory;
-	private PageContext pc;
-
-	public ReleaseTask(CFMLFactoryImpl factory, PageContext pc) {
-	    this.factory = factory;
-	    this.pc = pc;
-	}
-
-	@Override
-	public Object execute(Config config) {
-	    return _execute(factory, pc);
-	}
+	if (runningPcs.size() > MAX_SIZE) clean(runningPcs);
+	if (runningChildPcs.size() > MAX_SIZE) clean(runningChildPcs);
     }
 
     private void clean(Map<Integer, PageContextImpl> map) {
@@ -304,8 +260,9 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 		if (pc.getStartTime() + timeout < System.currentTimeMillis() && Long.MAX_VALUE != timeout) {
 		    Log log = ((ConfigImpl) pc.getConfig()).getLog("requesttimeout");
 		    if (log != null) {
+			PageContext root = pc.getRootPageContext();
 			log.log(Log.LEVEL_ERROR, "controller",
-				"stop " + (pc.getParentPageContext() == null ? "request" : "thread") + " (" + pc.getId() + ") because run into a timeout " + getPath(pc) + "."
+				"stop " + (root != null && root != pc ? "thread" : "request") + " (" + pc.getId() + ") because run into a timeout " + getPath(pc) + "."
 					+ MonitorState.getBlockedThreads(pc) + RequestTimeoutException.locks(pc) + "\n" + MonitorState.toString(pc.getThread().getStackTrace()));
 		    }
 		    terminate(pc, true);
@@ -316,8 +273,9 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 		else if (pc.getStartTime() + 10000 < System.currentTimeMillis() && pc.getThread().getPriority() != Thread.MIN_PRIORITY) {
 		    Log log = ((ConfigImpl) pc.getConfig()).getLog("requesttimeout");
 		    if (log != null) {
-			log.log(Log.LEVEL_WARN, "controller", "downgrade priority of the a " + (pc.getParentPageContext() == null ? "request" : "thread") + " at " + getPath(pc)
-				+ ". " + MonitorState.getBlockedThreads(pc) + RequestTimeoutException.locks(pc) + "\n" + MonitorState.toString(pc.getThread().getStackTrace()));
+			PageContext root = pc.getRootPageContext();
+			log.log(Log.LEVEL_WARN, "controller", "downgrade priority of the a " + (root != null && root != pc ? "thread" : "request") + " at " + getPath(pc) + ". "
+				+ MonitorState.getBlockedThreads(pc) + RequestTimeoutException.locks(pc) + "\n" + MonitorState.toString(pc.getThread().getStackTrace()));
 		    }
 		    try {
 			pc.getThread().setPriority(Thread.MIN_PRIORITY);

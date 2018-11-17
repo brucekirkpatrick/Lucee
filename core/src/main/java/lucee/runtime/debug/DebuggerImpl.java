@@ -722,6 +722,7 @@ public final class DebuggerImpl implements Debugger {
 	return t;
     }
 
+    @Override
     public DebugDump addDump(PageSource ps, String dump) {
 	DebugDump dt = new DebugDumpImpl(ps.getDisplayPath(), SystemUtil.getCurrentContext().line, dump);
 	dumps.add(dt);
@@ -766,6 +767,7 @@ public final class DebuggerImpl implements Debugger {
 	return exceptions.toArray(new CatchBlock[exceptions.size()]);
     }
 
+    @Override
     public void init(Config config) {
 	this.starttime = System.currentTimeMillis() + config.getTimeServerOffset();
     }
@@ -790,6 +792,7 @@ public final class DebuggerImpl implements Debugger {
 	return implicitAccesses.values().toArray(new ImplicitAccessImpl[implicitAccesses.size()]);
     }
 
+    @Override
     public void setOutputLog(DebugOutputLog outputLog) {
 	this.outputLog = outputLog;
     }
@@ -855,6 +858,26 @@ public final class DebuggerImpl implements Debugger {
     @Override
     public Map<String, Map<String, List<String>>> getGenericData() {
 	return genericData;
+    }
+
+    public static void deprecated(PageContext pc, String key, String msg) {
+	if (pc.getConfig().debug()) {
+	    // do we already have set?
+	    boolean exists = false;
+	    Map<String, Map<String, List<String>>> gd = pc.getDebugger().getGenericData();
+	    if (gd != null) {
+		Map<String, List<String>> warning = gd.get("Warning");
+		if (warning != null) {
+		    exists = warning.containsKey(key);
+		}
+	    }
+
+	    if (!exists) {
+		Map<String, String> map = new HashMap<>();
+		map.put(key, msg);
+		pc.getDebugger().addGenericData("Warning", map);
+	    }
+	}
     }
 
 }

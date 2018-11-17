@@ -352,6 +352,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws BundleException
      */
     synchronized static void load(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	double start = System.currentTimeMillis();
 	if (LOG) SystemOut.printDate("start reading config");
 
 	ThreadLocalConfig.register(config);
@@ -545,7 +546,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    TagUtil.addTagMetaData((ConfigWebImpl) config, log);
 	    if (LOG) SystemOut.printDate("added tag meta data");
 	}
-	// ThreadLocalConfig.release();
     }
 
     private static void loadResourceProvider(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
@@ -972,6 +972,13 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (securityManager == null) securityManager = SecurityManagerImpl.getOpenSecurityManager();
 		((ConfigWebImpl) config).setSecurityManager(securityManager);
 	    }
+
+	    Element security = getChildByName(doc.getDocumentElement(), "security");
+	    if (security != null) {
+		int vu = AppListenerUtil.toVariableUsage(security.getAttribute("variable-usage"), ConfigImpl.QUERY_VAR_USAGE_IGNORE);
+		config.setQueryVarUsage(vu);
+	    }
+
 	}
 	catch (Exception e) {
 	    log(config, log, e);
@@ -3066,7 +3073,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		try {
 		    Class clazz = cd.getClazz();
-		    if (!Reflector.isInstaneOf(clazz, VideoExecuter.class))
+		    if (!Reflector.isInstaneOf(clazz, VideoExecuter.class, false))
 			throw new ApplicationException("class [" + cd + "] does not implement interface [" + VideoExecuter.class.getName() + "]");
 		    config.setVideoExecuterClass(clazz);
 
@@ -3570,7 +3577,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (hasAccess && cd.hasClass()) {
 		    try {
 			Class clazz = cd.getClazz();
-			if (!Reflector.isInstaneOf(clazz, Cluster.class) && !Reflector.isInstaneOf(clazz, ClusterRemote.class)) throw new ApplicationException(
+			if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
 				"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
 
 			config.setClusterClass(clazz);
@@ -3856,7 +3863,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @param doc
      * @throws IOException
      */
-    private static void loadMail(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
+    private static void loadMail(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) { // does no init values
 	try {
 	    boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_MAIL);
 
@@ -3908,9 +3915,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		    }
 		}
 	    }
-	    /*
-	     * else { servers = new Server[elServers.length]; }
-	     */
+	    // TODO get mail servers from env var
 	    if (hasAccess) {
 		for (int i = 0; i < elServers.length; i++) {
 		    Element el = elServers[i];
@@ -3936,9 +3941,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    configServer = (ConfigServerImpl) config;
 
 	    Element parent = getChildByName(doc.getDocumentElement(), "monitoring");
-	    boolean enabled = Caster.toBooleanValue(getAttr(parent, "enabled"), false);
-	    configServer.setMonitoringEnabled(enabled);
-	    SystemOut.printDate(config.getOutWriter(), "monitoring is " + (enabled ? "enabled" : "disabled"));
+	    Boolean enabled = Caster.toBoolean(getAttr(parent, "enabled"), null);
+	    if (enabled != null) configServer.setMonitoringEnabled(enabled.booleanValue());
+	    // SystemOut.printDate(config.getOutWriter(), "monitoring is " + (enabled ? "enabled" :
+	    // "disabled"));
 
 	    Element[] children = getChildren(parent, "monitor");
 
@@ -4880,7 +4886,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    if (hasAccess && asc.hasClass()) {
 		try {
 		    Class clazz = asc.getClazz();
-		    if (!Reflector.isInstaneOf(clazz, AdminSync.class))
+		    if (!Reflector.isInstaneOf(clazz, AdminSync.class, false))
 			throw new ApplicationException("class [" + clazz.getName() + "] does not implement interface [" + AdminSync.class.getName() + "]");
 		    config.setAdminSyncClass(clazz);
 

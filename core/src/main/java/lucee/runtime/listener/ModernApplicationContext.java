@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.osgi.framework.BundleException;
+
 import lucee.commons.date.TimeZoneUtil;
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.io.cache.exp.CacheException;
@@ -71,10 +73,8 @@ import lucee.runtime.net.s3.Properties;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
 import lucee.runtime.orm.ORMConfiguration;
-import lucee.runtime.orm.ORMConfigurationImpl;
 import lucee.runtime.rest.RestSettingImpl;
 import lucee.runtime.rest.RestSettings;
-import lucee.runtime.security.Credential;
 import lucee.runtime.tag.Query;
 import lucee.runtime.tag.listener.TagListener;
 import lucee.runtime.type.Array;
@@ -92,8 +92,6 @@ import lucee.runtime.type.scope.Scope;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.ListUtil;
 import lucee.transformer.library.ClassDefinitionImpl;
-
-import org.osgi.framework.BundleException;
 
 public class ModernApplicationContext extends ApplicationContextSupport {
 
@@ -147,6 +145,10 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     private static final Key ENABLE_NULL_SUPPORT = KeyImpl.intern("enableNULLSupport");
     private static final Key NULL_SUPPORT = KeyImpl.intern("nullSupport");
+    private static final Key PSQ = KeyImpl.intern("psq");
+    private static final Key PSQ_LONG = KeyImpl.intern("preservesinglequote");
+    private static final Key VAR_USAGE = KeyImpl.intern("varusage");
+    private static final Key VARIABLE_USAGE = KeyImpl.intern("variableusage");
 
     private static Map<String, CacheConnection> initCacheConnections = new ConcurrentHashMap<String, CacheConnection>();
 
@@ -198,6 +200,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private TagListener queryListener;
     private boolean fullNullSupport;
     private SerializationSettings serializationSettings;
+
+    private boolean queryPSQ;
+    private int queryVarUsage;
 
     private Mapping[] mappings;
     private boolean initMappings;
@@ -258,6 +263,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private boolean initSessionCookie;
     private boolean initAuthCookie;
     private boolean initSerializationSettings;
+    private boolean initQueryPSQ;
+    private boolean initQueryVarUsage;
 
     private Resource antiSamyPolicyResource;
 
@@ -301,6 +308,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.wstype = WS_TYPE_AXIS1;
 	this.cgiScopeReadonly = ci.getCGIScopeReadonly();
 	this.fullNullSupport = ci.getFullNullSupport();
+	this.queryPSQ = ci.getPSQL();
+	this.queryVarUsage = ci.getQueryVarUsage();
 
 	this.sessionCluster = config.getSessionCluster();
 	this.clientCluster = config.getClientCluster();
@@ -752,6 +761,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	}
     }
 
+    @Override
     public void setMailServers(Server[] servers) {
 	this.mailServers = servers;
 	this.initMailServer = true;
@@ -763,6 +773,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return cacheConnections.get(KeyImpl.init(cacheName));
     }
 
+    @Override
     public Key[] getCacheConnectionNames() {
 	initCache();
 	Set<Key> set = cacheConnections.keySet();
@@ -929,6 +940,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	defaultCaches.put(type, cacheName.trim());
     }
 
+    @Override
     public void setCacheConnection(String cacheName, CacheConnection cc) {
 	if (StringUtil.isEmpty(cacheName, true)) return;
 	initCache();
@@ -956,6 +968,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return queryListener;
     }
 
+    @Override
     public SerializationSettings getSerializationSettings() {
 	if (!initSerializationSettings) {
 	    Struct sct = Caster.toStruct(get(component, KeyConstants._serialization, null), null);
@@ -968,6 +981,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return serializationSettings;
     }
 
+    @Override
     public void setSerializationSettings(SerializationSettings settings) {
 	serializationSettings = settings;
 	initSerializationSettings = true;
@@ -1159,6 +1173,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return s3;
     }
 
+    @Override
     public FTPConnectionData getFTP() {
 	if (!initFTP) {
 	    Object o = get(component, KeyConstants._ftp, null);
@@ -1429,6 +1444,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.s3 = s3;
     }
 
+    @Override
     public void setFTP(FTPConnectionData ftp) {
 	initFTP = true;
 	this.ftp = ftp;
@@ -1699,6 +1715,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return cgiScopeReadonly;
     }
 
+    @Override
     public void setCGIScopeReadonly(boolean cgiScopeReadonly) {
 	initCGIScopeReadonly = true;
 	this.cgiScopeReadonly = cgiScopeReadonly;
@@ -1798,4 +1815,45 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.fullNullSupport = fullNullSupport;
 	this.initFullNullSupport = true;
     }
+
+    @Override
+    public boolean getQueryPSQ() {
+	if (!initQueryPSQ) {
+	    Struct qry = Caster.toStruct(get(component, KeyConstants._query, null), null);
+	    if (qry != null) {
+		Boolean b = Caster.toBoolean(qry.get(PSQ, null), null);
+		if (b == null) b = Caster.toBoolean(qry.get(PSQ_LONG, null), null);
+		if (b != null) queryPSQ = b.booleanValue();
+	    }
+	    initQueryPSQ = true;
+	}
+	return queryPSQ;
+    }
+
+    @Override
+    public void setQueryPSQ(boolean psq) {
+	this.queryPSQ = psq;
+	this.initQueryPSQ = true;
+    }
+
+    @Override
+    public int getQueryVarUsage() {
+	if (!initQueryVarUsage) {
+	    Struct qry = Caster.toStruct(get(component, KeyConstants._query, null), null);
+	    if (qry != null) {
+		String str = Caster.toString(qry.get(VAR_USAGE, null), null);
+		if (StringUtil.isEmpty(str)) str = Caster.toString(qry.get(VARIABLE_USAGE, null), null);
+		if (!StringUtil.isEmpty(str)) queryVarUsage = AppListenerUtil.toVariableUsage(str, queryVarUsage);
+	    }
+	    initQueryVarUsage = true;
+	}
+	return queryVarUsage;
+    }
+
+    @Override
+    public void setQueryVarUsage(int varUsage) {
+	this.queryVarUsage = varUsage;
+	this.initQueryVarUsage = true;
+    }
+
 }
