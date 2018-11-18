@@ -32,7 +32,7 @@ import lucee.runtime.type.*;
 import static lucee.runtime.type.util.KeyConstants._remote_addr;
 
 public class DebuggerPool {
-	public static final Collection.Key _lucee_debug = KeyImpl._const("LuceeDebug");
+	public static final Collection.Key _lucee_debug = KeyImpl._const("luceedebug");
 
     // private Resource storage;
     private LinkedList<Struct> queue = new LinkedList<Struct>();

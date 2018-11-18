@@ -47,7 +47,7 @@
 	password="#session["password"&request.adminType]#"
 	returnVariable="access"
 	secType="debugging">
-    
+
 <cfif isWeb>
 	<cfadmin 
 		action="getLoggedDebugData"
@@ -59,6 +59,8 @@
 		type="#request.adminType#"
 		password="#session["password"&request.adminType]#"
 		returnVariable="entries">
+		<cfdump var="#form#">
+	<cfdump var="#entries#">
 </cfif>    
 <cfadmin 
 	action="getDebugSetting"

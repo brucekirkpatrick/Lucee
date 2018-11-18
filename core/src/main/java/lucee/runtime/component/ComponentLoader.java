@@ -20,6 +20,7 @@ package lucee.runtime.component;
 
 import javax.servlet.jsp.tagext.BodyContent;
 
+import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.filter.DirectoryResourceFilter;
 import lucee.commons.io.res.filter.ExtensionResourceFilter;
 import lucee.commons.io.res.filter.OrResourceFilter;
@@ -42,6 +43,7 @@ import lucee.runtime.PageContextImpl;
 import lucee.runtime.PageSource;
 import lucee.runtime.PageSourceImpl;
 import lucee.runtime.config.ConfigImpl;
+import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.Constants;
 import lucee.runtime.debug.DebugEntryTemplate;
 import lucee.runtime.exp.ApplicationException;
@@ -51,6 +53,8 @@ import lucee.runtime.listener.ApplicationContext;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.writer.BodyContentUtil;
+
+import java.io.IOException;
 
 public class ComponentLoader {
 
@@ -538,6 +542,43 @@ public class ComponentLoader {
 	InterfaceImpl i = ip.newInstance(pc, callPath, isRealPath);
 	return i;
     }
+
+	public static ComponentImpl reloadComponent(PageContext pc, ComponentImpl component, boolean onlyIfChanged) throws PageException {
+    	PageSource ps=component._getPageSource();
+    	Resource r=ps.getResource();
+//		try {
+//			pc.getRootWriter().print("Component modified:"+component.getLastModifiedDate()+" == resource modified:"+r.lastModified());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		boolean forceReload=false;
+		if(onlyIfChanged){
+			if(component.getLastModifiedDate() == r.lastModified()) {
+				return component;
+			}else {
+				forceReload=true;
+			}
+		}
+		String pathWithCFC=r.getAbsolutePath();
+		boolean isExtendedComponent=false;
+		if(component.getExtends().length()>0){
+			isExtendedComponent=true;
+			forceReload=true; // we always have to reload extended components
+		}
+		CIPage page=toCIPage(ps.loadPage(pc, forceReload), pathWithCFC);
+		ComponentImpl rtn=component;
+		pc.addPageSource(page.getPageSource(), true);
+		try {
+			rtn = initComponent(pc, page, pathWithCFC, true, isExtendedComponent, true);
+		}
+		finally {
+			if (rtn != null) rtn.setLoaded(true);
+			pc.removeLastPageSource(true);
+		}
+		return rtn;
+		// executeConstr means execute constructor
+//		return _loadComponent(pc, toCIPage(ps.loadPage(pc, forceReload), pathWithCFC), pathWithCFC, true, isExtendedComponent, true);
+	}
 
     private static ComponentImpl initComponent(PageContext pc, CIPage page, String callPath, boolean isRealPath, final boolean isExtendedComponent, boolean executeConstr)
 	    throws PageException {

@@ -406,13 +406,13 @@
        <classpath refid="classpath" />
     </javac>
 
-    <!-- copy all non java files
-    <copy todir="${core}">
+    <!-- copy all non java files -->
+    <copy todir="${core}" overwrite="false">
       <fileset dir="${srcCore}">
         <exclude name="**/*.java"/>
         <exclude name=".*"/>
       </fileset>
-    </copy> -->
+    </copy>
 
     <!-- set date in default properties -->
     <loadfile property="defprop"
@@ -507,10 +507,6 @@
         jarfile="${temp}/loader/core/core.lco" 
         manifest="${core}/META-INF/MANIFEST.MF"/> 
 
-    <!-- copy to core to the target folder -->
-    <copy 
-        file="${temp}/loader/core/core.lco" 
-        tofile="${trgLoader}/${version}.lco"/>
 
 
     <pack200File file="${temp}/loader/core/core.lco" doit="${pack200}"/>
@@ -519,8 +515,16 @@
     <currentTime property="ct" />
     <echo file="${temp}/loader/lucee/version" message="${version}:${ct}" encoding="UTF-8"/>
 
-    <echots message="build loader"/>
-    
+    <!-- copy to core to the target folder -->
+    <copy 
+        file="${temp}/loader/core/core.lco" 
+        tofile="${trgLoader}/${version}.lco"/>
+    <copy 
+        file="${temp}/loader/core/core.lco" 
+        tofile="C:/lucee/tomcat/lucee-server/patches/${version}.lco"/>
+		
+    <echots message="restarting lucee engine"/>
+    <get src="http://localhost:9988/restart-lucee.cfc?method=index" dest="C:/lucee/tomcat/webapps/ROOT/restarted.txt" />
 
 
 
@@ -529,6 +533,7 @@
     
   </target>
   <target name="buildFullLuceeJar">
+    <echots message="build loader"/>
   
     <!-- genrates the jar from the loader -->
     <jar 

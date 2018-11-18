@@ -167,6 +167,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 
     private ImportDefintion[] importDefintions;
 
+    private long lastModifiedDate;
     /**
      * Constructor of the Component, USED ONLY FOR DESERIALIZE
      */
@@ -197,6 +198,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	// this.componentPage=componentPage instanceof
 	// ComponentPageProxy?componentPage:PageProxy.toProxy(componentPage);
 	this.pageSource = componentPage.getPageSource();
+	lastModifiedDate=this.pageSource.getResource().lastModified();
 	this.importDefintions = componentPage.getImportDefintions();
 	// if(modifier!=0)
 	if (!StringUtil.isEmpty(style) && !"rpc".equals(style))
@@ -204,7 +206,11 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	this.isExtended = isExtended;
     }
 
-    @Override
+	public long getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	@Override
 
     public Collection duplicate(boolean deepCopy) {
 	ComponentImpl top = _duplicate(deepCopy, true);
@@ -372,10 +378,10 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    base = ComponentLoader.searchComponent(pageContext, componentPage.getPageSource(), properties.extend, Boolean.TRUE, null, true, executeConstr);
 	}
 	else {
-	    CIPage p = ((ConfigWebImpl) pageContext.getConfig()).getBaseComponentPage(pageSource.getDialect(), pageContext);
-	    if (!componentPage.getPageSource().equals(p.getPageSource())) {
-		base = ComponentLoader.loadComponent(pageContext, p, "Component", false, false, true, executeConstr);
-	    }
+//	    CIPage p = ((ConfigWebImpl) pageContext.getConfig()).getBaseComponentPage(pageSource.getDialect(), pageContext);
+//	    if (!componentPage.getPageSource().equals(p.getPageSource())) {
+//		base = ComponentLoader.loadComponent(pageContext, p, "Component", false, false, true, executeConstr);
+//	    }
 	}
 
 	if (base != null) {

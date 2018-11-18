@@ -1395,7 +1395,13 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	Struct sct = new StructImpl();
 	pageContext.setVariable(getString("admin", action, "returnVariable"), sct);
 
-	sct.set(DEBUG, Caster.toBoolean(config.debug()));
+	// because we changed the debug value to be controlled by url instead of always on.
+	if(config.getDebugOptions()>0){
+		sct.set(DEBUG, true);
+	}else{
+		sct.set(DEBUG, false);
+	}
+//	sct.set(DEBUG, Caster.toBoolean(config.debug()));
 	sct.set(KeyConstants._database, Caster.toBoolean(config.hasDebugOptions(ConfigImpl.DEBUG_DATABASE)));
 	sct.set(KeyConstants._exception, Caster.toBoolean(config.hasDebugOptions(ConfigImpl.DEBUG_EXCEPTION)));
 	sct.set("tracing", Caster.toBoolean(config.hasDebugOptions(ConfigImpl.DEBUG_TRACING)));

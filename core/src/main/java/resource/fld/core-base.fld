@@ -2443,7 +2443,30 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>datetime</type>
 		</return>
 	</function>
-	
+
+	<!-- ReloadComponent -->
+	<function>
+		<name>ReloadComponent</name>
+		<class>lucee.runtime.functions.other.ReloadComponent</class>
+		<status>hidden</status>
+		<description>Reload a component from disk</description>
+		<argument>
+			<name>componentInstance</name>
+			<type>component</type>
+			<required>Yes</required>
+			<description>The component instance you want to reload from disk.</description>
+		</argument>
+		<argument>
+			<name>onlyIfChanged</name>
+			<type>boolean</type>
+			<required>No</required>
+			<default>false</default>
+			<description>When set to true, the last modified date of the cfc will be compared.  If it matches the componentInstance, the same instance will be returned which improves performance.</description>
+		</argument>
+		<return>
+			<type>component</type>
+		</return>
+	</function>
 	
 	<!-- _createComponent -->
 	<function>
