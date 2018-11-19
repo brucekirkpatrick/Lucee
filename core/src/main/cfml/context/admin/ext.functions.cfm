@@ -333,7 +333,7 @@
 					local.older=qry.version[row+1];
 
 				local.ov=qry.otherVersions[row+1];
-				if (isSimpleValue(ov) || isNull(ov))
+				if (isNull(ov) || isSimpleValue(ov))
 					qry.otherVersions[row]=[older];
 				else {
 					arrayAppend(ov,older);
