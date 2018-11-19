@@ -59,8 +59,6 @@
 		type="#request.adminType#"
 		password="#session["password"&request.adminType]#"
 		returnVariable="entries">
-		<cfdump var="#form#">
-	<cfdump var="#entries#">
 </cfif>    
 <cfadmin 
 	action="getDebugSetting"

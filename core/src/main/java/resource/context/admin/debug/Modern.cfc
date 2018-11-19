@@ -786,9 +786,9 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 				<cfset q        += pages.query />
 				<cfset loa      += pages.load />
 				<cfset totAvg   += pages.avg />
-				<cfif pages.avg LT arguments.custom.minimal*1000>
-					<cfcontinue>
-				</cfif>
+				<!---<cfif pages.avg LT arguments.custom.minimal*1000>--->
+					<!---<cfcontinue>--->
+				<!---</cfif>--->
 				<cfset local.bad=pages.avg GTE arguments.custom.highlight*1000 />
 			</cfloop>
 			<cfset local.iTotalTime  = tot>
@@ -803,9 +803,9 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 			<cfloop query="pages">
 				<cfset tot=tot+pages.total>
 				<cfset q=q+pages.query>
-				<cfif pages.avg LT arguments.custom.minimal*1000>
-					<cfcontinue>
-				</cfif>
+				<!---<cfif pages.avg LT arguments.custom.minimal*1000>--->
+					<!---<cfcontinue>--->
+				<!---</cfif>--->
 				<cfset local.bad=pages.avg GTE arguments.custom.highlight*1000>
 				<cfset loa=loa+pages.load />
 			</cfloop>
@@ -988,9 +988,9 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 			<cfloop query="pages">
 				<cfset tot=tot+pages.total>
 				<cfset q=q+pages.query>
-				<cfif pages.avg LT arguments.custom.minimal*1000>
-					<cfcontinue>
-				</cfif>
+				<!---<cfif pages.avg LT arguments.custom.minimal*1000>--->
+					<!---<cfcontinue>--->
+				<!---</cfif>--->
 				<cfset local.bad=pages.avg GTE arguments.custom.highlight*1000>
 				<cfset loa=loa+pages.load />
 			</cfloop>
@@ -1070,9 +1070,9 @@ group("Debugging Tab","Debugging tag includes execution time,Custom debugging ou
 								<cfset arrayAppend(page.stckTrace, listLast(pages.src))>  
 								<cfset tot += pages.total - (pages.count * pages.avg) />
 								<cfset q += pages.query />
-								<cfif pages.avg LT arguments.custom.minimal*1000>
-									<cfcontinue>
-								</cfif>
+								<!---<cfif pages.avg LT arguments.custom.minimal*1000>--->
+									<!---<cfcontinue>--->
+								<!---</cfif>--->
 								<cfset bad = pages.avg GTE arguments.custom.highlight*1000 />
 								<cfset loa += pages.load />
 								<cfset local.iPctTotal = pages.total / (iTotalTime eq 0 ? 1 : iTotalTime)>
