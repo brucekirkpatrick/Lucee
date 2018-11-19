@@ -217,7 +217,9 @@
 	<cfreturn language>
 </cffunction>
 
-
+<cfscript>
+stText=variables.stText;
+</cfscript>
 <cfset navigation = stText.MenuStruct[request.adminType]>
 
 

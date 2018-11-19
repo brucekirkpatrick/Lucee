@@ -1,6 +1,10 @@
 <cffunction name="createMenu" returntype="array">
 	<cfargument name="stMenu" type="struct" required="yes">
 	<cfargument name="adminType" type="string" required="yes">
+	<cfscript>
+	stMenu=arguments.stMenu;
+	adminType=arguments.adminType;
+	</cfscript>
 	<cfset var MenuStruct = 
 	array(
 		struct(
