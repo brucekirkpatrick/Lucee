@@ -250,20 +250,20 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
 
 	    firstRead = false;
 
-	    if (isToBig(getContentLength())) {
+//	    if (isToBig(getContentLength())) {
 		return req.getInputStream();
-	    }
-	    InputStream is = null;
-	    try {
-		barr = IOUtil.toBytes(is = req.getInputStream());
-	    }
-	    catch (Exception e) {
-		barr = null;
-		return new ServletInputStreamDummy(new byte[] {});
-	    }
-	    finally {
-		IOUtil.closeEL(is);
-	    }
+//	    }
+//	    InputStream is = null;
+//	    try {
+//		barr = IOUtil.toBytes(is = req.getInputStream());
+//	    }
+//	    catch (Exception e) {
+//		barr = null;
+//		return new ServletInputStreamDummy(new byte[] {});
+//	    }
+//	    finally {
+//		IOUtil.closeEL(is);
+//	    }
 	}
 	return new ServletInputStreamDummy(barr);
     }
