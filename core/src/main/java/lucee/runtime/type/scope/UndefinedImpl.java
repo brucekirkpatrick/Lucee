@@ -211,10 +211,10 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	if (pc.hasFamily()) {
 	    rtn = // ThreadTag.getThreadScope(pc, key, ThreadTag.LEVEL_CURRENT+ThreadTag.LEVEL_KIDS);
 		    pc.getThreadScope(key, _null);
-//	    if (rtn != _null) {
+	    if (rtn != _null) {
 //		if (debug) debugCascadedAccess(pc, "thread", key);
 		return rtn;
-//	    }
+	    }
 	}
 
 	// get a scope value (only CFML is searching additional scopes)
@@ -407,7 +407,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	if (pc.hasFamily()) {
 	    rtn = pc.getThreadScope(key, _null);
 	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, "thread", key);
+//		if (debug) debugCascadedAccess(pc, "thread", key);
 		return rtn;
 	    }
 	}
@@ -461,7 +461,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	if (pc.hasFamily()) {
 	    rtn = pc.getThreadScope(key, _null);
 	    if (rtn != _null) {
-		if (debug && checkArguments) debugCascadedAccess(pc, "thread", key);
+//		if (debug && checkArguments) debugCascadedAccess(pc, "thread", key);
 		return rtn;
 	    }
 	}
