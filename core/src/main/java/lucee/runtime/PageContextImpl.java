@@ -330,6 +330,7 @@ public final class PageContextImpl extends PageContext {
     private List<PageContext> children = null;
     private List<Statement> lazyStats;
     private boolean fdEnabled;
+    private boolean startTimeoutMonitoring=false;
     private ExecutionLog execLog;
     private boolean useSpecialMappings;
 
@@ -504,13 +505,15 @@ public final class PageContextImpl extends PageContext {
 
 	undefined.initialize(this);
 	timeoutStacktrace = null;
-//	if(urlForm.containsKey(_lucee_debug)){
-//		this.config.setDebug(0);
-//	}else{
-//		this.config.setDebug(1); // disable debug
-//	}
 	return this;
     }
+
+    public void allowRequestTimeout(boolean value){
+		startTimeoutMonitoring=value;
+	}
+	public boolean allowRequestTimeout(){
+		return startTimeoutMonitoring;
+	}
 
     @Override
     public void release() {
@@ -3093,9 +3096,7 @@ public final class PageContextImpl extends PageContext {
     }
 
     @Override
-    public long getStartTime() {
-	return startTime;
-    }
+    public long getStartTime() { return startTime; }
 
     @Override
     public Thread getThread() {
@@ -3696,6 +3697,7 @@ public final class PageContextImpl extends PageContext {
 		other.applicationContext = applicationContext;
 		//other.thread = Thread.currentThread();
 		other.startTime = System.currentTimeMillis();
+		other.startTimeoutMonitoring=startTimeoutMonitoring;
 
 		// path
 		other.base = base;

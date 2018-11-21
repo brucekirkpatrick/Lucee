@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import lucee.runtime.PageContextImpl;
+import lucee.runtime.engine.CFMLEngineImpl;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -116,6 +118,7 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 	}
 	super.initialize(pc);
 
+
 	String contentType = pc.getHttpServletRequest().getContentType();
 
 	if (contentType == null) return;
@@ -133,6 +136,8 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 	    initializeUrlEncodedOrTextPlain(pc, '&', isScriptProtected());
 	}
 	setFieldNames();
+
+	((PageContextImpl) pc).allowRequestTimeout(true);
     }
 
     @Override

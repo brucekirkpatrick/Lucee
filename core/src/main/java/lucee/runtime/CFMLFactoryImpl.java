@@ -255,6 +255,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    while (it.hasNext()) {
 		e = it.next();
 		pc = e.getValue();
+		if(!pc.allowRequestTimeout()) continue;
 
 		long timeout = pc.getRequestTimeout();
 		if (pc.getStartTime() + timeout < System.currentTimeMillis() && Long.MAX_VALUE != timeout) {
