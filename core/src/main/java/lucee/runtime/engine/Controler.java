@@ -72,9 +72,10 @@ public final class Controler extends Thread {
     private ControllerState state;
 
     /**
+     * @param configServer
      * @param contextes
      * @param interval
-     * @param run
+	 * @param state
      */
     public Controler(ConfigServer configServer, Map contextes, int interval, ControllerState state) {
 	this.contextes = contextes;
@@ -291,12 +292,6 @@ public final class Controler extends Thread {
 		}
 		ThreadLocalConfig.register(config);
 
-		try {
-		    ((SchedulerImpl) ((ConfigWebImpl) config).getScheduler()).startIfNecessary();
-		}
-		catch (Exception e) {
-		    SystemOut.printDate(e);
-		}
 
 		// double check templates
 		try {

@@ -432,10 +432,6 @@ public interface Config {
 
     public String getSearchEngineDirectory();
 
-    /**
-     * @return return the Scheduler
-     */
-    public Scheduler getScheduler();
 
     /**
      * @return return all defined Mail Servers

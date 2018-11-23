@@ -494,14 +494,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded mail");
 	loadSearch(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded search");
-	loadScheduler(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded scheduled tasks");
 	loadDebug(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded debug");
 	loadError(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded error");
-	loadCFX(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded cfx");
 	loadComponent(cs, config, doc, mode, log);
 	if (LOG) SystemOut.printDate("loaded component");
 	loadUpdate(cs, config, doc, log);
@@ -4033,28 +4029,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	}
     }
 
-    /**
-     * @param configServer
-     * @param config
-     * @param doc
-     * @throws IOException
-     * @throws PageException
-     */
-    private static void loadScheduler(ConfigServer configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    if (config instanceof ConfigServer) return;
-
-	    Resource configDir = config.getConfigDir();
-	    Element scheduler = getChildByName(doc.getDocumentElement(), "scheduler");
-
-	    // set scheduler
-	    Resource file = ConfigWebUtil.getFile(config.getRootDirectory(), scheduler.getAttribute("directory"), "scheduler", configDir, FileUtil.TYPE_DIR, config);
-	    config.setScheduler(configServer.getCFMLEngine(), file);
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
 
     /**
      * @param configServer

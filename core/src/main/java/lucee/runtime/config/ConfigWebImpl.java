@@ -131,7 +131,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
      * @param config
      * @param configDir
      * @param configFile
-     * @param cloneServer
      */
     ConfigWebImpl(CFMLFactoryImpl factory, ConfigServerImpl configServer, ServletConfig config, Resource configDir, Resource configFile) {
 	super(configDir, configFile);
