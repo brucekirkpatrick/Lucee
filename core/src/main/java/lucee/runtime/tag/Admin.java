@@ -81,8 +81,6 @@ import lucee.runtime.PageSource;
 import lucee.runtime.PageSourceImpl;
 import lucee.runtime.cache.CacheConnection;
 import lucee.runtime.cache.CacheUtil;
-import lucee.runtime.cfx.customtag.CFXTagClass;
-import lucee.runtime.cfx.customtag.JavaCFXTagClass;
 import lucee.runtime.config.AdminSync;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
@@ -371,62 +369,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	return TYPE_WEB;
     }
 
-    private void doTagSchedule() throws PageException {
-	Schedule schedule = new Schedule();
-	try {
-
-	    schedule.setPageContext(pageContext);
-	    schedule.setAction(getString("admin", action, "scheduleAction"));
-	    schedule.setTask(getString("task", null));
-	    schedule.setHidden(getBoolV("hidden", false));
-	    schedule.setReadonly(getBoolV("readonly", false));
-	    schedule.setOperation(getString("operation", null));
-	    schedule.setFile(getString("file", null));
-	    schedule.setPath(getString("path", null));
-	    schedule.setStartdate(getObject("startDate", null));
-	    schedule.setStarttime(getObject("startTime", null));
-	    schedule.setUrl(getString("url", null));
-	    schedule.setPublish(getBoolV("publish", false));
-	    schedule.setEnddate(getObject("endDate", null));
-	    schedule.setEndtime(getObject("endTime", null));
-	    schedule.setInterval(getString("interval", null));
-	    schedule.setRequesttimeout(new Double(getDouble("requestTimeOut", -1)));
-	    schedule.setUsername(getString("username", null));
-	    schedule.setPassword(getString("schedulePassword", null));
-	    schedule.setProxyserver(getString("proxyServer", null));
-	    schedule.setProxyuser(getString("proxyuser", null));
-	    schedule.setProxypassword(getString("proxyPassword", null));
-	    schedule.setResolveurl(getBoolV("resolveURL", false));
-	    schedule.setPort(new Double(getDouble("port", -1)));
-	    schedule.setProxyport(new Double(getDouble("proxyPort", 80)));
-
-	    String rtn = getString("returnvariable", null);
-	    if (StringUtil.isEmpty(rtn)) rtn = getString("result", "cfschedule");
-	    schedule.setResult(rtn);
-
-	    schedule.doStartTag();
-	}
-	finally {
-	    schedule.release();
-	    adminSync.broadcast(attributes, config);
-	    adminSync.broadcast(attributes, config);
-	}
-    }
-
-    /*
-     * private void doTagSearch() throws PageException { Search search=new Search(); try {
-     * 
-     * search.setPageContext(pageContext);
-     * 
-     * search.setName(getString("admin",action,"name"));
-     * search.setCollection(getString("admin",action,"collection"));
-     * search.setType(getString("type",null)); search.setMaxrows(getDouble("maxRows",-1));
-     * search.setStartrow(getDouble("startRow",1)); search.setCategory(getString("category",null));
-     * search.setCategorytree(getString("categoryTree",null));
-     * search.setStatus(getString("status",null)); search.setSuggestions(getString("suggestions",null));
-     * 
-     * search.doStartTag(); } finally { search.release(); } }
-     */
 
     private void doTagIndex() throws PageException {
 	Index index = new Index();
@@ -496,11 +438,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	    return;
 	}
 
-	// schedule
-	if (action.equals("schedule")) {
-	    doTagSchedule();
-	    return;
-	}
 	// search
 	if (action.equals("collection")) {
 	    doTagCollection();
@@ -661,8 +598,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 
 	else if (check("getCustomTagMappings", ACCESS_FREE) && check2(ACCESS_READ)) doGetCustomTagMappings();
 	else if (check("getComponentMappings", ACCESS_FREE) && check2(ACCESS_READ)) doGetComponentMappings();
-	else if (check("getCfxTags", ACCESS_FREE) && check2(ACCESS_READ)) doGetCFXTags();
-	else if (check("getJavaCfxTags", ACCESS_FREE) && check2(ACCESS_READ)) doGetJavaCFXTags();
 	else if (check("getDebug", ACCESS_FREE) && check2(ACCESS_READ)) doGetDebug();
 	else if (check("getSecurity", ACCESS_FREE) && check2(ACCESS_READ)) doGetSecurity();
 	else if (check("getDebugEntry", ACCESS_FREE)) doGetDebugEntry();
@@ -672,9 +607,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	else if (check("verifyCacheConnection", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyCacheConnection();
 	else if (check("verifyMailServer", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyMailServer();
 	else if (check("verifyExtensionProvider", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyExtensionProvider();
-	else if (check("verifyJavaCFX", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyJavaCFX();
-	else if (check("verifyCFX", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyCFX();
-
 	else if (check("resetId", ACCESS_FREE) && check2(ACCESS_WRITE)) doResetId();
 	else if (check("updateLoginSettings", ACCESS_NOT_WHEN_WEB) && check2(ACCESS_WRITE)) doUpdateLoginSettings();
 	else if (check("updateLogSettings", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateLogSettings();
@@ -711,8 +643,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	else if (check("updatecustomtag", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateCustomTag();
 	else if (check("updateComponentMapping", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateComponentMapping();
 	else if (check("stopThread", ACCESS_NOT_WHEN_WEB) && check2(ACCESS_WRITE)) doStopThread();
-
-	else if (check("updatejavacfx", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateJavaCFX();
 	else if (check("updatedebug", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateDebug();
 	else if (check("updatesecurity", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateSecurity();
 	else if (check("updatedebugentry", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateDebugEntry();
@@ -758,7 +688,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	else if (check("removemapping", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveMapping();
 	else if (check("removecustomtag", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveCustomTag();
 	else if (check("removecomponentmapping", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveComponentMapping();
-	else if (check("removecfx", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveCFX();
 	else if (check("removeExtension", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveExtension();
 	else if (check("removeExtensionProvider", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveExtensionProvider();
 	else if (check("removeRHExtensionProvider", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveRHExtensionProvider();
@@ -1556,7 +1485,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
     private void doUpdateDefaultSecurityManager() throws PageException {
 
 	admin.updateDefaultSecurity(fb("setting"), SecurityManagerImpl.toShortAccessValue(getString("admin", action, "file")), getFileAcces(), fb("direct_java_access"), fb("mail"),
-		SecurityManagerImpl.toShortAccessValue(getString("admin", action, "datasource")), fb("mapping"), fb("remote"), fb("custom_tag"), fb("cfx_setting"), fb("cfx_usage"),
+		SecurityManagerImpl.toShortAccessValue(getString("admin", action, "datasource")), fb("mapping"), fb("remote"), fb("custom_tag"),
 		fb("debugging"), fb("search"), fb("scheduled_task"), fb("tag_execute"), fb("tag_import"), fb("tag_object"), fb("tag_registry"), fb("cache"), fb("gateway"),
 		fb("orm"), fb2("access_read"), fb2("access_write"));
 	store();
@@ -1761,42 +1690,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	adminSync.broadcast(attributes, config);
     }
 
-    /**
-     * @throws PageException
-     * 
-     */
-    private void doUpdateJavaCFX() throws PageException {
-	String name = getString("admin", action, "name");
-	if (StringUtil.startsWithIgnoreCase(name, "cfx_")) name = name.substring(4);
-	lucee.runtime.db.ClassDefinition cd = new ClassDefinitionImpl(getString("admin", action, "class"), getString("bundleName", null), getString("bundleVersion", null),
-		config.getIdentification());
-	admin.updateJavaCFX(name, cd);
-	store();
-	adminSync.broadcast(attributes, config);
-    }
-
-    private void doVerifyJavaCFX() throws PageException {
-	String name = getString("admin", action, "name");
-	ClassDefinition cd = new ClassDefinitionImpl(getString("admin", action, "class"), getString("bundleName", null), getString("bundleVersion", null),
-		config.getIdentification());
-	admin.verifyJavaCFX(name, cd);
-    }
-
-    private void doVerifyCFX() throws PageException {
-	String name = getString("admin", action, "name");
-	if (StringUtil.startsWithIgnoreCase(name, "cfx_")) name = name.substring(4);
-	admin.verifyCFX(name);
-    }
-
-    /**
-     * @throws PageException
-     * 
-     */
-    private void doRemoveCFX() throws PageException {
-	admin.removeCFX(getString("admin", action, "name"));
-	store();
-	adminSync.broadcast(attributes, config);
-    }
 
     private void doRemoveExtension() throws PageException {
 	admin.removeExtension(getString("admin", action, "provider"), getString("admin", action, "id"));
@@ -1804,69 +1697,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	// adminSync.broadcast(attributes, config);
     }
 
-    /**
-     * @throws PageException
-     * 
-     */
-    private void doGetJavaCFXTags() throws PageException {
-	Map map = config.getCFXTagPool().getClasses();
-	lucee.runtime.type.Query qry = new QueryImpl(new Collection.Key[] { KeyConstants._displayname, KeyConstants._sourcename, KeyConstants._readonly, KeyConstants._name,
-		KeyConstants._class, KeyConstants._bundleName, KeyConstants._bundleVersion, KeyConstants._isvalid }, 0, "query");
-	Iterator it = map.keySet().iterator();
 
-	int row = 0;
-	while (it.hasNext()) {
-	    CFXTagClass tag = (CFXTagClass) map.get(it.next());
-	    if (tag instanceof JavaCFXTagClass) {
-		row++;
-		qry.addRow(1);
-		JavaCFXTagClass jtag = (JavaCFXTagClass) tag;
-		qry.setAt(KeyConstants._displayname, row, tag.getDisplayType());
-		qry.setAt(KeyConstants._sourcename, row, tag.getSourceName());
-		qry.setAt(KeyConstants._readonly, row, Caster.toBoolean(tag.isReadOnly()));
-		qry.setAt(KeyConstants._isvalid, row, Caster.toBoolean(tag.isValid()));
-		qry.setAt(KeyConstants._name, row, jtag.getName());
-		qry.setAt(KeyConstants._class, row, jtag.getClassDefinition().getClassName());
-		qry.setAt(KeyConstants._bundleName, row, jtag.getClassDefinition().getName());
-		qry.setAt(KeyConstants._bundleVersion, row, jtag.getClassDefinition().getVersionAsString());
-	    }
-
-	}
-	pageContext.setVariable(getString("admin", action, "returnVariable"), qry);
-    }
-
-    /**
-     * @throws PageException
-     * 
-     */
-    private void doGetCFXTags() throws PageException {
-	Map map = config.getCFXTagPool().getClasses();
-	lucee.runtime.type.Query qry = new QueryImpl(
-		new String[] { "displayname", "sourcename", "readonly", "isvalid", "name", "procedure_class", "procedure_bundleName", "procedure_bundleVersion", "keep_alive" },
-		map.size(), "query");
-	Iterator it = map.keySet().iterator();
-
-	int row = 0;
-	while (it.hasNext()) {
-	    row++;
-	    CFXTagClass tag = (CFXTagClass) map.get(it.next());
-
-	    qry.setAt("displayname", row, tag.getDisplayType());
-	    qry.setAt("sourcename", row, tag.getSourceName());
-	    qry.setAt("readonly", row, Caster.toBoolean(tag.isReadOnly()));
-	    qry.setAt("isvalid", row, Caster.toBoolean(tag.isValid()));
-
-	    if (tag instanceof JavaCFXTagClass) {
-		JavaCFXTagClass jtag = (JavaCFXTagClass) tag;
-		qry.setAt(KeyConstants._name, row, jtag.getName());
-		qry.setAt("procedure_class", row, jtag.getClassDefinition().getClassName());
-		qry.setAt("procedure_bundleName", row, jtag.getClassDefinition().getName());
-		qry.setAt("procedure_bundleVersion", row, jtag.getClassDefinition().getVersionAsString());
-	    }
-
-	}
-	pageContext.setVariable(getString("admin", action, "returnVariable"), qry);
-    }
 
     /**
      * @throws PageException

@@ -846,23 +846,6 @@ public final class CFMLTransformer {
 	    try {
 		TagLib lib = tagLibTag.getEvaluator().execute(data.config, tag, tagLibTag, data.flibs, data);
 		if (lib != null) {
-		    // set
-		    for (int i = 0; i < data.tlibs[TAG_LIB_PAGE].length; i++) {
-			if (data.tlibs[TAG_LIB_PAGE][i].getNameSpaceAndSeparator().equalsIgnoreCase(lib.getNameSpaceAndSeparator())) {
-			    boolean extIsCustom = data.tlibs[TAG_LIB_PAGE][i] instanceof CustomTagLib;
-			    boolean newIsCustom = lib instanceof CustomTagLib;
-			    // TagLib + CustomTagLib (visa/versa)
-			    if (extIsCustom) {
-				((CustomTagLib) data.tlibs[TAG_LIB_PAGE][i]).append(lib);
-				return true;
-			    }
-			    else if (newIsCustom) {
-				((CustomTagLib) lib).append(data.tlibs[TAG_LIB_PAGE][i]);
-				data.tlibs[TAG_LIB_PAGE][i] = lib;
-				return true;
-			    }
-			}
-		    }
 		    // TODO make sure longer namespace ar checked firts to support subsets, same for core libs
 		    // insert
 		    TagLib[] newTlibs = new TagLib[data.tlibs[TAG_LIB_PAGE].length + 1];

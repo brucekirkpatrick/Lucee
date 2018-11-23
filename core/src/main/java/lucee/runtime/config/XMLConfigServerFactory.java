@@ -62,12 +62,11 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws PageException
      * @throws IOException
-     * @throws TagLibException
      * @throws FunctionLibException
      * @throws BundleException
      */
     public static ConfigServerImpl newInstance(CFMLEngineImpl engine, Map<String, CFMLFactory> initContextes, Map<String, CFMLFactory> contextes, Resource configDir)
-	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
+	    throws SAXException, ClassException, PageException, IOException, FunctionLibException, BundleException {
 
 	boolean isCLI = SystemUtil.isCLICall();
 	if (isCLI) {
@@ -128,12 +127,11 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws PageException
      * @throws IOException
-     * @throws TagLibException
      * @throws FunctionLibException
      * @throws BundleException
      */
     public static void reloadInstance(CFMLEngine engine, ConfigServerImpl configServer)
-	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
+	    throws SAXException, ClassException, PageException, IOException, FunctionLibException, BundleException {
 	Resource configFile = configServer.getConfigFile();
 
 	if (configFile == null) return;
@@ -156,12 +154,11 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws IOException
      * @throws FunctionLibException
-     * @throws TagLibException
      * @throws PageException
      * @throws BundleException
      */
     static void load(ConfigServerImpl configServer, Document doc, boolean isReload, boolean doNew)
-	    throws ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
+	    throws ClassException, PageException, IOException, FunctionLibException, BundleException {
 	ConfigImpl.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
 	XMLConfigWebFactory.load(null, configServer, doc, isReload, doNew);
 

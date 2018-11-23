@@ -49,7 +49,6 @@ import lucee.runtime.config.XMLConfigAdmin;
 import lucee.runtime.lock.LockManagerImpl;
 import lucee.runtime.net.smtp.SMTPConnectionPool;
 import lucee.runtime.op.Caster;
-import lucee.runtime.schedule.SchedulerImpl;
 import lucee.runtime.type.scope.ScopeContext;
 import lucee.runtime.type.scope.storage.StorageScopeFile;
 import lucee.runtime.type.util.ArrayUtil;

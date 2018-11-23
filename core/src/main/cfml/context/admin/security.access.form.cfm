@@ -128,15 +128,7 @@
 						<div class="comment">#stText.Security.CustomTagDescription#</div>
 					</td>
 				</tr>
-				
-				<!--- CFX Setting --->
-				<tr>
-					<th scope="row">#stText.Security.CFX#</th>
-					<td class="tblContent#def('cfx_setting')#">
-						<input type="checkbox" class="checkbox" name="#prefix#CFXSetting" value="yes" <cfif access.cfx_setting>checked</cfif>>
-						<div class="comment">#stText.Security.CFXDescription#</div>
-					</td>
-				</tr>
+
 				
 				<!--- Cache --->
 				<tr>
@@ -262,15 +254,7 @@
 					</td>
 				</tr>
 				
-				
-				<!--- CFX Usage 
-				<tr>
-					<th scope="row">CFX Usage</th>
-					<td>
-						<input type="checkbox" class="checkbox" name="#prefix#CFXUsage" value="yes" <cfif access.cfx_usage>checked</cfif>>
-						<span class="comment">Enable or disable the CFX functionality for the instaces</span>
-					</td>
-				</tr>--->
+
 			</tbody>
 		</table>
 		
@@ -322,14 +306,6 @@
 					<td class="tblContent#def('tag_registry')#">
 						<input type="checkbox" class="checkbox" name="#prefix#TagRegistry" value="yes" <cfif access.tag_registry>checked</cfif>>
 						<div class="comment">#stText.Security.TagRegistryDescription#</div>
-					</td>
-				</tr>
-						<!--- CFX --->
-				<tr>
-					<th scope="row">#stText.Security.CFXTags#</th>
-					<td class="tblContent#def('cfx_usage')#">
-						<input type="checkbox" class="checkbox" name="#prefix#CFXUsage" value="yes" <cfif access.cfx_usage>checked</cfif>>
-						<div class="comment">#stText.Security.CFXTagsDescription#</div>
 					</td>
 				</tr>
 				<cfif type NEQ "special">

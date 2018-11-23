@@ -9,41 +9,6 @@
 	<description>All build in Functions of Lucee</description>
 	
 
-	<!-- AjaxLink -->
-	<function>
-		<name>AjaxLink</name>
-		<class>lucee.runtime.functions.displayFormatting.AjaxLink</class>
-		<status>unimplemented</status>
-		<keywords>ajax</keywords>
-		<description>Causes an HTML href attribute to display link results in the current Ajax container.</description>
-		<argument>
-			<name>url</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>The URL of the link.</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- AjaxOnLoad -->
-	<function>
-		<name>AjaxOnLoad</name>
-		<class>lucee.runtime.functions.displayFormatting.AjaxOnLoad</class>
-		<keywords>ajax</keywords>
-		<status>unimplemented</status>
-		<description>Causes the specified JavaScript function to run when the page loads.</description>
-		<argument>
-			<name>functionName</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>The name of the function to run when the page loads. The specified function does not take a parameter.</description>
-    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
 	
 	<!-- array -->
 	<function>
@@ -112,65 +77,7 @@
 			<type>array</type>
 		</return>
 	</function>
-	
-	<!-- beat -->
-	<function>
-		<name>beat</name>
-		<class>lucee.runtime.functions.dateTime.Beat</class>
-		<description>
-		Outputs the current swatch time.
-		It is a new system of time developed by Swatch, the Swiss watch maker.  
-		It involves setting the current day into 1000 "beats" instead of 24 hours.  
-		Internet Time eliminates the need for geographical time zones, perfect for the internet.
-		</description>
-		<argument>
-			<name>time</name>
-			<type>any</type>
-			<required>No</required>
-			<description>
-			the local time to geat beat time from
-			</description>
-		</argument>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
-	
-	<!-- CacheSetProperties -->
-	<function>
-		<name>CacheSetProperties</name>
-		<class>lucee.runtime.functions.cache.CacheSetProperties</class>
-		<description>
-		This function is not supported by Lucee, because we see this as a security risk, you can modifie cache configuration without a password,
-you can use tag cfadmin instead. we will add support for this function in a future release, but then you can enable,disable this  function in admin for every single cache instance.</description>
-		<argument>
-			<name>propsSruct</name>
-			<alias>properties,props</alias>
-			<type>struct</type>
-			<required>yes</required>
-			<description>A structure specifying the cache properties plus identifying information</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- componentInfo -->
-	<function>
-		<name>componentInfo</name>
-		<class>lucee.runtime.functions.component.ComponentInfo</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use function getMetadata instead.</description>
-		<argument>
-			<name>component</name>
-			<type>component</type>
-			<required>Yes</required>
-		<description>component to return info for it</description>
-    </argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
 	
 	<!-- componentCacheClear -->
 	<function>
@@ -195,15 +102,11 @@ you can use tag cfadmin instead. we will add support for this function in a futu
 	<!-- createObject -->
 	<function>
 		<name>createObject</name>
-		<!-- <status>deprecated</status> -->
 		<class>lucee.runtime.functions.other.CreateObject</class>
 		<modified>5.0.0.0</modified>
 		<description>
 		The CreateObject function takes different arguments depending on the value of the first argument:
-        CreateObject('com', class, context, serverName)
-        CreateObject('component', component-name)
-        CreateObject('java', class, ...)
-        CreateObject('webservice', urltowsdl, [, portname])</description>
+        CreateObject('component', component-name)</description>
 		<argument>
 			<name>type</name>
 			<alias>componentType</alias>
@@ -228,92 +131,11 @@ the usage of this argument depend on type defined with argument "type":
 - com: Component ProgID for the object to invoke.
 		</description>
     </argument>
-		<argument>
-			<name>context</name>
-			<alias>bundleName,name,webservice,Assembly,WSPortName,thirdarg</alias>
-			<type>object</type>
-			<required>No</required>
-		<description>
-the usage of this argument depend on type defined with argument "type":
-- com: not used (ignored)
-- java: "classpath" or "bundleName" used to load the defined class, 
-this can be a list of multiple paths (directories containing class files or jar files) as string list or array or a name of an OSGi bundle (Lucee can download OSGi bundles automatically if necessary)
-- webservice: a struct containing the following optional keys (username,password,proxyServer,proxyPort,proxyUser,proxyPassword) 
-- component: not used (ignored)
-</description>
-    </argument>
-		<argument>
-			<name>delimiterOrVersion</name>
-			<alias>delimiter,version,bundleVersion</alias>
-			<type>object</type>
-			<required>No</required>
-		<description>
-the usage of this argument depend on type defined with argument "type":
-- java: delimiter used for the classpath (default comma) or bundle version when the previous argument was a bundle name
-- webservice: not used (ignored)
-- component: not used (ignored)
-- com: not used (ignored)</description>
-    </argument>
 		<return>
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- createODBCDate -->
-	<function>
-		<name>createODBCDate</name>
-		<class>lucee.runtime.functions.dateTime.CreateODBCDate</class>
-		<status>deprecated</status>
-		<description>Creates an ODBC date object.</description>
-		<argument>
-			<name>date</name>
-			<type>datetime</type>
-			<required>Yes</required>
-			<description>date object</description>
-    	</argument>
-		<argument>
-			<name>timezone</name>
-			<type>timezone</type>
-			<required>no</required>
-			<description>timezone to use</description>
-    	</argument>
-		<return>
-			<type>datetime</type>
-		</return>
-	</function>
-	
-	<!-- createODBCDateTime -->
-	<function>
-		<name>createODBCDateTime</name>
-		<class>lucee.runtime.functions.dateTime.CreateODBCDateTime</class>
-		<status>deprecated</status>
-		<description>Creates an ODBC date-time object.</description>
-		<argument>
-			<name>date</name>
-			<type>datetime</type>
-			<required>Yes</required>
-		<description>date object</description>
-    </argument>
-		<return>
-			<type>datetime</type>
-		</return>
-	</function>
-	
-	<!-- createODBCTime -->
-	<function>
-		<name>createODBCTime</name>
-		<class>lucee.runtime.functions.dateTime.CreateODBCTime</class>
-		<description>Creates an ODBC time object.</description>
-		<argument>
-			<name>date</name>
-			<type>datetime</type>
-			<required>Yes</required>
-		<description>date object</description>
-    </argument>
-		<return>
-			<type>datetime</type>
-		</return>
-	</function>
+
 	
 	<!-- dateFormat -->
 	<function>
@@ -623,25 +445,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>number</type>
 		</return>
 	</function>
-	
-	<!-- dE -->
-	<function>
-		<name>dE</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.DE</class>
-		<description>Postpones evaluation of a string as an expression, when it is
-        passed as a parameter to the IIf or Evaluate functions. Escapes
-        any double quotation marks in the parameter and wraps the
-        result in double quotation marks.</description>
-		<argument>
-			<name>string</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>String to evaluate, after delay</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
+
 	
 	<!-- decimalFormat -->
 	<function>
@@ -657,24 +461,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
     </argument>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- decrementValue -->
-	<function>
-		<name>decrementValue</name>
-		<member-name>decrementValue</member-name>
-		<class>lucee.runtime.functions.math.DecrementValue</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use instead the -- operator;Decrements the current number by one</description>
-		<argument>
-			<name>number</name>
-			<type>number</type>
-			<required>Yes</required>
-		<description>Number to decrement</description>
-    </argument>
-		<return>
-			<type>number</type>
 		</return>
 	</function>
 
@@ -739,35 +525,8 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- GetApplicationMetadata -->
-	<function>
-		<name>GetApplicationMetadata</name>
-		<class>lucee.runtime.functions.system.GetApplicationMetadata</class>
-		<description>return all data from this scope, when using a application.cfc or all setting defined in tag cfapplication</description>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	<!-- GetPrinterList -->
-	<function>
-		<name>GetPrinterList</name>
-		<class>lucee.runtime.functions.system.GetPrinterList</class>
-		<description>Gets a string list of available printers.</description>
-		<argument>
-			<name>delimiters</name>
-			<alias>delimiter</alias>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-			<description>Characters that separate list elements. The default value is comma.</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
+
+
 	<!-- GetUserRoles -->
 	<function>
 		<name>GetUserRoles</name>
@@ -777,107 +536,8 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- getK2ServerDocCount (Deprecated) -->
-	<function>
-		<name>getK2ServerDocCount</name>
-		<class>lucee.runtime.functions.other.GetK2ServerDocCount</class>
-		<status>deprecated</status>
-		<description>This function is deprecated. </description>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
-	
-	<!-- getK2ServerDocCountLimit (Deprecated) -->
-	<function>
-		<name>getK2ServerDocCountLimit</name>
-		<class>lucee.runtime.functions.other.GetK2ServerDocCountLimit</class>
-		<status>deprecated</status>
-		<description>This function is deprecated.</description>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
-	
-	<!-- hash40 -->
-	<function>
-		<name>hash40</name>
-		<class>lucee.runtime.functions.string.Hash40</class>
-		<description>This function only exists for backward compatibility to Lucee 4.0 or older version that has produced a incorrect result for non us-ascii characters,
-		Only use this function for backward compatibility.
-		
-		Converts a variable-length string to a 32-byte, hexadecimal
-        string, using the MD5 algorithm. (It is not possible to convert
-        the hash result back to the source string.)
-        32-byte, hexadecimal string</description>
-		<argument>
-			<name>input</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>String to hash.</description>
-    </argument>
-		<argument>
-			<name>algorithm</name>
-			<type>string</type>
-			<required>No</required>
-		<description>The algorithm to use to hash the string. Supported are the following algorithms:
-- CFMX_COMPAT: generating a hash string using classic CFML algorithm.
-- MD5: (default) Generates a 32-character, hexadecimal string, using the MD5 algorithm.
-- SHA: Generates a 28-character string using the Secure Hash Standard SHA-1 algorithm specified by Nation Institute of Standards and Technology (NIST) FIPS-180-2.
-- SHA-256: Generates a 44-character string using the SHA-256 algorithm specified by FIPS-180-2.
-- SHA-384: Generates a 64-character string using the SHA-384 algorithm specified by FIPS-180-2.
-- SHA-512: Generates an 88-character string using the SHA-1 algorithm specified by FIPS-180-2.</description>
-    </argument>
-		<argument>
-			<name>encoding</name>
-			<type>string</type>
-			<required>No</required>
-			<description>A string specifying the encoding to use when converting
-            the string to byte data used by the hash algorithm.</description>
-		</argument>
-		<argument>
-			<name>numIterations</name>
-			<type>number</type>
-			<required>No</required>
-			<description>number of iterations; default is 1.</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- iIf -->
-	<function>
-		<name>iIf</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.IIf</class>
-		<description>Evaluates a Boolean conditional dynamic expression. Depending
-        on whether the expression is true or false, dynamically
-        evaluates one of two string expressions and returns the result.</description>
-		<argument>
-			<name>condition</name>
-			<type>boolean</type>
-			<required>Yes</required>
-		<description>An expression that can be evaluated as a Boolean.</description>
-    </argument>
-		<argument>
-			<name>string_expression1</name>
-			<alias>expression1</alias>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Expression to evaluate and return if condition is true.</description>
-    </argument>
-		<argument>
-			<name>string_expression2</name>
-			<alias>expression2</alias>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Expression to evaluate and return if condition is false.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
+
+
 	
 	<!-- Invoke -->
 	<function>
@@ -933,23 +593,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 	</function>
 	
 
-	<!-- incrementValue -->
-	<function>
-		<name>incrementValue</name>
-		<member-name>incrementValue</member-name>
-		<class>lucee.runtime.functions.math.IncrementValue</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use instead the ++ operator;Increments the current number by one</description>
-		<argument>
-			<name>number</name>
-			<type>number</type>
-			<required>Yes</required>
-		<description>Number to increment</description>
-    </argument>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
 
 	<!-- isDate -->
 	<function>
@@ -969,39 +612,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>boolean</type>
 		</return>
 	</function>
-	
-	<!-- isK2ServerABroker (Deprecated) -->
-	<function>
-		<name>isK2ServerABroker</name>
-		<class>lucee.runtime.functions.decision.IsK2ServerABroker</class>
-		<status>hidden</status>
-		<description>This function is deprecated. </description>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	
-	<!-- isK2ServerDocCountExceeded  (Deprecated)-->
-	<function>
-		<name>isK2ServerDocCountExceeded</name>
-		<class>lucee.runtime.functions.decision.IsK2ServerDocCountExceeded</class>
-			<status>hidden</status>
-		<description>This function is deprecated. </description>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	
-	<!-- isK2ServerOnline (Deprecated) -->
-	<function>
-		<name>isK2ServerOnline</name>
-		<class>lucee.runtime.functions.decision.IsK2ServerOnline</class>
-			<status>hidden</status>
-		<description>This function is deprecated.</description>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
+
 	
 	<!-- isNull -->
 	<function>
@@ -1182,42 +793,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- lSEuroCurrencyFormat -->
-	<function>
-		<name>lSEuroCurrencyFormat</name>
-		<class>lucee.runtime.functions.international.LSEuroCurrencyFormat</class>
-		<status>deprecated</status>
-		<keywords>currency,string,formatting</keywords>
-		<description>this function is just a alias for lsCurrencyFormat</description>
-		<argument>
-			<name>number</name>
-			<alias>currency_number</alias>
-			<type>object</type>
-			<required>Yes</required>
-			<description>Currency value</description>
-		</argument>
-		<argument>
-			<name>type</name>
-			<type>string</type>
-			<default>local</default>
-			<required>No</required>
-			<description>
-			one of the following:
-			- local (the currency format used in the locale. (default) )
-			- international (the international standard currency format of the locale)
-			- none (the currency format used in the locale; no currency symbol)</description>
-		</argument>
-		<argument>
-			<name>locale</name>
-			<type>locale</type>
-			<required>No</required>
-			<description>Locale to use instead of the locale of the page when processing the function</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
+
 	
 	<!-- lSIsCurrency -->
 	<function>
@@ -1407,31 +983,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>datetime</type>
 		</return>
 	</function>
-	
-	<!-- lSParseEuroCurrency -->
-	<function>
-		<name>lSParseEuroCurrency</name>
-		<class>lucee.runtime.functions.international.LSParseEuroCurrency</class>
-		<status>deprecated</status>
-		<keywords>currency,string,parsing</keywords>
-		<description>use function lsParseCurrency instead</description>
-		<argument>
-			<name>number</name>
-			<alias>string,currency_number,currency</alias>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Locale-specific string</description>
-    </argument>
-		<argument>
-			<name>locale</name>
-			<type>locale</type>
-			<required>No</required>
-		<description>Locale to use instead of the locale of the page when processing the function</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
+
 	
 	<!-- lSParseNumber -->
 	<function>
@@ -1525,34 +1077,8 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- newLine -->
-	<function>
-		<name>newLine</name>
-		<class>lucee.runtime.functions.string.NewLine</class>
-		<description>returns a new line</description>
-		<argument>
-			<name>includeCROnWindows</name>
-			<type>boolean</type>
-			<required>No</required>
-			<default>true</default>
-			<description>On windows computer include Carriage Return.</description>
-	    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- nowServer -->
-	<function>
-		<name>nowServer</name>
-		<class>lucee.runtime.functions.dateTime.NowServer</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, returns the current time on the server independent on lucee timezone definition</description>
-		<return>
-			<type>datetime</type>
-		</return>
-	</function>
+
+
 
 	<!-- numberFormat -->
 	<function>
@@ -1720,36 +1246,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- QueryConvertForGrid -->
-	<function>
-		<name>QueryConvertForGrid</name>
-		<class>lucee.runtime.functions.query.QueryConvertForGrid</class>
-		<status>deprecated</status>
-		<keywords>query</keywords>
-		<description>Use instead the function QuerySlice. Converts query data to a structure that contains a paged subset of the query.</description>
-		<argument>
-			<name>query</name>
-			<type>query</type>
-			<required>Yes</required>
-		<description>Name of the query whose data is returned.</description>
-    </argument>	
-		<argument>
-			<name>page</name>
-			<type>number</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>		
-		<argument>
-			<name>pageSize</name>
-			<type>number</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>	
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
 	
 	<!-- rand -->
 	<function>
@@ -1817,32 +1314,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		</return>
 	</function>
 
-	<!-- spanIncluding -->
-	<function>
-		<name>spanIncluding</name>
-		<class>lucee.runtime.functions.string.SpanIncluding</class>
-		<member-name>spanIncluding</member-name>
-		<keywords>string</keywords>
-		<description>Gets characters from a string, from the beginning to a
-        character that is not in a specified set of characters. The
-        search is case-sensitive.</description>
-		<argument>
-			<name>string</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A string or a variable that contains the search string.</description>
-    </argument>
-		<argument>
-			<name>set</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A string or a variable that contains a set of characters.
-            Must contain one or more characters</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
 	
 	<!-- struct -->
 	<function>
@@ -1982,100 +1453,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- valueArray -->
-	<function>
-		<name>valueArray</name>
-		<class>lucee.runtime.functions.query.ValueArray</class>
-		<tte-class>lucee.transformer.cfml.evaluator.func.impl.ValueArray</tte-class>
-		<status>deprecated</status>
-		<keywords>query</keywords>
-		<description>Returns a array of all the values, for a given column within the query.
-		this function is deprecated, use instead the function queryColumnData</description>
-		<argument>
-			<name>query_column</name>
-			<type>queryColumn</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>array</type>
-		</return>
-	</function>
-	
-	<!-- valueList -->
-	<function>
-		<name>valueList</name>
-		<class>lucee.runtime.functions.query.ValueList</class>
-		<!-- <tte-class>lucee.transformer.cfml.evaluator.func.impl.ValueList</tte-class> -->
-		<status>deprecated</status>
-		<keywords>query</keywords>
-		<description>Returns a list of all the values, for a given column within the query, delimited by the value given.
-		this function is deprecated, use instead the function queryColumnData</description>
-		<argument>
-			<name>query_column</name>
-			<alias>queryColumn</alias>
-			<type>queryColumn</type>
-			<required>Yes</required>
-		<description>Name of an executed query and column. Separate query name and column name with a period.</description>
-    </argument>
-		<argument>
-			<name>delimiter</name>
-			<alias>delimiters</alias>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-		<description>A delimiter character to separate column data items.
-            Default: comma (,).</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- valueList (Member) -->
-	<function>
-		<name>_valueList</name>
-		<class>lucee.runtime.functions.query.ValueListMember</class>
-		<member-name>valueList</member-name>
-		<status>hidden</status>
-		<keywords>query</keywords>
-		<description>Returns a list of all the values, for a given column within the query, delimited by the value given.</description>
-		<argument>
-			<name>query</name>
-			<type>query</type>
-			<required>Yes</required>
-			<description>query object do get data from</description>
-	    </argument>	
-		<argument>
-			<name>columnName</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>name of the column returned</description>
-	    </argument>	
-		<argument>
-			<name>delimiter</name>
-			<alias>delimiters</alias>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-		<description>A delimiter character to separate column data items.
-            Default: comma (,).</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- VerifyClient -->
-	<function>
-		<name>VerifyClient</name>
-		<class>lucee.runtime.functions.other.VerifyClient</class>
-		<description>Verifies whether request is from valid client or not</description>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	
 	
 	<!-- week -->
@@ -2181,345 +1559,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>boolean</type>
 		</return>
 	</function>
-	
-	<!-- yesNoFormat -->
-	<function>
-		<name>yesNoFormat</name>
-		<class>lucee.runtime.functions.displayFormatting.YesNoFormat</class>
-		<member-name>yesNoFormat</member-name>
-		<member-type>boolean</member-type>
-		<keywords>boolean,formatting</keywords>
-		<description>Yes, for a non-zero value; No, otherwise.</description>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>a value that can be casted to a boolean</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- trueFalseFormat -->
-	<function>
-		<name>trueFalseFormat</name>
-		<class>lucee.runtime.functions.displayFormatting.TrueFalseFormat</class>
-		<keywords>boolean,formatting</keywords>
-		<description>True, for a non-zero value; False, otherwise.</description>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>a value that can be casted to a boolean</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- booleanFormat -->
-	<function>
-		<name>booleanFormat</name>
-		<class>lucee.runtime.functions.displayFormatting.TrueFalseFormat</class>
-		<member-name>booleanFormat</member-name>
-        <member-type>boolean</member-type>
-        <keywords>boolean,formatting</keywords>
-		<description>True, for a non-zero value; False, otherwise.</description>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>a value that can be casted to a boolean</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-		<!-- unserializeJava 
-	deprecated replaced with evaluteJava
-	-->
-	<function>
-		<name>unserializeJava</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.UnserializeJava</class>
-		<status>deprecated</status>
-		<description>literal definition of a serialized Java Object by function serialize</description>
-		<argument>
-			<name>string</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- quotedValueList -->
-	<function>
-		<name>quotedValueList</name>
-		<class>lucee.runtime.functions.other.QuotedValueList</class>
-		<status>deprecated</status>
-		<description>Returns a quoted list of all the values, for a given column within the query, delimited by the value given.
-		this function is deprecated, use instead the function queryColumnData</description>
-		<argument>
-			<name>query_column</name>
-			<alias>queryColumn</alias>
-			<type>queryColumn</type>
-			<required>Yes</required>
-		<description>Name of an executed query and column. Separate query name and column name with a period.</description>
-    </argument>
-		<argument>
-			<name>delimiter</name>
-			<alias>delimiters</alias>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-		<description></description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- QueryGetRow -->
-    	<function>
-    		<name>QueryGetRow</name>
-    		<class>lucee.runtime.functions.query.QueryRowData</class>
-    		<member-name>getRow</member-name>
-    		<keywords>query</keywords>
-			<status>deprecated</status>
-			<description>this function is deprecated, use function QueryRowData instead.</description>
-	
-    		<argument>
-    			<name>query</name>
-    			<type>query</type>
-    			<required>Yes</required>
-    			<description>query object do get data from</description>
-    	    </argument>
-    		<argument>
-    			<name>rowNumber</name>
-    			<alias>rowNum</alias>
-    			<type>number</type>
-    			<required>Yes</required>
-    			<description>position of the row to be returned</description>
-    	    </argument>
-    		<return>
-    			<type>struct</type>
-    		</return>
-    	</function>
-    	
-    <!-- listTrim -->
-	<function>
-		<name>listTrim</name>
-		<class>lucee.runtime.functions.list.ListTrim</class>
-		<status>deprecated</status>
-		<keywords>list,string</keywords>
-		<description>this function is deprecated, use instead ListCompact</description>
-		<argument>
-			<name>list</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>a string list</description>
-		</argument>
-		<argument>
-			<name>delimiters</name>
-			<alias>delimiter</alias>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-			<description>Characters that separate list elements. The default value is comma.</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- getMetricData -->
-	<function>
-		<name>getMetricData</name>
-		<class>lucee.runtime.functions.system.GetMetricData</class>
-		<status>deprecated</status>
-		<description>Gets server performance metrics.</description>
-		<argument>
-			<name>monitor_name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>name of the monitor</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- Empty -->
-	<function>
-		<name>Empty</name>
-		<class>lucee.runtime.functions.system.Empty</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use instead "IsEmpty".
-		this function returns true if a value exists and is not "empty". 
-The following things are considered to be empty:
-- string:"" (an empty string)
-- number:return always false
-- boolean: return always false
-- array: [] (an empty array)
-- struct: {} (an empty struct)
-		 </description>
-		<argument>
-			<name>variable</name>
-			<alias>variableName,object</alias>
-			<type>variablestring</type>
-			<required>Yes</required>
-			<description></description>
-    	</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
 
-    <!-- CacheRegionExists -->
-    <function>
-        <name>CacheRegionExists</name>
-        <class>lucee.runtime.functions.cache.CacheRegionExists</class>
-        <status>deprecated</status>
-        <introduced>5.0.0.0</introduced>
-		<description>this function exists solely for the purpose of compatibility with other CFML Engines.  we strongly recommend not to use this function.
-        it is recommended to use the Administrator interface in order to add or remove cache connections.
-
-        this functions returns true if a cache connection with the passed cacheName exists.</description>
-        <argument>
-            <name>cacheName</name>
-            <alias>cache,region</alias>
-            <type>string</type>
-            <required>yes</required>
-            <description>the name of the cache connection to check (also known as Region in other CFML engines).</description>
-        </argument>
-        <argument>
-            <name>password</name>
-            <alias>webAdminPassword</alias>
-            <type>string</type>
-            <required>No</required>
-            <description>the password for the web administrator is required to interact with Cache Connections.
-            you can optionally set it for your Application in Application.cfc using the variable [this.webAdminPassword].</description>
-        </argument>
-        <return>
-            <type>boolean</type>
-        </return>
-    </function>
-
-    <!-- CacheRegionRemove -->
-    <function>
-        <name>CacheRegionRemove</name>
-        <class>lucee.runtime.functions.cache.CacheRegionRemove</class>
-        <status>deprecated</status>
-        <introduced>5.0.0.0</introduced>
-		<description>this function exists solely for the purpose of compatibility with other CFML Engines.  we strongly recommend not to use this function.
-        it is recommended to use the Administrator interface in order to remove a cache connection.</description>
-        <argument>
-            <name>cacheName</name>
-            <alias>cache,region</alias>
-            <type>string</type>
-            <required>yes</required>
-            <description>the name of the cache connection to remove (also known as Region in other CFML engines).</description>
-        </argument>
-        <argument>
-            <name>password</name>
-            <alias>webAdminPassword</alias>
-            <type>string</type>
-            <required>no</required>
-            <description>the password for the web administrator is required to interact with Cache Connections.
-            you can optionally set it for your Application in Application.cfc using the variable [this.webAdminPassword].</description>
-        </argument>
-        <return>
-            <type>void</type>
-        </return>
-    </function>
-
-    <!-- CacheRegionNew -->
-    <function>
-        <name>CacheRegionNew</name>
-        <class>lucee.runtime.functions.cache.CacheRegionNew</class>
-        <status>deprecated</status>
-        <introduced>5.0.0.0</introduced>
-		<description>this function exists solely for the purpose of compatibility with other CFML Engines.  we strongly recommend not to use this function.
-        to create a cache connection either declare it in your Application.cfc or create it via the in the Administrator interface.</description>
-        <argument>
-            <name>cacheName</name>
-            <alias>cache,region</alias>
-            <type>string</type>
-            <required>yes</required>
-            <description>the name of the cache connection to create (also known as Region in other CFML engines).</description>
-        </argument>
-        <argument>
-            <name>properties</name>
-            <alias>propsSruct,props</alias>
-            <type>any</type>
-            <required>no</required>
-            <description>a structure specifying the cache properties</description>
-        </argument>
-        <argument>
-            <name>throwOnError</name>
-            <type>any</type>
-            <required>no</required>
-            <description>specifies whether the function should throw an exception if a cache connection with that name already exists (default is true)</description>
-        </argument>
-        <argument>
-            <name>password</name>
-            <alias>webAdminPassword</alias>
-            <type>string</type>
-            <required>no</required>
-            <description>the password for the web administrator is required to interact with Cache Connections.
-            you can optionally set it for your Application in Application.cfc using the variable [this.webAdminPassword].</description>
-        </argument>
-        <return>
-            <type>void</type>
-        </return>
-    </function>
-	
-	<!-- CacheKeyExists -->
-	<function>
-		<name>CacheKeyExists</name>
-		<class>lucee.runtime.functions.cache.CacheKeyExists</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use instead CacheIdExists. Returns true/false whether the cache contains an element with the certain keyname.</description>
-		<argument>
-			<name>key</name>
-			<alias>name,id</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>key to check</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	
-	<!-- CacheRemoveAll -->
-	<function>
-		<name>CacheRemoveAll</name>
-		<class>lucee.runtime.functions.cache.CacheRemoveAll</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use instead cacheClear. Removes all elements from the cache</description>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
 	<!-- lSDateTimeFormat -->
 	<function>
 		<name>lSDateTimeFormat</name>

@@ -23,9 +23,7 @@ package lucee.runtime.functions.other;
 
 import java.io.IOException;
 
-import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
-import lucee.runtime.esapi.ESAPIUtil;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
@@ -43,21 +41,9 @@ public final class WriteOutput extends BIF {
 	return true;
     }
 
-    public static boolean call(PageContext pc, String string, String encodeFor) throws PageException {
-	try {
-	    if (!StringUtil.isEmpty(string)) pc.forceWrite(ESAPIUtil.esapiEncode(pc, encodeFor, string));
-	    else pc.forceWrite(string);
-	}
-	catch (IOException e) {
-	    throw Caster.toPageException(e);
-	}
-	return true;
-    }
-
     @Override
     public Object invoke(PageContext pc, Object[] args) throws PageException {
-	if (args.length == 2) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]));
 	if (args.length == 1) return call(pc, Caster.toString(args[0]));
-	throw new FunctionException(pc, "WriteOutput", 1, 2, args.length);
+	throw new FunctionException(pc, "WriteOutput", 1, 1, args.length);
     }
 }

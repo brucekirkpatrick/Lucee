@@ -75,7 +75,6 @@ import lucee.commons.lang.types.RefBooleanImpl;
 import lucee.commons.lock.KeyLock;
 import lucee.commons.lock.Lock;
 import lucee.commons.net.HTTPUtil;
-import lucee.intergral.fusiondebug.server.FDSignal;
 import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.cache.CacheConnection;
 import lucee.runtime.cache.CacheUtil;
@@ -107,7 +106,6 @@ import lucee.runtime.engine.ExecutionLog;
 import lucee.runtime.err.ErrorPage;
 import lucee.runtime.err.ErrorPageImpl;
 import lucee.runtime.err.ErrorPagePool;
-import lucee.runtime.esapi.ESAPIUtil;
 import lucee.runtime.exp.Abort;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.CasterException;
@@ -359,7 +357,6 @@ public final class PageContextImpl extends PageContext {
      * 
      * @param scopeContext
      * @param config Configuration of the CFML Container
-     * @param queryCache Query Cache Object
      * @param id identity of the pageContext
      * @param servlet
      */
@@ -708,16 +705,6 @@ public final class PageContextImpl extends PageContext {
 	}
     }
 
-    // FUTURE add both method to interface
-    public void writeEncodeFor(String value, String encodeType) throws IOException, PageException { // FUTURE keyword:encodefore add to interface
-	write(ESAPIUtil.esapiEncode(this, encodeType, value));
-    }
-
-    /*
-     * public void writeEncodeFor(String value, short encodeType) throws IOException, PageException { //
-     * FUTURE keyword:encodefore add to interface write(ESAPIUtil.esapiEncode(this,value, encodeType));
-     * }
-     */
 
     @Override
     public void flush() {
@@ -926,9 +913,6 @@ public final class PageContextImpl extends PageContext {
 		    if (Abort.isAbort(pe, Abort.SCOPE_REQUEST)) throw pe;
 		}
 		else {
-		    if (fdEnabled) {
-			FDSignal.signal(pe, false);
-		    }
 		    pe.addContext(currentPage.getPageSource(), -187, -187, null);// TODO was soll das 187
 		    throw pe;
 		}
@@ -2348,9 +2332,6 @@ public final class PageContextImpl extends PageContext {
 	    PageException pe = Caster.toPageException(t);
 	    if (!Abort.isSilentAbort(pe)) {
 		log(true);
-		if (fdEnabled) {
-		    FDSignal.signal(pe, false);
-		}
 		if (listener == null) {
 		    if (base == null) listener = config.getApplicationListener();
 		    else listener = ((MappingImpl) base.getMapping()).getApplicationListener();
@@ -2432,9 +2413,6 @@ public final class PageContextImpl extends PageContext {
 	    if (!Abort.isSilentAbort(pe)) {
 		this.pe = pe;
 		log(true);
-		if (fdEnabled) {
-		    FDSignal.signal(pe, false);
-		}
 		listener.onError(this, pe);
 	    }
 	    else log(false);
@@ -2458,7 +2436,6 @@ public final class PageContextImpl extends PageContext {
 		    ExceptionUtil.rethrowIfNecessary(e);
 		}
 	    }
-	    ps = null;
 	    if (_t != null) ExceptionUtil.rethrowIfNecessary(_t);
 	}
     }
@@ -2918,9 +2895,6 @@ public final class PageContextImpl extends PageContext {
     }
 
     public void _setCatch(PageException pe, boolean caught, boolean store, boolean signal) {
-	if (signal && fdEnabled) {
-	    FDSignal.signal(pe, caught);
-	}
 	exception = pe;
 	if (store) {
 	    Undefined u = undefinedScope();

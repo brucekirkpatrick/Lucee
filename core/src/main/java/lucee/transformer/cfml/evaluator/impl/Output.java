@@ -60,11 +60,6 @@ public final class Output extends EvaluatorSupport {
 	Attribute encodeFor = tag.getAttribute("encodefor");
 	if (encodeFor != null) {
 	    Expression encodeForValue = tag.getFactory().toExprString(encodeFor.getValue());
-	    /*
-	     * if(encodeForValue instanceof Literal) { Literal l=(Literal)encodeForValue; short df=(short)-1;
-	     * short encType = ESAPIUtil.toEncodeType( l.getString(),df);
-	     * if(encType!=df)encodeForValue=encodeForValue.getFactory().createLitInteger(encType); }
-	     */
 	    addEncodeToChildren(tag.getBody().getStatements().iterator(), encodeForValue);
 	}
 

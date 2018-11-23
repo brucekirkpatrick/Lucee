@@ -69,7 +69,6 @@ public class QueryBean implements Serializable {
 
     public String result = null;
 
-    // public static HSQLDBHandler hsql=new HSQLDBHandler();
 
     public ArrayList<SQLItem> items = new ArrayList<SQLItem>();
 

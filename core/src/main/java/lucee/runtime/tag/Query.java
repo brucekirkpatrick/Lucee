@@ -51,7 +51,6 @@ import lucee.runtime.db.DataSourceImpl;
 import lucee.runtime.db.DataSourceSupport;
 import lucee.runtime.db.DatasourceConnection;
 import lucee.runtime.db.DatasourceManagerImpl;
-import lucee.runtime.db.HSQLDBHandler;
 import lucee.runtime.db.SQL;
 import lucee.runtime.db.SQLImpl;
 import lucee.runtime.db.SQLItem;
@@ -87,9 +86,7 @@ import lucee.runtime.type.UDF;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.dt.TimeSpanImpl;
-import lucee.runtime.type.query.QueryArray;
 import lucee.runtime.type.query.QueryResult;
-import lucee.runtime.type.query.QueryStruct;
 import lucee.runtime.type.query.SimpleQuery;
 import lucee.runtime.type.scope.Argument;
 import lucee.runtime.type.util.CollectionUtil;
@@ -622,26 +619,8 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
 
 	    // cache not found, process and cache result if needed
 	    if (queryResult == null) {
-		// QoQ
-		if ("query".equals(data.dbtype)) {
-		    lucee.runtime.type.Query q = executeQoQ(pageContext, data, sqlQuery);
-		    if (data.returntype == RETURN_TYPE_ARRAY) queryResult = QueryArray.toQueryArray(q); // TODO this should be done in queryExecute itself so
-													// we not have to convert afterwards
-		    else if (data.returntype == RETURN_TYPE_STRUCT) {
-			if (data.columnName == null) throw new ApplicationException("attribute columnKey is required when return type is set to struct");
-			queryResult = QueryStruct.toQueryStruct(q, data.columnName); // TODO this should be done in
-										     // queryExecute itself so we not
-										     // have to convert // afterwards
-		    }
-		    else queryResult = (QueryResult) q;
-		}
-		// ORM and Datasource
-		else {
 		    long start = System.nanoTime();
-		    Object obj;
-
-		    if ("orm".equals(data.dbtype) || "hql".equals(data.dbtype)) obj = executeORM(pageContext, data, sqlQuery, data.returntype, data.ormoptions);
-		    else obj = executeDatasoure(pageContext, data, sqlQuery, data.result != null, pageContext.getTimeZone(), tl);
+		    Object obj = executeDatasoure(pageContext, data, sqlQuery, data.result != null, pageContext.getTimeZone(), tl);
 
 		    if (obj instanceof QueryResult) {
 			queryResult = (QueryResult) obj;
@@ -668,7 +647,6 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
 			else setExecutionTime(pageContext, (System.nanoTime() - start) / 1000000);
 
 			return EVAL_PAGE;
-		    }
 		}
 		// else query=executeDatasoure(sql,result!=null,pageContext.getTimeZone());
 
@@ -975,33 +953,6 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
 	return sct;
     }
 
-    private static Object executeORM(PageContext pageContext, QueryBean data, SQL sql, int returnType, Struct ormoptions) throws PageException {
-	ORMSession session = ORMUtil.getSession(pageContext);
-	if (ormoptions == null) ormoptions = new StructImpl();
-	String dsn = null;
-	if (ormoptions != null) dsn = Caster.toString(ormoptions.get(KeyConstants._datasource, null), null);
-	if (StringUtil.isEmpty(dsn, true)) dsn = ORMUtil.getDefaultDataSource(pageContext).getName();
-
-	// params
-	SQLItem[] _items = sql.getItems();
-	Array params = new ArrayImpl();
-	for (int i = 0; i < _items.length; i++) {
-	    params.appendEL(_items[i]);
-	}
-
-	// query options
-	if (data.maxrows != -1 && !ormoptions.containsKey(MAX_RESULTS)) ormoptions.setEL(MAX_RESULTS, new Double(data.maxrows));
-	if (data.timeout != null && ((int) data.timeout.getSeconds()) > 0 && !ormoptions.containsKey(TIMEOUT)) ormoptions.setEL(TIMEOUT, new Double(data.timeout.getSeconds()));
-	/*
-	 * MUST offset: Specifies the start index of the resultset from where it has to start the retrieval.
-	 * cacheable: Whether the result of this query is to be cached in the secondary cache. Default is
-	 * false. cachename: Name of the cache in secondary cache.
-	 */
-	Object res = session.executeQuery(pageContext, dsn, sql.getSQLString(), params, data.unique, ormoptions);
-	if (returnType == RETURN_TYPE_ARRAY || returnType == RETURN_TYPE_UNDEFINED) return res;
-	return session.toQuery(pageContext, res, null);
-
-    }
 
     public static Object _call(PageContext pc, String hql, Object params, boolean unique, Struct queryOptions) throws PageException {
 	ORMSession session = ORMUtil.getSession(pc);
@@ -1013,14 +964,6 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
 	else return session.executeQuery(pc, dsn, hql, (Array) params, unique, queryOptions);
     }
 
-    private static lucee.runtime.type.Query executeQoQ(PageContext pc, QueryBean data, SQL sql) throws PageException {
-	try {
-	    return new HSQLDBHandler().execute(pc, sql, data.maxrows, data.blockfactor, data.timeout);
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-    }
 
     private static QueryResult executeDatasoure(PageContext pageContext, QueryBean data, SQL sql, boolean createUpdateData, TimeZone tz, TemplateLine tl) throws PageException {
 	DatasourceManagerImpl manager = (DatasourceManagerImpl) pageContext.getDataSourceManager();

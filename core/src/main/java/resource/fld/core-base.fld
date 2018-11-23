@@ -43,25 +43,7 @@
 			<type>number</type>
 		</return>
 	</function>
-	
-	<!-- ApplicationStartTime -->
-	<function>
-		<name>ApplicationStartTime</name>
-		<class>lucee.runtime.functions.system.ApplicationStartTime</class>
-		<description>Provides information about the time when the current application scope was created.</description>
-		<return>
-			<type>date</type>
-		</return>
-	</function>
-	<!-- ApplicationStop -->
-	<function>
-		<name>ApplicationStop</name>
-		<class>lucee.runtime.functions.system.ApplicationStop</class>
-		<description>stops the current application context</description>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 
 	<!-- _literalArray -->
 	<function>
@@ -1726,317 +1708,7 @@ sort direction:
 			<type>struct</type>
 		</return>
 	</function>
-		
-	<!-- CacheClear -->
-	<function>
-		<name>CacheClear</name>
-		<class>lucee.runtime.functions.cache.CacheClear</class>
-		<description>Flushes the cache</description>
-		<argument>
-			<name>filterOrTags</name>
-			<alias>filter,tags,tag</alias>
-			<type>any</type>
-			<required>No</required>
-			<description>
-			You can define 2 different things here:
-			
-			1. a String containing a key filter for the elements in the cache to flush, the filter follow the same rules as for cfdirectory-filter.
-			2. an Array containing tags defined when put the element to the cache
-			</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
-	
-	<!-- CacheCount -->
-	<function>
-		<name>CacheCount</name>
-		<class>lucee.runtime.functions.cache.CacheCount</class>
-		<description>Returns the amount (integer) of keys stored in the cache.</description>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>number</type>
-		</return>
-	</function>
-	
-	<!-- CacheDelete -->
-	<function>
-		<name>CacheDelete</name>
-		<class>lucee.runtime.functions.cache.CacheDelete</class>
-		<description>Deletes a single element from the cache.</description>
-		<argument>
-			<name>id</name>
-			<alias>name,key</alias>
-			<type>string</type>
-			<required>Yes</required>
-			<description>the id of the element to delete, can also contain a "," (not used as separator)</description>
-		</argument>
-		<argument>
-			<name>throwOnError</name>
-			<type>boolean</type>
-			<required>No</required>
-			<description>define if the functions throws a exception when the element does not exist (default is false).</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- cacheGet -->
-	<function>
-		<name>cacheGet</name>
-		<class>lucee.runtime.functions.cache.CacheGet</class>
-		<description>Gets an object that is stored in the cache.</description>
-		<argument>
-			<name>id</name>
-			<alias>name,key</alias>
-			<type>string</type>
-			<required>Yes</required>
-			<description>name of the element to return</description>
-		</argument>
-		<argument>
-			<name>throwWhenNotExist</name>
-			<default>false</default>
-			<type>object</type>
-			<required>no</required>
-			<description>define if the functions throws a exception when the element does not exist (default is false).</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>object</type>
-		</return>
-	</function>
-	
-	<!-- CacheGetDefaultCacheName -->
-	<function>
-		<name>CacheGetDefaultCacheName</name>
-		<class>lucee.runtime.functions.cache.CacheGetDefaultCacheName</class>
-		<description>return the default cache name for a specific type</description>
-		<argument>
-			<name>type</name>
-			<type>string</type>
-			<required>yes</required>
-			<description>cache type, valid values are [object,resource,template,query]</description>
-		</argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- CacheGetAll -->
-	<function>
-		<name>CacheGetAll</name>
-		<class>lucee.runtime.functions.cache.CacheGetAll</class>
-		<description>this function return a structure containing all elements inside the cache.</description>
-		<argument>
-			<name>filter</name>
-			<type>string</type>
-			<required>No</required>
-			<description>key filter for the elements, the filter follow the same rules as for cfdirectory-filter.</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	<!-- CacheGetAllIds -->
-	<function>
-		<name>CacheGetAllIds</name>
-		<class>lucee.runtime.functions.cache.CacheGetAllIds</class>
-		<description>this function return a array containing all keys inside the cache.</description>
-		<argument>
-			<name>filter</name>
-			<type>string</type>
-			<required>No</required>
-			<description>key filter for the elements, the filter follow the same rules as for cfdirectory-filter.</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>array</type>
-		</return>
-	</function>
-	
-	<!-- CacheGetMetadata -->
-	<function>
-		<name>CacheGetMetadata</name>
-		<class>lucee.runtime.functions.cache.CacheGetMetadata</class>
-		<description>returns a structure with some Metadata regarding the cache elements (keys returned depends on the Cache type used).</description>
-		<argument>
-			<name>id</name>
-			<alias>name,key</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>name of the element you need metadat for</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
 
-	<!-- CacheGetProperties -->
-	<function>
-		<name>CacheGetProperties</name>
-		<class>lucee.runtime.functions.cache.CacheGetProperties</class>
-		<description>Gets the cache properties for the object cache, the page cache, or both. The information is application-specific.</description>
-		<argument>
-			<name>type</name>
-			<type>string</type>
-			<required>no</required>
-			<description>define which cache instances information are returned
-- "" or not set - information to all default caches (object,template,resource,query)
-- "object" - information to  "Default Object" Cache
-- "template" - information to  "Default Template" Cache
-- "query" - information to  "Default Query" Cache
-- "resource" - information to  "Default Resource" Cache
-- {cache name} - information to  a specific cache </description>
-		</argument>
-		<return>
-			<type>array</type>
-		</return>
-	</function>
-	
-	<!-- CacheIdExists -->
-	<function>
-		<name>CacheIdExists</name>
-		<class>lucee.runtime.functions.cache.CacheKeyExists</class>
-		<description>Returns true/false whether the cache contains an element with the certain id.</description>
-		<argument>
-			<name>id</name>
-			<alias>name,key</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>key to check</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	
-	<!-- cachePut -->
-	<function>
-		<name>cachePut</name>
-		<class>lucee.runtime.functions.cache.CachePut</class>
-		<description>Stores an object in the cache, with a life time and a idle time.</description>
-		<argument>
-			<name>id</name>
-			<alias>key,name</alias>
-			<type>string</type>
-			<required>Yes</required>
-			<description>The id for the cache object.</description>
-		</argument>
-		<argument>
-			<name>value</name>
-			<type>object</type>
-			<required>Yes</required>
-			<description>The value of the object.</description>
-		</argument>
-		<argument>
-			<name>timeSpan</name>
-			<type>timespan</type>
-			<required>No</required>
-			<description>The interval until the object is flushed from the cache, as a decimal number of days. One way to set the value is to use the return value from the CreateTimeSpan function. The default is to not time out the object.</description>
-		</argument>
-		<argument>
-			<name>idleTime</name>
-			<type>timespan</type>
-			<required>No</required>
-			<description>A decimal number of days after which the object is flushed from the cache if it is not accessed during that time. One way to set the value is to use the return value from the CreateTimeSpan function.</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- cacheRemove -->
-	<function>
-		<name>cacheRemove</name>
-		<class>lucee.runtime.functions.cache.CacheRemove</class>
-		<description>removes elements from cache defined with argument ids.</description>
-		<argument>
-			<name>ids</name>
-			<alias>names,keys</alias>
-			<type>object</type>
-			<required>Yes</required>
-			<description>This can be a string list of multiple elements or a array containing the keys</description>
-		</argument>
-		<argument>
-			<name>throwOnError</name>
-			<type>boolean</type>
-			<required>No</required>
-			<description>define if the functions throws a exception when the element does not exist (default is false)</description>
-		</argument>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>string</type>
-			<required>No</required>
-			<description>definition of the cache used by name, when not set the "default Object Cache" defined in Lucee Administrator is used instead.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
 	
 	<!-- ceiling -->
 	<function>
@@ -2167,25 +1839,7 @@ sort direction:
 			<type>number</type>
 		</return>
 	</function>
-	
-	<!-- ComponentListPackage -->
-	<function>
-		<name>ComponentListPackage</name>
-		<class>lucee.runtime.functions.component.ComponentListPackage</class>
-		<status>hidden</status>
-		<description>this implementation is experimentell. list all components in a certain package, throws a application exception if package does not exist.</description>
-		<argument>
-			<name>package</name>
-			<alias>packageName,name</alias>
-			<type>string</type>
-			<required>Yes</required>
-			<description>name of the package to list</description>
-	    </argument>
-		
-		<return>
-			<type>array</type>
-		</return>
-	</function>
+
 	
 	<!-- CSRFGenerateToken -->
 	<function>
@@ -2231,25 +1885,7 @@ sort direction:
 			<type>boolean</type>
 		</return>
 	</function>
-	
-	<!-- ctCacheClear -->
-	<function>
-		<name>ctCacheClear</name>
-		<class>lucee.runtime.functions.other.CTCacheClear</class>
-		<description>flush the customtag path cache</description>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ctCacheList -->
-	<function>
-		<name>ctCacheList</name>
-		<class>lucee.runtime.functions.other.CTCacheList</class>
-		<description>list elements in the customtag path cache</description>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
 	<!-- compress -->
 	<function>
 		<name>compress</name>
@@ -2479,90 +2115,8 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- CreateDynamicProxy -->
-	<function>
-		<name>CreateDynamicProxy</name>
-		<class>lucee.runtime.functions.other.CreateDynamicProxy</class>
-		<description>wrap the given component with a java class that implements the given interfaces.</description>
-		<argument>
-			<name>cfc</name>
-			<alias>cfcName,component,componentName</alias>
-			<type>object</type>
-			<required>Yes</required>
-			<description>component or component name</description>
-	    </argument>
-		<argument>
-			<name>interfaces</name>
-			<alias>interface</alias>
-			<type>object</type>
-			<required>Yes</required>
-			<description>array of strings containing interface paths or a string list of interface paths.</description>
-	    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	
-	<!-- _GetStaticScope -->
-	<function>
-		<name>_GetStaticScope</name>
-		<class>lucee.runtime.functions.other._GetStaticScope</class>
-		<status>hidden</status>
-		<description></description>
-		<argument>
-			<name>cfc</name>
-			<alias>cfcName,component,componentName</alias>
-			<type>string</type>
-			<required>Yes</required>
-			<description>component or component name</description>
-	    </argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	<!-- _GetSuperStaticScope -->
-	<function>
-		<name>_GetSuperStaticScope</name>
-		<class>lucee.runtime.functions.other._GetSuperStaticScope</class>
-		<status>hidden</status>
-		<description></description>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	<!-- WebserviceNew -->
-	<function>
-		<name>WebserviceNew</name>
-		<status>hidden</status>
-		<class>lucee.runtime.functions.other.WebserviceProxy</class>
-        <introduced>5.0.0.0</introduced>
-        <description>create a Webservice Proxy object, a reference to a remote webservice</description>
-		
-		<argument>
-			<name>url</name>
-			<alias>wsdlURL</alias>
-			<type>string</type>
-			<required>yes</required>
-		<description>URL of the remote webservice, for example:
-- http://www.whatever.com/Weather.html?wsdl
-- http://www.whatever.com/Weather.cfc
-</description>
-    </argument>
-		<argument>
-			<name>args</name>
-			<type>struct</type>
-			<required>No</required>
-		<description>a struct containing the following optional keys (username,password,proxyServer,proxyPort,proxyUser,proxyPassword) </description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
+
+
 	<!-- createTime -->
 	<function>
 		<name>createTime</name>
@@ -2685,21 +2239,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		<description>A globally unique identifier or GUID is a special type of identifier used in software applications to provide a unique reference number. The value is represented as a 32 character hexadecimal string, such as {21EC2020-3AEA-1069-A2DD-08002B30309D} and usually stored as a 128 bit integer.</description>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	<!-- datasourceFlushMetaCache -->
-	<function>
-		<name>datasourceFlushMetaCache</name>
-		<class>lucee.runtime.functions.other.DatasourceFlushMetaCache</class>
-		<description>Flush the meta data stored for a certain datasource used for stored procedures, this is only supported for Oracle datasources</description>
-		<argument>
-			<name>datasourceName</name>
-			<type>string</type>
-			<required>no</required>
-			<description>name of the datasource to flush, when not defined all caches are flushed</description>
-		</argument>
-		<return>
-			<type>boolean</type>
 		</return>
 	</function>
 	<!-- dateAdd -->
@@ -2989,51 +2528,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>number</type>
 		</return>
 	</function>
-	
-		<!-- dbPoolClear -->
-	<function>
-		<name>dbPoolClear</name>
-		<class>lucee.runtime.functions.system.DBPoolClear</class>
-		<description>clears all existing datasource connection</description>
-		<argument>
-			<name>datasource</name>
-			<alias>datasourcename,name,ds</alias>
-			<type>string</type>
-			<required>no</required>
-			<description>specific datasource to clear, if not set all datasources get removed.</description>
-		</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	
-	<!-- each -->
-	<function>
-		<name>each</name>
-		<class>lucee.runtime.functions.closure.Each</class>
-		<status>deprecated</status>
-		<keywords>iterator</keywords>
-		<description>
-		deprecated, use instead collectionEach.
-		call the given UDF/Closure with every entry (key/value) in the given collection.</description>
-		<argument>
-			<name>collection</name>
-			<alias>object</alias>
-			<type>object</type>
-			<required>Yes</required>
-			<description>collection to take values from</description>
-		</argument>
-		<argument>
-			<name>closure</name>
-			<alias>function,callback,udf</alias>
-			<type>function</type>
-			<required>Yes</required>
-			<description>UDF/Closure that call with the entries from struct</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	
 	<!-- collectionEach -->
 	<function>
@@ -3092,28 +2587,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>query</type>
 		</return>
 	</function>
-	
-	<!-- debugAdd -->
-	<function>
-		<name>debugAdd</name>
-		<class>lucee.runtime.functions.system.DebugAdd</class>
-		<description>Adding data to debug output.</description>
-		<argument>
-			<name>category</name>
-			<type>string</type>
-			<required>yes</required>
-			<description>category name for the data passed in.</description>
-		</argument>
-		<argument>
-			<name>data</name>
-			<type>struct</type>
-			<required>yes</required>
-			<description>struct containing data to add to debug output.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	<!-- decrypt -->
 	<function>
 		<name>decrypt</name>
@@ -3225,21 +2699,6 @@ You may also specify other algorithm names as well as the feedback mode and padd
         </argument>
 		<return>
 			<type>any</type>
-		</return>
-	</function>
-	<!-- deleteClientVariable -->
-	<function>
-		<name>deleteClientVariable</name>
-		<class>lucee.runtime.functions.other.DeleteClientVariable</class>
-		<description>Removes the element represented by the key from the [client] scope</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Name of a client variable to delete, surrounded by double-quotation marks</description>
-    </argument>
-		<return>
-			<type>boolean</type>
 		</return>
 	</function>
 	<!-- DirectoryCopy -->
@@ -3477,22 +2936,6 @@ type of the result returned:
 		</return>
 	</function>
 
-	<!-- DotNetToCFType -->
-	<function>
-		<name>DotNetToCFType</name>
-		<class>lucee.runtime.functions.system.DotNetToCFType</class>
-		<status>unimplemented</status>
-		<description>Explicitly converts a value returned by a .NET method to the corresponding Lucee data type.</description>
-		<argument>
-			<name>input</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>Name of the .NET variable to convert</description>
-		</argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
 	<!-- _javabaseddump -->
 	<function>
 		<name>_dump</name>
@@ -3705,7 +3148,7 @@ type of the result returned:
 
 	<!-- dateTimeDuplicate !-->
 	<function>
-		<name>__dateTimeDuplicate </name>
+		<name>__dateTimeDuplicate</name>
 		<class>lucee.runtime.functions.struct.Duplicate</class>
 		<member-name>duplicate</member-name>
 		<description>Returns a new duplicated version of the given DateTime object</description>
@@ -3845,262 +3288,7 @@ You may also specify other algorithm names as well as the feedback mode and padd
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- EntityDelete -->
-	<function>
-		<name>EntityDelete</name>
-		<class>lucee.runtime.functions.orm.EntityDelete</class>
-		<description>Deletes the record from the database for the specified entity.
-EntityDelete(entity)</description>
-		<argument>
-			<name>name</name>
-			<type>object</type>
-			<required>Yes</required>
-		<description>Name of the entity being deleted.</description>
-    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- EntityLoad -->
-	<function>
-		<name>entityLoad</name>
-		<class>lucee.runtime.functions.orm.EntityLoad</class>
-		<description>Loads and returns an array of entities of the specified entityname.
-EntityLoad (entityname, filtercriteria [,unique] 
-EntityLoad(entityname, filtercriteria, sortorder [, options])</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Name of the entity to be loaded.</description>
-    </argument>
-		<argument>
-			<name>idOrFilter</name>
-			<alias>id,filter</alias>
-			<type>any</type>
-			<required>no</required>
-		<description>The primary key value of the entity that must be loaded or Key-value pair (Struct) of property names and values. 
-		If there are more than one key-value pair, then the AND operator is used.If specified, loads and returns an array of entities of the specified entity name that matches the filtercriteria.</description>
-    </argument>
-		<argument>
-			<name>uniqueOrOrder</name>
-			<alias>unique,order</alias>
-			<type>any</type>
-			<required>no</required>
-		<description>when the second argument is a id then this argument defines the boolean "unique" otherwise it defines the order.
-		
-- unique:
-If unique is set to true, then the entity is returned.
-If you are sure that only one record exists that matches this filtercriteria, then you can specify unique=true, so that a single entity is returned instead of an array.
-If you set unique=true and multiple records are returned, then an exception occurs.
 
-- order:
-String used to specify the sortorder of the entities that are returned.If specified, loads and returns an array of entities that satisfy the filtercriteria sorted as specified by the sortorder.
-		
-		</description>
-    </argument>
-		<argument>
-			<name>options</name>
-			<type>any</type>
-			<required>no</required>
-		<description>
-The following options to customize the output (only used when second argument is "id"):
-- ignorecase: Ignores the case of sort order when set to true. Use only if you specify the sortorder parameter.
-- offset: Specifies the position from which to retrieve the objects.
-- maxResults: Specifies the maximum number of objects to be retrieved.
-- cacheable: Whether the result has to be cached in the secondary cache. Default is false.
-- cachename: Name of the cache in secondary cache.
-- timeout: Specifies the timeout value (in seconds) for the query.
-		</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- EntityLoadByPK -->
-	<function>
-		<name>EntityLoadByPK</name>
-		<class>lucee.runtime.functions.orm.EntityLoadByPK</class>
-		<description>Loads and returns an array of objects for given primary key.</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Name of the entity to be loaded.</description>
-    </argument>
-		<argument>
-			<name>id</name>
-			<type>any</type>
-			<required>yes</required>
-		<description>The primary key value of the entity that must be loaded</description>
-    </argument>
-		<argument>
-			<name>unique</name>
-			<type>boolean</type>
-			<required>no</required>
-		<description>If unique is set to true, then the entity is returned.
-If you are sure that only one record exists that matches this filtercriteria, then you can specify unique=true, so that a single entity is returned instead of an array.
-If you set unique=true and multiple records are returned, then an exception occurs.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- EntityLoadByExample -->
-	<function>
-		<name>EntityLoadByExample</name>
-		<class>lucee.runtime.functions.orm.EntityLoadByExample</class>
-		<description>Loads and returns an array of objects that match the sample entity.
-entityLoadByExample(sampleEntity,[unique])</description>
-		<argument>
-			<name>sampleEntity</name>
-			<type>object</type>
-			<required>yes</required>
-		<description>Name of the sample entity that is used to match and filter similar entities to load.</description>
-    </argument>
-		<argument>
-			<name>unique</name>
-			<type>boolean</type>
-			<required>no</required>
-		<description>If unique is set to true, then the entity is returned.
-If you are sure that only one record exists that matches this filtercriteria, then you can specify unique=true, so that a single entity is returned instead of an array.
-If you set unique=true and multiple records are returned, then an exception occurs.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- EntityMerge -->
-	<function>
-		<name>EntityMerge</name>
-		<class>lucee.runtime.functions.orm.EntityMerge</class>
-		<description>Attaches given entity to current ORM session</description>
-		<argument>
-			<name>entity</name>
-			<type>any</type>
-			<required>yes</required>
-		<description>The entity that must be attached to the ORM session.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- EntityNew -->
-	<function>
-		<name>EntityNew</name>
-		<class>lucee.runtime.functions.orm.EntityNew</class>
-		<description>Creates a new instance of the persistent CFC with the entity name that you provide.</description>
-		<argument>
-			<name>entityName</name>
-			<type>string</type>
-			<required>yes</required>
-			<description>Name of the instance being created.</description>
-    	</argument>
-		<argument>
-			<name>properties</name>
-			<type>struct</type>
-			<required>no</required>
-			<description>a struct containing data to populate the entity properties.</description>
-    	</argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- EntityNameArray -->
-	<function>
-		<name>EntityNameArray</name>
-		<class>lucee.runtime.functions.orm.EntityNameArray</class>
-		<description>return all loaded entities as array</description>
-		<return>
-			<type>array</type>
-		</return>
-	</function>
-	
-	<!-- EntityNameList -->
-	<function>
-		<name>EntityNameList</name>
-		<class>lucee.runtime.functions.orm.EntityNameList</class>
-		<description>return all loaded entities as string list</description>
-		<argument>
-			<name>delimiter</name>
-			<type>string</type>
-			<required>no</required>
-		<description>delimiter used for the list</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- EntityReload -->
-	<function>
-		<name>EntityReload</name>
-		<class>lucee.runtime.functions.orm.EntityReload</class>
-		<description>Reloads data for an entity that is already loaded.</description>
-		<argument>
-			<name>entity</name>
-			<type>object</type>
-			<required>yes</required>
-		<description>name of the entity</description>
-    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- EntitySave -->
-	<function>
-		<name>EntitySave</name>
-		<class>lucee.runtime.functions.orm.EntitySave</class>
-		<description>Saves or updates data of the entity and all related entities to the database.
-EntitySave(entity, [forceinsert])</description>
-		<argument>
-			<name>entity</name>
-			<type>object</type>
-			<required>yes</required>
-		<description>Name of the entity that must be saved in the database.</description>
-    </argument>
-		<argument>
-			<name>forceInsert</name>
-			<type>boolean</type>
-			<required>no</required>
-		<description>If true, then Lucee always tries to insert the entity as a new record.</description>
-    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- EntityToQuery -->
-	<function>
-		<name>EntityToQuery</name>
-		<class>lucee.runtime.functions.orm.EntityToQuery</class>
-		<description>Converts the input entity object or the input array of entity objects to a query object.</description>
-		<argument>
-			<name>entity</name>
-			<type>object</type>
-			<required>yes</required>
-		<description>entity or array of entities</description>
-    </argument>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>no</required>
-		<description>name of the entities</description>
-    </argument>
-		<return>
-			<type>query</type>
-		</return>
-	</function>
-	
-	
 	
 	
 	<!-- evaluate -->
@@ -4125,134 +3313,8 @@ EntitySave(entity, [forceinsert])</description>
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- evaluateComponent -->
-	<function>
-		<name>evaluateComponent</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.EvaluateComponent</class>
-		<status>hidden</status>
-		<description>literal representation of a component, used by the serialize method.</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>md5</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>thisData</name>
-			<type>struct</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>variablesData</name>
-			<type>struct</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	
-	<!-- evaluateJava -->
-	<function>
-		<name>evaluateJava</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.EvaluateJava</class>
-		<status>hidden</status>
-		<description>literal representation of a serializable Java Object, used by the serialize method.</description>
-		<argument>
-			<name>stringOrBinary</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	
-	<!-- QueryExecute -->
-    	<function>
-    		<name>QueryExecute</name>
-    		<class>lucee.runtime.functions.query.QueryExecute</class>
-    		<keywords>query</keywords>
-			<tte-class>lucee.transformer.cfml.evaluator.func.impl.QueryExecute</tte-class>
-			<description>Executes a SQL query, returns the result.</description>
-    		<argument>
-    			<name>sql</name>
-    			<type>string</type>
-    			<required>Yes</required>
-    			<description>SQL to execute</description>
-    	    </argument>
-    		<argument>
-    			<name>params</name>
-    			<alias>param</alias>
-    			<type>any</type>
-    			<required>No</required>
-    			<description>
-    			Array or Struct of parameter values. 
-    			When passing an array use ? as place holders. 
-    			When passing a struct use :keyName where keyName is the name of the key in the structure corresponding to
-    			the parameter. 
-    			The struct or array can be a struct with keys such as the following: cfsqltype, list
-    			</description>
-    	    </argument>
-    	    
-    	    <argument>
-    			<name>options</name>
-    			<alias>option,queryOptions</alias>
-    			<type>struct</type>
-    			<required>No</required>
-    			<description>Struct containing query options, all cfquery tag attributes are supported except the name attribute.</description>
-    	    </argument>
-    	    <argument>
-    			<name>name</name>
-    			<alias>queryName</alias>
-    			<type>string</type>
-    			<status>hidden</status>
-    			<required>No</required>
-    			<description>name of the query produced, visible in dumps or debugging output.</description>
-    	    </argument>
-    	    
-    		<return>
-    			<type>any</type>
-    		</return>
-    	</function>
-	
-	
-	<!-- render -->
-	<function>
-		<name>render</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.Render</class>
-		<introduced>5.0.0.0</introduced>
-		<description></description>
-		<argument>
-			<name>code</name>
-			<alias>cfml</alias>
-			<type>string</type>
-			<required>Yes</required>
-		</argument>
-		<argument>
-			<name>dialect</name>
-			<type>string</type>
-			<values>cfml,lucee</values>
-			<required>no</required>
-		</argument>
-		
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	
+
+
 	<!-- exp -->
 	<function>
 		<name>exp</name>
@@ -5239,45 +4301,6 @@ Example Values:
 		</return>
 	</function>
 
-	<!-- getBaseTagData -->
-	<function>
-		<name>getBaseTagData</name>
-		<class>lucee.runtime.functions.other.GetBaseTagData</class>
-		<description>Used within a custom tag. Finds calling (ancestor) tag by
-        name and accesses its data.</description>
-		<argument>
-			<name>tagname</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Ancestor tag name for which to return data</description>
-    </argument>
-		<argument>
-			<name>instancenumber</name>
-			<type>number</type>
-			<required>No</required>
-			<default>1</default>
-		<description>Number of ancestor levels to jump before returning data. The default value is 1 (closest ancestor).</description>
-    </argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	<!-- getBaseTagList -->
-	<function>
-		<name>getBaseTagList</name>
-		<class>lucee.runtime.functions.other.GetBaseTagList</class>
-		<description>Gets ancestor tag names, starting with the parent tag.</description>
-		<argument>
-			<name>delimiter</name>
-			<type>string</type>
-			<required>No</required>
-			<default>,</default>
-		<description>delimiter used for the list</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
 	<!-- getBaseTemplatePath -->
 	<function>
 		<name>getBaseTemplatePath</name>
@@ -5285,39 +4308,6 @@ Example Values:
 		<description>Gets the absolute path of an application's base page.</description>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	
-	<!-- GetBuiltInFunction -->
-	<function>
-		<name>GetBuiltInFunction</name>
-		<class>lucee.runtime.functions.system.GetBuiltInFunction</class>
-		<description>return a build in function as a object, matching the given name, throws a exception when the function does not exist.</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>yes</required>
-			<description>name of the build in function, for example "StructKeyExists"</description>
-		</argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- GetComponentStaticScope -->
-	<function>
-		<name>GetComponentStaticScope</name>
-		<class>lucee.runtime.functions.system.GetComponentStaticScope</class>
-		<description>returns the static scope of a specific component, of course access rules apply.</description>
-		<argument>
-			<name>component</name>
-			<alias>name,componentName,cfc</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>name of the component to get static scope, for example "org.lucee.cfml.Query".</description>
-		</argument>
-		<return>
-			<type>struct</type>
 		</return>
 	</function>
 	
@@ -5361,24 +4351,6 @@ Example Values:
 			<type>struct</type>
 		</return>
 	</function>
-	<!-- GetContextInfo -->
-	<function>
-		<name>getContextInfo</name>
-		<class>lucee.runtime.functions.system.GetContextInfo</class>
-		<description>Returns information to the current context.</description>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	<!-- GetContextRoot -->
-	<function>
-		<name>getContextRoot</name>
-		<class>lucee.runtime.functions.system.GetContextRoot</class>
-		<description>Returns path to the J2EE server context root for the current request.</description>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
 	<!-- GetCPUUsage -->
 	<function>
 		<name>GetCPUUsage</name>
@@ -5396,16 +4368,6 @@ Example Values:
 			<type>number</type>
 		</return>
 	</function>
-	<!-- getClientVariablesList -->
-	<function>
-		<name>getClientVariablesList</name>
-		<class>lucee.runtime.functions.other.GetClientVariablesList</class>
-		<description>Finds the client variables to which a page has write access.
-        Comma-delimited list of non-read-only client variables</description>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
 	<!-- getCurrentTemplatePath -->
 	<function>
 		<name>getCurrentTemplatePath</name>
@@ -5413,16 +4375,6 @@ Example Values:
 		<description>Gets the absolute path of the page that calls this function.</description>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	<!-- getCurrentContext -->
-	<function>
-		<name>getCurrentContext</name>
-		<class>lucee.runtime.functions.system.GetCurrentContext</class>
-		<status>deprecated</status>
-		<description>this function is deprecated, use function CallStackGet instead.</description>
-		<return>
-			<type>array</type>
 		</return>
 	</function>
 	<!-- CallStackDump -->
@@ -5460,8 +4412,8 @@ Example Values:
 			<type>any</type>
 		</return>
 	</function>
-	
-	
+
+
 	
 	<!-- GetFunctionCalledName -->
 	<function>
@@ -5542,22 +4494,6 @@ The returned number of unallocated bytes is a hint, but not a guarantee, that it
     </argument>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	<!-- getException -->
-	<function>
-		<name>getException</name>
-		<class>lucee.runtime.functions.system.GetException</class>
-		<status>unimplemented</status>
-		<description>Used with the cftry and cfcatch tags. Retrieves a Java exception object from a Java object. </description>
-		<argument>
-			<name>object</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>A Java object.</description>
-    </argument>
-		<return>
-			<type>throwable</type>
 		</return>
 	</function>
 	<!-- getFileFromPath -->
@@ -5676,81 +4612,8 @@ The returned number of unallocated bytes is a hint, but not a guarantee, that it
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- GetVFSMetaData -->
-	<function>
-		<name>GetVFSMetaData</name>
-		<class>lucee.runtime.functions.file.GetVFSMetaData</class>
-		<description>Returns metadata for VFS</description>
-		<argument>
-			<name>scheme</name>
-			<type>string</type>
-			<required>yes</required>
-			<description>the scheme of the virtual filesystem (ram,file,s3,http,https,zip,tar ...).</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	
-	
-	<!-- GetPrinterInfo -->
-	<function>
-		<name>GetPrinterInfo</name>
-		<class>lucee.runtime.functions.system.GetPrinterInfo</class>
-		<status>unimplemented</status>
-		<description>Determines which print attributes are supported by a selected printer.</description>
-		<argument>
-			<name>printer</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>The name of a printer</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	<!-- getLuceeId -->
-	<function>
-		<name>GetLuceeId</name>
-		<class>lucee.runtime.functions.other.GetLuceeId</class>
-		<description>return ids of the current context</description>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	
-	<!-- getTagData-->
-	<function>
-		<name>getTagData</name>
-		<class>lucee.runtime.functions.other.GetTagData</class>
-		<description>return information to a Tag as Struct</description>
-		<argument>
-			<name>nameSpaceWithSeperator</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>The namespace of the tag with the seperator Example: cf, rc: aso.</description>
-		</argument>
-		<argument>
-			<name>tagName</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>The tag name without namespace Example: login,mail aso.</description>
-		</argument>
-		<argument>
-			<name>dialect</name>
-			<type>string</type>
-			<required>no</required>
-			<values>cfml,lucee</values>
-			<default>cfml</default>
-			<introduced>5.0.0.0</introduced>
-			<description>the dialect you need (cfml,lucee)</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
+
 	<!-- getFunctionList -->
 	<function>
 		<name>getFunctionList</name>
@@ -5767,22 +4630,6 @@ The returned number of unallocated bytes is a hint, but not a guarantee, that it
 		<description>returns all keywords defined with all functions</description>
 		<return>
 			<type>array</type>
-		</return>
-	</function>
-	<!-- GetGatewayHelper -->
-	<function>
-		<name>getGatewayHelper</name>
-		<class>lucee.runtime.functions.gateway.GetGatewayHelper</class>
-		<status>unimplemented</status>
-		<description>Gets a Java GatewayHelper object that provides methods and properties for use with a event gateways.</description>
-		<argument>
-			<name>gatewayID</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Identifier of the gateway that provides the GatewayHelper object.</description>
-    </argument>
-		<return>
-			<type>any</type>
 		</return>
 	</function>
 	<!-- getTagList (only lucee) -->
@@ -5910,304 +4757,8 @@ if this attribute is not provided all types are returned.</description>
 			<type>number</type>
 		</return>
 	</function>
-	<!-- createPageContext
-	<function>
-		<name>createPageContext</name>
-		<class>lucee.runtime.functions.other.CreatePageContext</class>
-		<description>Creates a PageContext (http://www.lucee.org/javadoc/lucee/runtime/PageContext.html) object that provides access to page attributes and configuration, request and response objects.</description>
-		<argument>
-			<name>serverName</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>name of the server, for example "localhost" or "www.lucee.org"</description>
-    	</argument>
-		<argument>
-			<name>scriptName</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>script name, for example "/test/test.cfm"</description>
-    	</argument>
-		<argument>
-			<name>queryString</name>
-			<type>string</type>
-			<required>no</required>
-			<description>query string, for example "?test=1"</description>
-    	</argument>
-		<argument>
-			<name>cookies</name>
-			<type>struct</type>
-			<required>no</required>
-			<description>cookies values for the context</description>
-    	</argument>
-		<argument>
-			<name>headers</name>
-			<type>struct</type>
-			<required>no</required>
-			<description>header values for the context</description>
-    	</argument>
-		<argument>
-			<name>parameters</name>
-			<type>struct</type>
-			<required>no</required>
-			<description>parameters values for the context</description>
-    	</argument>
-		<argument>
-			<name>attributes</name>
-			<type>struct</type>
-			<required>no</required>
-			<description>attributes values for the context</description>
-    	</argument>	
-		<return>
-			<type>any</type>
-		</return>
-	</function> -->
-	
-	<!-- getPageContext -->
-	<function>
-		<name>getPageContext</name>
-		<class>lucee.runtime.functions.other.GetPageContext</class>
-		<description>Gets the current PageContext (http://www.lucee.org/javadoc/lucee/runtime/PageContext.html) object that provides access to page attributes and configuration, request and response objects.</description>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- getProfileSections -->
-	<function>
-		<name>getProfileSections</name>
-		<class>lucee.runtime.functions.other.GetProfileSections</class>
-		<description>Gets all the sections of an initialization file.
-        An initialization file, as a struct whose format is as follows:
-            - Each initialization file section name is a key in the
-              struct
-            - Each list of entries in a section of an initialization
-              file is a value in the struct</description>
-		<argument>
-			<name>iniFile</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>path to a ini file.</description>
-		</argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
-	<!-- getProfileString -->
-	<function>
-		<name>getProfileString</name>
-		<class>lucee.runtime.functions.system.GetProfileString</class>
-		<description>Gets an initialization file entry.
-        An initialization file assigns values to configuration
-        variables, also known as entries, that are set when the system
-        boots, the operating system comes up, or an application starts.
-        Returns the entry - if no value, returns an empty string.</description>
-		<argument>
-			<name>iniPath</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Absolute path (drive, directory, filename, extension) of initialization file; for example, C:\\boot.ini</description>
-    </argument>
-		<argument>
-			<name>section</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Section of initialization file from which to extract information</description>
-    </argument>
-		<argument>
-			<name>entry</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Name of value to get</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	<!-- GetSOAPRequest -->
-	<function>
-		<name>getSOAPRequest</name>
-		<class>lucee.runtime.functions.xml.GetSOAPRequest</class>
-		<status>implemented</status>
-		<keywords>webservice</keywords>
-		<description>Returns an XML object that contains the entire SOAP
-        request. Usually called from within a web service CFC.</description>
-		<argument>
-			<name>webservice</name>
-			<type>any</type>
-			<required>no</required>
-		<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	<!-- GetSOAPRequestHeader -->
-	<function>
-		<name>getSOAPRequestHeader</name>
-		<class>lucee.runtime.functions.xml.GetSOAPRequestHeader</class>
-		<keywords>webservice</keywords>
-		<description>Obtains a SOAP request header. Call only from within
-        a CFC web service function that is processing a request
-        as a SOAP web service.</description>
-		<argument>
-			<name>namespace</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A String that is the namespace for the header.</description>
-    </argument>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A String that is the name of the header</description>
-    </argument>
-		<argument>
-			<name>asXML</name>
-			<type>boolean</type>
-			<required>No</required>
-		<description>If True, the header is returned as a XML object;
-        if false (default), the header is returned as a Java object.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	
-	
-	<!-- AddSOAPRequestHeader -->
-	<function>
-		<name>AddSOAPRequestHeader</name>
-		<class>lucee.runtime.functions.xml.AddSOAPRequestHeader</class>
-		<status>implemented</status>
-		<keywords>webservice</keywords>
-		<description>Adds a SOAP header to a web service request before making the request.</description>
-		<argument>
-			<name>webservice</name>
-			<type>object</type>
-			<required>Yes</required>
-			<description>A web service object as returned from the cfobject tag or the CreateObject function.</description>
-	    </argument>
-		<argument>
-			<name>namespace</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>A String that is the namespace for the header.</description>
-	    </argument>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>A String that is the name of the header</description>
-    	</argument>
-		<argument>
-			<name>value</name>
-			<type>object</type>
-			<required>Yes</required>
-			<description>the value for the SOAP header; this can be a CFML XML value.</description>
-    	</argument>
-		<argument>
-			<name>mustUnderstand</name>
-			<type>boolean</type>
-			<required>No</required>
-			<description>Sets the SOAP mustunderstand value for this header.</description>
-    	</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
 
-	<!-- addSOAPResponseHeader -->
-	<function>
-		<name>addSOAPResponseHeader</name>
-		<class>lucee.runtime.functions.xml.AddSOAPResponseHeader</class>
-		<status>implemented</status>
-		<keywords>webservice</keywords>
-		<description>Adds a SOAP response header to a web service response. Call only from within a CFC web service function that is processing a request as a SOAP web service.</description>
-		<argument>
-			<name>namespace</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>A String that is the namespace for the header.</description>
-	    </argument>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>A String that is the name of the header</description>
-    	</argument>
-		<argument>
-			<name>value</name>
-			<type>object</type>
-			<required>Yes</required>
-			<description>the value for the SOAP header; this can be a XML value.</description>
-    	</argument>
-		<argument>
-			<name>mustUnderstand</name>
-			<type>boolean</type>
-			<required>No</required>
-			<description>Sets the SOAP mustunderstand value for this header.</description>
-    	</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-		
-	<!-- GetSOAPResponse -->
-	<function>
-		<name>getSOAPResponse</name>
-		<class>lucee.runtime.functions.xml.GetSOAPResponse</class>
-		<keywords>webservice</keywords>
-		<description>Returns an XML object that contains the entire
-        SOAP response after invoking a web service.</description>
-		<argument>
-			<name>webservice</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
-    	</argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
 
-	<!-- GetSOAPResponseHeader -->
-	<function>
-		<name>getSOAPResponseHeader</name>
-		<class>lucee.runtime.functions.xml.GetSOAPResponseHeader</class>
-		<keywords>webservice</keywords>
-		<description>Returns a SOAP response header. Call this function
-        from within code that is invoking a web service after
-        making a web service request.</description>
-		<argument>
-			<name>webservice</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
-    </argument>
-		<argument>
-			<name>namespace</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A String that is the namespace for the header.</description>
-    </argument>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A String that is the name of the SOAP header.</description>
-    </argument>
-		<argument>
-			<name>asXML</name>
-			<type>boolean</type>
-			<required>No</required>
-		<description>If True, the header is returned as a XML object;
-            if false (default), the header is returned as a Java object.</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
 	<!-- getTempDirectory -->
 	<function>
 		<name>getTempDirectory</name>
@@ -6370,21 +4921,6 @@ Default list delimiter: comma character.</description>
     </argument>
 		<return>
 			<type>string</type>
-		</return>
-	</function>
-	<!-- getVariable -->
-	<function>
-		<name>getVariable</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.GetVariable</class>
-		<description>Gets the variable referenced by the given parameter; may be fully qualified</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>name of the variable to return</description>
-    </argument>
-		<return>
-			<type>any</type>
 		</return>
 	</function>
 	<!-- hash -->
@@ -6570,19 +5106,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	
-	<!-- IntergralContext -->
-	<function>
-		<name>IntergralContext</name>
-		<class>lucee.runtime.functions.other.IntergralContext</class>
-		<status>hidden</status>
-		<description>return the integral context information, FusionDebug has do be installed for this.</description>
-		
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
 
 	<!-- IsClosure -->
 	<function>
@@ -6643,33 +5167,7 @@ The following things are considered to be empty:
 			<type>boolean</type>
 		</return>
 	</function>
-	
-	<!-- IsIPInRange -->
-	<function>
-		<name>IsIPInRange</name>
-		<class>lucee.runtime.functions.decision.IsIPInRange</class>
-		<keywords>decision</keywords>
-		<description>Checks if an ip is in the range of a list of given ips. IPv4 and IPv6 are supported.</description>
-		<argument>
-			<name>ips</name>
-			<type>any</type>
-			<required>Yes</required>
-			<description>A comma separated list of strings or a string array of ip definitions. The following patterns are allowed:
-- a single ip, like "127.0.0.1"
-- an ip with wildcards like "127.0.0.*", in this case all ips between "127.0.0.0" and "127.0.0.255" are valid
-- an ip range like "127.0.0.1-127.0.0.10", in this case all ips between "127.0.0.1" and "127.0.0.10" are valid
-</description>
-    	</argument>
-    	<argument>
-			<name>ip</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>ip to search</description>
-    	</argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
+
 	<!-- IsJson -->
 	<function>
 		<name>IsJson</name>
@@ -6682,23 +5180,6 @@ The following things are considered to be empty:
 			<type>any</type>
 			<required>Yes</required>
 		<description>A string or variable that represents one.</description>
-    </argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	<!-- IsIPv6 -->
-	<function>
-		<name>IsIPv6</name>
-		<class>lucee.runtime.functions.decision.IsIPv6</class>
-		<keywords>decision</keywords>
-		<description>checks if given IP is of IPV6 format</description>
-		<argument>
-			<name>hostname</name>
-			<alias>value</alias>
-			<type>string</type>
-			<required>no</required>
-		<description>the hostname to check</description>
     </argument>
 		<return>
 			<type>boolean</type>
@@ -6969,24 +5450,6 @@ The following things are considered to be empty:
 		</return>
 	</function>
 
-	<!-- IsDDX -->
-	<function>
-		<name>IsDDX</name>
-		<class>lucee.runtime.functions.decision.IsDDX</class>
-		<status>unimplemented</status>
-		<keywords>decision</keywords>
-		<description>Determines whether a DDX file exists and is valid, or if a string contains valid DDX instructions.</description>
-		<argument>
-			<name>pathOrString</name>
-			<alias>value,path,string</alias>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Pathname to the DDX file or a string of DDX instructions. The pathname can be absolute or relative to the CFM page that calls it and must be enclosed in quotation marks.</description>
-    </argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
 	<!-- IsInstanceOf -->
 	<function>
 		<name>IsInstanceOf</name>
@@ -7140,17 +5603,6 @@ The following things are considered to be empty:
 			<type>boolean</type>
 		</return>
 	</function>
-	<!-- IsSOAPRequest -->
-	<function>
-		<name>IsSOAPRequest</name>
-		<class>lucee.runtime.functions.decision.IsSOAPRequest</class>
-		<status>implemented</status>
-		<keywords>decision,webservice</keywords>
-		<description>Determines whether a CFC is being called as a web service.</description>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
 	<!-- isStruct -->
 	<function>
 		<name>isStruct</name>
@@ -7168,110 +5620,7 @@ The following things are considered to be empty:
 			<type>boolean</type>
 		</return>
 	</function>
-	
-	<!-- IsValid -->
-	<function>
-		<name>isValid</name>
-		<class>lucee.runtime.functions.decision.IsValid</class>
-		<keywords>decision,binary,array,boolean,component,date,email,query,string,struct,regex</keywords>
-		<description>
-			Tests whether a value meets a validation or data type rule.
-			Attention: this function does not test if an object is of a certain type, it tests if an object can be converted to that type.
-			Because of that all the following example will return true:
-			- isValid("String",true); // boolean
-			- isValid("String",123); // number
-			- isValid("String",ImageNew( "", 1, 1)); // image!
-		</description>
-		<argument>
-			<name>type</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>
-			The valid format for the data; one of the following:
-			- any: any simple value. Returns false for complex values, such as query objects; equivalent to the IsSimpleValue function.
-			- array: an array; equivalent to the IsArray function.
-			- binary: a binary value; equivalent to the IsBinary function.
-			- boolean: a Boolean value; equivalent to the IsBoolean function.
-			- component: a component (CFC).
-			- creditcard: a 13-16 digit number conforming to the mod10 algorithm.
-			- date or time: any date-time value, including dates or times; equivalent to the IsDate function.
-			- email: a string containing a valid email address.
-			- eurodate: this functionality is only supported for compatibility reasons, we do not suggest to use this functionality. Use instead function isDate or lsIsDate. A date in the form d/m/y, d-m-y, or d.m.y. The m and d format can be 1 or 2 digits; y can be 2 or 4 digits. 
-			- float or numeric: a numeric value; equivalent to the IsNumeric function.
-			- guid: a Universally Unique Identifier of the form "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" where X is a hexadecimal number.
-			- integer: an integer.
-			- query: a query object; equivalent to the IsQuery function.
-			- range: a numeric range, specified by the min and max attributes.
-			- regex or regular_expression: matches input against pattern attribute.
-			- ssn or social_security_number: A U.S. social security number.
-			- string: a string value, including single characters and numbers
-			- struct: a structure; equivalent to the IsStruct function.
-			- telephone: a standard US telephone number.
-			- URL: an http, https, ftp, file, mailto, or news URL,
-			- UUID: a ColdFusion Universally Unique Identifier, formatted "XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXXX", where X is a hexadecimal number. See CreateUUID.
-			- USdate: this functionality is only supported for compatibility reasons, we do not suggest to use this functionality. Use instead function isDate or lsIsDate. A U.S. date of the format mm/dd/yy, with 1-2 digit days and months, 1-4 digit years.
-			- variableName: a string formatted according to ColdFusion variable naming conventions.
-			- zipcode: U.S., 5- or 9-digit format ZIP codes.</description>
-    </argument>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>The value to test.</description>
-    </argument>
-		<argument>
-			<name>min_or_pattern</name>
-			<alias>min,pattern</alias>
-			<type>any</type>
-			<required>No</required>
-		<description>
-		The minimum valid value; used only for range validation or 
-		a JavaScript regular expression that the parameter must match; used only for regex or regular_expression validation.</description>
-    </argument>
-		<argument>
-			<name>max</name>
-			<type>any</type>
-			<required>no</required>
-		<description>The maximum valid value; used only for range validation.</description>
-    </argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	<!-- isWddx -->
-	<function>
-		<name>isWddx</name>
-		<class>lucee.runtime.functions.decision.IsWddx</class>
-		<keywords>decision,wddx</keywords>
-		<description>Determines whether a value is a well-formed WDDX packet.</description>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>A WDDX packet</description>
-    </argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
-	<!-- IsVideoFile -->
-	<function>
-		<name>IsVideoFile</name>
-		<class>lucee.runtime.functions.video.IsVideoFile</class>
-		<keywords>decision,video</keywords>
-		<description>
-		Check if a String is a Video file
-		</description>
-		<argument>
-			<name>value</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>file to check</description>
-    </argument>
-		<return>
-			<type>boolean</type>
-		</return>
-	</function>
+
 	<!-- IsXML -->
 	<function>
 		<name>isXML</name>
@@ -7373,44 +5722,7 @@ The following things are considered to be empty:
 			<type>boolean</type>
 		</return>
 	</function>
-	<!-- javaCast -->
-	<function>
-		<name>javaCast</name>
-		<class>lucee.runtime.functions.string.JavaCast</class>
-		<description>Converts the data type of a CFML variable to pass as an
-        argument to an overloaded method of a Java object. Use only
-        for scalar and string arguments.
-        [type - quickly]
-        boolean,int,long,float,double,string</description>
-		<argument>
-			<name>type</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Data type to which to convert variable:
-		bigdecimal (converts to java.math.BigDecimal)
-- boolean
-- byte
-- char
-- int
-- long
-- float
-- double
-- short
-- string
-- {type}[] - where {type} is any of the preceding types, e.g. string[]
-- null - see also the built in function nullValue()
-- a Java class name</description>
-    </argument>
-		<argument>
-			<name>variable</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>the object to cast</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
+
 	<!-- jSStringFormat -->
 	<function>
 		<name>jSStringFormat</name>
@@ -8592,24 +6904,7 @@ The following things are considered to be empty:
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- ManifestRead -->
-	<function>
-		<name>ManifestRead</name>
-		<class>lucee.runtime.functions.system.ManifestRead</class>
-		<introduced>5.0.0.0</introduced>
-		<description>reads a manifest file and returns the content as struct</description>
-		<argument>
-			<name>str</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Path to a jar file containing a "MANIFEST.MF" file in the directory "/META-INF/", 
-		path to a Manifest file or the content of a Manifest File</description>
-    </argument>
-		<return>
-			<type>struct</type>
-		</return>
-	</function>
+
 	
 	<!-- max -->
 	<function>
@@ -8889,213 +7184,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>any</type>
 		</return>
 	</function>
-	
-	<!-- ORMExecuteQuery -->
-	<function>
-		<name>ORMExecuteQuery</name>
-		<class>lucee.runtime.functions.orm.ORMExecuteQuery</class>
-		<description>Runs the HQL on the default data source specified for the application.</description>
-		<argument>
-			<name>hql</name>
-			<type>string</type>
-			<required>yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>paramsOrUnique</name>
-			<alias>params</alias>
-			<type>any</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>uniqueOrQueryOptions</name>
-			<alias>unique</alias>
-			<type>any</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>queryOptions</name>
-			<type>any</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
-	<!-- ORMClearSession -->
-	<function>
-		<name>ORMClearSession</name>
-		<class>lucee.runtime.functions.orm.ORMClearSession</class>
-		<description>Removes all the entities that are loaded or created in the session. This clears the first level cache and removes the objects that are not yet saved to the database.</description>
-		<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMCloseSession -->
-	<function>
-		<name>ORMCloseSession</name>
-		<class>lucee.runtime.functions.orm.ORMCloseSession</class>
-		<description>Closes the current ORM session.</description>
-		<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMCloseAllSession -->
-	<function>
-		<name>ORMCloseAllSessions</name>
-		<class>lucee.runtime.functions.orm.ORMCloseAllSessions</class>
-		<description>Closes all ORM session.</description>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMEvictCollection -->
-	<function>
-		<name>ORMEvictCollection</name>
-		<class>lucee.runtime.functions.orm.ORMEvictCollection</class>
-		<description>This will remove all the entries with the specified relation/collection name in the specified component. 
-ormEvictCollection(componentName,relationName,[id])</description>
-		
-		<argument>
-			<name>entityName</name>
-			<type>String</type>
-			<required>yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>collectionName</name>
-			<type>String</type>
-			<required>yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>primaryKey</name>
-			<type>String</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMEvictEntity -->
-	<function>
-		<name>ORMEvictEntity</name>
-		<class>lucee.runtime.functions.orm.ORMEvictEntity</class>
-		<description>This will remove all the entries for the specified component name from the entity cache.
-ormEvictEntity(componentName,[id])</description>
-		
-		<argument>
-			<name>entityName</name>
-			<type>String</type>
-			<required>yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>primaryKey</name>
-			<type>String</type>
-			<required>no</required>
-		<description></description>
-    </argument>
-		
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMEvictQueries -->
-	<function>
-		<name>ORMEvictQueries</name>
-		<class>lucee.runtime.functions.orm.ORMEvictQueries</class>
-		<description>This will remove all the queries from the named query cache. 
-If name is not specified, all queries from default cache will be removed.
-ormEvictQueries([cacheName])</description>
-		<argument>
-			<name>cacheName</name>
-			<alias>cache,region</alias>
-			<type>String</type>
-			<required>no</required>
-			<description></description>
-    	</argument>
-    	<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMFlush -->
-	<function>
-		<name>ORMFlush</name>
-		<class>lucee.runtime.functions.orm.ORMFlush</class>
-		<description>Flushes the current ORM session. ORMFlush flushes all the pending CRUD operations in that request. Any changes made in the objects, in the current ORM session, are saved to the database.</description>
-		<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	<!-- ORMGetSession -->
-	<function>
-		<name>ORMGetSession</name>
-		<class>lucee.runtime.functions.orm.ORMGetSession</class>
-		<description>Returns the current ORM session</description>
-		<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>object</type>
-		</return>
-	</function>
-	<!-- ORMGetSessionFactory -->
-	<function>
-		<name>ORMGetSessionFactory</name>
-		<class>lucee.runtime.functions.orm.ORMGetSessionFactory</class>
-		<description>Returns ORM session factory instance</description>
-		<argument>
-			<name>datasource</name>
-			<type>string</type>
-			<required>no</required>
-			<description>datasource used for the session, if nor defined the datasource defined in application.cfc/cfapplication is used.</description>
-		</argument>
-		<return>
-			<type>object</type>
-		</return>
-	</function>
-	<!-- ORMReload -->
-	<function>
-		<name>ORMReload</name>
-		<class>lucee.runtime.functions.orm.ORMReload</class>
-		<description>Returns ORM session factory instance</description>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	
 	<!-- paragraphFormat -->
 	<function>
@@ -9724,22 +7813,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>number</type>
 		</return>
 	</function>
-	<!-- ReleaseComObject -->
-	<function>
-		<name>releaseComObject</name>
-		<class>lucee.runtime.functions.other.ReleaseComObject</class>
-		<description>Releases a COM Object and frees up resources that it used. </description>
-		<argument>
-			<name>comObject</name>
-			<alias>com</alias>
-			<type>any</type>
-			<required>Yes</required>
-		<description>Variable name of a COM object that was created using the function or tag. </description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
 	<!-- rEFind -->
 	<function>
 		<name>rEFind</name>
@@ -10215,87 +8288,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
-	
-	<!-- RestDeleteApplication -->
-	<function>
-		<name>RestDeleteApplication</name>
-		<class>lucee.runtime.functions.rest.RestDeleteApplication</class>
-		<description>Deletes a existing REST mapping.</description>
-		<argument>
-			<name>dirPath</name>
-			<alias>dir,directory,path</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>Path to the directory to be registered or reseted.</description>
-	    </argument>
-		<argument>
-			<name>password</name>
-			<alias>webAdminPassword</alias>
-			<type>string</type>
-			<required>no</required>
-			<description>password for the web administrator, this is needed delete a REST mapping.</description>
-	    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	<!-- RestInitApplication -->
-	<function>
-		<name>RestInitApplication</name>
-		<class>lucee.runtime.functions.rest.RestInitApplication</class>
-		<description>Registers the directory path with the service mapping provided. 
-		If no service mapping is provided, the application name is used. 
-		If the rest application is already registered, it is refreshed.</description>
-		<argument>
-			<name>dirPath</name>
-			<alias>dir,directory,path</alias>
-			<type>string</type>
-			<required>yes</required>
-			<description>Path to the directory to be registered or reseted.</description>
-	    </argument>
-		<argument>
-			<name>serviceMapping</name>
-			<alias>mapping</alias>
-			<type>string</type>
-			<required>no</required>
-			<description>Alternate string to be used for application name while calling the REST service.</description>
-	    </argument>
-		<argument>
-			<name>default</name>
-			<type>boolean</type>
-			<required>no</required>
-			<description>set if the mapping is a default mapping or not</description>
-	    </argument>
-		<argument>
-			<name>password</name>
-			<alias>webAdminPassword</alias>
-			<type>string</type>
-			<required>no</required>
-			<description>password for the web administrator, this is needed when you update/create a REST mapping.</description>
-	    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
-	
-	
-	<!-- RestSetResponse -->
-	<function>
-		<name>RestSetResponse</name>
-		<class>lucee.runtime.functions.rest.RestSetResponse</class>
-		<description>Sets the custom responses.</description>
-		<argument>
-			<name>response</name>
-			<alias>rsp</alias>
-			<type>struct</type>
-			<required>yes</required>
-			<description>A struct that contains the response details.</description>
-	    </argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	
 	<!-- reverse -->
 	<function>
@@ -10388,33 +8381,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>number</type>
 		</return>
 	</function>
-	
-	<!-- RunAsync -->
-	<function>
-		<name>RunAsync</name>
-		<class>lucee.runtime.functions.thread.RunAsync</class>
-		<keywords>async,thread,future</keywords>
-		<description></description>
-		<argument>
-			<name>closure</name>
-			<alias>callback,udf,function</alias>
-			<type>object</type>
-			<required>yes</required>
-			<description></description>
-    	</argument>
-    	<argument>
-			<name>timeout</name>
-			<type>number</type>
-			<required>No</required>
-			<default>0</default>
-		<description>timeout for the action</description>
-    	</argument>
-    
-    
-		<return>
-			<type>object</type>
-		</return>
-	</function>
+
 	
 	<!-- rTrim -->
 	<function>
@@ -10734,28 +8701,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>datetime</type>
 		</return>
 	</function>
-	
-	<!-- SendGatewayMessage -->
-	<function>
-		<name>SendGatewayMessage</name>
-		<class>lucee.runtime.functions.gateway.SendGatewayMessage</class>
-		<description>Sends an outgoing message through a event gateway.</description>
-		<argument>
-			<name>gatewayID</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Identifier of the gateway to send the message.</description>
-    </argument>
-		<argument>
-			<name>data</name>
-			<type>struct</type>
-			<required>Yes</required>
-		<description>A structure.</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
+
 	<!-- serialize -->
 	<function>
 		<name>serialize</name>
@@ -10881,61 +8827,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>locale</type>
 		</return>
 	</function>
-	<!-- setProfileString -->
-	<function>
-		<name>setProfileString</name>
-		<class>lucee.runtime.functions.system.SetProfileString</class>
-		<description>Sets the value of a profile entry in an initialization file.</description>
-		<argument>
-			<name>iniPath</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Absolute path of initialization file</description>
-    </argument>
-		<argument>
-			<name>section</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Section of the initialization file in which the entry is
-            to be set</description>
-    </argument>
-		<argument>
-			<name>entry</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Name of the entry to set</description>
-    </argument>
-		<argument>
-			<name>value</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Value to which to set the entry</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
-	<!-- setVariable -->
-	<function>
-		<name>setVariable</name>
-		<class>lucee.runtime.functions.dynamicEvaluation.SetVariable</class>
-		<description>Sets the value</description>
-		<argument>
-			<name>name</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>Variable name, can be contain "." for structures.</description>
-    </argument>
-		<argument>
-			<name>value</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>the value to set</description>
-    </argument>
-		<return>
-			<type>any</type>
-		</return>
-	</function>
 	<!-- sgn -->
 	<function>
 		<name>sgn</name>
@@ -11039,28 +8930,6 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		</argument>
 		<return>
 			<type>query</type>
-		</return>
-	</function>
-	<!-- SSLCertificateInstall -->
-	<function>
-		<name>SSLCertificateInstall</name>
-		<class>lucee.runtime.functions.other.SSLCertificateInstall</class>
-		<description>install certificates of a specific host</description>
-		<argument>
-			<name>host</name>
-			<type>string</type>
-			<required>Yes</required>
-			<description>host to get Certificates from</description>
-		</argument>
-		<argument>
-			<name>port</name>
-			<type>number</type>
-			<required>no</required>
-			<default>443</default>
-			<description>port of the host, default is 443</description>
-		</argument>
-		<return>
-			<type>void</type>
 		</return>
 	</function>
 	<!-- stripCr -->
@@ -11334,44 +9203,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>void</type>
 		</return>
 	</function>
-	
-	<!-- each -->
-	<function>
-		<name>each</name>
-		<class>lucee.runtime.functions.closure.Each</class>
-		<keywords>iterator</keywords>
-		<status>deprecated</status>
-		<description>call the given UDF/Closure with every entry (key/value) in the given collection.</description>
-		<argument>
-			<name>collection</name>
-			<type>object</type>
-			<required>Yes</required>
-			<description>collection to take values from</description>
-		</argument>
-		<argument>
-			<name>closure</name>
-			<alias>function,callback,udf</alias>
-			<type>function</type>
-			<required>Yes</required>
-			<description>UDF/Closure that call with the entries from struct</description>
-		</argument>
-		<argument>
-			<name>parallel</name>
-			<type>boolean</type>
-			<required>No</required>
-			<description>execute closures parallel</description>
-		</argument>
-		<argument>
-			<name>maxThreads</name>
-			<type>number</type>
-			<required>No</required>
-			<default>20</default>
-			<description>maximum number of threads executed, ignored when argument "parallel" is set to false</description>
-		</argument>
-		<return>
-			<type>void</type>
-		</return>
-	</function>
+
 	
 	<!-- structFilter -->
 	<function>
@@ -12113,7 +9945,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		</return>
 	</function>
 	
-	
+
 	<!-- structFind -->
 	<function>
 		<name>structFind</name>
@@ -12612,48 +10444,6 @@ _- asc (default): ascending (a to z) sort order
 			<type>number</type>
 		</return>
 	</function>
-	<!-- ToScript -->
-	<function>
-		<name>ToScript</name>
-		<class>lucee.runtime.functions.conversion.ToScript</class>
-		<keywords>string,javascript</keywords>
-		<description>Creates a JavaScript expression that assigns the value of a variable to a JavaScript variable. 
-		This function can convert strings, numbers, arrays, structures, and queries to JavaScript syntax that defines equivalent variables and values.</description>
-		<argument>
-			<name>cfvar</name>
-			<type>any</type>
-			<required>Yes</required>
-		<description>A variable.</description>
-    </argument>
-		<argument>
-			<name>javascriptvar</name>
-			<type>string</type>
-			<required>Yes</required>
-		<description>A string that specifies the name of the JavaScript variable
-            that the ToScript function creates.</description>
-    </argument>
-		<argument>
-			<name>outputformat</name>
-			<type>boolean</type>
-			<required>No</required>
-			<default>true</default>
-		<description>A Boolean value that determines whether to create
-            WDDX (JavaScript) or ActionScript style output for
-            structures and queries.
-            Default: true</description>
-    </argument>
-		<argument>
-			<name>ASFormat</name>
-			<type>boolean</type>
-			<required>No</required>
-		<description>A Boolean value that specifies whether to use
-            ActionScript shortcuts in the script.
-            Default: false</description>
-    </argument>
-		<return>
-			<type>string</type>
-		</return>
-	</function>
 	<!-- toString -->
 	<function>
 		<name>toString</name>
@@ -13029,29 +10819,7 @@ _- asc (default): ascending (a to z) sort order
 			<type>xml</type>
 		</return>
 	</function>
-	<!-- htmlParse -->
-	<function>
-		<name>htmlParse</name>
-		<class>lucee.runtime.functions.xml.HtmlParse</class>
-		<keywords>HTML</keywords>
-		<description>parse the given html (not only xhtml) as xml Object, work similar to xmlParse, but this function is very forgiving with the syntax..</description>
-		<argument>
-			<name>html</name>
-			<alias>string,text</alias>
-			<type>string</type>
-			<required>Yes</required>
-		<description></description>
-    </argument>
-		<argument>
-			<name>caseSensitive</name>
-			<type>boolean</type>
-			<required>No</required>
-		<description></description>
-    </argument>
-		<return>
-			<type>xml</type>
-		</return>
-	</function>
+
 	<!-- xmlSearch -->
 	<function>
 		<name>xmlSearch</name>

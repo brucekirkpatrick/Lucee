@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lucee.runtime.exp.*;
 import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
@@ -87,8 +88,6 @@ import lucee.runtime.PageSourceImpl;
 import lucee.runtime.cache.CacheConnection;
 import lucee.runtime.cache.ram.RamCache;
 import lucee.runtime.cache.tag.CacheHandler;
-import lucee.runtime.cfx.CFXTagPool;
-import lucee.runtime.cfx.customtag.CFXTagPoolImpl;
 import lucee.runtime.component.ImportDefintion;
 import lucee.runtime.component.ImportDefintionImpl;
 import lucee.runtime.customtag.InitFile;
@@ -101,14 +100,6 @@ import lucee.runtime.dump.DumpWriterEntry;
 import lucee.runtime.dump.HTMLDumpWriter;
 import lucee.runtime.engine.ExecutionLogFactory;
 import lucee.runtime.engine.ThreadLocalPageContext;
-import lucee.runtime.exp.ApplicationException;
-import lucee.runtime.exp.DatabaseException;
-import lucee.runtime.exp.DeprecatedException;
-import lucee.runtime.exp.ExpressionException;
-import lucee.runtime.exp.PageException;
-import lucee.runtime.exp.PageRuntimeException;
-import lucee.runtime.exp.SecurityException;
-import lucee.runtime.exp.TemplateException;
 import lucee.runtime.extension.Extension;
 import lucee.runtime.extension.ExtensionDefintion;
 import lucee.runtime.extension.ExtensionProvider;
@@ -133,8 +124,6 @@ import lucee.runtime.osgi.EnvClassLoader;
 import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
 import lucee.runtime.rest.RestSettingImpl;
 import lucee.runtime.rest.RestSettings;
-import lucee.runtime.schedule.Scheduler;
-import lucee.runtime.schedule.SchedulerImpl;
 import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.spooler.SpoolerEngine;
@@ -295,9 +284,7 @@ public abstract class ConfigImpl implements Config {
     private Mapping[] customTagMappings = new Mapping[0];
     private Mapping[] componentMappings = new Mapping[0];
 
-    private SchedulerImpl scheduler;
 
-    private CFXTagPool cfxTagPool;
 
     private PageSource baseComponentPageSourceCFML;
     private String baseComponentTemplateCFML;
@@ -743,13 +730,6 @@ public abstract class ConfigImpl implements Config {
 	return timeOffset;
     }
 
-    /**
-     * @return return the Scheduler
-     */
-    @Override
-    public Scheduler getScheduler() {
-	return scheduler;
-    }
 
     /**
      * @return gets the password as hash
@@ -1661,27 +1641,6 @@ public abstract class ConfigImpl implements Config {
 	this.tempDirectory = tempDirectory;
     }
 
-    /**
-     * sets the Schedule Directory
-     * 
-     * @param scheduleDirectory sets the schedule Directory
-     * @param logger
-     * @throws PageException
-     */
-    protected void setScheduler(CFMLEngine engine, Resource scheduleDirectory) throws PageException {
-	if (scheduleDirectory == null) {
-	    if (this.scheduler == null) this.scheduler = new SchedulerImpl(engine, "<?xml version=\"1.0\"?>\n<schedule></schedule>", this);
-	    return;
-	}
-
-	if (!isDirectory(scheduleDirectory)) throw new ExpressionException("schedule task directory " + scheduleDirectory + " doesn't exist or is not a directory");
-	try {
-	    if (this.scheduler == null) this.scheduler = new SchedulerImpl(engine, this, scheduleDirectory, SystemUtil.getCharset().name());
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-    }
 
     /**
      * @param spoolInterval The spoolInterval to set.
@@ -1800,28 +1759,6 @@ public abstract class ConfigImpl implements Config {
 	this.loadTime = loadTime;
     }
 
-    /**
-     * @return Returns the configLogger. / public Log getConfigLogger() { return configLogger; }
-     */
-
-    @Override
-    public CFXTagPool getCFXTagPool() throws SecurityException {
-	return cfxTagPool;
-    }
-
-    /**
-     * @param cfxTagPool The customTagPool to set.
-     */
-    protected void setCFXTagPool(CFXTagPool cfxTagPool) {
-	this.cfxTagPool = cfxTagPool;
-    }
-
-    /**
-     * @param cfxTagPool The customTagPool to set.
-     */
-    protected void setCFXTagPool(Map cfxTagPool) {
-	this.cfxTagPool = new CFXTagPoolImpl(cfxTagPool);
-    }
 
     @Override
     public String getBaseComponentTemplate(int dialect) {
@@ -1903,9 +1840,6 @@ public abstract class ConfigImpl implements Config {
 	return this.clientType;
     }
 
-    /**
-     * @param searchEngine The searchEngine to set.
-     */
     protected void setSearchEngine(ClassDefinition cd, String directory) {
 	this.searchEngineClassDef = cd;
 	this.searchEngineDirectory = directory;
@@ -2206,9 +2140,6 @@ public abstract class ConfigImpl implements Config {
 	return mailDefaultCharset;
     }
 
-    /**
-     * @param mailDefaultEncoding the mailDefaultCharset to set
-     */
     protected void setMailDefaultEncoding(String mailDefaultCharset) {
 	this.mailDefaultCharset = CharsetUtil.toCharSet(mailDefaultCharset, this.mailDefaultCharset);
     }

@@ -218,14 +218,13 @@ public final class XMLConfigAdmin {
      * @param contextPath
      * @param password
      * @throws FunctionLibException
-     * @throws TagLibException
      * @throws IOException
      * @throws ClassNotFoundException
      * @throws SAXException
      * @throws PageException
      * @throws BundleException
      */
-    public void removePassword(String contextPath) throws PageException, SAXException, ClassException, IOException, TagLibException, FunctionLibException, BundleException {
+    public void removePassword(String contextPath) throws PageException, SAXException, ClassException, IOException, FunctionLibException, BundleException {
 	checkWriteAccess();
 	if (contextPath == null || contextPath.length() == 0 || !(config instanceof ConfigServerImpl)) {
 	    // config.setPassword(password); do nothing!
@@ -1431,62 +1430,6 @@ public final class XMLConfigAdmin {
 	return true;
     }
 
-    public void verifyCFX(String name) throws PageException {
-	CFXTagPool pool = config.getCFXTagPool();
-	CustomTag ct = null;
-	try {
-	    ct = pool.getCustomTag(name);
-	}
-	catch (CFXTagException e) {
-	    throw Caster.toPageException(e);
-	}
-	finally {
-	    if (ct != null) pool.releaseCustomTag(ct);
-	}
-
-    }
-
-    public void verifyJavaCFX(String name, ClassDefinition cd) throws PageException {
-	try {
-	    Class clazz = cd.getClazz();
-	    if (!Reflector.isInstaneOf(clazz, CustomTag.class, false))
-		throw new ExpressionException("class [" + cd + "] must implement interface [" + CustomTag.class.getName() + "]");
-	}
-	catch (ClassException e) {
-	    throw Caster.toPageException(e);
-	}
-	catch (BundleException e) {
-	    throw Caster.toPageException(e);
-	}
-
-	if (StringUtil.startsWithIgnoreCase(name, "cfx_")) name = name.substring(4);
-	if (StringUtil.isEmpty(name)) throw new ExpressionException("class name can't be a empty value");
-    }
-
-    /**
-     * remove a CFX Tag
-     * 
-     * @param name
-     * @throws ExpressionException
-     * @throws SecurityException
-     */
-    public void removeCFX(String name) throws ExpressionException, SecurityException {
-	checkWriteAccess();
-	// check parameters
-	if (name == null || name.length() == 0) throw new ExpressionException("name for CFX Tag can be a empty value");
-
-	renameOldstyleCFX();
-
-	Element mappings = _getRootElement("ext-tags");
-
-	Element[] children = XMLConfigWebFactory.getChildren(mappings, "ext-tag");
-	for (int i = 0; i < children.length; i++) {
-	    String n = children[i].getAttribute("name");
-	    if (n != null && n.equalsIgnoreCase(name)) {
-		mappings.removeChild(children[i]);
-	    }
-	}
-    }
 
     /**
      * update or insert new database connection
@@ -3236,7 +3179,7 @@ public final class XMLConfigAdmin {
      * @throws SecurityException
      */
     public void updateDefaultSecurity(short setting, short file, Resource[] fileAccess, short directJavaAccess, short mail, short datasource, short mapping, short remote,
-	    short customTag, short cfxSetting, short cfxUsage, short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject,
+	    short customTag, short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject,
 	    short tagRegistry, short cache, short gateway, short orm, short accessRead, short accessWrite) throws SecurityException {
 	checkWriteAccess();
 	if (!(config instanceof ConfigServer)) throw new SecurityException("can't change security settings from this context");
@@ -3251,8 +3194,6 @@ public final class XMLConfigAdmin {
 	security.setAttribute("mapping", SecurityManagerImpl.toStringAccessValue(mapping));
 	security.setAttribute("remote", SecurityManagerImpl.toStringAccessValue(remote));
 	security.setAttribute("custom_tag", SecurityManagerImpl.toStringAccessValue(customTag));
-	security.setAttribute("cfx_setting", SecurityManagerImpl.toStringAccessValue(cfxSetting));
-	security.setAttribute("cfx_usage", SecurityManagerImpl.toStringAccessValue(cfxUsage));
 	security.setAttribute("debugging", SecurityManagerImpl.toStringAccessValue(debugging));
 	security.setAttribute("search", SecurityManagerImpl.toStringAccessValue(search));
 	security.setAttribute("scheduled_task", SecurityManagerImpl.toStringAccessValue(scheduledTasks));

@@ -56,7 +56,7 @@ public final class DatasourceManagerImpl implements DataSourceManager {
     /**
      * constructor of the class
      * 
-     * @param pc
+     * @param c
      */
     public DatasourceManagerImpl(ConfigImpl c) {
 	this.config = c;

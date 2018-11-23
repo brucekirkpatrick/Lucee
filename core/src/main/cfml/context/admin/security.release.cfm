@@ -62,8 +62,6 @@ function checkTheBox(field) {
 				datasource="#fb('defaultDatasource')#"
 				mapping="#fb('defaultMapping')#"
 				custom_tag="#fb('defaultCustomTag')#"
-				cfx_setting="#fb('defaultCfxSetting')#"
-				cfx_usage="#fb('defaultCfxUsage')#"
 				debugging="#fb('defaultDebugging')#"
 				tag_execute="#fb('defaultTagExecute')#"
 				tag_import="#fb('defaultTagImport')#"

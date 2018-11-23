@@ -587,54 +587,47 @@
     <fail message="Missing data from [Require-Extension] inside ${coreManifest}">
     <condition>
         <or>
-        <!-- Lucene -->
+        <!-- Lucene 
         <not><isset property="extLucene"/></not>
         <not><isset property="extLuceneVersion"/></not>
-        <!-- Hibernate -->
         <not><isset property="extHibernate"/></not>
-        <not><isset property="extHibernateVersion"/></not>
-        <!-- PDF -->
+        <not><isset property="extHibernateVersion"/></not>-->
         <not><isset property="extPDF"/></not>
         <not><isset property="extPDFVersion"/></not>
-        <!-- S3 -->
+        <!-- S3
         <not><isset property="extS3"/></not>
         <not><isset property="extS3Version"/></not>
-        <!-- EHCache -->
         <not><isset property="extEHCache"/></not>
         <not><isset property="extEHCacheVersion"/></not>
-        <!-- Chart -->
         <not><isset property="extChart"/></not>
         <not><isset property="extChartVersion"/></not>
+		 -->
         <!-- MySQL -->
         <not><isset property="extMySQL"/></not>
         <not><isset property="extMySQLVersion"/></not>
-        <!-- MSSQL -->
+        <!-- MSSQL 
         <not><isset property="extMSSQL"/></not>
-        <not><isset property="extMSSQLVersion"/></not>
-        <!-- PostgreSQL -->
+        <not><isset property="extMSSQLVersion"/></not> 
         <not><isset property="extPostgreSQL"/></not>
-        <not><isset property="extPostgreSQLVersion"/></not>
-        <!-- JDTsSQL -->
+        <not><isset property="extPostgreSQLVersion"/></not> 
         <not><isset property="extJDTsSQL"/></not>
-        <not><isset property="extJDTsSQLVersion"/></not>
-        <!-- Admin -->
+        <not><isset property="extJDTsSQLVersion"/></not>-->
+        <!-- Admin 
         <not><isset property="extAdmin"/></not>
-        <not><isset property="extAdminVersion"/></not>
-        <!-- Doc -->
+        <not><isset property="extAdminVersion"/></not>-->
+        <!-- Doc 
         <not><isset property="extDoc"/></not>
         <not><isset property="extDocVersion"/></not>
-        <!-- Form -->
         <not><isset property="extForm"/></not>
         <not><isset property="extFormVersion"/></not>
-        <!-- Webservice -->
         <not><isset property="extAxis"/></not>
-        <not><isset property="extAxisVersion"/></not>
+        <not><isset property="extAxisVersion"/></not>-->
         <!-- Image -->
         <not><isset property="extImage"/></not>
         <not><isset property="extImageVersion"/></not>
-        <!-- Esapi -->
+        <!-- Esapi 
         <not><isset property="extEsapi"/></not>
-        <not><isset property="extEsapiVersion"/></not>
+        <not><isset property="extEsapiVersion"/></not>-->
         </or>
     </condition>
     </fail>
@@ -717,10 +710,10 @@
 
   <target name="check-cache">
 
-    <available file="${cache}/testbox-${testboxVersion}.zip" property="testbox.present"/>
+    <!-- <available file="${cache}/testbox-${testboxVersion}.zip" property="testbox.present"/> -->
 
     <available file="${cache}/${extMySQL}-${extMySQLVersion}.lex" property="mysql.present"/>
-    <available file="${cache}/${extMSSQL}-${extMSSQLVersion}.lex" property="mssql.present"/>
+    <!-- <available file="${cache}/${extMSSQL}-${extMSSQLVersion}.lex" property="mssql.present"/>
     <available file="${cache}/${extPostgreSQL}-${extPostgreSQLVersion}.lex" property="postgre.present"/>
     <available file="${cache}/${extJDTsSQL}-${extJDTsSQLVersion}.lex" property="jdts.present"/>
 
@@ -730,19 +723,19 @@
     <available file="${cache}/${extAdmin}-${extAdminVersion}.lex" property="admin.present"/>
     <available file="${cache}/${extDoc}-${extDocVersion}.lex" property="doc.present"/>
     <available file="${cache}/${extHibernate}-${extHibernateVersion}.lex" property="hibernate.present"/>
-    <available file="${cache}/${extLucene}-${extLuceneVersion}.lex" property="lucene.present"/>
+    <available file="${cache}/${extLucene}-${extLuceneVersion}.lex" property="lucene.present"/> -->
     <available file="${cache}/${extPDF}-${extPDFVersion}.lex" property="pdf.present"/>
-    <available file="${cache}/${extForm}-${extFormVersion}.lex" property="form.present"/>
-    <available file="${cache}/${extAxis}-${extAxisVersion}.lex" property="axis.present"/>
+    <!-- <available file="${cache}/${extForm}-${extFormVersion}.lex" property="form.present"/>
+    <available file="${cache}/${extAxis}-${extAxisVersion}.lex" property="axis.present"/> -->
     <available file="${cache}/${extImage}-${extImageVersion}.lex" property="image.present"/>
-    <available file="${cache}/${extEsapi}-${extEsapiVersion}.lex" property="esapi.present"/>
+    <!-- <available file="${cache}/${extEsapi}-${extEsapiVersion}.lex" property="esapi.present"/> -->
   </target>
 
 
   <target name="check-mysql" depends="check-cache" unless="mysql.present">
       <get src="${extURL}${extMySQL}?version=${extMySQLVersion}" dest="${cache}/${extMySQL}-${extMySQLVersion}.lex"/>
   </target> 
-  <target name="check-mssql" depends="check-cache" unless="mssql.present">
+  <!-- <target name="check-mssql" depends="check-cache" unless="mssql.present">
       <get src="${extURL}${extMSSQL}?version=${extMSSQLVersion}" dest="${cache}/${extMSSQL}-${extMSSQLVersion}.lex"/>
   </target> 
   <target name="check-postgre" depends="check-cache" unless="postgre.present">
@@ -765,11 +758,11 @@
   </target>
   <target name="check-lucene" depends="check-cache" unless="lucene.present">
       <get src="${extURL}${extLucene}?version=${extLuceneVersion}" dest="${cache}/${extLucene}-${extLuceneVersion}.lex"/>
-  </target>
+  </target> -->
   <target name="check-pdf" depends="check-cache" unless="pdf.present">
       <get src="${extURL}${extPDF}?version=${extPDFVersion}" dest="${cache}/${extPDF}-${extPDFVersion}.lex"/>
   </target>
-  <target name="check-admin" depends="check-cache" unless="admin.present">
+  <!-- <target name="check-admin" depends="check-cache" unless="admin.present">
       <get src="${extURL}${extAdmin}?version=${extAdminVersion}" dest="${cache}/${extAdmin}-${extAdminVersion}.lex"/>
   </target>
   <target name="check-doc" depends="check-cache" unless="doc.present">
@@ -780,26 +773,27 @@
   </target>
   <target name="check-axis" depends="check-cache" unless="axis.present">
       <get src="${extURL}${extAxis}?version=${extAxisVersion}" dest="${cache}/${extAxis}-${extAxisVersion}.lex"/>
-  </target>
+  </target> -->
   <target name="check-image" depends="check-cache" unless="image.present">
       <get src="${extURL}${extImage}?version=${extImageVersion}" dest="${cache}/${extImage}-${extImageVersion}.lex"/>
   </target>
-  <target name="check-esapi" depends="check-cache" unless="esapi.present">
+  <!-- <target name="check-esapi" depends="check-cache" unless="esapi.present">
       <get src="${extURL}${extEsapi}?version=${extEsapiVersion}" dest="${cache}/${extEsapi}-${extEsapiVersion}.lex"/>
   </target>
   <target name="check-testbox" depends="check-cache" unless="testbox.present">
       <get src="${testboxURL}" dest="${cache}/testbox-${testboxVersion}.zip"/>
-  </target> 
+  </target>  -->
 
 
-  <target name="check" depends="check-mysql,check-mssql,check-postgre,check-jdts,check-chart,check-s3,check-ehcache,check-hibernate,check-lucene,check-pdf,check-admin,check-doc,check-form,check-axis,check-image,check-esapi,check-testbox">
+  <!-- <target name="check" depends="check-mysql,check-mssql,check-postgre,check-jdts,check-chart,check-s3,check-ehcache,check-hibernate,check-lucene,check-pdf,check-admin,check-doc,check-form,check-axis,check-image,check-esapi,check-testbox"> -->
+  <target name="check" depends="check-mysql,check-pdf,check-image">
     
     <mkdir dir="${temp}/loader/extensions/"/>
 
     <!-- testbox -->
-    <copy 
+    <!-- <copy 
       file="${cache}/testbox-${testboxVersion}.zip" 
-      todir="${temp}"/>
+      todir="${temp}"/> -->
 
   </target> 
 
@@ -807,50 +801,50 @@
   <target name="copyDeployFiles" depends="init,check" description="copy files from source/cfml to source/java/core/src/resource">
     <echots message="copy files from source/cfml to source/java/core/src/resource"/>
 
-    <copy todir="${srcCore}/resource/context/" overwrite="true">
+    <sync todir="${srcCore}/resource/context/" overwrite="true">
       <fileset dir="${srcCFML}/context/">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </copy>
+    </sync>
 
-    <copy todir="${srcCore}/resource/context/admin/resources/language/" overwrite="true">
+    <sync todir="${srcCore}/resource/context/admin/resources/language/" overwrite="true">
       <fileset dir="${srcCFML}/context/admin/resources/language/">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </copy>
+    </sync>
 
-    <copy todir="${srcCore}/resource/context/gateway"  overwrite="true">
+    <!-- <copy todir="${srcCore}/resource/context/gateway"  overwrite="true">
       <fileset dir="${srcCFML}/context/gateway">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </copy>
+    </copy> -->
 
-    <copy todir="${srcCore}/resource/context/templates/error"  overwrite="true">
+    <sync todir="${srcCore}/resource/context/templates/error"  overwrite="true">
       <fileset dir="${srcCFML}/context/templates/error">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </copy>
+    </sync>
 
-    <copy todir="${srcCore}/resource/context/admin/plugin"  overwrite="true">
+    <sync todir="${srcCore}/resource/context/admin/plugin"  overwrite="true">
       <fileset dir="${srcCFML}/context/admin/plugin">
         <include name="**/*.cfm"/>
         <include name="**/*.cfc"/>
         <include name="**/*.lucee"/>
         <include name="**/*.xml"/>
       </fileset>
-    </copy>
+    </sync>
   </target>
 
   <target name="agent" depends="copyDeployFiles" description="create external-agent  jar used as backup when dynamic agent fails" >
@@ -972,16 +966,14 @@
 
 <target name="__build_archives" depends="buildJars">
 
-
-    <!-- first we copy the jars in place otherwise, Lucee downloads them  -->
+<!-- 
     <echots message="copy bundles in place"/>
     <addBundles 
       bundles="${dependencies}" 
       target="${temp}/archive/base/lucee-server/bundles"
       coremanifest="${coreManifest}"
       pack200="false"/>
-
-    <!-- no we copy the extension in place otherwise, Lucee downloads them as well  -->
+ 
     <echots message="copy extensions in place"/>
     <copy todir="${temp}/archive/base/lucee-server/context/extensions/available" flatten="true">
       <fileset dir="${cache}">
@@ -991,14 +983,13 @@
 
 
 
-    <echots message="getting and unzip testbox"/>
-    <!-- now we need to get the testbox source -->
+    <echots message="getting and unzip testbox"/> 
     <unzip src="${temp}/testbox-${testboxVersion}.zip" dest="${temp}/testbox"/>
     <delete dir="${temp}/testbox-${testboxVersion}.zip"/>
 
 
     <echots message="building different archives that get bundled (admin,doc) with help of the temporary generated lucee.jar"/>
-    <!-- build the lucee-context.lar -->
+     build the lucee-context.lar
     <java classname="org.apache.tools.ant.launch.Launcher" dir="${ant}" fork="true" failonerror="false" errorproperty="exc">
       <classpath path="${java.class.path}">
           <pathelement location="${temp}/lucee.jar"/>
@@ -1017,15 +1008,14 @@
       <jvmarg value="-Dlucee.extensions.install=true"/>
       <jvmarg value="-Dlucee.full.null.support=false"/>
     </java>
-    <echo>${exc}</echo>
+    <echo>${exc}</echo> -->
 
 </target>
 
 <target name="__build_testbox" if="testcases">
-    
+    <!-- 
     <listDirectory directory="${test}/lib" delimiter=":" returnvalue="test_jars"/>
-    <echots message="execute testcases ${testcases}"/>
-    <!-- execute CFML testcases -->
+    <echots message="execute testcases ${testcases}"/> 
     <java classname="org.apache.tools.ant.launch.Launcher" dir="${ant}" fork="true" failonerror="true" errorproperty="exc2">
       <classpath path="${java.class.path}">
           <pathelement location="${temp}/lucee.jar"/>
@@ -1037,8 +1027,7 @@
       <arg value="${ant}/run-testcases.xml"/>
 
       <jvmarg value="-Dtest=${test}"/>
-      <jvmarg value="-Dtemp=${temp}"/>
-      <!-- <jvmarg value="-Djdk.attach.allowAttachSelf=true"/> -->
+      <jvmarg value="-Dtemp=${temp}"/> 
       <jvmarg value="-DtestboxArchive=${temp}/archive/testbox.lar"/>
       <jvmarg value="-Dexecute=${testcases}"/>
       <jvmarg value="-DindividualStorageKeys=false"/>
@@ -1047,27 +1036,22 @@
       <jvmarg value="-Dlucee-extensions=${extH2},${extMongo},${extOracle}"/>
       <jvmarg value="-Dlucee.enable.dialect=true"/>
       <jvmarg value="-Dlucee.extensions.install=true"/>
-      <jvmarg value="-Dlucee.full.null.support=false"/>
-      <!--
-        felix.log.level
-        lucee.controller.disabled
-    -->
+      <jvmarg value="-Dlucee.full.null.support=false"/> 
 
     </java>
     <echo>${exc2}</echo>
-
+-->
 </target>
 
 
   <target name="__build" depends="__build_archives,__build_testbox">
 
-    <!-- now we have to build the lucee.jar again, this time with the lar files -->
-    <echots message="copy generated archive in place"/>
-    <!-- copy the lucee lar -->
+    <!-- now we have to build the lucee.jar again, this time with the lar files
+    <echots message="copy generated archive in place"/> 
     <copy file="${temp}/archive/lucee-context.lar" tofile="${core}/resource/context/lucee-context.lar"/>
     <copy file="${temp}/archive/lucee-admin.lar" tofile="${core}/resource/context/lucee-admin.lar"/> 
     <copy file="${temp}/archive/lucee-doc.lar" tofile="${core}/resource/context/lucee-doc.lar"/> 
-
+ -->
   </target>
 
 
@@ -1142,7 +1126,7 @@
       doit="${pack200}"/>
     
 
-    <!-- add extension MSSQL -->
+    <!-- add extension MSSQL 
     <loadmf jar="${cache}/${extMSSQL}-${extMSSQLVersion}.lex" prefix="ext_mssql."/>
     <toFileName id="${ext_mssql.id}" name="${ext_mssql.name}" version="${ext_mssql.version}" property="ext_mssql.filename"/>
     <copy 
@@ -1157,8 +1141,7 @@
       file="${goal}/extensions/${ext_mssql.filename}"  
       tmpdir="${temp}/extunzip/mssql/" 
       doit="${pack200}"/>
-
-    <!-- add extension Postgre -->
+ 
     <loadmf jar="${cache}/${extPostgreSQL}-${extPostgreSQLVersion}.lex" prefix="ext_postgre."/>
     <toFileName id="${ext_postgre.id}" name="${ext_postgre.name}" version="${ext_postgre.version}" property="ext_postgre.filename"/>
     <copy 
@@ -1173,8 +1156,7 @@
       file="${goal}/extensions/${ext_postgre.filename}"  
       tmpdir="${temp}/extunzip/postgre/" 
       doit="${pack200}"/>
-
-    <!-- add extension JDTS -->
+ 
     <loadmf jar="${cache}/${extJDTsSQL}-${extJDTsSQLVersion}.lex" prefix="ext_jdts."/>
     <toFileName id="${ext_jdts.id}" name="${ext_jdts.name}" version="${ext_jdts.version}" property="ext_jdts.filename"/>
     <copy 
@@ -1189,8 +1171,7 @@
       file="${goal}/extensions/${ext_jdts.filename}"  
       tmpdir="${temp}/extunzip/jdts/" 
       doit="${pack200}"/>
-
-    <!-- add extension Chart -->
+ 
     <loadmf jar="${cache}/${extChart}-${extChartVersion}.lex" prefix="ext_chart."/>
     <toFileName id="${ext_chart.id}" name="${ext_chart.name}" version="${ext_chart.version}" property="ext_chart.filename"/>
     <copy 
@@ -1205,8 +1186,7 @@
       file="${goal}/extensions/${ext_chart.filename}"  
       tmpdir="${temp}/extunzip/chart/" 
       doit="${pack200}"/>
-
-    <!-- add extension S3 -->
+ 
     <loadmf jar="${cache}/${extS3}-${extS3Version}.lex" prefix="ext_s3."/>
     <toFileName id="${ext_s3.id}" name="${ext_s3.name}" version="${ext_s3.version}" property="ext_s3.filename"/>
     <copy 
@@ -1221,8 +1201,7 @@
       file="${goal}/extensions/${ext_s3.filename}"  
       tmpdir="${temp}/extunzip/s3/" 
       doit="${pack200}"/>
-
-    <!-- add extension EHCache -->
+ 
     <loadmf jar="${cache}/${extEHCache}-${extEHCacheVersion}.lex" prefix="ext_ehcache."/>
     <toFileName id="${ext_ehcache.id}" name="${ext_ehcache.name}" version="${ext_ehcache.version}" property="ext_ehcache.filename"/>
     <copy 
@@ -1237,8 +1216,7 @@
       file="${goal}/extensions/${ext_ehcache.filename}"  
       tmpdir="${temp}/extunzip/ehcache/" 
       doit="${pack200}"/>
-
-    <!-- add extension Hibernate -->
+ 
     <loadmf jar="${cache}/${extHibernate}-${extHibernateVersion}.lex" prefix="ext_hibernate."/>
     <toFileName id="${ext_hibernate.id}" name="${ext_hibernate.name}" version="${ext_hibernate.version}" property="ext_hibernate.filename"/>
     <copy 
@@ -1253,9 +1231,7 @@
       file="${goal}/extensions/${ext_hibernate.filename}"  
       tmpdir="${temp}/extunzip/hibernate/" 
       doit="${pack200}"/>
-
-
-    <!-- add extension Lucene -->
+ 
     <loadmf jar="${cache}/${extLucene}-${extLuceneVersion}.lex" prefix="ext_lucene."/>
     <toFileName id="${ext_lucene.id}" name="${ext_lucene.name}" version="${ext_lucene.version}" property="ext_lucene.filename"/>
     <copy 
@@ -1270,7 +1246,7 @@
       file="${goal}/extensions/${ext_lucene.filename}"  
       tmpdir="${temp}/extunzip/lucene/" 
       doit="${pack200}"/>
-
+-->
     <!-- add extension PDF -->
     <loadmf jar="${cache}/${extPDF}-${extPDFVersion}.lex" prefix="ext_pdf."/>
     <toFileName id="${ext_pdf.id}" name="${ext_pdf.name}" version="${ext_pdf.version}" property="ext_pdf.filename"/>
@@ -1287,7 +1263,7 @@
       tmpdir="${temp}/extunzip/pdf/" 
       doit="${pack200}"/>
 
-    <!-- add extension Admin -->
+    <!-- add extension Admin 
     <loadmf jar="${cache}/${extAdmin}-${extAdminVersion}.lex" prefix="ext_admin."/>
     <toFileName id="${ext_admin.id}" name="${ext_admin.name}" version="${ext_admin.version}" property="ext_admin.filename"/>
     <copy 
@@ -1302,8 +1278,7 @@
       file="${goal}/extensions/${ext_admin.filename}"  
       tmpdir="${temp}/extunzip/admin/" 
       doit="${pack200}"/>
-
-    <!-- add extension Doc -->
+ 
     <loadmf jar="${cache}/${extDoc}-${extDocVersion}.lex" prefix="ext_doc."/>
     <toFileName id="${ext_doc.id}" name="${ext_doc.name}" version="${ext_doc.version}" property="ext_doc.filename"/>
     <copy 
@@ -1318,8 +1293,7 @@
       file="${goal}/extensions/${ext_doc.filename}"  
       tmpdir="${temp}/extunzip/doc/" 
       doit="${pack200}"/>
-
-    <!-- add extension Form -->
+ 
     <loadmf jar="${cache}/${extForm}-${extFormVersion}.lex" prefix="ext_form."/>
     <toFileName id="${ext_form.id}" name="${ext_form.name}" version="${ext_form.version}" property="ext_form.filename"/>
     <copy 
@@ -1334,8 +1308,7 @@
       file="${goal}/extensions/${ext_form.filename}"  
       tmpdir="${temp}/extunzip/form/" 
       doit="${pack200}"/>
-
-    <!-- add extension Webservice -->
+ 
     <loadmf jar="${cache}/${extAxis}-${extAxisVersion}.lex" prefix="ext_axis."/>
     <toFileName id="${ext_axis.id}" name="${ext_axis.name}" version="${ext_axis.version}" property="ext_axis.filename"/>
     <copy 
@@ -1346,7 +1319,7 @@
       tofile="${goal}/extensions/${ext_axis.filename}"/>
     <echo>add:${goal}/extensions/${ext_axis.filename}</echo>
     <echo file="${goal}/extensions/.index" append="true">${ext_axis.filename};</echo>
-
+-->
     <!-- add extension Image -->
     <loadmf jar="${cache}/${extImage}-${extImageVersion}.lex" prefix="ext_image."/>
     <toFileName id="${ext_image.id}" name="${ext_image.name}" version="${ext_image.version}" property="ext_image.filename"/>
@@ -1359,7 +1332,7 @@
     <echo>add:${goal}/extensions/${ext_image.filename}</echo>
     <echo file="${goal}/extensions/.index" append="true">${ext_image.filename};</echo>
 
-    <!-- add extension Esapi -->
+    <!-- add extension Esapi 
     <loadmf jar="${cache}/${extEsapi}-${extEsapiVersion}.lex" prefix="ext_esapi."/>
     <toFileName id="${ext_esapi.id}" name="${ext_esapi.name}" version="${ext_esapi.version}" property="ext_esapi.filename"/>
     <copy 
@@ -1370,7 +1343,7 @@
       tofile="${goal}/extensions/${ext_esapi.filename}"/>
     <echo>add:${goal}/extensions/${ext_esapi.filename}</echo>
     <echo file="${goal}/extensions/.index" append="true">${ext_esapi.filename};</echo>
-
+-->
   </target>
 
 
@@ -1453,11 +1426,11 @@
     <echots message="build loader"/>
     
 
-    <!-- genrates the jar from the loader -->
+    <!-- genrates the jar from the loader
     <jar 
       basedir="${temp}/loader" 
       jarfile="${trgLoader}/lucee-${version}.jar" 
-      manifest="${goal}/META-INF/MANIFEST.MF"/>
+      manifest="${goal}/META-INF/MANIFEST.MF"/> -->
 
 
     <echots message="done"/>

@@ -189,7 +189,6 @@ und Optimierungen innerhalb ihrer Version einspielen.</data>
 	<data key="menu.resources.rest">Rest</data>
 	<data key="menu.resources.component">Komponenten</data>
 	<data key="menu.resources.customtags">Custom Tags</data>
-	<data key="menu.resources.cfx_tags">CFX Tags</data>
 	<data key="menu.debugging.label">Debugging</data>
 	<data key="menu.debugging.logs">Logs</data>
 	<data key="menu.debugging.templates">Templates</data>
@@ -214,7 +213,6 @@ und Optimierungen innerhalb ihrer Version einspielen.</data>
 	<data key="security.tagexecute">Tag CFExecute</data>
 	<data key="security.datasourcetextes.-1">unbeschränkt</data>
 	<data key="security.filecustomdesc">Sie können zusätzliche Verzeichnisse definieren, wo der Filezugriff erlaubt ist.</data>
-	<data key="security.cfxtagsdescription">Mit Hilfe von CFX Tags können Java Klassen geladen werden, die ev. volles Zugriffsrecht auf das Hostsystem gewähren.</data>
 	<data key="security.tabspecial">Individuell</data>
 	<data key="security.cache">Cache</data>
 	<data key="security.webadministratordescription">Hier können Sie die Zugriffsrechte für die Einstellungen festlegen, die in den &apos;Web Administratoren&apos; überschrieben werden können.</data>
@@ -244,10 +242,8 @@ und Optimierungen innerhalb ihrer Version einspielen.</data>
 	<data key="security.accessread">Lesezugriff</data>
 	<data key="security.tagregistry">Tag CFRegistry</data>
 	<data key="security.speclisttitle">Spzifische Web Kontexte</data>
-	<data key="security.cfxtags">CFX tags</data>
 	<data key="security.title">Standard Zugriffsrechte</data>
 	<data key="security.speclistwebcontext">Web Kontext</data>
-	<data key="security.cfxdescription">Die Einstellungen für die CFX Tags können geändert werden. Im &apos;Server Administrator&apos; global definierte Tags können auch verwendet werden.</data>
 	<data key="security.filenone">none</data>
 	<data key="security.customtag">Custom Tags</data>
 	<data key="security.titledescription">Hier können Sie die Zugriffsrechte festlegen, die für alle Instanzen verwendet werden sollen. Falls zugelassen, können diese Einstellungen in den lokalen &apos;Web Administratoren&apos; überschrieben werden.</data>
@@ -272,7 +268,6 @@ und Optimierungen innerhalb ihrer Version einspielen.</data>
 	<data key="security.settings">Einstellungen (Region, Komponenten, Scope)</data>
 	<data key="security.search">Suche</data>
 	<data key="security.javaaccess">Direkter Java Zugriff</data>
-	<data key="security.cfx">CFX</data>
 	<data key="charset.templatecharsetdescription">Charset das verwendet wird um die verschiedenen Templates (.cfm und .cfc Files) einzulesen</data>
 	<data key="charset.webcharsetdescription">Charset das als standardmässiger charset des Output Streams, zum Einlesen von form, url und cgi Scope und zum Schreiben und Lesen des Headers verwendet wird</data>
 	<data key="charset.webcharset">Web Charset</data>

@@ -501,7 +501,7 @@ public final class Application extends TagImpl {
     }
 
     /**
-     * @param s3 the s3 to set
+     * @param ftp the s3 to set
      */
     public void setFtp(Struct ftp) {
 	this.ftp = ftp;
@@ -576,7 +576,7 @@ public final class Application extends TagImpl {
     }
 
     /**
-     * @param scriptrotect the scriptrotect to set
+     * @param strScriptrotect the scriptrotect to set
      */
     public void setScriptprotect(String strScriptrotect) {
 	this.scriptrotect = strScriptrotect;

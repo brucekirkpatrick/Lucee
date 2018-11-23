@@ -97,7 +97,7 @@ public class FDControllerImpl implements IFDController {
 		    "FD Server Licensing does not work with the Open Source Version of Lucee or Enterprise Version of Lucee that is not enabled");
 	    return null;
 	}
-	return FDLicense.getLicenseInformation(key);
+	return "";
     }
 
     @Override

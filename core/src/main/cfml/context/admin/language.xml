@@ -66,11 +66,6 @@
 		<custom key="buttons.update">aktualisieren</custom>
 	
 		<custom key="buttons.verify">überprüfen</custom>
-		<custom key="cfx.cfxtags">Java CFX Tags</custom>
-		<custom key="cfx.class">Klasse</custom>
-		<custom key="cfx.missingclassvalue">Bitte geben Sie einen Wert für die Klasse an. (Zeile </custom>
-		<custom key="cfx.name">Name</custom>
-		<custom key="cfx.noaccess">Kein Zugriff auf die CFX Funktionalität</custom>
 	
 		<custom key="charset.missingresourcecharset">Bitte geben Sie einen Wert für das Ressource Charset ein</custom>
 		<custom key="charset.missingtemplatecharset">Bitte geben Sie einen Wert für das Template Charset ein</custom>
@@ -569,11 +564,7 @@
 		<custom key="security.accesswritedesc">definiert den Schreibzugriff</custom>
 		<custom key="security.cfmlenvironment">CFML Umgebung</custom>
 		<custom key="security.cfmlenvironmentdescription">Einstellungen die festlegen wie Lucee Code mit dem Hostsystem interagiert.</custom>
-		<custom key="security.cfx">CFX</custom>
-		<custom key="security.cfxdescription">Die Einstellungen für die CFX Tags können geändert werden. Im 'Server Administrator' global definierte Tags können auch verwendet werden.</custom>
-	
-		<custom key="security.cfxtags">CFX tags</custom>
-		<custom key="security.cfxtagsdescription">Mit Hilfe von CFX Tags können Java Klassen geladen werden, die ev. volles Zugriffsrecht auf das Hostsystem gewähren.</custom>
+
 		<custom key="security.customtag">Custom Tags</custom>
 		<custom key="security.customtagdescription">Custom tags können 'Web Administrator' hinzugefügt, gelöscht und geändert werden.</custom>
 		<custom key="security.datasource">Datasource</custom>
@@ -803,12 +794,6 @@
 		<custom key="buttons.update">update</custom>
 	
 		<custom key="buttons.verify">verify</custom>
-		<custom key="cfx.cfxtags">Java CFX tags</custom>
-		<custom key="cfx.class">Class</custom>
-		<custom key="cfx.missingclassvalue">Please enter a value for the class (row </custom>
-		<custom key="cfx.name">Name</custom>
-		<custom key="cfx.noaccess">No access to CFX functionality</custom>
-	
 		<custom key="charset.missingresourcecharset">Please specify a resource charset</custom>
 		<custom key="charset.missingtemplatecharset">Please specify a template charset</custom>
 		<custom key="charset.missingwebcharset">please specify a web charset</custom>
@@ -1305,11 +1290,7 @@
 		<custom key="security.accesswritedesc">define the access for writing data</custom>
 		<custom key="security.cfmlenvironment">CFML Enviroment</custom>
 		<custom key="security.cfmlenvironmentdescription">Settings that have an effect on how Lucee code interacts with the host enviroment</custom>
-	
-		<custom key="security.cfx">CFX</custom>
-		<custom key="security.cfxdescription">The settings for the cfx tags can be changed. The globally defined CFX tags defined in the &quot;server administrator&quot; can be used as well.</custom>
-		<custom key="security.cfxtags">CFX tags</custom>
-		<custom key="security.cfxtagsdescription">With CFX tags one can load Java classes which might have full access to the local hosts system. This might be a potential security risk to the hosts system</custom>
+
 		<custom key="security.customtag">Custom Tag</custom>
 	
 		<custom key="security.customtagdescription">The custom tag settings can be changed in the &quot;web administrator&quot;</custom>

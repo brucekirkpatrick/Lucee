@@ -73,8 +73,7 @@
 				struct(action:"mappings",label:stMenu.resources.mappings),
 				struct(action:"rest",label:isDefined('stMenu.resources.rest')?stMenu.resources.rest:'Rest'),
 				struct(action:"component",label:stMenu.resources.component),
-				struct(action:"customtags",label:stMenu.resources.customtags),
-				struct(action:"cfx_tags",label:stMenu.resources.cfx_tags)
+				struct(action:"customtags",label:stMenu.resources.customtags)
 			)
 		),
 		struct(action:"debugging",label:stMenu.debugging.label,

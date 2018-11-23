@@ -47,30 +47,7 @@ public final class SecurityManagerImpl implements Cloneable, SecurityManager {
 
     private SecurityManagerImpl() {}
 
-    /**
-     * create a new Accessor
-     * 
-     * @param setting
-     * @param file
-     * @param directJavaAccess
-     * @param mail
-     * @param datasource
-     * @param mapping
-     * @param customTag
-     * @param cfxSetting
-     * @param cfxUsage
-     * @param debugging
-     * @param search
-     * @param scheduledTasks
-     * @param tagExecute
-     * @param tagImport
-     * @param tagObject
-     * @param tagRegistry
-     * @param t
-     * @param accessRead
-     */
-    public SecurityManagerImpl(short setting, short file, short directJavaAccess, short mail, short datasource, short mapping, short remote, short customTag, short cfxSetting,
-	    short cfxUsage, short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject, short tagRegistry, short cache, short gateway,
+    public SecurityManagerImpl(short setting, short file, short directJavaAccess, short mail, short datasource, short mapping, short remote, short customTag, short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject, short tagRegistry, short cache, short gateway,
 	    short orm, short accessRead, short accessWrite) {
 	accesses[TYPE_SETTING] = setting;
 	accesses[TYPE_FILE] = file;
@@ -79,8 +56,6 @@ public final class SecurityManagerImpl implements Cloneable, SecurityManager {
 	accesses[TYPE_DATASOURCE] = datasource;
 	accesses[TYPE_MAPPING] = mapping;
 	accesses[TYPE_CUSTOM_TAG] = customTag;
-	accesses[TYPE_CFX_SETTING] = cfxSetting;
-	accesses[TYPE_CFX_USAGE] = cfxUsage;
 	accesses[TYPE_DEBUGGING] = debugging;
 	accesses[TYPE_SEARCH] = search;
 	accesses[TYPE_SCHEDULED_TASK] = scheduledTasks;
@@ -110,8 +85,6 @@ public final class SecurityManagerImpl implements Cloneable, SecurityManager {
 		VALUE_YES, // Mapping
 		VALUE_YES, // Remote
 		VALUE_YES, // Custom tag
-		VALUE_YES, // CFX Setting
-		VALUE_YES, // CFX Usage
 		VALUE_YES, // Debugging
 		VALUE_YES, // Search
 		VALUE_YES, // Scheduled Tasks

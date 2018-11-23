@@ -220,11 +220,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	this.securityManager = securityManager;
     }
 
-    @Override
-    public CFXTagPool getCFXTagPool() throws SecurityException {
-	if (securityManager.getAccess(SecurityManager.TYPE_CFX_USAGE) == SecurityManager.VALUE_YES) return super.getCFXTagPool();
-	throw new SecurityException("no access to cfx functionality", "disabled by security settings");
-    }
 
     /**
      * @return Returns the rootDir.

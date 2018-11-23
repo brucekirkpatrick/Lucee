@@ -403,11 +403,6 @@ public interface Config {
      */
     public abstract SecurityManager getSecurityManager();
 
-    /**
-     * @return Returns the cfxTagPool.
-     * @throws PageException
-     */
-    public abstract CFXTagPool getCFXTagPool() throws PageException;
 
     /**
      * @param password

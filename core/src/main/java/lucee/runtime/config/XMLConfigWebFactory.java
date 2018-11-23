@@ -94,8 +94,6 @@ import lucee.runtime.cache.ServerCacheConnection;
 import lucee.runtime.cache.tag.CacheHandler;
 import lucee.runtime.cache.tag.request.RequestCacheHandler;
 import lucee.runtime.cache.tag.timespan.TimespanCacheHandler;
-import lucee.runtime.cfx.customtag.CFXTagClass;
-import lucee.runtime.cfx.customtag.JavaCFXTagClass;
 import lucee.runtime.component.ImportDefintion;
 //import lucee.runtime.config.ajax.AjaxFactory;
 import lucee.runtime.config.component.ComponentFactory;
@@ -121,7 +119,6 @@ import lucee.runtime.engine.ThreadQueueNone;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.exp.SecurityException;
 import lucee.runtime.extension.Extension;
 import lucee.runtime.extension.ExtensionImpl;
 import lucee.runtime.extension.ExtensionProvider;
@@ -213,7 +210,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws PageException
      * @throws IOException
-     * @throws TagLibException
      * @throws FunctionLibException
      * @throws NoSuchAlgorithmException
      * @throws BundleException
@@ -221,7 +217,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
     public static ConfigWebImpl newInstance(CFMLEngine engine, CFMLFactoryImpl factory, ConfigServerImpl configServer, Resource configDir, boolean isConfigDirACustomSetting,
 	    ServletConfig servletConfig)
-	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, NoSuchAlgorithmException, BundleException {
+	    throws SAXException, ClassException, PageException, IOException, FunctionLibException, NoSuchAlgorithmException, BundleException {
 
 	String hash = SystemUtil.hash(servletConfig.getServletContext());
 	Map<String, String> labels = configServer.getLabels();
@@ -310,13 +306,12 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws PageException
      * @throws IOException
-     * @throws TagLibException
      * @throws FunctionLibException
      * @throws BundleException
      * @throws NoSuchAlgorithmException
      */
     public static void reloadInstance(CFMLEngine engine, ConfigServerImpl cs, ConfigWebImpl cw, boolean force)
-	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
+	    throws SAXException, ClassException, PageException, IOException, FunctionLibException, BundleException {
 	Resource configFile = cw.getConfigFile();
 	Resource configDir = cw.getConfigDir();
 
@@ -347,7 +342,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws ClassNotFoundException
      * @throws IOException
      * @throws FunctionLibException
-     * @throws TagLibException
      * @throws PageException
      * @throws BundleException
      */
@@ -1002,14 +996,28 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
     }
 
     private static SecurityManagerImpl _toSecurityManager(Element el) {
-	SecurityManagerImpl sm = new SecurityManagerImpl(_attr(el, "setting", SecurityManager.VALUE_YES), _attr(el, "file", SecurityManager.VALUE_ALL),
-		_attr(el, "direct_java_access", SecurityManager.VALUE_YES), _attr(el, "mail", SecurityManager.VALUE_YES), _attr(el, "datasource", SecurityManager.VALUE_YES),
-		_attr(el, "mapping", SecurityManager.VALUE_YES), _attr(el, "remote", SecurityManager.VALUE_YES), _attr(el, "custom_tag", SecurityManager.VALUE_YES),
-		_attr(el, "cfx_setting", SecurityManager.VALUE_YES), _attr(el, "cfx_usage", SecurityManager.VALUE_YES), _attr(el, "debugging", SecurityManager.VALUE_YES),
-		_attr(el, "search", SecurityManager.VALUE_YES), _attr(el, "scheduled_task", SecurityManager.VALUE_YES), _attr(el, "tag_execute", SecurityManager.VALUE_YES),
-		_attr(el, "tag_import", SecurityManager.VALUE_YES), _attr(el, "tag_object", SecurityManager.VALUE_YES), _attr(el, "tag_registry", SecurityManager.VALUE_YES),
-		_attr(el, "cache", SecurityManager.VALUE_YES), _attr(el, "gateway", SecurityManager.VALUE_YES), _attr(el, "orm", SecurityManager.VALUE_YES),
-		_attr2(el, "access_read", SecurityManager.ACCESS_PROTECTED), _attr2(el, "access_write", SecurityManager.ACCESS_PROTECTED));
+	SecurityManagerImpl sm = new SecurityManagerImpl(
+			_attr(el, "setting", SecurityManager.VALUE_YES),
+			_attr(el, "file", SecurityManager.VALUE_ALL),
+			_attr(el, "direct_java_access", SecurityManager.VALUE_YES),
+			_attr(el, "mail", SecurityManager.VALUE_YES),
+			_attr(el, "datasource", SecurityManager.VALUE_YES),
+			_attr(el, "mapping", SecurityManager.VALUE_YES),
+			_attr(el, "remote", SecurityManager.VALUE_YES),
+			_attr(el, "custom_tag", SecurityManager.VALUE_YES),
+			_attr(el, "debugging", SecurityManager.VALUE_YES),
+			_attr(el, "search", SecurityManager.VALUE_YES),
+			_attr(el, "scheduled_task", SecurityManager.VALUE_YES),
+			_attr(el, "tag_execute", SecurityManager.VALUE_YES),
+			_attr(el, "tag_import", SecurityManager.VALUE_YES),
+			_attr(el, "tag_object", SecurityManager.VALUE_YES),
+			_attr(el, "tag_registry", SecurityManager.VALUE_YES),
+			_attr(el, "cache", SecurityManager.VALUE_YES),
+			_attr(el, "gateway", SecurityManager.VALUE_YES),
+			_attr(el, "orm", SecurityManager.VALUE_YES),
+			_attr2(el, "access_read", SecurityManager.ACCESS_PROTECTED),
+			_attr2(el, "access_write", SecurityManager.ACCESS_PROTECTED)
+	);
 	return sm;
     }
 
@@ -1188,14 +1196,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	f = contextDir.getRealResource("graph." + TEMPLATE_EXTENSION);
 	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/graph." + TEMPLATE_EXTENSION, f);
 
-	f = contextDir.getRealResource("wddx." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/wddx." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("lucee-applet." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/lucee-applet." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("lucee-applet.jar");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-applet.jar", f);
 
 	// f=new BinaryFile(contextDir,"lucee_context.ra");
 	// if(!f.exists())createFileFromResource("/resource/context/lucee_context.ra",f);
@@ -1203,16 +1203,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	f = contextDir.getRealResource("admin." + TEMPLATE_EXTENSION);
 	if (!f.exists()) createFileFromResourceEL("/resource/context/admin." + TEMPLATE_EXTENSION, f);
 
-	// Video
-	f = contextDir.getRealResource("swfobject.js");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js", f);
-	f = contextDir.getRealResource("swfobject.js." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("mediaplayer.swf");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf", f);
-	f = contextDir.getRealResource("mediaplayer.swf." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf." + TEMPLATE_EXTENSION, f);
 
 	Resource adminDir = contextDir.getRealResource("admin");
 	if (!adminDir.exists()) adminDir.mkdirs();
@@ -2754,7 +2744,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @param config
      * @param doc
      * @throws ExpressionException
-     * @throws TagLibException
      * @throws FunctionLibException
      */
     private static void loadFilesystem(ConfigServerImpl configServer, ConfigImpl config, Document doc, boolean doNew, Log log) {
@@ -4048,7 +4037,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @param configServer
      * @param config
      * @param doc
-     * @param isEventGatewayContext
      * @throws IOException
      * @throws PageException
      */
@@ -4174,65 +4162,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	}
     }
 
-    /**
-     * @param configServer
-     * @param config
-     * @param doc
-     */
-    private static void loadCFX(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_CFX_SETTING);
-
-	    Map<String, CFXTagClass> map = MapFactory.<String, CFXTagClass>getConcurrentMap();
-	    if (configServer != null) {
-		try {
-		    if (configServer.getCFXTagPool() != null) {
-			Map<String, CFXTagClass> classes = configServer.getCFXTagPool().getClasses();
-			Iterator<Entry<String, CFXTagClass>> it = classes.entrySet().iterator();
-			Entry<String, CFXTagClass> e;
-			while (it.hasNext()) {
-			    e = it.next();
-			    map.put(e.getKey(), e.getValue().cloneReadOnly());
-			}
-		    }
-		}
-		catch (SecurityException e) {}
-	    }
-
-	    if (hasAccess) {
-		if (configServer == null) {
-		    System.setProperty("cfx.bin.path", config.getConfigDir().getRealResource("bin").getAbsolutePath());
-		}
-
-		// Java CFX Tags
-		Element cfxTagsParent = getChildByName(doc.getDocumentElement(), "ext-tags", false, true);
-		if (cfxTagsParent == null) cfxTagsParent = getChildByName(doc.getDocumentElement(), "cfx-tags", false, true);
-		if (cfxTagsParent == null) cfxTagsParent = getChildByName(doc.getDocumentElement(), "ext-tags");
-
-		boolean oldStyle = cfxTagsParent.getNodeName().equals("cfx-tags");
-
-		Element[] cfxTags = oldStyle ? getChildren(cfxTagsParent, "cfx-tag") : getChildren(cfxTagsParent, "ext-tag");
-		for (int i = 0; i < cfxTags.length; i++) {
-		    String type = getAttr(cfxTags[i], "type");
-		    if (type != null) {
-			// Java CFX Tags
-			if (type.equalsIgnoreCase("java")) {
-			    String name = getAttr(cfxTags[i], "name");
-			    ClassDefinition cd = getClassDefinition(cfxTags[i], "", config.getIdentification());
-			    if (!StringUtil.isEmpty(name) && cd.hasClass()) {
-				map.put(name.toLowerCase(), new JavaCFXTagClass(name, cd));
-			    }
-			}
-		    }
-		}
-
-	    }
-	    config.setCFXTagPool(map);
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
 
     /**
      * loads the bundles defined in the extensions
