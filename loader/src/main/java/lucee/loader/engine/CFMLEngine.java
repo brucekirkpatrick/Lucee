@@ -267,7 +267,7 @@ public interface CFMLEngine {
 
     public Instrumentation getInstrumentation();
 
-//    public abstract ORMUtil getORMUtil();
+    public abstract ORMUtil getORMUtil();
 
     /**
      * @return return existing PageContext for the current PageContext

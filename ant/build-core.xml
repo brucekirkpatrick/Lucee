@@ -801,23 +801,23 @@
   <target name="copyDeployFiles" depends="init,check" description="copy files from source/cfml to source/java/core/src/resource">
     <echots message="copy files from source/cfml to source/java/core/src/resource"/>
 
-    <sync todir="${srcCore}/resource/context/" overwrite="true">
+    <copy todir="${srcCore}/resource/context/" overwrite="true">
       <fileset dir="${srcCFML}/context/">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </sync>
+    </copy>
 
-    <sync todir="${srcCore}/resource/context/admin/resources/language/" overwrite="true">
+    <copy todir="${srcCore}/resource/context/admin/resources/language/" overwrite="true">
       <fileset dir="${srcCFML}/context/admin/resources/language/">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </sync>
+    </copy>
 
     <!-- <copy todir="${srcCore}/resource/context/gateway"  overwrite="true">
       <fileset dir="${srcCFML}/context/gateway">
@@ -828,23 +828,23 @@
       </fileset>
     </copy> -->
 
-    <sync todir="${srcCore}/resource/context/templates/error"  overwrite="true">
+    <copy todir="${srcCore}/resource/context/templates/error"  overwrite="true">
       <fileset dir="${srcCFML}/context/templates/error">
         <include name="*.cfm"/>
         <include name="*.cfc"/>
         <include name="*.lucee"/>
         <include name="*.xml"/>
       </fileset>
-    </sync>
+    </copy>
 
-    <sync todir="${srcCore}/resource/context/admin/plugin"  overwrite="true">
+    <copy todir="${srcCore}/resource/context/admin/plugin"  overwrite="true">
       <fileset dir="${srcCFML}/context/admin/plugin">
         <include name="**/*.cfm"/>
         <include name="**/*.cfc"/>
         <include name="**/*.lucee"/>
         <include name="**/*.xml"/>
       </fileset>
-    </sync>
+    </copy>
   </target>
 
   <target name="agent" depends="copyDeployFiles" description="create external-agent  jar used as backup when dynamic agent fails" >

@@ -60,6 +60,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import lucee.runtime.util.*;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -147,30 +148,8 @@ import lucee.runtime.osgi.OSGiUtil;
 import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
-import lucee.runtime.util.Cast;
-import lucee.runtime.util.ClassUtil;
-import lucee.runtime.util.ClassUtilImpl;
-import lucee.runtime.util.Creation;
-import lucee.runtime.util.DBUtil;
-import lucee.runtime.util.DBUtilImpl;
-import lucee.runtime.util.Decision;
-import lucee.runtime.util.Excepton;
-import lucee.runtime.util.HTMLUtil;
-import lucee.runtime.util.HTMLUtilImpl;
-import lucee.runtime.util.HTTPUtilImpl;
-import lucee.runtime.util.IO;
-import lucee.runtime.util.ListUtil;
-import lucee.runtime.util.ListUtilImpl;
-import lucee.runtime.util.ORMUtil;
 //import lucee.runtime.util.ORMUtilImpl;
-import lucee.runtime.util.Operation;
-import lucee.runtime.util.PageContextUtil;
-import lucee.runtime.util.Strings;
-import lucee.runtime.util.SystemUtilImpl;
-import lucee.runtime.util.TemplateUtil;
-import lucee.runtime.util.TemplateUtilImpl;
-import lucee.runtime.util.ZipUtil;
-import lucee.runtime.util.ZipUtilImpl;
+
 
 /**
  * The CFMl Engine
@@ -1433,10 +1412,10 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	return new DBUtilImpl();
     }
 
-//    @Override
-//    public ORMUtil getORMUtil() {
-//	return new ORMUtilImpl();
-//    }
+    @Override
+    public ORMUtil getORMUtil() {
+	return new ORMUtilImpl();
+    }
 
     @Override
     public TemplateUtil getTemplateUtil() {

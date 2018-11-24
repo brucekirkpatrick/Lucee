@@ -23,7 +23,7 @@ import lucee.runtime.Component;
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-//import lucee.runtime.functions.orm.EntityNew;
+import lucee.runtime.functions.orm.EntityNew;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
 import lucee.runtime.type.FunctionValue;
@@ -44,18 +44,18 @@ public class _CreateComponent {
 	// no init method
 	if (!(c.get(KeyConstants._init, null) instanceof UDF)) {
 
-//	    if (objArr.length > 1) { // we have arguments passed in
-//		Object arg1 = objArr[0];
-//		if (arg1 instanceof FunctionValue) {
-//		    Struct args = Caster.toFunctionValues(objArr, 0, objArr.length - 1);
-//		    EntityNew.setPropeties(pc, c, args, true);
-//		}
-//		else if (Decision.isStruct(arg1) && !Decision.isComponent(arg1) && objArr.length == 2) { // we only do this in case there is only argument set, otherwise we assume
-//													 // that this is simply a missuse of the new operator
-//		    Struct args = Caster.toStruct(arg1);
-//		    EntityNew.setPropeties(pc, c, args, true);
-//		}
-//	    }
+	    if (objArr.length > 1) { // we have arguments passed in
+		Object arg1 = objArr[0];
+		if (arg1 instanceof FunctionValue) {
+		    Struct args = Caster.toFunctionValues(objArr, 0, objArr.length - 1);
+		    EntityNew.setPropeties(pc, c, args, true);
+		}
+		else if (Decision.isStruct(arg1) && !Decision.isComponent(arg1) && objArr.length == 2) { // we only do this in case there is only argument set, otherwise we assume
+													 // that this is simply a missuse of the new operator
+		    Struct args = Caster.toStruct(arg1);
+		    EntityNew.setPropeties(pc, c, args, true);
+		}
+	    }
 
 	    return c;
 	}
