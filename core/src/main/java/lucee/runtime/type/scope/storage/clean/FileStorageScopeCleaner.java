@@ -53,10 +53,10 @@ public class FileStorageScopeCleaner extends StorageScopeCleanerSupport {
     @Override
     protected void _clean() {
 	ConfigWebImpl cwi = (ConfigWebImpl) engine.getFactory().getConfig();
-	Resource dir = type == Scope.SCOPE_CLIENT ? cwi.getClientScopeDir() : cwi.getSessionScopeDir();
+	Resource dir = cwi.getSessionScopeDir();
 
 	// for old files only the definition from admin can be used
-	long timeout = type == Scope.SCOPE_CLIENT ? cwi.getClientTimeout().getMillis() : cwi.getSessionTimeout().getMillis();
+	long timeout = cwi.getSessionTimeout().getMillis();
 	long time = new DateTimeImpl(cwi).getTime() - timeout;
 
 	try {
@@ -96,8 +96,6 @@ public class FileStorageScopeCleaner extends StorageScopeCleanerSupport {
 	    error(t);
 	}
 
-	// long maxSize = type==Scope.SCOPE_CLIENT?cwi.getClientScopeDirSize():cwi.getSessionScopeDirSize();
-	// checkSize(config,dir,maxSize,extfilter);
     }
 
     static class ExpiresFilter implements ResourceFilter {

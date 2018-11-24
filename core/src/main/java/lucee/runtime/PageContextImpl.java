@@ -145,8 +145,6 @@ import lucee.runtime.orm.ORMConfiguration;
 import lucee.runtime.orm.ORMEngine;
 import lucee.runtime.orm.ORMSession;
 import lucee.runtime.regex.Perl5Util;
-import lucee.runtime.rest.RestRequestListener;
-import lucee.runtime.rest.RestUtil;
 import lucee.runtime.security.Credential;
 import lucee.runtime.security.CredentialImpl;
 import lucee.runtime.security.ScriptProtect;
@@ -176,9 +174,7 @@ import lucee.runtime.type.scope.ArgumentImpl;
 import lucee.runtime.type.scope.CGI;
 import lucee.runtime.type.scope.CGIImpl;
 import lucee.runtime.type.scope.CGIImplReadOnly;
-import lucee.runtime.type.scope.Client;
 import lucee.runtime.type.scope.ClosureScope;
-import lucee.runtime.type.scope.Cluster;
 import lucee.runtime.type.scope.Cookie;
 import lucee.runtime.type.scope.CookieImpl;
 import lucee.runtime.type.scope.Form;
@@ -271,9 +267,7 @@ public final class PageContextImpl extends PageContext {
     private Local local = localUnsupportedScope;
     private Session session;
     private Server server;
-    private Cluster cluster;
     private CookieImpl cookie = new CookieImpl();
-    private Client client;
     private Application application;
 
     private DebuggerImpl debugger = new DebuggerImpl();
@@ -532,11 +526,6 @@ public final class PageContextImpl extends PageContext {
 	// boolean isChild=parent!=null; // isChild is defined in the class outside this method
 	parent = null;
 	root = null;
-	// Attention have to be before close
-	if (client != null) {
-	    client.touchAfterRequest(this);
-	    client = null;
-	}
 
 	if (session != null) {
 	    session.touchAfterRequest(this);
@@ -1119,13 +1108,9 @@ public final class PageContextImpl extends PageContext {
 	    return serverScope();
 	case Scope.SCOPE_COOKIE:
 	    return cookieScope();
-	case Scope.SCOPE_CLIENT:
-	    return clientScope();
 	case Scope.SCOPE_LOCAL:
 	case ScopeSupport.SCOPE_VAR:
 	    return localScope();
-	case Scope.SCOPE_CLUSTER:
-	    return clusterScope();
 	}
 	return variables;
     }
@@ -1152,9 +1137,7 @@ public final class PageContextImpl extends PageContext {
 	if ("session".equals(strScope)) return sessionScope();
 	if ("server".equals(strScope)) return serverScope();
 	if ("cookie".equals(strScope)) return cookieScope();
-	if ("client".equals(strScope)) return clientScope();
 	if ("local".equals(strScope)) return localScope();
-	if ("cluster".equals(strScope)) return clusterScope();
 
 	return defaultValue;
     }
@@ -1392,20 +1375,6 @@ public final class PageContextImpl extends PageContext {
 	server = ScopeContext.getServerScope(this, ignoreScopes());
     }
 
-    @Override
-    public Cluster clusterScope() throws PageException {
-	return clusterScope(true);
-    }
-
-    @Override
-    public Cluster clusterScope(boolean create) throws PageException {
-	if (cluster == null && create) {
-	    cluster = ScopeContext.getClusterScope(config, create);
-	    // cluster.initialize(this);
-	}
-	// else if(!cluster.isInitalized()) cluster.initialize(this);
-	return cluster;
-    }
 
     @Override
     public Cookie cookieScope() {
@@ -1413,27 +1382,6 @@ public final class PageContextImpl extends PageContext {
 	return cookie;
     }
 
-    @Override
-    public Client clientScope() throws PageException {
-	if (client == null) {
-	    if (!applicationContext.hasName())
-		throw new ExpressionException("there is no client context defined for this application", hintAplication("you can define a client context"));
-	    if (!applicationContext.isSetClientManagement()) throw new ExpressionException("client scope is not enabled", hintAplication("you can enable client scope"));
-
-	    client = scopeContext.getClientScope(this);
-	}
-	return client;
-    }
-
-    @Override
-    public Client clientScopeEL() {
-	if (client == null) {
-	    if (applicationContext == null || !applicationContext.hasName()) return null;
-	    if (!applicationContext.isSetClientManagement()) return null;
-	    client = scopeContext.getClientScopeEL(this);
-	}
-	return client;
-    }
 
     public Object set(Object coll, String key, Object value) {
 	throw new NoLongerSupported();
@@ -2168,187 +2116,6 @@ public final class PageContextImpl extends PageContext {
 	return debugger;
     }
 
-    @Override
-    public void executeRest(String realPath, boolean throwExcpetion) throws PageException {
-	initallog();
-
-	ApplicationListener listener = null;// config.get ApplicationListener();
-	try {
-	    String pathInfo = req.getPathInfo();
-
-	    // charset
-	    try {
-		String charset = HTTPUtil.splitMimeTypeAndCharset(req.getContentType(), new String[] { "", "" })[1];
-		if (StringUtil.isEmpty(charset)) charset = getWebCharset().name();
-		java.net.URL reqURL = new java.net.URL(req.getRequestURL().toString());
-		String path = ReqRspUtil.decode(reqURL.getPath(), charset, true);
-		String srvPath = req.getServletPath();
-		if (path.startsWith(srvPath)) {
-		    pathInfo = path.substring(srvPath.length());
-		}
-	    }
-	    catch (Exception e) {}
-
-	    // Service mapping
-	    if (StringUtil.isEmpty(pathInfo) || pathInfo.equals("/")) {// ToDo
-		// list available services (if enabled in admin)
-		if (config.getRestList()) {
-		    try {
-			HttpServletRequest _req = getHttpServletRequest();
-			write("Available sevice mappings are:<ul>");
-			lucee.runtime.rest.Mapping[] mappings = config.getRestMappings();
-			lucee.runtime.rest.Mapping _mapping;
-			String path;
-			for (int i = 0; i < mappings.length; i++) {
-			    _mapping = mappings[i];
-			    Resource p = _mapping.getPhysical();
-			    path = _req.getContextPath() + ReqRspUtil.getScriptName(this, _req) + _mapping.getVirtual();
-			    write("<li " + (p == null || !p.isDirectory() ? " style=\"color:red\"" : "") + ">" + path + "</li>");
-
-			}
-			write("</ul>");
-
-		    }
-		    catch (IOException e) {
-			throw Caster.toPageException(e);
-		    }
-		}
-		else RestUtil.setStatus(this, 404, null);
-		return;
-	    }
-
-	    // check for matrix
-	    int index;
-	    String entry;
-	    Struct matrix = new StructImpl();
-	    while ((index = pathInfo.lastIndexOf(';')) != -1) {
-		entry = pathInfo.substring(index + 1);
-		pathInfo = pathInfo.substring(0, index);
-		if (StringUtil.isEmpty(entry, true)) continue;
-
-		index = entry.indexOf('=');
-		if (index != -1) matrix.setEL(KeyImpl.init(entry.substring(0, index).trim()), entry.substring(index + 1).trim());
-		else matrix.setEL(KeyImpl.init(entry.trim()), "");
-	    }
-
-	    // get accept
-	    List<MimeType> accept = ReqRspUtil.getAccept(this);
-	    MimeType contentType = ReqRspUtil.getContentType(this);
-
-	    // check for format extension
-	    // int format = getApplicationContext().getRestSettings().getReturnFormat();
-	    int format;
-	    boolean hasFormatExtension = false;
-	    if (StringUtil.endsWithIgnoreCase(pathInfo, ".json")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_JSON;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_JSON);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".wddx")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_WDDX;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_WDDX);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".cfml")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_SERIALIZE;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_CFML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".serialize")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 10);
-		format = UDF.RETURN_FORMAT_SERIALIZE;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_CFML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".xml")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 4);
-		format = UDF.RETURN_FORMAT_XML;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_XML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".java")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDFPlus.RETURN_FORMAT_JAVA;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_JAVA);
-		hasFormatExtension = true;
-	    }
-	    else {
-		format = getApplicationContext() == null ? null : getApplicationContext().getRestSettings().getReturnFormat();
-		// MimeType mt=MimeType.toMimetype(format);
-		// if(mt!=null)accept.add(mt);
-	    }
-
-	    if (accept.size() == 0) accept.add(MimeType.ALL);
-
-	    // loop all mappings
-	    // lucee.runtime.rest.Result result = null;//config.getRestSource(pathInfo, null);
-	    RestRequestListener rl = null;
-	    lucee.runtime.rest.Mapping[] restMappings = config.getRestMappings();
-	    lucee.runtime.rest.Mapping m, mapping = null, defaultMapping = null;
-	    // String callerPath=null;
-	    if (restMappings != null) for (int i = 0; i < restMappings.length; i++) {
-		m = restMappings[i];
-		if (m.isDefault()) defaultMapping = m;
-		if (pathInfo.startsWith(m.getVirtualWithSlash(), 0) && m.getPhysical() != null) {
-		    mapping = m;
-		    // result =
-		    // m.getResult(this,callerPath=pathInfo.substring(m.getVirtual().length()),format,matrix,null);
-		    rl = new RestRequestListener(m, pathInfo.substring(m.getVirtual().length()), matrix, format, hasFormatExtension, accept, contentType, null);
-		    break;
-		}
-	    }
-
-	    // default mapping
-	    if (mapping == null && defaultMapping != null && defaultMapping.getPhysical() != null) {
-		mapping = defaultMapping;
-		// result = mapping.getResult(this,callerPath=pathInfo,format,matrix,null);
-		rl = new RestRequestListener(mapping, pathInfo, matrix, format, hasFormatExtension, accept, contentType, null);
-	    }
-
-	    // base = PageSourceImpl.best(config.getPageSources(this,null,realPath,true,false,true));
-
-	    if (mapping == null || mapping.getPhysical() == null) {
-		RestUtil.setStatus(this, 404, "no rest service for [" + pathInfo + "] found");
-		getConfig().getLog("rest").error("REST", "no rest service for [" + pathInfo + "] found");
-	    }
-	    else {
-		base = config.toPageSource(null, mapping.getPhysical(), null);
-		listener = ((MappingImpl) base.getMapping()).getApplicationListener();
-		listener.onRequest(this, base, rl);
-	    }
-
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	    PageException pe = Caster.toPageException(t);
-	    if (!Abort.isSilentAbort(pe)) {
-		log(true);
-		if (listener == null) {
-		    if (base == null) listener = config.getApplicationListener();
-		    else listener = ((MappingImpl) base.getMapping()).getApplicationListener();
-		}
-		listener.onError(this, pe);
-	    }
-	    else log(false);
-
-	    if (throwExcpetion) throw pe;
-	}
-	finally {
-	    if (enablecfoutputonly > 0) {
-		setCFOutputOnly((short) 0);
-	    }
-	    base = null;
-	}
-    }
 
     @Override
     public final void execute(String realPath, boolean throwExcpetion, boolean onlyTopLevel) throws PageException {
@@ -2624,7 +2391,6 @@ public final class PageContextImpl extends PageContext {
 	    cftoken = Caster.toString(oCftoken, "0");
 	}
 
-	if (setCookie && applicationContext.isSetClientCookies()) setClientCookies();
     }
 
     private boolean isValidCfToken(String value) {
@@ -2635,42 +2401,8 @@ public final class PageContextImpl extends PageContext {
 	cfid = ScopeContext.getNewCFId();
 	cftoken = ScopeContext.getNewCFToken();
 
-	if (applicationContext.isSetClientCookies()) setClientCookies();
     }
 
-    private void setClientCookies() {
-	TimeSpan tsExpires = SessionCookieDataImpl.DEFAULT.getTimeout();
-	String domain = PageContextUtil.getCookieDomain(this);
-	boolean httpOnly = SessionCookieDataImpl.DEFAULT.isHttpOnly();
-	boolean secure = SessionCookieDataImpl.DEFAULT.isSecure();
-
-	ApplicationContext ac = getApplicationContext();
-
-	if (ac instanceof ApplicationContextSupport) {
-	    ApplicationContextSupport acs = (ApplicationContextSupport) ac;
-	    SessionCookieData data = acs.getSessionCookie();
-	    if (data != null) {
-		// expires
-		TimeSpan ts = data.getTimeout();
-		if (ts != null) tsExpires = ts;
-		// httpOnly
-		httpOnly = data.isHttpOnly();
-		// secure
-		secure = data.isSecure();
-		// domain
-		String tmp = data.getDomain();
-		if (!StringUtil.isEmpty(tmp, true)) domain = tmp.trim();
-	    }
-	}
-	int expires;
-	long tmp = tsExpires.getSeconds();
-	if (Integer.MAX_VALUE < tmp) expires = Integer.MAX_VALUE;
-	else expires = (int) tmp;
-
-	cookieScope().setCookieEL(KeyConstants._cfid, cfid, expires, secure, "/", domain, httpOnly, true, false);
-	cookieScope().setCookieEL(KeyConstants._cftoken, cftoken, expires, secure, "/", domain, httpOnly, true, false);
-
-    }
 
     @Override
     public int getId() {
@@ -2981,7 +2713,6 @@ public final class PageContextImpl extends PageContext {
 
 	session = null;
 	application = null;
-	client = null;
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
 	setFullNullSupport();
 	int scriptProtect = applicationContext.getScriptProtect();
@@ -3364,9 +3095,6 @@ public final class PageContextImpl extends PageContext {
 	this.session = null;
     }
 
-    public void resetClient() {
-	this.client = null;
-    }
 
     /**
      * @return the gatewayContext
@@ -3698,9 +3426,7 @@ public final class PageContextImpl extends PageContext {
 		other.cgiRW=cgiRW;
 		other.session=session;
 		other.server=server;
-		other.cluster=cluster;
 		other.cookie = new CookieImpl();
-		other.client=client;
 		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.
 		//other.undefined = new UndefinedImpl(other, (short)other.undefined.getType());
 

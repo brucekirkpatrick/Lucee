@@ -50,8 +50,6 @@ import lucee.runtime.type.ref.Reference;
 import lucee.runtime.type.scope.Application;
 import lucee.runtime.type.scope.Argument;
 import lucee.runtime.type.scope.CGI;
-import lucee.runtime.type.scope.Client;
-import lucee.runtime.type.scope.Cluster;
 import lucee.runtime.type.scope.Cookie;
 import lucee.runtime.type.scope.Form;
 import lucee.runtime.type.scope.Local;
@@ -170,28 +168,7 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract Cookie cookieScope();
 
-    /**
-     * @return cookie scope
-     * @throws PageException
-     */
-    public abstract Client clientScope() throws PageException;
 
-    public abstract Client clientScopeEL();
-
-    /**
-     * @return cluster scope
-     * @throws PageException
-     */
-    public abstract Cluster clusterScope() throws PageException;
-
-    /**
-     * cluster scope
-     * 
-     * @param create return null when false and scope does not exist
-     * @return cluster scope or null
-     * @throws PageException
-     */
-    public abstract Cluster clusterScope(boolean create) throws PageException;
 
     /**
      * set property at a collection object
@@ -859,8 +836,6 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      * @throws PageException
      */
     public abstract void executeCFML(String realPath, boolean throwException, boolean onlyTopLevel) throws PageException;
-
-    public abstract void executeRest(String realPath, boolean throwException) throws PageException;
 
     /**
      * Flush Content of buffer to the response stream of the Socket.

@@ -89,8 +89,6 @@ public final class ScopeFactory {
 	    return "caller";
 	case Scope.SCOPE_CGI:
 	    return "cgi";
-	case Scope.SCOPE_CLIENT:
-	    return "client";
 	case Scope.SCOPE_COOKIE:
 	    return "cookie";
 	case Scope.SCOPE_FORM:
@@ -110,8 +108,6 @@ public final class ScopeFactory {
 	    return "url";
 	case Scope.SCOPE_VARIABLES:
 	    return "variables";
-	case Scope.SCOPE_CLUSTER:
-	    return "cluster";
 	}
 
 	return defaultValue;

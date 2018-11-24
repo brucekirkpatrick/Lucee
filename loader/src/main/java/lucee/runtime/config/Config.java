@@ -33,7 +33,6 @@ import lucee.runtime.Mapping;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
 import lucee.runtime.cache.CacheConnection;
-import lucee.runtime.cfx.CFXTagPool;
 import lucee.runtime.db.ClassDefinition;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.dump.DumpWriter;
@@ -48,14 +47,10 @@ import lucee.runtime.monitor.RequestMonitor;
 import lucee.runtime.net.mail.Server;
 import lucee.runtime.net.proxy.ProxyData;
 import lucee.runtime.orm.ORMEngine;
-import lucee.runtime.rest.RestSettings;
-import lucee.runtime.schedule.Scheduler;
-import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.spooler.SpoolerEngine;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.dt.TimeSpan;
-import lucee.runtime.video.VideoExecuter;
 
 /**
  * interface for Config Object
@@ -425,12 +420,6 @@ public interface Config {
      */
     public void reset();
 
-    /**
-     * @return return the search Storage
-     */
-    public ClassDefinition<SearchEngine> getSearchEngineClassDefinition();
-
-    public String getSearchEngineDirectory();
 
 
     /**
@@ -485,11 +474,6 @@ public interface Config {
      */
     public boolean getTriggerComponentDataMember();
 
-    public RestSettings getRestSetting();
-
-    public abstract Resource getClientScopeDir();
-
-    public abstract long getClientScopeDirSize();
 
     public abstract ClassLoader getRPCClassLoader(boolean reload) throws IOException;
 
@@ -605,12 +589,6 @@ public interface Config {
 
     public abstract int getLocalMode();
 
-    /**
-     * @return return the class defined for the cluster scope
-     * 
-     */
-    @Deprecated
-    public Class<?> getClusterClass();
 
     /**
      * @return classloader of ths context
@@ -762,13 +740,11 @@ public interface Config {
 
     public Class<AdminSync> getAdminSyncClass();
 
-    public Class<VideoExecuter> getVideoExecuterClass();
 
     public ThreadQueue getThreadQueue();
 
     public boolean getSessionCluster();
 
-    public boolean getClientCluster();
 
     public Resource getSecurityDirectory();
 

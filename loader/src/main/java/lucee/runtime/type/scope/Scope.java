@@ -49,7 +49,7 @@ public interface Scope extends Struct {
     /**
      * Scope Client
      */
-    public static final int SCOPE_CLIENT = 5;
+//    public static final int SCOPE_CLIENT = 5;
     /**
      * Scope Cookie
      */
@@ -85,7 +85,7 @@ public interface Scope extends Struct {
      */
     public static final int SCOPE_CALLER = 13;
 
-    public static final int SCOPE_CLUSTER = 14;
+//    public static final int SCOPE_CLUSTER = 14;
 
     public static final int SCOPE_VAR = 15;
 

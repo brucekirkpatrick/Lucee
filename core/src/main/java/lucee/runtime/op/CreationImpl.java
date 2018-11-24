@@ -98,8 +98,6 @@ import lucee.runtime.type.dt.Time;
 import lucee.runtime.type.dt.TimeImpl;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.dt.TimeSpanImpl;
-import lucee.runtime.type.scope.ClusterEntry;
-import lucee.runtime.type.scope.ClusterEntryImpl;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ListUtil;
 import lucee.runtime.util.Creation;
@@ -225,10 +223,6 @@ public final class CreationImpl implements Creation, Serializable {
 	return new RemoteClientTask(plans, remoteClient, attrColl, callerId, type);
     }
 
-    @Override
-    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset) {
-	return new ClusterEntryImpl(key, value, offset);
-    }
 
     @Override
     public Resource createResource(String path, boolean existing) throws PageException {

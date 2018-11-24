@@ -64,7 +64,6 @@ import lucee.runtime.util.Strings;
 import lucee.runtime.util.SystemUtil;
 import lucee.runtime.util.TemplateUtil;
 import lucee.runtime.util.ZipUtil;
-import lucee.runtime.video.VideoUtil;
 
 /**
  * The CFML Engine
@@ -121,16 +120,6 @@ public interface CFMLEngine {
      */
     public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException;
 
-    /**
-     * method to invoke the engine for AMF
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     */
-    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
 
     /**
      * method to invoke the engine for a simple file
@@ -143,16 +132,6 @@ public interface CFMLEngine {
      */
     public void serviceFile(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
 
-    /**
-     * method to invoke the engine for a Rest Requests
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     */
-    public abstract void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
 
     public Info getInfo();
 
@@ -257,12 +236,6 @@ public interface CFMLEngine {
 
     public ClassUtil getClassUtil();
 
-    /**
-     * returns the FusionDebug Engine
-     * 
-     * @return IFDController
-     */
-    public Object getFDController();
 
     /*
      * removed to avoid library conflicts, the blazeDS implementation is no longer under development an
@@ -294,7 +267,7 @@ public interface CFMLEngine {
 
     public Instrumentation getInstrumentation();
 
-    public abstract ORMUtil getORMUtil();
+//    public abstract ORMUtil getORMUtil();
 
     /**
      * @return return existing PageContext for the current PageContext
@@ -322,8 +295,6 @@ public interface CFMLEngine {
     public void releasePageContext(PageContext pc, boolean unregister);
 
     public ConfigWeb createConfig(File contextRoot, String host, String scriptName) throws ServletException;
-
-    public VideoUtil getVideoUtil();
 
     public ZipUtil getZipUtil();
 

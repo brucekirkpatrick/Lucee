@@ -97,16 +97,6 @@ public final class ObjectTag extends TagImpl {
 	if (component != null) {
 	    pageContext.setVariable(name, CreateObject.doComponent(pageContext, component));
 	}
-	else if (type.equals("java")) {
-	    checkAccess(pageContext, type);
-	    checkClass();
-	    pageContext.setVariable(name, CreateObject.doJava(pageContext, clazz, context, delimiters));
-	}
-	else if (type.equals("com")) {
-	    checkAccess(pageContext, type);
-	    checkClass();
-	    pageContext.setVariable(name, CreateObject.doCOM(pageContext, clazz));
-	}
 	else if (type.equals("webservice")) {
 	    checkAccess(pageContext, type);
 	    checkWebservice();

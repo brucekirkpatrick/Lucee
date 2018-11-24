@@ -56,7 +56,6 @@ import lucee.runtime.type.dt.Date;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.dt.Time;
 import lucee.runtime.type.dt.TimeSpan;
-import lucee.runtime.type.scope.ClusterEntry;
 
 /**
  * Creation of different Objects
@@ -238,7 +237,6 @@ public interface Creation {
 
     public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans, RemoteClient remoteClient, Struct attrColl, String callerId, String type);
 
-    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset);
 
     public Resource createResource(String path, boolean existing) throws PageException;
 

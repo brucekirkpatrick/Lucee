@@ -641,7 +641,6 @@ public final class DebuggerImpl implements Debugger {
 		// application scope is dangerous to send
 	    //scopes.setEL("application", pc.applicationScope());
 	    scopes.setEL("session", pc.sessionScope());
-	    scopes.setEL("client", pc.clientScope());
 	}
 	catch (PageException e) {}
 	// request scope is always empty here

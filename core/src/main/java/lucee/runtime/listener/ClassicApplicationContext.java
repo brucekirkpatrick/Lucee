@@ -44,11 +44,8 @@ import lucee.runtime.exp.DeprecatedException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.net.mail.Server;
-import lucee.runtime.net.s3.Properties;
-import lucee.runtime.net.s3.PropertiesImpl;
 import lucee.runtime.op.Duplicator;
 import lucee.runtime.orm.ORMConfiguration;
-import lucee.runtime.rest.RestSettings;
 import lucee.runtime.tag.listener.TagListener;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.Collection.Key;
@@ -93,7 +90,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     private boolean ormEnabled;
     private Object ormdatasource;
     private ORMConfiguration ormConfig;
-    private Properties s3;
     private FTPConnectionData ftp;
 
     private int localMode;
@@ -103,15 +99,12 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     private CharSet resourceCharset;
     private short sessionType;
     private boolean sessionCluster;
-    private boolean clientCluster;
     private Resource source;
     private boolean triggerComponentDataMember;
     private Map<Integer, String> defaultCaches = new ConcurrentHashMap<Integer, String>();
     private Map<Collection.Key, CacheConnection> cacheConnections = new ConcurrentHashMap<Collection.Key, CacheConnection>();
     private Server[] mailServers;
     private Map<Integer, Boolean> sameFieldAsArrays = new ConcurrentHashMap<Integer, Boolean>();
-    private RestSettings restSettings;
-    private Resource[] restCFCLocations;
     private Resource antiSamyPolicy;
     private JavaSettingsImpl javaSettings;
     private DataSource[] dataSources;
@@ -178,13 +171,10 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	suppressRemoteComponentContent = ((ConfigImpl) config).isSuppressContent();
 	this.sessionType = config.getSessionType();
 	this.sessionCluster = config.getSessionCluster();
-	this.clientCluster = config.getClientCluster();
-	this.clientstorage = ((ConfigImpl) config).getClientStorage();
 	this.sessionstorage = ((ConfigImpl) config).getSessionStorage();
 
 	this.source = source;
 	this.triggerComponentDataMember = config.getTriggerComponentDataMember();
-	this.restSettings = config.getRestSetting();
 	this.javaSettings = new JavaSettingsImpl();
 	this.wstype = WS_TYPE_AXIS1;
 	cgiScopeReadonly = ((ConfigImpl) config).getCGIScopeReadonly();
@@ -244,7 +234,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl.resourceCharset = resourceCharset;
 	dbl.sessionType = sessionType;
 	dbl.triggerComponentDataMember = triggerComponentDataMember;
-	dbl.restSettings = restSettings;
 	dbl.defaultCaches = Duplicator.duplicateMap(defaultCaches, new ConcurrentHashMap<Integer, String>(), false);
 	dbl.cacheConnections = Duplicator.duplicateMap(cacheConnections, new ConcurrentHashMap<Integer, String>(), false);
 	dbl.mailServers = mailServers;
@@ -262,7 +251,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl.ormConfig = ormConfig;
 	dbl.ormdatasource = ormdatasource;
 	dbl.sessionCluster = sessionCluster;
-	dbl.clientCluster = clientCluster;
 	dbl.source = source;
 	dbl.cgiScopeReadonly = cgiScopeReadonly;
 	dbl.antiSamyPolicy = antiSamyPolicy;
@@ -327,45 +315,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     }
 
     @Override
-    public TimeSpan getClientTimeout() {
-	return clientTimeout;
-    }
-
-    /**
-     * @param sessionTimeout The sessionTimeout to set.
-     */
-    @Override
-    public void setClientTimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
-
-    @Override
-    public boolean isSetClientCookies() {
-	return setClientCookies;
-    }
-
-    /**
-     * @param setClientCookies The setClientCookies to set.
-     */
-    @Override
-    public void setSetClientCookies(boolean setClientCookies) {
-	this.setClientCookies = setClientCookies;
-    }
-
-    @Override
-    public boolean isSetClientManagement() {
-	return setClientManagement;
-    }
-
-    /**
-     * @param setClientManagement The setClientManagement to set.
-     */
-    @Override
-    public void setSetClientManagement(boolean setClientManagement) {
-	this.setClientManagement = setClientManagement;
-    }
-
-    @Override
     public boolean isSetDomainCookies() {
 	return setDomainCookies;
     }
@@ -391,24 +340,12 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.setSessionManagement = setSessionManagement;
     }
 
-    @Override
-    public String getClientstorage() {
-	return clientstorage;
-    }
 
     @Override
     public String getSessionstorage() {
 	return sessionstorage;
     }
 
-    /**
-     * @param clientstorage The clientstorage to set.
-     */
-    @Override
-    public void setClientstorage(String clientstorage) {
-	if (StringUtil.isEmpty(clientstorage, true)) return;
-	this.clientstorage = clientstorage;
-    }
 
     @Override
     public void setSessionstorage(String sessionstorage) {
@@ -436,7 +373,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     }
 
     /**
-     * @param scriptProtect The scriptProtect to set.
+     * @param typeChecking The scriptProtect to set.
      */
     @Override
     public void setTypeChecking(boolean typeChecking) {
@@ -567,11 +504,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.ormEnabled = ormEnabled;
     }
 
-    @Override
-    public Properties getS3() {
-	if (s3 == null) s3 = new PropertiesImpl();
-	return s3;
-    }
 
     @Override
     public FTPConnectionData getFTP() {
@@ -682,27 +614,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.sessionCluster = sessionCluster;
     }
 
-    /**
-     * @return the clientCluster
-     */
-    @Override
-    public boolean getClientCluster() {
-	return clientCluster;
-    }
-
-    /**
-     * @param clientCluster the clientCluster to set
-     */
-    @Override
-    public void setClientCluster(boolean clientCluster) {
-	this.clientCluster = clientCluster;
-    }
-
-    @Override
-    public void setS3(Properties s3) {
-	this.s3 = s3;
-    }
-
     @Override
     public void setFTP(FTPConnectionData ftp) {
 	this.ftp = ftp;
@@ -788,23 +699,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	return b.booleanValue();
     }
 
-    @Override
-    public RestSettings getRestSettings() {
-	return restSettings;
-    }
-
-    public void setRestSettings(RestSettings restSettings) {
-	this.restSettings = restSettings;
-    }
-
-    public void setRestCFCLocations(Resource[] restCFCLocations) {
-	this.restCFCLocations = restCFCLocations;
-    }
-
-    @Override
-    public Resource[] getRestCFCLocations() {
-	return restCFCLocations;
-    }
 
     @Override
     public JavaSettings getJavaSettings() {

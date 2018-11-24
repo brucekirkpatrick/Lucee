@@ -52,8 +52,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.allaire.cfx.CustomTag;
-
 import lucee.commons.digest.MD5;
 import lucee.commons.io.FileUtil;
 import lucee.commons.io.IOUtil;
@@ -88,8 +86,6 @@ import lucee.loader.util.ExtensionFilter;
 import lucee.runtime.PageContext;
 import lucee.runtime.cache.CacheConnection;
 import lucee.runtime.cache.CacheUtil;
-import lucee.runtime.cfx.CFXTagException;
-import lucee.runtime.cfx.CFXTagPool;
 import lucee.runtime.converter.ConverterException;
 import lucee.runtime.converter.WDDXConverter;
 import lucee.runtime.db.ClassDefinition;
@@ -114,7 +110,6 @@ import lucee.runtime.gateway.GatewayEntry;
 import lucee.runtime.gateway.GatewayEntryImpl;
 import lucee.runtime.listener.AppListenerUtil;
 import lucee.runtime.monitor.Monitor;
-import lucee.runtime.net.amf.AMFEngine;
 import lucee.runtime.net.ntp.NtpClient;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
@@ -127,7 +122,6 @@ import lucee.runtime.osgi.BundleInfo;
 import lucee.runtime.osgi.OSGiUtil;
 import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
 import lucee.runtime.reflection.Reflector;
-import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.security.SecurityManagerImpl;
 import lucee.runtime.security.SerialNumber;
@@ -142,15 +136,9 @@ import lucee.runtime.type.QueryImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.dt.TimeSpan;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.ClusterNotSupported;
-import lucee.runtime.type.scope.ClusterRemote;
-import lucee.runtime.type.scope.ScopeContext;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ComponentUtil;
 import lucee.runtime.type.util.ListUtil;
-import lucee.runtime.video.VideoExecuter;
-import lucee.runtime.video.VideoExecuterNotSupported;
 import lucee.transformer.library.ClassDefinitionImpl;
 import lucee.transformer.library.function.FunctionLibException;
 import lucee.transformer.library.tag.TagLibException;
@@ -216,7 +204,6 @@ public final class XMLConfigAdmin {
 
     /**
      * @param contextPath
-     * @param password
      * @throws FunctionLibException
      * @throws IOException
      * @throws ClassNotFoundException
@@ -590,7 +577,7 @@ public final class XMLConfigAdmin {
      * @param physical
      * @param archive
      * @param primary
-     * @param trusted
+     * @param inspect
      * @param toplevel
      * @throws ExpressionException
      * @throws SecurityException
@@ -859,7 +846,7 @@ public final class XMLConfigAdmin {
      * @param physical
      * @param archive
      * @param primary
-     * @param trusted
+     * @param inspect
      * @throws ExpressionException
      * @throws SecurityException
      */
@@ -1123,47 +1110,6 @@ public final class XMLConfigAdmin {
 	}
     }
 
-    /**
-     * insert or update a Java CFX Tag
-     * 
-     * @param name
-     * @param strClass
-     * @throws PageException
-     */
-    public void updateJavaCFX(String name, ClassDefinition cd) throws PageException {
-	checkWriteAccess();
-	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_CFX_SETTING);
-
-	if (!hasAccess) throw new SecurityException("no access to change cfx settings");
-
-	if (name == null || name.length() == 0) throw new ExpressionException("class name can't be a empty value");
-
-	renameOldstyleCFX();
-
-	Element tags = _getRootElement("ext-tags");
-
-	// Update
-	Element[] children = XMLConfigWebFactory.getChildren(tags, "ext-tag");
-	for (int i = 0; i < children.length; i++) {
-	    String n = children[i].getAttribute("name");
-
-	    if (n != null && n.equalsIgnoreCase(name)) {
-		Element el = children[i];
-		if (!"java".equalsIgnoreCase(el.getAttribute("type"))) throw new ExpressionException("there is already a c++ cfx tag with this name");
-		setClass(el, CustomTag.class, "", cd);
-		el.setAttribute("type", "java");
-		return;
-	    }
-
-	}
-
-	// Insert
-	Element el = doc.createElement("ext-tag");
-	tags.appendChild(el);
-	setClass(el, CustomTag.class, "", cd);
-	el.setAttribute("name", name);
-	el.setAttribute("type", "java");
-    }
 
     private void renameOldstyleCFX() {
 
@@ -1434,8 +1380,8 @@ public final class XMLConfigAdmin {
     /**
      * update or insert new database connection
      * 
+     * @param id
      * @param name
-     * @param clazzName
      * @param dsn
      * @param username
      * @param password
@@ -1739,42 +1685,7 @@ public final class XMLConfigAdmin {
 	flex.removeAttribute("caster-class-arguments");
     }
 
-    /*
-     * public static void updateSearchEngine(ConfigImpl config, ClassDefinition cd, boolean reload)
-     * throws IOException, SAXException, PageException, BundleException { ConfigWebAdmin admin = new
-     * ConfigWebAdmin(config, null); admin._updateSearchEngine(cd); admin._store();
-     * if(reload)admin._reload(); }
-     */
 
-    public void updateSearchEngine(ClassDefinition cd) throws PageException {
-	checkWriteAccess();
-	_updateSearchEngine(cd);
-
-    }
-
-    private void _updateSearchEngine(ClassDefinition cd) throws PageException {
-	Element orm = _getRootElement("search");
-	setClass(orm, SearchEngine.class, "engine-", cd);
-    }
-
-    private void _updateAMFEngine(ClassDefinition cd, String caster, String config) throws PageException {
-	Element flex = _getRootElement("flex");
-	setClass(flex, AMFEngine.class, "", cd);
-	if (caster != null) flex.setAttribute("caster", caster);
-	if (config != null) flex.setAttribute("configuration", config);
-	// old arguments
-	flex.removeAttribute("config");
-	flex.removeAttribute("caster-class");
-	flex.removeAttribute("caster-class-arguments");
-    }
-
-    public void removeSearchEngine() throws SecurityException {
-	checkWriteAccess();
-
-	Element orm = _getRootElement("search");
-	removeClass(orm, "engine-");
-
-    }
 
     static void removeORMEngine(ConfigImpl config, boolean reload) throws IOException, SAXException, PageException, BundleException {
 	XMLConfigAdmin admin = new XMLConfigAdmin(config, null);
@@ -2896,7 +2807,7 @@ public final class XMLConfigAdmin {
     /**
      * update the baseComponent
      * 
-     * @param baseComponent
+     * @param baseComponentCFML
      * @throws SecurityException
      */
     public void updateBaseComponent(String baseComponentCFML, String baseComponentLucee) throws SecurityException {
@@ -3166,9 +3077,6 @@ public final class XMLConfigAdmin {
      * @param mail
      * @param datasource
      * @param mapping
-     * @param customTag
-     * @param cfxSetting
-     * @param cfxUsage
      * @param debugging
      * @param search
      * @param scheduledTasks
@@ -3179,7 +3087,7 @@ public final class XMLConfigAdmin {
      * @throws SecurityException
      */
     public void updateDefaultSecurity(short setting, short file, Resource[] fileAccess, short directJavaAccess, short mail, short datasource, short mapping, short remote,
-	    short customTag, short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject,
+	     short debugging, short search, short scheduledTasks, short tagExecute, short tagImport, short tagObject,
 	    short tagRegistry, short cache, short gateway, short orm, short accessRead, short accessWrite) throws SecurityException {
 	checkWriteAccess();
 	if (!(config instanceof ConfigServer)) throw new SecurityException("can't change security settings from this context");
@@ -3193,7 +3101,6 @@ public final class XMLConfigAdmin {
 	security.setAttribute("datasource", SecurityManagerImpl.toStringAccessValue(datasource));
 	security.setAttribute("mapping", SecurityManagerImpl.toStringAccessValue(mapping));
 	security.setAttribute("remote", SecurityManagerImpl.toStringAccessValue(remote));
-	security.setAttribute("custom_tag", SecurityManagerImpl.toStringAccessValue(customTag));
 	security.setAttribute("debugging", SecurityManagerImpl.toStringAccessValue(debugging));
 	security.setAttribute("search", SecurityManagerImpl.toStringAccessValue(search));
 	security.setAttribute("scheduled_task", SecurityManagerImpl.toStringAccessValue(scheduledTasks));
@@ -4679,35 +4586,6 @@ public final class XMLConfigAdmin {
 		}
 	    }
 
-	    // update AMF
-	    if (!ArrayUtil.isEmpty(rhext.getAMFs())) {
-		Iterator<Map<String, String>> itl = rhext.getAMFs().iterator();
-		Map<String, String> map;
-		while (itl.hasNext()) {
-		    map = itl.next();
-		    ClassDefinition cd = RHExtension.toClassDefinition(config, map, null);
-		    if (cd != null && cd.hasClass()) {
-			_updateAMFEngine(cd, map.get("caster"), map.get("configuration"));
-			reloadNecessary = true;
-		    }
-		    logger.info("extension", "update AMF engine [" + cd + "] from extension [" + rhext.getName() + ":" + rhext.getVersion() + "]");
-		}
-	    }
-
-	    // update Search
-	    if (!ArrayUtil.isEmpty(rhext.getSearchs())) {
-		Iterator<Map<String, String>> itl = rhext.getSearchs().iterator();
-		Map<String, String> map;
-		while (itl.hasNext()) {
-		    map = itl.next();
-		    ClassDefinition cd = RHExtension.toClassDefinition(config, map, null);
-		    if (cd != null && cd.hasClass()) {
-			_updateSearchEngine(cd);
-			reloadNecessary = true;
-		    }
-		    logger.info("extension", "update search engine [" + cd + "] from extension [" + rhext.getName() + ":" + rhext.getVersion() + "]");
-		}
-	    }
 
 	    // update Resource
 	    if (!ArrayUtil.isEmpty(rhext.getResources())) {
@@ -4986,20 +4864,6 @@ public final class XMLConfigAdmin {
 		}
 	    }
 
-	    // remove Search
-	    if (!ArrayUtil.isEmpty(rhe.getSearchs())) {
-		Iterator<Map<String, String>> itl = rhe.getSearchs().iterator();
-		Map<String, String> map;
-		while (itl.hasNext()) {
-		    map = itl.next();
-		    ClassDefinition cd = RHExtension.toClassDefinition(config, map, null);
-		    if (cd != null && cd.hasClass()) {
-			_removeSearchEngine();
-			// reload=true;
-		    }
-		    logger.info("extension", "remove search engine [" + cd + "] from extension [" + rhe.getName() + ":" + rhe.getVersion() + "]");
-		}
-	    }
 
 	    // remove resource
 	    if (!ArrayUtil.isEmpty(rhe.getResources())) {
@@ -5016,20 +4880,6 @@ public final class XMLConfigAdmin {
 		}
 	    }
 
-	    // remove AMF
-	    if (!ArrayUtil.isEmpty(rhe.getAMFs())) {
-		Iterator<Map<String, String>> itl = rhe.getAMFs().iterator();
-		Map<String, String> map;
-		while (itl.hasNext()) {
-		    map = itl.next();
-		    ClassDefinition cd = RHExtension.toClassDefinition(config, map, null);
-		    if (cd != null && cd.hasClass()) {
-			_removeAMFEngine();
-			// reload=true;
-		    }
-		    logger.info("extension", "remove search engine [" + cd + "] from extension [" + rhe.getName() + ":" + rhe.getVersion() + "]");
-		}
-	    }
 
 	    // remove orm
 	    if (!ArrayUtil.isEmpty(rhe.getOrms())) {
@@ -5392,31 +5242,7 @@ public final class XMLConfigAdmin {
 
     }
 
-    public void updateClusterClass(ClassDefinition cd) throws PageException {
-	if (cd.getClassName() == null) cd = new ClassDefinitionImpl(ClusterNotSupported.class.getName(), null, null, null);
 
-	Class clazz = null;
-	try {
-	    clazz = cd.getClazz();
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-	if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
-		"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
-
-	Element scope = _getRootElement("scope");
-	setClass(scope, null, "cluster-", cd);
-	ScopeContext.clearClusterScope();
-    }
-
-    public void updateVideoExecuterClass(ClassDefinition cd) throws PageException {
-
-	if (cd.getClassName() == null) cd = new ClassDefinitionImpl(VideoExecuterNotSupported.class.getName());
-
-	Element app = _getRootElement("video");
-	setClass(app, VideoExecuter.class, "video-executer-", cd);
-    }
 
     public void updateAdminSyncClass(ClassDefinition cd) throws PageException {
 
@@ -6221,7 +6047,7 @@ public final class XMLConfigAdmin {
      * returns the version if the extension is available
      * 
      * @param config
-     * @param id
+     * @param ed
      * @return
      * @throws PageException
      * @throws IOException

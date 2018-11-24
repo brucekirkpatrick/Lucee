@@ -25,8 +25,6 @@ import org.objectweb.asm.commons.Method;
 import lucee.runtime.type.scope.Application;
 import lucee.runtime.type.scope.Argument;
 import lucee.runtime.type.scope.CGI;
-import lucee.runtime.type.scope.Client;
-import lucee.runtime.type.scope.Cluster;
 import lucee.runtime.type.scope.Cookie;
 import lucee.runtime.type.scope.Form;
 import lucee.runtime.type.scope.Local;
@@ -48,7 +46,6 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_APPLICATION] = Type.getType(Application.class);
 	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(lucee.runtime.type.scope.Argument.class);
 	SCOPES[Scope.SCOPE_CGI] = Type.getType(CGI.class);
-	SCOPES[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
 	SCOPES[Scope.SCOPE_COOKIE] = Type.getType(Cookie.class);
 	SCOPES[Scope.SCOPE_FORM] = Type.getType(Form.class);
 	SCOPES[Scope.SCOPE_LOCAL] = Type.getType(Local.class);
@@ -58,7 +55,6 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_UNDEFINED] = Type.getType(Undefined.class);
 	SCOPES[Scope.SCOPE_URL] = Type.getType(URL.class);
 	SCOPES[Scope.SCOPE_VARIABLES] = Types.VARIABLES;
-	SCOPES[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
 	SCOPES[Scope.SCOPE_VAR] = SCOPES[Scope.SCOPE_LOCAL];
 	// SCOPES[SCOPE_UNDEFINED_LOCAL]= SCOPES[Scope.SCOPE_LOCAL];
     }
@@ -68,7 +64,6 @@ public final class TypeScope {
 	METHODS[Scope.SCOPE_APPLICATION] = new Method("applicationScope", SCOPES[Scope.SCOPE_APPLICATION], new Type[] {});
 	METHODS[Scope.SCOPE_ARGUMENTS] = new Method("argumentsScope", SCOPES[Scope.SCOPE_ARGUMENTS], new Type[] {});
 	METHODS[Scope.SCOPE_CGI] = new Method("cgiScope", SCOPES[Scope.SCOPE_CGI], new Type[] {});
-	METHODS[Scope.SCOPE_CLIENT] = new Method("clientScope", SCOPES[Scope.SCOPE_CLIENT], new Type[] {});
 	METHODS[Scope.SCOPE_COOKIE] = new Method("cookieScope", SCOPES[Scope.SCOPE_COOKIE], new Type[] {});
 	METHODS[Scope.SCOPE_FORM] = new Method("formScope", SCOPES[Scope.SCOPE_FORM], new Type[] {});
 	METHODS[Scope.SCOPE_LOCAL] = new Method("localGet", Types.OBJECT, new Type[] {});
@@ -78,7 +73,6 @@ public final class TypeScope {
 	METHODS[Scope.SCOPE_UNDEFINED] = new Method("us", SCOPES[Scope.SCOPE_UNDEFINED], new Type[] {});
 	METHODS[Scope.SCOPE_URL] = new Method("urlScope", SCOPES[Scope.SCOPE_URL], new Type[] {});
 	METHODS[Scope.SCOPE_VARIABLES] = new Method("variablesScope", SCOPES[Scope.SCOPE_VARIABLES], new Type[] {});
-	METHODS[Scope.SCOPE_CLUSTER] = new Method("clusterScope", SCOPES[Scope.SCOPE_CLUSTER], new Type[] {});
 	METHODS[Scope.SCOPE_VAR] = new Method("localScope", SCOPES[Scope.SCOPE_VAR], new Type[] {});
 	METHODS[SCOPE_UNDEFINED_LOCAL] = new Method("usl", SCOPE, new Type[] {});
     }

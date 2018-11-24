@@ -90,7 +90,6 @@ import lucee.commons.lang.types.RefBoolean;
 import lucee.commons.lang.types.RefBooleanImpl;
 import lucee.commons.net.HTTPUtil;
 import lucee.commons.net.http.httpclient.HTTPEngine4Impl;
-import lucee.intergral.fusiondebug.server.FDControllerImpl;
 import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;
 import lucee.loader.engine.CFMLEngineFactorySupport;
@@ -163,7 +162,7 @@ import lucee.runtime.util.IO;
 import lucee.runtime.util.ListUtil;
 import lucee.runtime.util.ListUtilImpl;
 import lucee.runtime.util.ORMUtil;
-import lucee.runtime.util.ORMUtilImpl;
+//import lucee.runtime.util.ORMUtilImpl;
 import lucee.runtime.util.Operation;
 import lucee.runtime.util.PageContextUtil;
 import lucee.runtime.util.Strings;
@@ -172,8 +171,6 @@ import lucee.runtime.util.TemplateUtil;
 import lucee.runtime.util.TemplateUtilImpl;
 import lucee.runtime.util.ZipUtil;
 import lucee.runtime.util.ZipUtilImpl;
-import lucee.runtime.video.VideoUtil;
-import lucee.runtime.video.VideoUtilImpl;
 
 /**
  * The CFMl Engine
@@ -608,8 +605,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     /**
      * get singelton instance of the CFML Engine, throwsexception when not already init
-     * 
-     * @param factory
+     *
      * @return CFMLEngine
      */
     public static synchronized CFMLEngine getInstance() throws ServletException {
@@ -991,10 +987,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	_service(servlet, req, rsp, Request.TYPE_CFML);
     }
 
-    @Override
-    public void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-	_service(servlet, new HTTPServletRequestWrap(req), rsp, Request.TYPE_REST);
-    }
 
     private void _service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, short type) throws ServletException, IOException {
 	CFMLFactoryImpl factory = (CFMLFactoryImpl) getCFMLFactory(servlet.getServletConfig(), req);
@@ -1125,14 +1117,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
     @Override
     public CFMLEngineFactory getCFMLEngineFactory() {
 	return factory;
-    }
-
-    @Override
-    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-	throw new ServletException("AMFServlet is no longer supported, use BrokerServlet instead.");
-	// req=new HTTPServletRequestWrap(req);
-	// getCFMLFactory(servlet.getServletConfig(), req).getConfig().getAMFEngine().service(servlet,new
-	// HTTPServletRequestWrap(req),rsp);
     }
 
     @Override
@@ -1273,12 +1257,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	return StringsImpl.getInstance();
     }
 
-    @Override
-    public Object getFDController() {
-	engine.allowRequestTimeout(false);
-
-	return new FDControllerImpl(engine, engine.getConfigServerImpl().getSerialNumber());
-    }
 
     public Map<String, CFMLFactory> getCFMLFactories() {
 	return initContextes;
@@ -1309,10 +1287,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	ThreadLocalPageContext.register(pc);
     }
 
-    @Override
-    public VideoUtil getVideoUtil() {
-	return VideoUtilImpl.getInstance();
-    }
 
     @Override
     public ZipUtil getZipUtil() {
@@ -1459,10 +1433,10 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	return new DBUtilImpl();
     }
 
-    @Override
-    public ORMUtil getORMUtil() {
-	return new ORMUtilImpl();
-    }
+//    @Override
+//    public ORMUtil getORMUtil() {
+//	return new ORMUtilImpl();
+//    }
 
     @Override
     public TemplateUtil getTemplateUtil() {

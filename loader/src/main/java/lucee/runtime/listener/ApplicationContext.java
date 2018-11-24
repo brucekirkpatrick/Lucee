@@ -29,9 +29,7 @@ import lucee.runtime.Mapping;
 import lucee.runtime.PageContext;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.net.s3.Properties;
 import lucee.runtime.orm.ORMConfiguration;
-import lucee.runtime.rest.RestSettings;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.CustomType;
 import lucee.runtime.type.Struct;
@@ -74,15 +72,6 @@ public interface ApplicationContext extends Serializable {
      */
     public abstract TimeSpan getSessionTimeout();
 
-    /**
-     * @return Returns the setClientCookies.
-     */
-    public abstract boolean isSetClientCookies();
-
-    /**
-     * @return Returns the setClientManagement.
-     */
-    public abstract boolean isSetClientManagement();
 
     /**
      * @return Returns the setDomainCookies.
@@ -94,10 +83,6 @@ public interface ApplicationContext extends Serializable {
      */
     public abstract boolean isSetSessionManagement();
 
-    /**
-     * @return Returns the clientstorage.
-     */
-    public abstract String getClientstorage();
 
     /**
      * @return if application context has a name
@@ -133,19 +118,16 @@ public interface ApplicationContext extends Serializable {
 
     public ORMConfiguration getORMConfiguration();
 
-    public Properties getS3();
 
     public int getLocalMode();
 
     public String getSessionstorage();
 
-    public TimeSpan getClientTimeout();
 
     public short getSessionType();
 
     public boolean getSessionCluster();
 
-    public boolean getClientCluster();
 
     public Mapping[] getComponentMappings();
 
@@ -153,9 +135,6 @@ public interface ApplicationContext extends Serializable {
 
     public void setSessionTimeout(TimeSpan sessionTimeout);
 
-    public void setClientTimeout(TimeSpan clientTimeout);
-
-    public void setClientstorage(String clientstorage);
 
     public void setSessionstorage(String sessionstorage);
 
@@ -175,9 +154,6 @@ public interface ApplicationContext extends Serializable {
 
     public void setSecureJsonPrefix(String secureJsonPrefix);
 
-    public void setSetClientCookies(boolean setClientCookies);
-
-    public void setSetClientManagement(boolean setClientManagement);
 
     public void setSetDomainCookies(boolean setDomainCookies);
 
@@ -187,11 +163,9 @@ public interface ApplicationContext extends Serializable {
 
     public void setSessionType(short sessionType);
 
-    public void setClientCluster(boolean clientCluster);
 
     public void setSessionCluster(boolean sessionCluster);
 
-    public void setS3(Properties s3);
 
     public void setORMEnabled(boolean ormenabled);
 
@@ -235,11 +209,9 @@ public interface ApplicationContext extends Serializable {
      */
     public boolean getSameFieldAsArray(int scope);
 
-    public RestSettings getRestSettings();
 
     public JavaSettings getJavaSettings();
 
-    public Resource[] getRestCFCLocations();
 
     public DataSource[] getDataSources();
 

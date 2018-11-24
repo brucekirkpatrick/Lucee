@@ -65,7 +65,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.intergral.fusiondebug.server.FDControllerFactory;
 
 import lucee.VersionInfo;
 import lucee.commons.io.log.Log;
@@ -208,9 +207,6 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
 	factory.initEngineIfNecessary();
 	singelton.addServletConfig(config);
-
-	// make the FDController visible for the FDClient
-	FDControllerFactory.makeVisible();
 
 	return singelton;
     }
@@ -577,10 +573,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
     /**
      * restart the cfml engine
-     * 
-     * @param password
-     * @return has updated
-     * @throws IOException
+     *
      * @throws ServletException
      */
     private synchronized boolean _restart() throws ServletException {
@@ -1390,7 +1383,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
     /**
      * Load CFMl Engine Implementation (lucee.runtime.engine.CFMLEngineImpl) from a Classloader
      * 
-     * @param bundle
+     * @param bc
      * @return
      * @throws ClassNotFoundException
      * @throws SecurityException

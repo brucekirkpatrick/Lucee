@@ -36,17 +36,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 
+import lucee.runtime.db.ClassDefinition;
 import org.apache.commons.collections4.map.ReferenceMap;
 import org.osgi.framework.BundleException;
 import org.xml.sax.SAXException;
 
 import lucee.commons.digest.HashUtil;
-import lucee.commons.io.FileUtil;
 import lucee.commons.io.SystemUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.ResourceProvider;
 import lucee.commons.io.res.ResourcesImpl;
-import lucee.commons.lang.ClassUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.SystemOut;
 import lucee.commons.lock.KeyLock;
@@ -60,15 +59,11 @@ import lucee.runtime.MappingImpl;
 import lucee.runtime.PageContext;
 import lucee.runtime.cache.tag.CacheHandlerCollection;
 import lucee.runtime.cache.tag.CacheHandlerCollections;
-import lucee.runtime.cfx.CFXTagPool;
 import lucee.runtime.compiler.CFMLCompilerImpl;
-import lucee.runtime.db.ClassDefinition;
 import lucee.runtime.debug.DebuggerPool;
 import lucee.runtime.engine.ThreadQueue;
-import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.exp.SecurityException;
 import lucee.runtime.extension.ExtensionDefintion;
 import lucee.runtime.extension.RHExtension;
 import lucee.runtime.gateway.GatewayEngineImpl;
@@ -79,19 +74,15 @@ import lucee.runtime.monitor.ActionMonitor;
 import lucee.runtime.monitor.ActionMonitorCollector;
 import lucee.runtime.monitor.IntervallMonitor;
 import lucee.runtime.monitor.RequestMonitor;
-import lucee.runtime.net.amf.AMFEngine;
-import lucee.runtime.net.amf.AMFEngineDummy;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.net.rpc.DummyWSHandler;
 import lucee.runtime.net.rpc.WSHandler;
 import lucee.runtime.net.rpc.ref.WSHandlerReflector;
 import lucee.runtime.op.Caster;
 import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
-import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.security.SecurityManagerImpl;
 import lucee.runtime.tag.TagHandlerPool;
-import lucee.runtime.type.scope.Cluster;
 import lucee.runtime.writer.CFMLWriter;
 import lucee.runtime.writer.CFMLWriterImpl;
 import lucee.runtime.writer.CFMLWriterWS;
@@ -317,8 +308,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
     private Map<String, Mapping> applicationMappings = new ReferenceMap<String, Mapping>(SOFT, SOFT);
 
     private TagHandlerPool tagHandlerPool = new TagHandlerPool(this);
-    private SearchEngine searchEngine;
-    private AMFEngine amfEngine;
 
     // FYI used by Extensions, do not remove
     public Mapping getApplicationMapping(String virtual, String physical) {
@@ -469,11 +458,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
     }
 
     @Override
-    public Cluster createClusterScope() throws PageException {
-	return configServer.createClusterScope();
-    }
-
-    @Override
     public boolean hasServerPassword() {
 	return configServer.hasPassword();
     }
@@ -603,23 +587,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	return configServer.getAllRHExtensions();
     }
 
-    @Override
-    public SearchEngine getSearchEngine(PageContext pc) throws PageException {
-	if (searchEngine == null) {
-	    try {
-		Object o = ClassUtil.loadInstance(getSearchEngineClassDefinition().getClazz());
-		if (o instanceof SearchEngine) searchEngine = (SearchEngine) o;
-		else throw new ApplicationException("class [" + o.getClass().getName() + "] does not implement the interface SearchEngine");
-
-		searchEngine.init(this,
-			ConfigWebUtil.getFile(getConfigDir(), ConfigWebUtil.translateOldPath(getSearchEngineDirectory()), "search", getConfigDir(), FileUtil.TYPE_DIR, this));
-	    }
-	    catch (Exception e) {
-		throw Caster.toPageException(e);
-	    }
-	}
-	return searchEngine;
-    }
 
     @Override
     public ActionMonitor getActionMonitor(String name) {
@@ -631,20 +598,6 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	return configServer.getLocalExtensionProviderDirectory();
     }
 
-    protected void setAMFEngine(AMFEngine engine) {
-	amfEngine = engine;
-    }
-
-    @Override
-    public AMFEngine getAMFEngine() {
-	if (amfEngine == null) return AMFEngineDummy.getInstance();
-	return amfEngine;
-    }
-
-    /*
-     * public boolean installServerExtension(ExtensionDefintion ed) throws PageException { return
-     * configServer.installExtension(ed); }
-     */
 
     @Override
     public RHExtension[] getServerRHExtensions() {

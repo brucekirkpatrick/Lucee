@@ -42,7 +42,6 @@ import lucee.commons.io.SystemUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.ResourcesImpl;
 import lucee.commons.io.res.filter.ExtensionResourceFilter;
-import lucee.commons.lang.ClassUtil;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.SystemOut;
@@ -66,7 +65,6 @@ import lucee.runtime.monitor.ActionMonitor;
 import lucee.runtime.monitor.ActionMonitorCollector;
 import lucee.runtime.monitor.IntervallMonitor;
 import lucee.runtime.monitor.RequestMonitor;
-import lucee.runtime.net.amf.AMFEngine;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.net.rpc.DummyWSHandler;
 import lucee.runtime.net.rpc.WSHandler;
@@ -77,10 +75,6 @@ import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
 import lucee.runtime.reflection.Reflector;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.security.SecurityManagerImpl;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.ClusterRemote;
-import lucee.runtime.type.scope.ClusterWrap;
-import lucee.runtime.type.util.ArrayUtil;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibException;
 import lucee.transformer.library.function.FunctionLibFactory;
@@ -601,45 +595,6 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
 	return -1;
 	// MUST implement
     }
-    /*
-     * private static long _countx(ConfigWebImpl config) { long count=0;
-     * count+=_count(config.getMappings()); count+=_count(config.getCustomTagMappings());
-     * count+=_count(config.getComponentMappings()); count+=_count(config.getFunctionMapping());
-     * count+=_count(config.getServerFunctionMapping()); count+=_count(config.getTagMapping());
-     * count+=_count(config.getServerTagMapping());
-     * //count+=_count(((ConfigWebImpl)config).getServerTagMapping()); return count; }
-     */
-
-    /*
-     * private static long _count(Mapping[] mappings) { long count=0; for(int
-     * i=0;i<mappings.length;i++){ count+=_count(mappings[i]); } return count; }
-     */
-
-    /*
-     * private static long _countx(Mapping mapping) { PCLCollection pcl =
-     * ((MappingImpl)mapping).getPCLCollection(); return pcl==null?0:pcl.count(); }
-     */
-
-    @Override
-    public Cluster createClusterScope() throws PageException {
-	Cluster cluster = null;
-	try {
-	    if (Reflector.isInstaneOf(getClusterClass(), Cluster.class, false)) {
-		cluster = (Cluster) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
-		cluster.init(this);
-	    }
-	    else if (Reflector.isInstaneOf(getClusterClass(), ClusterRemote.class, false)) {
-		ClusterRemote cb = (ClusterRemote) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
-
-		cluster = new ClusterWrap(this, cb);
-		// cluster.init(cs);
-	    }
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-	return cluster;
-    }
 
     @Override
     public boolean hasServerPassword() {
@@ -694,10 +649,6 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
     private IdentificationServer id;
 
     private String libHash;
-
-    private ClassDefinition<AMFEngine> amfEngineCD;
-
-    private Map<String, String> amfEngineArgs;
 
     private List<ExtensionDefintion> localExtensions;
 
@@ -820,19 +771,6 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
 	Resource dir = getConfigDir().getRealResource("extensions/available");
 	if (!dir.exists()) dir.mkdirs();
 	return dir;
-    }
-
-    protected void setAMFEngine(ClassDefinition<AMFEngine> cd, Map<String, String> args) {
-	amfEngineCD = cd;
-	amfEngineArgs = args;
-    }
-
-    public ClassDefinition<AMFEngine> getAMFEngineClassDefinition() {
-	return amfEngineCD;
-    }
-
-    public Map<String, String> getAMFEngineArgs() {
-	return amfEngineArgs;
     }
 
     @Override

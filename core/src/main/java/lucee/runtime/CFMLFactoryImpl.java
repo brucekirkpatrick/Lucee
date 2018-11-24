@@ -474,10 +474,6 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    }
 	    catch (PageException pe) {}
 
-	    try {
-		scopes.setEL(KeyConstants._client, pc.clientScope());
-	    }
-	    catch (PageException pe) {}
 	    scopes.setEL(KeyConstants._cookie, pc.cookieScope());
 	    scopes.setEL(KeyConstants._variables, pc.variablesScope());
 	    if (!(pc.localScope() instanceof LocalNotSupportedScope)) {

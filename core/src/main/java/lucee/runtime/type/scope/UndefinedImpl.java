@@ -80,7 +80,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     /**
      * constructor of the class
      * 
-     * @param pageContextImpl
+     * @param pc
      * @param type type of the undefined scope
      *            (ServletConfigImpl.SCOPE_STRICT;ServletConfigImpl.SCOPE_SMALL;ServletConfigImpl.SCOPE_STANDART)
      */
@@ -345,8 +345,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     /**
      * return a list of String with the scope names
-     * 
-     * @param key
+     *
      * @return
      */
     @Override
@@ -596,22 +595,19 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     @Override
     public void reinitialize(PageContext pc) {
 	if (type != Config.SCOPE_STANDARD) return;
-	Client cs = pc.clientScopeEL();
 	// print.ln("standard");
 	if (pc.getConfig().mergeFormAndURL()) {
-	    scopes = new Scope[cs == null ? 3 : 4];
+	    scopes = new Scope[3];
 	    scopes[0] = pc.cgiScope();
 	    scopes[1] = pc.formScope();
 	    scopes[2] = pc.cookieScope();
-	    if (cs != null) scopes[3] = cs;
 	}
 	else {
-	    scopes = new Scope[cs == null ? 4 : 5];
+	    scopes = new Scope[4];
 	    scopes[0] = pc.cgiScope();
 	    scopes[1] = pc.urlScope();
 	    scopes[2] = pc.formScope();
 	    scopes[3] = pc.cookieScope();
-	    if (cs != null) scopes[4] = cs;
 	}
     }
 

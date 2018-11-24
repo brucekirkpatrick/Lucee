@@ -60,15 +60,15 @@ public abstract class StorageScopeCache extends StorageScopeImpl {
      * Constructor of the class
      * 
      * @param pc
-     * @param name
-     * @param sct
-     * @param b
+     * @param cacheName
+     * @param appName
+     * @param strType
      */
     protected StorageScopeCache(PageContext pc, String cacheName, String appName, String strType, int type, Struct sct, long lastModified) {
 	// !!! do not store the pagecontext or config object, this object is Serializable !!!
 	super(sct, doNowIfNull(pc.getConfig(), Caster.toDate(sct.get(TIMECREATED, null), false, pc.getTimeZone(), null)),
 		doNowIfNull(pc.getConfig(), Caster.toDate(sct.get(LASTVISIT, null), false, pc.getTimeZone(), null)), -1,
-		type == SCOPE_CLIENT ? Caster.toIntValue(sct.get(HITCOUNT, "1"), 1) : 1, strType, type);
+		 1, strType, type);
 
 	// this.isNew=isNew;
 	this.appName = appName;

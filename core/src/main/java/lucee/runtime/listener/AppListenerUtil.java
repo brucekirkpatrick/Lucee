@@ -51,8 +51,6 @@ import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.net.mail.Server;
 import lucee.runtime.net.mail.ServerImpl;
-import lucee.runtime.net.s3.Properties;
-import lucee.runtime.net.s3.PropertiesImpl;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
 import lucee.runtime.orm.ORMConfigurationImpl;
@@ -438,30 +436,6 @@ public final class AppListenerUtil {
 	throw new ApplicationException("invalid sessionType definition [" + str + "] for tag application, valid values are [application,jee]");
     }
 
-    public static Properties toS3(Struct sct) {
-
-	String host = Caster.toString(sct.get(KeyConstants._host, null), null);
-	if (StringUtil.isEmpty(host)) host = Caster.toString(sct.get(KeyConstants._server, null), null);
-
-	String sk = Caster.toString(sct.get(AWS_SECRET_KEY, null), null);
-	if (StringUtil.isEmpty(sk)) sk = Caster.toString(sct.get(SECRET_KEY, null), null);
-	return toS3(Caster.toString(sct.get(ACCESS_KEY_ID, null), null), sk, Caster.toString(sct.get(DEFAULT_LOCATION, null), null), host,
-		Caster.toString(sct.get(ACL, null), null), Caster.toTimespan(sct.get(KeyConstants._cache, null), null));
-
-    }
-
-    private static Properties toS3(String accessKeyId, String awsSecretKey, String defaultLocation, String host, String acl, TimeSpan cache) {
-	PropertiesImpl s3 = new PropertiesImpl();
-
-	if (!StringUtil.isEmpty(accessKeyId)) s3.setAccessKeyId(accessKeyId);
-	if (!StringUtil.isEmpty(awsSecretKey)) s3.setSecretAccessKey(awsSecretKey);
-	if (!StringUtil.isEmpty(defaultLocation)) s3.setDefaultLocation(defaultLocation);
-	if (!StringUtil.isEmpty(host)) s3.setHost(host);
-	if (!StringUtil.isEmpty(acl)) s3.setACL(acl);
-	if (cache != null) s3.setCache(cache.getMillis());
-
-	return s3;
-    }
 
     public static void setORMConfiguration(PageContext pc, ApplicationContext ac, Struct sct) throws PageException {
 	if (sct == null) sct = new StructImpl();

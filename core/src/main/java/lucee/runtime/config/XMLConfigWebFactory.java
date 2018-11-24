@@ -145,7 +145,6 @@ import lucee.runtime.monitor.RequestMonitor;
 import lucee.runtime.monitor.RequestMonitorPro;
 import lucee.runtime.monitor.RequestMonitorProImpl;
 import lucee.runtime.monitor.RequestMonitorWrap;
-import lucee.runtime.net.amf.AMFEngine;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.net.mail.Server;
 import lucee.runtime.net.mail.ServerImpl;
@@ -161,8 +160,6 @@ import lucee.runtime.osgi.BundleInfo;
 import lucee.runtime.osgi.OSGiUtil;
 import lucee.runtime.reflection.Reflector;
 import lucee.runtime.reflection.pairs.ConstructorInstance;
-import lucee.runtime.search.DummySearchEngine;
-import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.security.SecurityManagerImpl;
 import lucee.runtime.spooler.SpoolerEngineImpl;
@@ -174,18 +171,14 @@ import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.dt.TimeSpan;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.ClusterRemote;
 import lucee.runtime.type.scope.Undefined;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.ListUtil;
-import lucee.runtime.video.VideoExecuter;
 import lucee.transformer.library.ClassDefinitionImpl;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibException;
 import lucee.transformer.library.tag.TagLib;
-import lucee.transformer.library.tag.TagLibException;
 
 /**
  * 
@@ -468,9 +461,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded application");
 	loadMappings(cs, config, doc, mode, log); // it is important this runs after
 	if (LOG) SystemOut.printDate("loaded mappings");
-	// loadApplication
-	loadRest(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded rest");
 	loadExtensions(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded extensions");
 	loadPagePool(cs, config, doc, log);
@@ -492,8 +482,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded scope");
 	loadMail(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded mail");
-	loadSearch(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded search");
 	loadDebug(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded debug");
 	loadError(cs, config, doc, log);
@@ -510,10 +498,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded proxy");
 	loadRemoteClient(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded remote clients");
-	loadVideo(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded video");
-	loadFlex(cs, config, doc, log);
-	if (LOG) SystemOut.printDate("loaded flex");
 	settings(config, log);
 	if (LOG) SystemOut.printDate("loaded settings2");
 	loadListener(cs, config, doc, log);
@@ -1611,109 +1595,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	return ConfigWebUtil.inspectTemplate(strInsTemp, ConfigImpl.INSPECT_UNDEFINED);
     }
 
-    private static void loadRest(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    boolean hasAccess = true;// MUST
-				     // ConfigWebUtil.hasAccess(config,SecurityManager.TYPE_REST);
-	    boolean hasCS = configServer != null;
-	    Element el = getChildByName(doc.getDocumentElement(), "rest");
-
-	    // list
-	    Boolean list = Caster.toBoolean(getAttr(el, "list"), null);
-	    if (list != null) {
-		config.setRestList(list.booleanValue());
-	    }
-	    else if (hasCS) {
-		config.setRestList(configServer.getRestList());
-	    }
-
-	    Element[] _mappings = getChildren(el, "mapping");
-
-	    // first get mapping defined in server admin (read-only)
-	    Map<String, lucee.runtime.rest.Mapping> mappings = new HashMap<String, lucee.runtime.rest.Mapping>();
-	    lucee.runtime.rest.Mapping tmp;
-	    if (configServer != null && config instanceof ConfigWeb) {
-		lucee.runtime.rest.Mapping[] sm = configServer.getRestMappings();
-		if (sm != null) {
-		    for (int i = 0; i < sm.length; i++) {
-
-			if (!sm[i].isHidden()) {
-			    tmp = sm[i].duplicate(config, Boolean.TRUE);
-			    mappings.put(tmp.getVirtual(), tmp);
-			}
-		    }
-		}
-	    }
-
-	    // get current mappings
-	    if (hasAccess) {
-		for (int i = 0; i < _mappings.length; i++) {
-		    el = _mappings[i];
-		    String physical = el.getAttribute("physical");
-		    String virtual = getAttr(el, "virtual");
-		    boolean readonly = toBoolean(getAttr(el, "readonly"), false);
-		    boolean hidden = toBoolean(getAttr(el, "hidden"), false);
-		    boolean _default = toBoolean(getAttr(el, "default"), false);
-		    if (physical != null) {
-			tmp = new lucee.runtime.rest.Mapping(config, virtual, physical, hidden, readonly, _default);
-			mappings.put(tmp.getVirtual(), tmp);
-		    }
-		}
-	    }
-
-	    config.setRestMappings(mappings.values().toArray(new lucee.runtime.rest.Mapping[mappings.size()]));
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
-
-    private static void loadFlex(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    Element el = getChildByName(doc.getDocumentElement(), "flex");
-
-	    // engine - we init a engine for every context, but only the server context defines the eggine class
-	    if (config instanceof ConfigServerImpl) { // only server context
-
-		// arguments
-		Map<String, String> args = new HashMap<String, String>();
-		String _caster = getAttr(el, "caster");
-		if (_caster != null) args.put("caster", _caster);
-		String _config = getAttr(el, "configuration");
-		if (_config != null) args.put("configuration", _config);
-
-		ClassDefinition<AMFEngine> cd = getClassDefinition(el, "", config.getIdentification());
-		if (cd.hasClass()) ((ConfigServerImpl) config).setAMFEngine(cd, args);
-	    }
-	    else if (configServer != null && configServer.getAMFEngineClassDefinition() != null && configServer.getAMFEngineClassDefinition().hasClass()) { // only web contexts
-		AMFEngine engine = toAMFEngine(config, configServer.getAMFEngineClassDefinition(), null);
-		if (engine != null) {
-		    engine.init((ConfigWeb) config, configServer.getAMFEngineArgs());
-		    ((ConfigWebImpl) config).setAMFEngine(engine);
-		}
-		;
-	    }
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
-
-    private static AMFEngine toAMFEngine(Config config, ClassDefinition<AMFEngine> cd, AMFEngine defaultValue) {
-	Log log = config.getLog("application");
-	try {
-	    Class<AMFEngine> clazz = cd.getClazz(null);
-	    if (clazz != null) {
-		Object obj = clazz.newInstance();
-		if ((obj instanceof AMFEngine)) return (AMFEngine) obj;
-		log.error("Flex", "object [" + Caster.toClassName(obj) + "] must implement the interface " + AMFEngine.class.getName());
-	    }
-	}
-	catch (Exception e) {
-	    log.error("Flex", e);
-	}
-	return defaultValue;
-    }
 
     private static void loadLoggers(ConfigServerImpl configServer, ConfigImpl config, Document doc, boolean isReload, Log log) {
 	try {
@@ -2918,7 +2799,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    // /resource/library/tag/build
 	    Resource build = dir.getRealResource("build");
 	    if (!build.exists()) build.mkdirs();
-	    String[] names = new String[] { "_background.png", "_bigplay.png", "_controls.png", "_loading.gif", "_player.swf", "_player.xap",
+	    String[] names = new String[] { "_background.png", "_bigplay.png", "_controls.png", "_loading.gif",
 		    "background_png." + TEMPLATE_EXTENSION, "bigplay_png." + TEMPLATE_EXTENSION, "controls_png." + TEMPLATE_EXTENSION, "jquery.js." + TEMPLATE_EXTENSION,
 		    "loading_gif." + TEMPLATE_EXTENSION, "mediaelement-and-player.min.js." + TEMPLATE_EXTENSION, "mediaelementplayer.min.css." + TEMPLATE_EXTENSION,
 		    "player.swf." + TEMPLATE_EXTENSION, "player.xap." + TEMPLATE_EXTENSION };
@@ -3044,35 +2925,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	}
     }
 
-    private static void loadVideo(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    Element video = config instanceof ConfigServerImpl ? getChildByName(doc.getDocumentElement(), "video") : null;
-	    boolean hasCS = configServer != null;
-	    ClassDefinition cd = null;
-	    // video-executer
-	    if (video != null) {
-		cd = getClassDefinition(video, "video-executer-", config.getIdentification());
-	    }
-
-	    if (cd != null && cd.hasClass()) {
-
-		try {
-		    Class clazz = cd.getClazz();
-		    if (!Reflector.isInstaneOf(clazz, VideoExecuter.class, false))
-			throw new ApplicationException("class [" + cd + "] does not implement interface [" + VideoExecuter.class.getName() + "]");
-		    config.setVideoExecuterClass(clazz);
-
-		}
-		catch (Exception e) {
-		    SystemOut.printDate(e);
-		}
-	    }
-	    else if (hasCS) config.setVideoExecuterClass(configServer.getVideoExecuterClass());
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
 
     /**
      * @param configServer
@@ -3556,26 +3408,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    Element scope = getChildByName(doc.getDocumentElement(), "scope");
 	    boolean hasCS = configServer != null;
 
-	    // Cluster Scope
-	    if (!hasCS) {
-		ClassDefinition cd = getClassDefinition(scope, "cluster-", config.getIdentification());
-		if (hasAccess && cd.hasClass()) {
-		    try {
-			Class clazz = cd.getClazz();
-			if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
-				"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
-
-			config.setClusterClass(clazz);
-
-		    }
-		    catch (Exception e) {
-			SystemOut.printDate(e);
-		    }
-
-		}
-	    }
-	    // else if(hasCS)
-	    // config.setClassClusterScope(configServer.getClassClusterScope());
 
 	    // Local Mode
 	    if (mode == ConfigImpl.MODE_STRICT) {
@@ -3635,16 +3467,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else if (hasCS) config.setMergeFormAndURL(configServer.mergeFormAndURL());
 
-	    // Client-Storage
-	    {
-		String clientStorage = getAttr(scope, "clientstorage");
-		if (StringUtil.isEmpty(clientStorage, true)) clientStorage = getAttr(scope, "client-storage");
-
-		if (hasAccess && !StringUtil.isEmpty(clientStorage)) {
-		    config.setClientStorage(clientStorage);
-		}
-		else if (hasCS) config.setClientStorage(configServer.getClientStorage());
-	    }
 
 	    // Session-Storage
 	    {
@@ -3657,20 +3479,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		else if (hasCS) config.setSessionStorage(configServer.getSessionStorage());
 	    }
 
-	    // Client Timeout
-	    String clientTimeout = getAttr(scope, "clienttimeout");
-	    if (StringUtil.isEmpty(clientTimeout, true)) clientTimeout = getAttr(scope, "client-timeout");
-	    if (StringUtil.isEmpty(clientTimeout, true)) {
-		// deprecated
-		clientTimeout = getAttr(scope, "client-max-age");
-		int days = Caster.toIntValue(clientTimeout, -1);
-		if (days > 0) clientTimeout = days + ",0,0,0";
-		else clientTimeout = "";
-	    }
-	    if (hasAccess && !StringUtil.isEmpty(clientTimeout)) {
-		config.setClientTimeout(clientTimeout);
-	    }
-	    else if (hasCS) config.setClientTimeout(configServer.getClientTimeout());
 
 	    // Session Timeout
 	    String sessionTimeout = getAttr(scope, "sessiontimeout");
@@ -3693,24 +3501,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setClientType(strClientType);
 	    }
 	    else if (hasCS) config.setClientType(configServer.getClientType());
-
-	    // Client
-	    Resource configDir = config.getConfigDir();
-	    String strClientDirectory = getAttr(scope, "client-directory");
-	    if (hasAccess && !StringUtil.isEmpty(strClientDirectory)) {
-		strClientDirectory = ConfigWebUtil.translateOldPath(strClientDirectory);
-		Resource res = ConfigWebUtil.getFile(configDir, strClientDirectory, "client-scope", configDir, FileUtil.TYPE_DIR, config);
-		config.setClientScopeDir(res);
-	    }
-	    else {
-		config.setClientScopeDir(configDir.getRealResource("client-scope"));
-	    }
-
-	    String strMax = getAttr(scope, "client-directory-max-size");
-	    if (hasAccess && !StringUtil.isEmpty(strMax)) {
-		config.setClientScopeDirSize(ByteSizeParser.parseByteSizeDefinition(strMax, config.getClientScopeDirSize()));
-	    }
-	    else if (hasCS) config.setClientScopeDirSize(configServer.getClientScopeDirSize());
 
 	    // Session Management
 	    String strSessionManagement = getAttr(scope, "sessionmanagement");
@@ -3998,36 +3788,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	}
     }
 
-    /**
-     * @param configServer
-     * @param config
-     * @param doc
-     * @throws PageException
-     */
-    private static void loadSearch(ConfigServer configServer, ConfigImpl config, Document doc, Log log) {
-	try {
-	    Element search = getChildByName(doc.getDocumentElement(), "search");
-
-	    // class
-	    ClassDefinition<SearchEngine> cd = getClassDefinition(search, "engine-", config.getIdentification());
-	    if (!cd.hasClass() || "lucee.runtime.search.lucene.LuceneSearchEngine".equals(cd.getClassName())) {
-		if (configServer != null) cd = ((ConfigImpl) configServer).getSearchEngineClassDefinition();
-		else cd = new ClassDefinitionImpl(DummySearchEngine.class);
-	    }
-
-	    // directory
-	    String dir = search.getAttribute("directory");
-	    if (StringUtil.isEmpty(dir)) {
-		if (configServer != null) dir = ((ConfigImpl) configServer).getSearchEngineDirectory();
-		else dir = "{lucee-web}/search/";
-	    }
-
-	    config.setSearchEngine(cd, dir);
-	}
-	catch (Exception e) {
-	    log(config, log, e);
-	}
-    }
 
 
     /**

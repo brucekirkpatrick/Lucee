@@ -49,7 +49,6 @@ import lucee.runtime.listener.JavaSettings;
 import lucee.runtime.listener.ModernApplicationContext;
 import lucee.runtime.net.mail.Server;
 import lucee.runtime.net.mail.ServerImpl;
-import lucee.runtime.net.s3.Properties;
 import lucee.runtime.op.Caster;
 import lucee.runtime.orm.ORMConfiguration;
 import lucee.runtime.type.Array;
@@ -81,8 +80,6 @@ public class GetApplicationSettings extends BIF {
 
 	Struct sct = new StructImpl(Struct.TYPE_LINKED);
 	sct.setEL("applicationTimeout", ac.getApplicationTimeout());
-	sct.setEL("clientManagement", Caster.toBoolean(ac.isSetClientManagement()));
-	sct.setEL("clientStorage", ac.getClientstorage());
 	sct.setEL("sessionStorage", ac.getSessionstorage());
 	sct.setEL("customTagPaths", toArray(ac.getCustomTagMappings()));
 	sct.setEL("componentPaths", toArray(ac.getComponentMappings()));
@@ -96,8 +93,6 @@ public class GetApplicationSettings extends BIF {
 	sct.setEL("secureJsonPrefix", ac.getSecureJsonPrefix());
 	sct.setEL("sessionManagement", Caster.toBoolean(ac.isSetSessionManagement()));
 	sct.setEL("sessionTimeout", ac.getSessionTimeout());
-	sct.setEL("clientTimeout", ac.getClientTimeout());
-	sct.setEL("setClientCookies", Caster.toBoolean(ac.isSetClientCookies()));
 	sct.setEL("setDomainCookies", Caster.toBoolean(ac.isSetDomainCookies()));
 	sct.setEL(KeyConstants._name, ac.getName());
 	sct.setEL("localMode", ac.getLocalMode() == Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS ? Boolean.TRUE : Boolean.FALSE);
@@ -123,7 +118,6 @@ public class GetApplicationSettings extends BIF {
 	sct.setEL("sessionType", AppListenerUtil.toSessionType(((PageContextImpl) pc).getSessionType(), "application"));
 	sct.setEL("serverSideFormValidation", Boolean.FALSE); // TODO impl
 
-	sct.setEL("clientCluster", Caster.toBoolean(ac.getClientCluster()));
 	sct.setEL("sessionCluster", Caster.toBoolean(ac.getSessionCluster()));
 
 	sct.setEL("invokeImplicitAccessor", Caster.toBoolean(ac.getTriggerComponentDataMember()));
@@ -144,11 +138,6 @@ public class GetApplicationSettings extends BIF {
 	if (ac.isORMEnabled()) {
 	    ORMConfiguration conf = ac.getORMConfiguration();
 	    if (conf != null) sct.setEL(KeyConstants._orm, conf.toStruct());
-	}
-	// s3
-	Properties props = ac.getS3();
-	if (props != null) {
-	    sct.setEL(KeyConstants._s3, props.toStruct());
 	}
 
 	// ws settings

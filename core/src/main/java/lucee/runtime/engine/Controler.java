@@ -188,13 +188,6 @@ public final class Controler extends Thread {
 	boolean doHour = (lastHourInterval + (1000 * 60 * 60)) < now;
 	if (doHour) lastHourInterval = now;
 
-	// broadcast cluster scope
-	try {
-	    ScopeContext.getClusterScope(configServer, true).broadcast();
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	}
 
 	// every 10 seconds
 	if (do10Seconds) {
@@ -245,12 +238,7 @@ public final class Controler extends Thread {
 		ThreadLocalConfig.register(config);
 
 		config.reloadTimeServerOffset();
-		checkOldClientFile(config);
 
-		// try{checkStorageScopeFile(config,Session.SCOPE_CLIENT);}catch(Throwable t)
-		// {ExceptionUtil.rethrowIfNecessary(t);}
-		// try{checkStorageScopeFile(config,Session.SCOPE_SESSION);}catch(Throwable t)
-		// {ExceptionUtil.rethrowIfNecessary(t);}
 		try {
 		    config.reloadTimeServerOffset();
 		}
@@ -281,9 +269,6 @@ public final class Controler extends Thread {
 		config = cfmlFactory.getConfig();
 	    }
 	    ThreadLocalConfig.register(config);
-	    if (do10Seconds) {
-		// try{DeployHandler.deploy(config);}catch(Throwable t){ExceptionUtil.rethrowIfNecessary(t);}
-	    }
 
 	    // every Minute
 	    if (doMinute) {
@@ -425,34 +410,6 @@ public final class Controler extends Thread {
 	SMTPConnectionPool.closeSessions();
     }
 
-    private void checkOldClientFile(ConfigWeb config) {
-	ExtensionResourceFilter filter = new ExtensionResourceFilter(".script", false);
-
-	// move old structured file in new structure
-	try {
-	    Resource dir = config.getClientScopeDir(), trgres;
-	    Resource[] children = dir.listResources(filter);
-	    String src, trg;
-	    int index;
-	    for (int i = 0; i < children.length; i++) {
-		src = children[i].getName();
-		index = src.indexOf('-');
-
-		trg = StorageScopeFile.getFolderName(src.substring(0, index), src.substring(index + 1), false);
-		trgres = dir.getRealResource(trg);
-		if (!trgres.exists()) {
-		    trgres.createFile(true);
-		    ResourceUtil.copy(children[i], trgres);
-		}
-		// children[i].moveTo(trgres);
-		children[i].delete();
-
-	    }
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	}
-    }
 
     private void checkCacheFileSize(ConfigWeb config) {
 	checkSize(config, config.getCacheDir(), config.getCacheDirSize(), new ExtensionResourceFilter(".cache"));

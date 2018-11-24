@@ -61,14 +61,14 @@ public abstract class StorageScopeDatasource extends StorageScopeImpl {
      * Constructor of the class
      * 
      * @param pc
-     * @param name
-     * @param sct
-     * @param b
+     * @param datasourceName
+     * @param strType
+     * @param type
      */
     protected StorageScopeDatasource(PageContext pc, String datasourceName, String strType, int type, Struct sct) {
 	super(sct, doNowIfNull(pc, Caster.toDate(sct.get(TIMECREATED, null), false, pc.getTimeZone(), null)),
 		doNowIfNull(pc, Caster.toDate(sct.get(LASTVISIT, null), false, pc.getTimeZone(), null)), -1,
-		type == SCOPE_CLIENT ? Caster.toIntValue(sct.get(HITCOUNT, "1"), 1) : 0, strType, type);
+		0, strType, type);
 
 	this.datasourceName = datasourceName;
 	appName = pc.getApplicationContext().getName();

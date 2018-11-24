@@ -69,12 +69,9 @@ import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.i18n.LocaleFactory;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.net.mail.Server;
-import lucee.runtime.net.s3.Properties;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
 import lucee.runtime.orm.ORMConfiguration;
-import lucee.runtime.rest.RestSettingImpl;
-import lucee.runtime.rest.RestSettings;
 import lucee.runtime.tag.Query;
 import lucee.runtime.tag.listener.TagListener;
 import lucee.runtime.type.Array;
@@ -185,7 +182,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private Mapping[] cmappings;
     private DataSource[] dataSources;
 
-    private lucee.runtime.net.s3.Properties s3;
     private FTPConnectionData ftp;
     private boolean triggerComponentDataMember;
     private Map<Integer, String> defaultCaches;
@@ -247,7 +243,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private boolean ormEnabled;
     private ORMConfiguration ormConfig;
     private boolean initRestSetting;
-    private RestSettings restSetting;
     private boolean initJavaSettings;
     private JavaSettings javaSettings;
     private Object ormDatasource;
@@ -312,12 +307,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.queryVarUsage = ci.getQueryVarUsage();
 
 	this.sessionCluster = config.getSessionCluster();
-	this.clientCluster = config.getClientCluster();
 	this.sessionStorage = ci.getSessionStorage();
-	this.clientStorage = ci.getClientStorage();
 
 	this.triggerComponentDataMember = config.getTriggerComponentDataMember();
-	this.restSetting = config.getRestSetting();
 	this.javaSettings = new JavaSettingsImpl();
 	this.component = cfc;
 
@@ -442,15 +434,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return sessionTimeout;
     }
 
-    @Override
-    public TimeSpan getClientTimeout() {
-	if (!initClientTimeout) {
-	    Object o = get(component, CLIENT_TIMEOUT, null);
-	    if (o != null) clientTimeout = Caster.toTimespan(o, clientTimeout);
-	    initClientTimeout = true;
-	}
-	return clientTimeout;
-    }
 
     @Override
     public TimeSpan getRequestTimeout() {
@@ -469,25 +452,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	initRequestTimeout = true;
     }
 
-    @Override
-    public boolean isSetClientCookies() {
-	if (!initSetClientCookies) {
-	    Object o = get(component, SET_CLIENT_COOKIES, null);
-	    if (o != null) setClientCookies = Caster.toBooleanValue(o, setClientCookies);
-	    initSetClientCookies = true;
-	}
-	return setClientCookies;
-    }
-
-    @Override
-    public boolean isSetClientManagement() {
-	if (!initSetClientManagement) {
-	    Object o = get(component, CLIENT_MANAGEMENT, null);
-	    if (o != null) setClientManagement = Caster.toBooleanValue(o, setClientManagement);
-	    initSetClientManagement = true;
-	}
-	return setClientManagement;
-    }
 
     @Override
     public boolean isSetDomainCookies() {
@@ -509,15 +473,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return setSessionManagement;
     }
 
-    @Override
-    public String getClientstorage() {
-	if (!initClientStorage) {
-	    String str = Caster.toString(get(component, CLIENT_STORAGE, null), null);
-	    if (!StringUtil.isEmpty(str)) clientStorage = str;
-	    initClientStorage = true;
-	}
-	return clientStorage;
-    }
 
     @Override
     public int getScriptProtect() {
@@ -597,16 +552,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	    initSessionCluster = true;
 	}
 	return sessionCluster;
-    }
-
-    @Override
-    public boolean getClientCluster() {
-	if (!initClientCluster) {
-	    Object o = get(component, CLIENT_CLUSTER, null);
-	    if (o != null) clientCluster = Caster.toBooleanValue(o, clientCluster);
-	    initClientCluster = true;
-	}
-	return clientCluster;
     }
 
     @Override
@@ -1163,15 +1108,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	initSuppressContent = true;
     }
 
-    @Override
-    public lucee.runtime.net.s3.Properties getS3() {
-	if (!initS3) {
-	    Object o = get(component, KeyConstants._s3, null);
-	    if (o != null && Decision.isStruct(o)) s3 = AppListenerUtil.toS3(Caster.toStruct(o, null));
-	    initS3 = true;
-	}
-	return s3;
-    }
 
     @Override
     public FTPConnectionData getFTP() {
@@ -1266,17 +1202,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.sessionTimeout = sessionTimeout;
     }
 
-    @Override
-    public void setClientTimeout(TimeSpan clientTimeout) {
-	initClientTimeout = true;
-	this.clientTimeout = clientTimeout;
-    }
-
-    @Override
-    public void setClientstorage(String clientstorage) {
-	initClientStorage = true;
-	this.clientStorage = clientstorage;
-    }
 
     @Override
     public void setSessionstorage(String sessionstorage) {
@@ -1360,17 +1285,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.secureJsonPrefix = secureJsonPrefix;
     }
 
-    @Override
-    public void setSetClientCookies(boolean setClientCookies) {
-	initSetClientCookies = true;
-	this.setClientCookies = setClientCookies;
-    }
-
-    @Override
-    public void setSetClientManagement(boolean setClientManagement) {
-	initSetClientManagement = true;
-	this.setClientManagement = setClientManagement;
-    }
 
     @Override
     public void setSetDomainCookies(boolean setDomainCookies) {
@@ -1427,22 +1341,11 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     }
 
     @Override
-    public void setClientCluster(boolean clientCluster) {
-	initClientCluster = true;
-	this.clientCluster = clientCluster;
-    }
-
-    @Override
     public void setSessionCluster(boolean sessionCluster) {
 	initSessionCluster = true;
 	this.sessionCluster = sessionCluster;
     }
 
-    @Override
-    public void setS3(Properties s3) {
-	initS3 = true;
-	this.s3 = s3;
-    }
 
     @Override
     public void setFTP(FTPConnectionData ftp) {
@@ -1475,42 +1378,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return component.getPageSource().getResource();
     }
 
-    @Override
-    public RestSettings getRestSettings() {
-	initRest();
-	return restSetting;
-    }
 
-    @Override
-    public Resource[] getRestCFCLocations() {
-	initRest();
-	return restCFCLocations;
-    }
 
-    private void initRest() {
-	if (!initRestSetting) {
-	    Object o = get(component, REST_SETTING, null);
-	    if (o != null && Decision.isStruct(o)) {
-		Struct sct = Caster.toStruct(o, null);
-
-		// cfclocation
-		Object obj = sct.get(KeyConstants._cfcLocation, null);
-		if (obj == null) obj = sct.get(KeyConstants._cfcLocations, null);
-		List<Resource> list = AppListenerUtil.loadResources(config, null, obj, true);
-		restCFCLocations = list == null ? null : list.toArray(new Resource[list.size()]);
-
-		// skipCFCWithError
-		boolean skipCFCWithError = Caster.toBooleanValue(sct.get(KeyConstants._skipCFCWithError, null), restSetting.getSkipCFCWithError());
-
-		// returnFormat
-		int returnFormat = Caster.toIntValue(sct.get(KeyConstants._returnFormat, null), restSetting.getReturnFormat());
-
-		restSetting = new RestSettingImpl(skipCFCWithError, returnFormat);
-
-	    }
-	    initRestSetting = true;
-	}
-    }
 
     @Override
     public JavaSettings getJavaSettings() {

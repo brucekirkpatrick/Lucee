@@ -56,37 +56,36 @@
     </developer>
   </developers>
 
-  <profiles>
-    <profile>
-        <id>release-sign-artifacts</id>
-        <activation>
-            <property>
-                <name>performRelease</name>
-                <value>true</value>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-              <!-- GPG sign -->
-              <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-gpg-plugin</artifactId>
-           <version>1.5</version>
-                <executions>
-                  <execution>
-                    <id>sign-artifacts</id>
-                    <phase>verify</phase>
-                    <goals>
-                      <goal>sign</goal>
-                    </goals>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-        </build>
-    </profile>
-</profiles>
-
+  <!--<profiles>-->
+    <!--<profile>-->
+        <!--<id>release-sign-artifacts</id>-->
+        <!--<activation>-->
+            <!--<property>-->
+                <!--<name>performRelease</name>-->
+                <!--<value>true</value>-->
+            <!--</property>-->
+        <!--</activation>-->
+        <!--<build>-->
+            <!--<plugins>-->
+              <!--&lt;!&ndash; GPG sign &ndash;&gt;-->
+              <!--<plugin>-->
+           <!--<groupId>org.apache.maven.plugins</groupId>-->
+           <!--<artifactId>maven-gpg-plugin</artifactId>-->
+           <!--<version>1.5</version>-->
+                <!--<executions>-->
+                  <!--<execution>-->
+                    <!--<id>sign-artifacts</id>-->
+                    <!--<phase>verify</phase>-->
+                    <!--<goals>-->
+                      <!--<goal>sign</goal>-->
+                    <!--</goals>-->
+                  <!--</execution>-->
+                <!--</executions>-->
+              <!--</plugin>-->
+            <!--</plugins>-->
+        <!--</build>-->
+    <!--</profile>-->
+<!--</profiles>-->
 
 
   <build>
@@ -201,7 +200,7 @@
 
                     <!-- <property name="sourceDir" value="${project.build.sourceDirectory}" /> -->
                     <property name="baseDir" value="${basedir}" />
-                    <dirname file="${baseDir}" property="rootDir" />
+                    <!--<dirname file="${baseDir}" property="rootDir" />-->
 
                     <ant antfile="../ant/build-core.xml" target="buildLoaderMaven" />
 
@@ -496,12 +495,12 @@
   	<version>1.1.0</version>
     <scope>provided</scope>
   </dependency>
-  <dependency>
-    <groupId>fusiondebug.api</groupId>
-    <artifactId>server</artifactId>
-    <version>1.0.20</version>
-    <scope>provided</scope>
-  </dependency>
+  <!--<dependency>-->
+    <!--<groupId>fusiondebug.api</groupId>-->
+    <!--<artifactId>server</artifactId>-->
+    <!--<version>1.0.20</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
   <dependency>
   	<groupId>org.lucee</groupId>
   	<artifactId>httpcomponents-httpclient</artifactId>
@@ -520,30 +519,30 @@
   	<version>4.5.6</version>
     <scope>provided</scope>
   </dependency>
-  <dependency>
-    <groupId>hsqldb</groupId>
-    <artifactId>hsqldb</artifactId>
-    <version>1.8.0</version>
-    <scope>provided</scope>
-  </dependency>
-  <dependency>
-    <groupId>jacob</groupId>
-    <artifactId>jacob</artifactId>
-    <version>1.16.1</version>
-    <scope>provided</scope>
-  </dependency>
+  <!--<dependency>-->
+    <!--<groupId>hsqldb</groupId>-->
+    <!--<artifactId>hsqldb</artifactId>-->
+    <!--<version>1.8.0</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
+  <!--<dependency>-->
+    <!--<groupId>jacob</groupId>-->
+    <!--<artifactId>jacob</artifactId>-->
+    <!--<version>1.16.1</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
   <dependency>
     <groupId>javasysmon</groupId>
     <artifactId>javasysmon</artifactId>
     <version>0.3.3</version>
     <scope>provided</scope>
   </dependency>
-  <dependency>
-    <groupId>org.samba</groupId>
-    <artifactId>jcifs</artifactId>
-    <version>1.3.17</version>
-    <scope>provided</scope>
-  </dependency>
+  <!--<dependency>-->
+    <!--<groupId>org.samba</groupId>-->
+    <!--<artifactId>jcifs</artifactId>-->
+    <!--<version>1.3.17</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
   <dependency>
     <groupId>jencrypt</groupId>
     <artifactId>jencrypt</artifactId>
@@ -574,12 +573,12 @@
 	  <version>1.7.12</version>
     <scope>provided</scope>
   </dependency>
-  <dependency>
-    <groupId>ss</groupId>
-    <artifactId>css2</artifactId>
-    <version>0.9.4</version>
-    <scope>provided</scope>
-  </dependency>
+  <!--<dependency>-->
+    <!--<groupId>ss</groupId>-->
+    <!--<artifactId>css2</artifactId>-->
+    <!--<version>0.9.4</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
   <dependency>
     <groupId>stax</groupId>
     <artifactId>api</artifactId>
@@ -622,18 +621,18 @@
     <version>1.2.4</version>
     <scope>provided</scope>
   </dependency>
-        <dependency>
-            <groupId>tagsoup</groupId>
-            <artifactId>tagsoup</artifactId>
-            <version>1.2.1.0002L</version>
-            <scope>provided</scope>
-        </dependency>
-  <dependency>
-    <groupId>w3c</groupId>
-    <artifactId>dom</artifactId>
-    <version>1.1.0</version>
-    <scope>provided</scope>
-  </dependency>
+  <!--<dependency>-->
+    <!--<groupId>tagsoup</groupId>-->
+    <!--<artifactId>tagsoup</artifactId>-->
+    <!--<version>1.2.1.0002L</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
+  <!--<dependency>-->
+    <!--<groupId>w3c</groupId>-->
+    <!--<artifactId>dom</artifactId>-->
+    <!--<version>1.1.0</version>-->
+    <!--<scope>provided</scope>-->
+  <!--</dependency>-->
   <!-- <dependency>
     <groupId>xdb</groupId>
     <artifactId>xdb</artifactId>

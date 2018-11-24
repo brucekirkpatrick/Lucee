@@ -645,11 +645,7 @@ public final class Application extends TagImpl {
     private boolean set(ApplicationContext ac, boolean update) throws PageException {
 	if (applicationTimeout != null) ac.setApplicationTimeout(applicationTimeout);
 	if (sessionTimeout != null) ac.setSessionTimeout(sessionTimeout);
-	if (clientTimeout != null) ac.setClientTimeout(clientTimeout);
 	if (requestTimeout != null) ac.setRequestTimeout(requestTimeout);
-	if (clientstorage != null) {
-	    ac.setClientstorage(clientstorage);
-	}
 	if (sessionstorage != null) {
 	    ac.setSessionstorage(sessionstorage);
 	}
@@ -735,8 +731,6 @@ public final class Application extends TagImpl {
 	if (typeChecking != null) ac.setTypeChecking(typeChecking.booleanValue());
 	if (suppress != null) ac.setSuppressContent(suppress.booleanValue());
 	if (secureJsonPrefix != null) ac.setSecureJsonPrefix(secureJsonPrefix);
-	if (setClientCookies != null) ac.setSetClientCookies(setClientCookies.booleanValue());
-	if (setClientManagement != null) ac.setSetClientManagement(setClientManagement.booleanValue());
 	if (setDomainCookies != null) ac.setSetDomainCookies(setDomainCookies.booleanValue());
 	if (setSessionManagement != null) ac.setSetSessionManagement(setSessionManagement.booleanValue());
 	if (localMode != -1) ac.setLocalMode(localMode);
@@ -774,10 +768,8 @@ public final class Application extends TagImpl {
 	}
 
 	if (tag != null) ac.setTagAttributeDefaultValues(pageContext, tag);
-	ac.setClientCluster(clientCluster);
 	ac.setSessionCluster(sessionCluster);
 	ac.setCGIScopeReadonly(cgiReadOnly);
-	if (s3 != null) ac.setS3(AppListenerUtil.toS3(s3));
 	if (ftp != null) ((ApplicationContextSupport) ac).setFTP(AppListenerUtil.toFTP(ftp));
 
 	// Scope cascading

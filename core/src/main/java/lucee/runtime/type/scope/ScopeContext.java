@@ -54,11 +54,6 @@ import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.scope.client.ClientCache;
-import lucee.runtime.type.scope.client.ClientCookie;
-import lucee.runtime.type.scope.client.ClientDatasource;
-import lucee.runtime.type.scope.client.ClientFile;
-import lucee.runtime.type.scope.client.ClientMemory;
 import lucee.runtime.type.scope.session.SessionCache;
 import lucee.runtime.type.scope.session.SessionCookie;
 import lucee.runtime.type.scope.session.SessionDatasource;
@@ -97,10 +92,8 @@ public final class ScopeContext {
 
     private int maxSessionTimeout = 0;
 
-    private static Cluster cluster;
     private static Server server = null;
 
-    private StorageScopeEngine client;
     private StorageScopeEngine session;
     private CFMLFactoryImpl factory;
     private Log log;
@@ -175,168 +168,6 @@ public final class ScopeContext {
 	return server;
     }
 
-    /*
-     * * Returns the current Cluster Scope, if there is no current Cluster Scope, this method returns
-     * null.
-     *
-     * @param pc
-     *
-     * @param create
-     *
-     * @return
-     *
-     * @throws SecurityException / public static Cluster getClusterScope() { return cluster; }
-     */
-
-    /**
-     * Returns the current Cluster Scope, if there is no current Cluster Scope and create is true,
-     * returns a new Cluster Scope. If create is false and the request has no valid Cluster Scope, this
-     * method returns null.
-     *
-     * @param config
-     * @param create
-     * @return
-     * @throws PageException
-     */
-    public static Cluster getClusterScope(Config config, boolean create) throws PageException {
-	if (cluster == null && create) {
-	    cluster = ((ConfigImpl) config).createClusterScope();
-
-	}
-	return cluster;
-    }
-
-    public static void clearClusterScope() {
-	cluster = null;
-    }
-
-    public Client getClientScope(PageContext pc) throws PageException {
-	ApplicationContext appContext = pc.getApplicationContext();
-	// get Context
-	Map<String, Scope> context = getSubMap(cfClientContexts, appContext.getName());
-
-	// get Client
-	boolean isMemory = false;
-	String storage = appContext.getClientstorage();
-	if (StringUtil.isEmpty(storage, true)) {
-	    storage = ConfigImpl.DEFAULT_STORAGE_CLIENT;
-	}
-	else if ("ram".equalsIgnoreCase(storage)) {
-	    storage = "memory";
-	    isMemory = true;
-	}
-	else if ("registry".equalsIgnoreCase(storage)) {
-	    storage = "file";
-	}
-	else {
-	    storage = storage.toLowerCase();
-	    if ("memory".equals(storage)) isMemory = true;
-	}
-
-	Client existing = (Client) context.get(pc.getCFID());
-	Client client = appContext.getClientCluster() ? null : existing;
-	// final boolean doMemory=isMemory || !appContext.getClientCluster();
-	// client=doMemory?(Client) context.get(pc.getCFID()):null;
-	if (client == null || client.isExpired() || !client.getStorage().equalsIgnoreCase(storage)) {
-	    if ("file".equals(storage)) {
-		client = ClientFile.getInstance(appContext.getName(), pc, getLog());
-	    }
-	    else if ("cookie".equals(storage)) client = ClientCookie.getInstance(appContext.getName(), pc, getLog());
-	    else if ("memory".equals(storage)) {
-		if (existing != null) client = existing;
-		client = ClientMemory.getInstance(pc, getLog());
-	    }
-	    else {
-		DataSource ds = pc.getDataSource(storage, null);
-		if (ds != null) {
-		    if (INVIDUAL_STORAGE_KEYS) {
-			try {
-			    client = (Client) IKStorageScopeSupport.getInstance(Scope.SCOPE_CLIENT, new IKHandlerDatasource(), appContext.getName(), storage, pc, existing,
-				    getLog());
-			}
-			catch (PageException pe) {
-			    // code above could fail when an old scope is loaded, remember client scope can be easy be
-			    // 180 days old
-			    client = ClientDatasource.getInstance(storage, pc, getLog());
-			}
-		    }
-		    else client = ClientDatasource.getInstance(storage, pc, getLog());
-		}
-		else {
-		    if (INVIDUAL_STORAGE_KEYS) {
-			try {
-			    client = (Client) IKStorageScopeSupport.getInstance(Scope.SCOPE_CLIENT, new IKHandlerCache(), appContext.getName(), storage, pc, existing, getLog());
-			}
-			catch (PageException pe) {
-			    // code above could fail when an old scope is loaded, remember client scope can be easy be
-			    // 180 days old
-			    client = ClientCache.getInstance(storage, appContext.getName(), pc, existing, getLog(), null);
-			}
-		    }
-		    else client = ClientCache.getInstance(storage, appContext.getName(), pc, existing, getLog(), null);
-		}
-
-		if (client == null) {
-		    // datasource not enabled for storage
-		    if (ds != null) {
-			if (!ds.isStorage()) throw new ApplicationException(
-				"datasource [" + storage + "] is not enabled to be used as client storage, you have to enable it in the Lucee administrator.");
-			throw new ApplicationException("datasource [" + storage
-				+ "] could not be reached for client storage. Please make sure the datasource settings are correct, and the datasource is available.");
-		    }
-		    CacheConnection cc = CacheUtil.getCacheConnection(pc, storage, null);
-		    if (cc != null) throw new ApplicationException(
-			    "cache [" + storage + "] is not enabled to be used  as a session/client storage, you have to enable it in the Lucee administrator.");
-
-		    throw new ApplicationException("there is no cache or datasource with name [" + storage + "] defined.");
-		}
-
-	    }
-	    client.setStorage(storage);
-	    context.put(pc.getCFID(), client);
-	}
-	else getLog().log(Log.LEVEL_INFO, "scope-context", "use existing client scope for " + appContext.getName() + "/" + pc.getCFID() + " from storage " + storage);
-
-	client.touchBeforeRequest(pc);
-	return client;
-    }
-
-    public Client getClientScopeEL(PageContext pc) {
-	try {
-	    return getClientScope(pc);
-	}
-	catch (PageException pe) {
-	    throw new PageRuntimeException(pe);
-	}
-    }
-
-    /*
-     * public ClientPlus getClientScopeEL(PageContext pc) { ClientPlus client=null; ApplicationContext
-     * appContext = pc.getApplicationContext(); // get Context Map
-     * context=getSubMap(cfClientContexts,appContext.getName());
-     *
-     * // get Client String storage = appContext.getClientstorage();
-     * if(!StringUtil.isEmpty(storage))storage=storage.toLowerCase(); else storage="";
-     *
-     * client=(ClientPlus) context.get(pc.getCFID()); if(client==null || client.isExpired() ||
-     * !client.getStorageType().equalsIgnoreCase(storage)) { if(StringUtil.isEmpty(storage) ||
-     * "file".equals(storage) || "registry".equals(storage)){ storage="file";
-     * client=ClientFile.getInstance(appContext.getName(),pc,getLog()); } else
-     * if("cookie".equals(storage)) client=ClientCookie.getInstance(appContext.getName(),pc,getLog());
-     * else if("memory".equals(storage) || "ram".equals(storage)){ //storage="ram";
-     * client=ClientMemory.getInstance(pc,getLog()); } else{ DataSource ds =
-     * ((ConfigImpl)pc.getConfig()).getDataSource(storage,null);
-     * if(ds!=null)client=ClientDatasource.getInstanceEL(storage,pc,getLog()); else
-     * client=ClientCache.getInstanceEL(storage,appContext.getName(),pc,getLog());
-     *
-     * } client.setStorage(storage); context.put(pc.getCFID(),client); } else
-     * getLog().info("scope-context",
-     * "use existing client scope for "+appContext.getName()+"/"+pc.getCFID()+" from storage "+storage);
-     *
-     *
-     * client.initialize(pc); return client; }
-     */
-
     /**
      * return the session count of all application contexts
      *
@@ -350,17 +181,6 @@ public final class ScopeContext {
 
     public int getSessionCount() {
 	Iterator<Entry<String, Map<String, Scope>>> it = cfSessionContexts.entrySet().iterator();
-	Entry<String, Map<String, Scope>> entry;
-	int count = 0;
-	while (it.hasNext()) {
-	    entry = it.next();
-	    count += getCount(entry.getValue());
-	}
-	return count;
-    }
-
-    public int getClientCount() {
-	Iterator<Entry<String, Map<String, Scope>>> it = cfClientContexts.entrySet().iterator();
 	Entry<String, Map<String, Scope>> entry;
 	int count = 0;
 	while (it.hasNext()) {
@@ -432,10 +252,8 @@ public final class ScopeContext {
      */
     public long getScopesSize(int scope) throws ExpressionException {
 	if (scope == Scope.SCOPE_APPLICATION) return SizeOf.size(applicationContexts);
-	if (scope == Scope.SCOPE_CLUSTER) return SizeOf.size(cluster);
 	if (scope == Scope.SCOPE_SERVER) return SizeOf.size(server);
 	if (scope == Scope.SCOPE_SESSION) return SizeOf.size(this.cfSessionContexts);
-	if (scope == Scope.SCOPE_CLIENT) return SizeOf.size(this.cfClientContexts);
 
 	throw new ExpressionException("can only return information of scope that are not request dependent");
     }
@@ -687,18 +505,9 @@ public final class ScopeContext {
 	}
     }
 
-    public void removeClientScope(PageContext pc) throws PageException {
-	Client cli = getClientScope(pc);
-	ApplicationContext appContext = pc.getApplicationContext();
-	Map<String, Scope> context = getSubMap(cfClientContexts, appContext.getName());
-	if (context != null) {
-	    context.remove(pc.getCFID());
-	    if (cli != null) cli.unstore(pc.getConfig());
-	}
-    }
 
     public boolean remove(int type, String appName, String cfid) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
 	Map<String, Scope> context = getSubMap(contexts, appName);
 	Object res = context.remove(cfid);
 	getLog().log(Log.LEVEL_INFO, "scope-context", "remove " + VariableInterpreter.scopeInt2String(type) + " scope " + appName + "/" + cfid + " from memory");
@@ -819,22 +628,14 @@ public final class ScopeContext {
 		    // SessionEndListener())
 		    // ,new CacheStorageScopeCleaner(Scope.SCOPE_SESSION, new SessionEndListener())
 	    });
-	    if (client == null) client = new StorageScopeEngine(factory, log,
-		    new StorageScopeCleaner[] { new FileStorageScopeCleaner(Scope.SCOPE_CLIENT, null), new DatasourceStorageScopeCleaner(Scope.SCOPE_CLIENT, null)
-		    // ,new CacheStorageScopeCleaner(Scope.SCOPE_CLIENT, null) //Cache storage need no control, if
-		    // there is no listener
-		    });
-	    // store session/client scope and remove from memory
-	    storeUnusedStorageScope(factory, Scope.SCOPE_CLIENT);
+	    // store session scope and remove from memory
 	    storeUnusedStorageScope(factory, Scope.SCOPE_SESSION);
 
-	    // remove unused memory based client/session scope (invoke onSessonEnd)
-	    clearUnusedMemoryScope(factory, Scope.SCOPE_CLIENT);
+	    // remove unused memory based session scope (invoke onSessonEnd)
 	    clearUnusedMemoryScope(factory, Scope.SCOPE_SESSION);
 
 	    // session must be executed first, because session creates a reference from client scope
 	    session.clean();
-	    client.clean();
 
 	    // clean all unused application scopes
 	    clearUnusedApplications(factory);
@@ -895,8 +696,8 @@ public final class ScopeContext {
     }
 
     private void storeUnusedStorageScope(CFMLFactoryImpl cfmlFactory, int type) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
-	long timespan = type == Scope.SCOPE_CLIENT ? CLIENT_MEMORY_TIMESPAN : SESSION_MEMORY_TIMESPAN;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
+	long timespan = SESSION_MEMORY_TIMESPAN;
 	String strType = VariableInterpreter.scopeInt2String(type);
 
 	if (contexts.size() == 0) return;
@@ -934,7 +735,7 @@ public final class ScopeContext {
      *
      */
     private void clearUnusedMemoryScope(CFMLFactoryImpl cfmlFactory, int type) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
 	if (contexts.size() == 0) return;
 
 	Object[] arrContexts = contexts.keySet().toArray();
@@ -1062,14 +863,11 @@ public final class ScopeContext {
 
 	// remove Scopes completly
 	removeCFSessionScope(pc);
-	removeClientScope(pc);
 
 	pc.resetIdAndToken();
 	pc.resetSession();
-	pc.resetClient();
 
 	if (oldSession != null) migrate(pc, oldSession, getCFSessionScope(pc, isNew), migrateSessionData);
-	if (oldClient != null) migrate(pc, oldClient, getClientScope(pc), migrateClientData);
 
     }
 

@@ -122,9 +122,6 @@ import lucee.runtime.orm.ORMEngine;
 import lucee.runtime.osgi.BundleInfo;
 import lucee.runtime.osgi.EnvClassLoader;
 import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
-import lucee.runtime.rest.RestSettingImpl;
-import lucee.runtime.rest.RestSettings;
-import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.spooler.SpoolerEngine;
 import lucee.runtime.type.Collection.Key;
@@ -133,11 +130,8 @@ import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.UDF;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.dt.TimeSpanImpl;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.ClusterNotSupported;
 import lucee.runtime.type.scope.Undefined;
 import lucee.runtime.type.util.KeyConstants;
-import lucee.runtime.video.VideoExecuterNotSupported;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibException;
 import lucee.transformer.library.function.FunctionLibFactory;
@@ -267,8 +261,6 @@ public abstract class ConfigImpl implements Config {
 
     private long timeOffset;
 
-    private ClassDefinition<SearchEngine> searchEngineClassDef;
-    private String searchEngineDirectory;
 
     private Locale locale;
 
@@ -322,9 +314,7 @@ public abstract class ConfigImpl implements Config {
 
     private ProxyData proxy = null;
 
-    private Resource clientScopeDir;
     private Resource sessionScopeDir;
-    private long clientScopeDirSize = 1024 * 1024 * 10;
     private long sessionScopeDirSize = 1024 * 1024 * 10;
 
     private Resource cacheDir;
@@ -372,12 +362,10 @@ public abstract class ConfigImpl implements Config {
     private boolean allowRealPath = true;
 
     private DumpWriterEntry[] dmpWriterEntries;
-    private Class clusterClass = ClusterNotSupported.class;// ClusterRemoteNotSupported.class;//
     private Struct remoteClientUsage;
     private Class adminSyncClass = AdminSyncNotSupported.class;
     private AdminSync adminSync;
     private String[] customTagExtensions = Constants.getExtensions();
-    private Class videoExecuterClass = VideoExecuterNotSupported.class;
 
     protected MappingImpl scriptMapping;
 
@@ -404,7 +392,6 @@ public abstract class ConfigImpl implements Config {
     private boolean componentRootSearch = true;
     private boolean useComponentPathCache = true;
     private boolean useCTPathCache = true;
-    private lucee.runtime.rest.Mapping[] restMappings;
 
     protected int writerType = CFML_WRITER_REFULAR;
     private long configFileLastModified;
@@ -759,26 +746,6 @@ public abstract class ConfigImpl implements Config {
 	return mappings;
     }
 
-    public lucee.runtime.rest.Mapping[] getRestMappings() {
-	if (restMappings == null) restMappings = new lucee.runtime.rest.Mapping[0];
-	return restMappings;
-    }
-
-    protected void setRestMappings(lucee.runtime.rest.Mapping[] restMappings) {
-
-	// make sure only one is default
-	boolean hasDefault = false;
-	lucee.runtime.rest.Mapping m;
-	for (int i = 0; i < restMappings.length; i++) {
-	    m = restMappings[i];
-	    if (m.isDefault()) {
-		if (hasDefault) m.setDefault(false);
-		hasDefault = true;
-	    }
-	}
-
-	this.restMappings = restMappings;
-    }
 
     @Override
     public PageSource getPageSource(Mapping[] mappings, String realPath, boolean onlyTopLevel) {
@@ -1840,20 +1807,6 @@ public abstract class ConfigImpl implements Config {
 	return this.clientType;
     }
 
-    protected void setSearchEngine(ClassDefinition cd, String directory) {
-	this.searchEngineClassDef = cd;
-	this.searchEngineDirectory = directory;
-    }
-
-    @Override
-    public ClassDefinition<SearchEngine> getSearchEngineClassDefinition() {
-	return this.searchEngineClassDef;
-    }
-
-    @Override
-    public String getSearchEngineDirectory() {
-	return this.searchEngineDirectory;
-    }
 
     @Override
     public int getComponentDataMemberDefaultAccess() {
@@ -2299,43 +2252,20 @@ public abstract class ConfigImpl implements Config {
 	this.triggerComponentDataMember = triggerComponentDataMember;
     }
 
-    @Override
-    public Resource getClientScopeDir() {
-	if (clientScopeDir == null) clientScopeDir = getConfigDir().getRealResource("client-scope");
-	return clientScopeDir;
-    }
-
     public Resource getSessionScopeDir() {
 	if (sessionScopeDir == null) sessionScopeDir = getConfigDir().getRealResource("session-scope");
 	return sessionScopeDir;
-    }
-
-    @Override
-    public long getClientScopeDirSize() {
-	return clientScopeDirSize;
     }
 
     public long getSessionScopeDirSize() {
 	return sessionScopeDirSize;
     }
 
-    /**
-     * @param clientScopeDir the clientScopeDir to set
-     */
-    protected void setClientScopeDir(Resource clientScopeDir) {
-	this.clientScopeDir = clientScopeDir;
-    }
 
     protected void setSessionScopeDir(Resource sessionScopeDir) {
 	this.sessionScopeDir = sessionScopeDir;
     }
 
-    /**
-     * @param clientScopeDirSize the clientScopeDirSize to set
-     */
-    protected void setClientScopeDirSize(long clientScopeDirSize) {
-	this.clientScopeDirSize = clientScopeDirSize;
-    }
 
     @Override
     public ClassLoader getRPCClassLoader(boolean reload) throws IOException {
@@ -2764,20 +2694,6 @@ public abstract class ConfigImpl implements Config {
 	this.allowRealPath = allowRealPath;
     }
 
-    /**
-     * @return the classClusterScope
-     */
-    @Override
-    public Class getClusterClass() {
-	return clusterClass;
-    }
-
-    /**
-     * @param clusterClass the classClusterScope to set
-     */
-    protected void setClusterClass(Class clusterClass) {
-	this.clusterClass = clusterClass;
-    }
 
     @Override
     public Struct getRemoteClientUsage() {
@@ -2805,15 +2721,6 @@ public abstract class ConfigImpl implements Config {
 
 	}
 	return this.adminSync;
-    }
-
-    @Override
-    public Class getVideoExecuterClass() {
-	return videoExecuterClass;
-    }
-
-    protected void setVideoExecuterClass(Class videoExecuterClass) {
-	this.videoExecuterClass = videoExecuterClass;
     }
 
     protected void setUseTimeServer(boolean useTimeServer) {
@@ -3263,22 +3170,11 @@ public abstract class ConfigImpl implements Config {
 	return false;
     }
 
-    @Override
-    public boolean getClientCluster() {
-	return false;
-    }
-
-    public String getClientStorage() {
-	return clientStorage;
-    }
 
     public String getSessionStorage() {
 	return sessionStorage;
     }
 
-    protected void setClientStorage(String clientStorage) {
-	this.clientStorage = clientStorage;
-    }
 
     protected void setSessionStorage(String sessionStorage) {
 	this.sessionStorage = sessionStorage;
@@ -3385,16 +3281,6 @@ public abstract class ConfigImpl implements Config {
 	return getSuppressWSBeforeArg;
     }
 
-    private RestSettings restSetting = new RestSettingImpl(false, UDF.RETURN_FORMAT_JSON);
-
-    protected void setRestSetting(RestSettings restSetting) {
-	this.restSetting = restSetting;
-    }
-
-    @Override
-    public RestSettings getRestSetting() {
-	return restSetting;
-    }
 
     protected void setMode(int mode) {
 	this.mode = mode;
@@ -3449,7 +3335,6 @@ public abstract class ConfigImpl implements Config {
 	return checkForChangesInConfigFile;
     }
 
-    public abstract Cluster createClusterScope() throws PageException;
 
     protected void setExternalizeStringGTE(int externalizeStringGTE) {
 	this.externalizeStringGTE = externalizeStringGTE;

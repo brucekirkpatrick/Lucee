@@ -64,7 +64,6 @@ import lucee.runtime.util.Strings;
 import lucee.runtime.util.SystemUtil;
 import lucee.runtime.util.TemplateUtil;
 import lucee.runtime.util.ZipUtil;
-import lucee.runtime.video.VideoUtil;
 
 /**
  * wrapper for a CFMlEngine
@@ -97,20 +96,12 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	engine.serviceCFML(servlet, req, rsp);
     }
 
-    @Override
-    public void serviceAMF(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceAMF(servlet, req, rsp);
-    }
 
     @Override
     public void serviceFile(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 	engine.serviceFile(servlet, req, rsp);
     }
 
-    @Override
-    public void serviceRest(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceRest(servlet, req, rsp);
-    }
 
     @Override
     public String getVersion() {
@@ -204,10 +195,6 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	return engine.getCFMLFactory(srvConfig, req);
     }
 
-    @Override
-    public Object getFDController() {
-	return engine.getFDController();
-    }
 
     @Override
     public HTTPUtil getHTTPUtil() {
@@ -229,10 +216,6 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	return engine.getThreadConfig();
     }
 
-    @Override
-    public VideoUtil getVideoUtil() {
-	return engine.getVideoUtil();
-    }
 
     @Override
     public ZipUtil getZipUtil() {

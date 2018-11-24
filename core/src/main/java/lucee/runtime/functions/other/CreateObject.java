@@ -25,11 +25,9 @@ package lucee.runtime.functions.other;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.Component;
 import lucee.runtime.PageContext;
-import lucee.runtime.com.COMObject;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
-import lucee.runtime.exp.FunctionNotSupported;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.SecurityException;
 import lucee.runtime.ext.function.Function;
@@ -56,15 +54,6 @@ public final class CreateObject implements Function {
     public static Object call(PageContext pc, String type, String className, Object context, Object serverName) throws PageException {
 	type = StringUtil.toLowerCase(type);
 
-	// JAVA
-	if (type.equals("java")) {
-	    checkAccess(pc, type);
-	    return doJava(pc, className, context, Caster.toString(serverName));
-	}
-	// COM
-	if (type.equals("com")) {
-	    return doCOM(pc, className);
-	}
 	// Component
 	if (type.equals("component") || type.equals("cfc")) {
 	    return doComponent(pc, className);
@@ -118,31 +107,17 @@ public final class CreateObject implements Function {
 	    }
 	    return doHTTP(pc, className, user, pass, proxy);
 	}
-	// .net
-	if (type.equals(".net") || type.equals("dotnet")) {
-	    return doDotNet(pc, className);
-	}
 	throw new ExpressionException(
 		"Invalid argument for function createObject, first argument (type), " + "must be (com, java, webservice or component) other types are not supported");
 
     }
 
-    private static Object doDotNet(PageContext pc, String className) throws FunctionNotSupported {
-	throw new FunctionNotSupported("CreateObject", "type .net");
-    }
 
     private static void checkAccess(PageContext pc, String type) throws SecurityException {
 	if (pc.getConfig().getSecurityManager().getAccess(SecurityManager.TYPE_TAG_OBJECT) == SecurityManager.VALUE_NO)
 	    throw new SecurityException("Can't access function [createObject] with type [" + type + "]", "Access is denied by the Security Manager");
     }
 
-    public static Object doJava(PageContext pc, String className, Object pathsOrBundleName, String delimiterOrBundleVersion) throws PageException {
-	return JavaProxy.call(pc, className, pathsOrBundleName, delimiterOrBundleVersion);
-    }
-
-    public static Object doCOM(PageContext pc, String className) {
-	return new COMObject(className);
-    }
 
     public static Component doComponent(PageContext pc, String className) throws PageException {
 	return pc.loadComponent(className);

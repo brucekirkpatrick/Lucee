@@ -62,7 +62,6 @@ public final class GetSystemInfo implements Function {
 
 	// scopes
 	sct.put("sessionCount", sc.getSessionCount());
-	sct.put("clientCount", sc.getClientCount());
 	sct.put("applicationContextCount", sc.getAppContextCount());
 
 	// cpu

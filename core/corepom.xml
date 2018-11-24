@@ -143,14 +143,6 @@
   	  <version>1.9.0</version>
       <scope>provided</scope>
     </dependency>
-	  <!--Axis?
-    <dependency>
-		  <groupId>commons-discovery</groupId>
-		  <artifactId>commons-discovery</artifactId>
-		  <version>0.5</version>
-      <scope>provided</scope>
-	  </dependency>
-    -->
     <dependency>
       <groupId>org.lucee</groupId>
       <artifactId>commons-email</artifactId>
@@ -163,14 +155,6 @@
     	<version>1.3.2.L0001</version>
       <scope>provided</scope>
     </dependency>
-    <!--Axis?
-  	<dependency>
-  		<groupId>org.lucee</groupId>
-  		<artifactId>commons-httpclient</artifactId>
-  		<version>3.1.0</version>
-      <scope>provided</scope>
-  	</dependency>
-  -->
   	<dependency>
   		<groupId>org.lucee</groupId>
   		<artifactId>commons-io</artifactId>
@@ -227,32 +211,12 @@
   		<version>2.7</version>
       <scope>provided</scope>
   	</dependency> -->
-    <!-- <dependency>
-    	<groupId>org.lucee</groupId>
-    	<artifactId>xalan</artifactId>
-    	<version>2.7.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.lucee</groupId>
-    	<artifactId>xalan-serializer</artifactId>
-    	<version>2.7.2</version>
-      <scope>provided</scope>
-    </dependency>-->
     <dependency>
     	<groupId>org.lucee</groupId>
     	<artifactId>portlet</artifactId>
     	<version>1.0.0</version>
       <scope>provided</scope>
     </dependency>
-    <!--
-    <dependency>
-    	<groupId>org.lucee</groupId>
-    	<artifactId>xml-xerces</artifactId>
-    	<version>2.11.0</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
     <dependency>
     	<groupId>org.lucee</groupId>
     	<artifactId>xml-apis</artifactId>
@@ -279,12 +243,6 @@
     </dependency>
 
     <dependency>
-      <groupId>fusiondebug.api</groupId>
-      <artifactId>server</artifactId>
-      <version>1.0.20</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
     	<groupId>org.lucee</groupId>
     	<artifactId>httpcomponents-httpclient</artifactId>
     	<version>4.5.6</version>
@@ -303,29 +261,17 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.8.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>jacob</groupId>
-      <artifactId>jacob</artifactId>
-      <version>1.16.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>javasysmon</groupId>
       <artifactId>javasysmon</artifactId>
       <version>0.3.3</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.samba</groupId>
-      <artifactId>jcifs</artifactId>
-      <version>1.3.17</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.samba</groupId>-->
+      <!--<artifactId>jcifs</artifactId>-->
+      <!--<version>1.3.17</version>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>jencrypt</groupId>
       <artifactId>jencrypt</artifactId>
@@ -362,36 +308,19 @@
     	<version>1.7.12</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>ss</groupId>
-      <artifactId>css2</artifactId>
-      <version>0.9.4</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>ss</groupId>-->
+      <!--<artifactId>css2</artifactId>-->
+      <!--<version>0.9.4</version>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>stax</groupId>
       <artifactId>api</artifactId>
       <version>1.0.1.0002L</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>sun.jndi</groupId>
-      <artifactId>ldap</artifactId>
-      <version>1.2.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>sun.jndi</groupId>
-      <artifactId>ldapbp</artifactId>
-      <version>1.2.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>sun.jndi</groupId>
-      <artifactId>ldapsec</artifactId>
-      <version>1.2.4</version>
-      <scope>provided</scope>
-    </dependency>
+
     <dependency>
       <groupId>sun.jndi</groupId>
       <artifactId>providerutil</artifactId>
@@ -410,19 +339,18 @@
       <version>1.2.4</version>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>tagsoup</groupId>
-      <artifactId>tagsoup</artifactId>
-      <version>1.2.1.0002L</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>w3c</groupId>
-      <artifactId>dom</artifactId>
-      <version>1.1.0</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>tagsoup</groupId>-->
+      <!--<artifactId>tagsoup</artifactId>-->
+      <!--<version>1.2.1.0002L</version>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>w3c</groupId>-->
+      <!--<artifactId>dom</artifactId>-->
+      <!--<version>1.1.0</version>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
     <!-- <dependency>
       <groupId>xdb</groupId>
       <artifactId>xdb</artifactId>

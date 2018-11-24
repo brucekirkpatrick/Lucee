@@ -144,7 +144,6 @@ public class RHExtension implements Serializable {
     private List<Map<String, String>> orms;
     private List<Map<String, String>> webservices;
     private List<Map<String, String>> monitors;
-    private List<Map<String, String>> searchs;
     private List<Map<String, String>> resources;
     private List<Map<String, String>> amfs;
     private List<Map<String, String>> jdbcs;
@@ -159,12 +158,8 @@ public class RHExtension implements Serializable {
 
     private double minLoaderVersion;
 
-    private String amfsJson;
 
     private String resourcesJson;
-    // private Config config;
-
-    private String searchsJson;
 
     private String ormsJson;
     private String webservicesJson;
@@ -423,9 +418,7 @@ public class RHExtension implements Serializable {
 	readLoaderVersion(label, StringUtil.unwrap(attr.getValue("lucee-loader-version")));
 	startBundles = Caster.toBooleanValue(StringUtil.unwrap(attr.getValue("start-bundles")), true);
 
-	readAMF(label, StringUtil.unwrap(attr.getValue("amf")), logger);
 	readResource(label, StringUtil.unwrap(attr.getValue("resource")), logger);
-	readSearch(label, StringUtil.unwrap(attr.getValue("search")), logger);
 	readORM(label, StringUtil.unwrap(attr.getValue("orm")), logger);
 	readWebservice(label, StringUtil.unwrap(attr.getValue("webservice")), logger);
 	readMonitor(label, StringUtil.unwrap(attr.getValue("monitor")), logger);
@@ -461,9 +454,7 @@ public class RHExtension implements Serializable {
 	readLoaderVersion(label, el.getAttribute("lucee-loader-version"));
 	startBundles = Caster.toBooleanValue(el.getAttribute("start-bundles"), true);
 
-	readAMF(label, el.getAttribute("amf"), logger);
 	readResource(label, el.getAttribute("resource"), logger);
-	readSearch(label, el.getAttribute("search"), logger);
 	readORM(label, el.getAttribute("orm"), logger);
 	readWebservice(label, el.getAttribute("webservice"), logger);
 	readMonitor(label, el.getAttribute("monitor"), logger);
@@ -538,13 +529,6 @@ public class RHExtension implements Serializable {
 	if (webservices == null) webservices = new ArrayList<Map<String, String>>();
     }
 
-    private void readSearch(String label, String str, Log logger) {
-	if (!StringUtil.isEmpty(str, true)) {
-	    searchs = toSettings(logger, str);
-	    searchsJson = str;
-	}
-	if (searchs == null) searchs = new ArrayList<Map<String, String>>();
-    }
 
     private void readResource(String label, String str, Log logger) {
 	if (!StringUtil.isEmpty(str, true)) {
@@ -555,13 +539,6 @@ public class RHExtension implements Serializable {
 
     }
 
-    private void readAMF(String label, String str, Log logger) {
-	if (!StringUtil.isEmpty(str, true)) {
-	    amfs = toSettings(logger, str);
-	    amfsJson = str;
-	}
-	if (amfs == null) amfs = new ArrayList<Map<String, String>>();
-    }
 
     private void readLoaderVersion(String label, String str) throws ApplicationException {
 	minLoaderVersion = Caster.toDoubleValue(str, 0);
@@ -737,7 +714,6 @@ public class RHExtension implements Serializable {
 	pop(el, attr, "category", null);
 	pop(el, attr, "lucee-core-version", null);
 	pop(el, attr, "lucee-loader-version", null);
-	pop(el, attr, "amf", null);
 	pop(el, attr, "resource", null);
 	pop(el, attr, "search", null);
 	pop(el, attr, "orm", null);
@@ -804,17 +780,11 @@ public class RHExtension implements Serializable {
 	if (minLoaderVersion > 0) el.setAttribute("loader-version", Caster.toString(minLoaderVersion));
 	else el.removeAttribute("loader-version");
 
-	// amf
-	if (!StringUtil.isEmpty(amfsJson)) el.setAttribute("amf", toStringForAttr(amfsJson));
-	else el.removeAttribute("amf");
 
 	// resource
 	if (!StringUtil.isEmpty(resourcesJson)) el.setAttribute("resource", toStringForAttr(resourcesJson));
 	else el.removeAttribute("resource");
 
-	// search
-	if (!StringUtil.isEmpty(searchsJson)) el.setAttribute("search", toStringForAttr(searchsJson));
-	else el.removeAttribute("search");
 
 	// orm
 	if (!StringUtil.isEmpty(ormsJson)) el.setAttribute("orm", toStringForAttr(ormsJson));
@@ -1254,17 +1224,10 @@ public class RHExtension implements Serializable {
 	return monitors;
     }
 
-    public List<Map<String, String>> getSearchs() {
-	return searchs;
-    }
-
     public List<Map<String, String>> getResources() {
 	return resources;
     }
 
-    public List<Map<String, String>> getAMFs() {
-	return amfs;
-    }
 
     public List<Map<String, String>> getJdbcs() {
 	return jdbcs;

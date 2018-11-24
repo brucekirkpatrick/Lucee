@@ -30,10 +30,6 @@
 	THIS.sessionType = "cfml";
 	THIS.sessionTimeout = createTimeSpan( 0, 0, 2, 0 );
 	THIS.sessionStorage = "perAppCacheMongo";
-	THIS.clientManagement = true;
-	THIS.clientCluster = true;
-	THIS.clientTimeout = createTimeSpan( 0, 2, 0, 0 );
-	THIS.clientStorage = "perAppCacheMongo";
 
 	private struct function getCredentials() {
 		// getting the credetials from the enviroment variables
