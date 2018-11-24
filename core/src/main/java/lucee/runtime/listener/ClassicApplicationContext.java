@@ -110,7 +110,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     private DataSource[] dataSources;
     private UDF onMissingTemplate;
 
-    private short scopeCascading;
     private boolean allowCompression;
     private boolean suppressRemoteComponentContent;
 
@@ -161,7 +160,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
 	this.locale = config.getLocale();
 	this.timeZone = config.getTimeZone();
-	this.scopeCascading = config.getScopeCascadingType();
 
 	this.webCharset = ((ConfigImpl) config).getWebCharSet();
 	this.resourceCharset = ((ConfigImpl) config).getResourceCharSet();
@@ -226,7 +224,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl.queryVarUsage = queryVarUsage;
 	dbl.locale = locale;
 	dbl.timeZone = timeZone;
-	dbl.scopeCascading = scopeCascading;
 	dbl.webCharset = webCharset;
 	dbl.resourceCharset = resourceCharset;
 	dbl.sessionType = sessionType;
@@ -709,16 +706,6 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
     public UDF getOnMissingTemplate() {
 	return onMissingTemplate;
-    }
-
-    @Override
-    public short getScopeCascading() {
-	return scopeCascading;
-    }
-
-    @Override
-    public void setScopeCascading(short scopeCascading) {
-	this.scopeCascading = scopeCascading;
     }
 
     @Override

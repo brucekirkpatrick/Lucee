@@ -25,15 +25,12 @@ import java.util.List;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.filter.ResourceNameFilter;
 import lucee.commons.lang.ExceptionUtil;
-import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.ComponentScope;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
-import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.Constants;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.exp.ExpressionException;
@@ -43,8 +40,6 @@ import lucee.runtime.listener.ApplicationContextSupport;
 import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Query;
-import lucee.runtime.type.QueryColumn;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.UDF;
@@ -53,8 +48,6 @@ import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.StructSupport;
-import lucee.runtime.util.QueryStack;
-import lucee.runtime.util.QueryStackImpl;
 
 /**
  * Undefined Scope
@@ -64,13 +57,10 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     private static final long serialVersionUID = -5626787508494702023L;
 
     private Scope[] scopes;
-    private QueryStackImpl qryStack = new QueryStackImpl();
     private Variables variable;
-    private boolean allowImplicidQueryCall;
     private boolean checkArguments;
 
     private boolean localAlways;
-    private short type;
     private boolean isInit;
     private Local local;
     private Argument argument;
@@ -81,11 +71,9 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
      * constructor of the class
      * 
      * @param pc
-     * @param type type of the undefined scope
      *            (ServletConfigImpl.SCOPE_STRICT;ServletConfigImpl.SCOPE_SMALL;ServletConfigImpl.SCOPE_STANDART)
      */
-    public UndefinedImpl(PageContextImpl pc, short type) {
-	this.type = type;
+    public UndefinedImpl(PageContextImpl pc) {
 	this.pc = pc;
     }
 
@@ -126,26 +114,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     public void setFunctionScopes(Local local, Argument argument) {
 	this.local = local;
 	this.argument = argument;
-    }
-
-    @Override
-    public QueryStack getQueryStack() {
-	return qryStack;
-    }
-
-    @Override
-    public void setQueryStack(QueryStack qryStack) {
-	this.qryStack = (QueryStackImpl) qryStack;
-    }
-
-    @Override
-    public void addQuery(Query qry) {
-	if (allowImplicidQueryCall) qryStack.addQuery(qry);
-    }
-
-    @Override
-    public void removeQuery() {
-	if (allowImplicidQueryCall) qryStack.removeQuery();
     }
 
     @Override
@@ -457,50 +425,11 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	variable = pc.variablesScope();
 	argument = pc.argumentsScope();
 	local = pc.localScope();
-	allowImplicidQueryCall = pc.getConfig().allowImplicidQueryCall();
-	type = ((PageContextImpl) pc).getScopeCascadingType();
 	debug = pc.getConfig().debug() && ((ConfigImpl) pc.getConfig()).hasDebugOptions(ConfigImpl.DEBUG_IMPLICIT_ACCESS);
 
-	// Strict
-	if (type == Config.SCOPE_STRICT) {
-	    // print.ln("strict");
-	    scopes = new Scope[] {};
-	}
-	// small
-	else if (type == Config.SCOPE_SMALL) {
-	    // print.ln("small");
-	    if (pc.getConfig().mergeFormAndURL()) {
-		scopes = new Scope[] { pc.formScope() };
-	    }
-	    else {
-		scopes = new Scope[] { pc.urlScope(), pc.formScope() };
-	    }
-	}
-	// standard
-	else {
-	    reinitialize(pc);
-	}
-
+    scopes = new Scope[] {};
     }
 
-    @Override
-    public void reinitialize(PageContext pc) {
-	if (type != Config.SCOPE_STANDARD) return;
-	// print.ln("standard");
-	if (pc.getConfig().mergeFormAndURL()) {
-	    scopes = new Scope[3];
-	    scopes[0] = pc.cgiScope();
-	    scopes[1] = pc.formScope();
-	    scopes[2] = pc.cookieScope();
-	}
-	else {
-	    scopes = new Scope[4];
-	    scopes[0] = pc.cgiScope();
-	    scopes[1] = pc.urlScope();
-	    scopes[2] = pc.formScope();
-	    scopes[3] = pc.cookieScope();
-	}
-    }
 
     @Override
     public final void release(PageContext pc) {
@@ -511,19 +440,16 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	scopes = null;
 	checkArguments = false;
 	localAlways = false;
-	if (allowImplicidQueryCall) qryStack.clear();
     }
 
     @Override
     public Collection duplicate(boolean deepCopy) {
-	UndefinedImpl dupl = new UndefinedImpl(pc, type);
-	dupl.allowImplicidQueryCall = allowImplicidQueryCall;
+	UndefinedImpl dupl = new UndefinedImpl(pc);
 	dupl.checkArguments = checkArguments;
 	dupl.argument = deepCopy ? (Argument) Duplicator.duplicate(argument, deepCopy) : argument;
 	dupl.isInit = isInit;
 	dupl.local = deepCopy ? (Local) Duplicator.duplicate(local, deepCopy) : local;
 	dupl.localAlways = localAlways;
-	dupl.qryStack = (deepCopy ? (QueryStackImpl) Duplicator.duplicate(qryStack, deepCopy) : qryStack);
 
 	dupl.variable = deepCopy ? (Variables) Duplicator.duplicate(variable, deepCopy) : variable;
 	dupl.pc = pc;
@@ -621,22 +547,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	return "undefined";
     }
 
-    /**
-     * @return the allowImplicidQueryCall
-     */
-    public boolean isAllowImplicidQueryCall() {
-	return allowImplicidQueryCall;
-    }
-
-    /**
-     * @param allowImplicidQueryCall the allowImplicidQueryCall to set
-     */
-    @Override
-    public boolean setAllowImplicidQueryCall(boolean allowImplicidQueryCall) {
-	boolean old = this.allowImplicidQueryCall;
-	this.allowImplicidQueryCall = allowImplicidQueryCall;
-	return old;
-    }
 
     /**
      * @return the checkArguments
@@ -706,7 +616,4 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	return null;
     }
 
-    public short getScopeCascadingType() {
-	return type;
-    }
 }

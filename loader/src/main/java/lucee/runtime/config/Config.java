@@ -146,43 +146,13 @@ public interface Config {
     public String getDefaultDataSource();
 
     /**
-     * return how lucee cascade scopes
-     * 
-     * @return type of cascading
-     */
-    public abstract short getScopeCascadingType();
-
-    // public abstract String[] getCFMLExtensions();
-
-    // public abstract String getCFCExtension();
-
-    // public abstract String getComponentExtension();
-
-    // public abstract String[] getTemplateExtensions();
-
-    // public abstract String[] getAllExtensions();
-
-    /**
      * return the mapping to custom tag directory
      * 
      * @return custom tag directory
      */
     public abstract Mapping[] getCustomTagMappings();
 
-    /**
-     * return if it is allowed to implizid query call, call a query member witot define name of the
-     * query.
-     * 
-     * @return is allowed
-     */
-    public abstract boolean allowImplicidQueryCall();
 
-    /**
-     * e merged return if url and form scope will b
-     * 
-     * @return merge or not
-     */
-    public abstract boolean mergeFormAndURL();
 
     /**
      * @return Returns the application Timeout.

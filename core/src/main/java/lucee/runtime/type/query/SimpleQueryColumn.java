@@ -96,21 +96,6 @@ public class SimpleQueryColumn implements QueryColumn {
 	if (key.equals(this.key)) {
 	    return get(qry.getCurrentrow(pc.getId()), defaultValue);
 	}
-	// get it from undefined scope
-	if (pc != null) {
-	    Undefined undefined = pc.undefinedScope();
-	    boolean old = undefined.setAllowImplicidQueryCall(false);
-	    Object sister = undefined.get(this.key, null);
-	    undefined.setAllowImplicidQueryCall(old);
-	    if (sister != null) {
-		try {
-		    return pc.get(sister, key);
-		}
-		catch (PageException e) {
-		    return defaultValue;
-		}
-	    }
-	}
 	return defaultValue;
     }
 

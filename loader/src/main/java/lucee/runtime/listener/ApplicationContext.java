@@ -259,10 +259,6 @@ public interface ApplicationContext extends Serializable {
 
     public abstract void setWebCharset(Charset cs);
 
-    public void setScopeCascading(short scopeCascading);
-
-    public short getScopeCascading();
-
     public boolean getTypeChecking();
 
     public void setTypeChecking(boolean typeChecking);

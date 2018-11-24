@@ -3422,37 +3422,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else if (hasCS) config.setSessionType(configServer.getSessionType());
 
-	    // Cascading
-	    if (mode == ConfigImpl.MODE_STRICT) {
-		config.setScopeCascadingType(Config.SCOPE_STRICT);
-	    }
-	    else {
-		String strScopeCascadingType = getAttr(scope, "cascading");
-		if (hasAccess && !StringUtil.isEmpty(strScopeCascadingType)) {
-		    config.setScopeCascadingType(ConfigWebUtil.toScopeCascading(strScopeCascadingType, Config.SCOPE_STANDARD));
-		}
-		else if (hasCS) config.setScopeCascadingType(configServer.getScopeCascadingType());
-	    }
-
-	    // cascade-to-resultset
-	    if (mode == ConfigImpl.MODE_STRICT) {
-		config.setAllowImplicidQueryCall(false);
-	    }
-	    else {
-		Boolean allowImplicidQueryCall = Caster.toBoolean(SystemUtil.getSystemPropOrEnvVar("lucee.cascade.to.resultset", null), null);
-		if (allowImplicidQueryCall == null) allowImplicidQueryCall = Caster.toBoolean(getAttr(scope, "cascade-to-resultset"), null);
-		if (hasAccess && allowImplicidQueryCall != null) {
-		    config.setAllowImplicidQueryCall(allowImplicidQueryCall.booleanValue());
-		}
-		else if (hasCS) config.setAllowImplicidQueryCall(configServer.allowImplicidQueryCall());
-	    }
-
-	    // Merge url and Form
-	    String strMergeFormAndURL = getAttr(scope, "merge-url-form");
-	    if (hasAccess && !StringUtil.isEmpty(strMergeFormAndURL)) {
-		config.setMergeFormAndURL(toBoolean(strMergeFormAndURL, false));
-	    }
-	    else if (hasCS) config.setMergeFormAndURL(configServer.mergeFormAndURL());
 
 
 	    // Session-Storage

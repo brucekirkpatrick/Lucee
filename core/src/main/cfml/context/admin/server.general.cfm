@@ -75,10 +75,7 @@
 		clientCookies:scope.clientCookies,
 		domaincookies:scope.domaincookies,
 				
-		localMode:'update',
-		scopeCascadingType:'standard',
-		allowImplicidQueryCall:true,
-		mergeFormAndUrl:false
+		localMode:'update'
 	},
 	strict:{
 		sessionType:scope.sessionType,
@@ -89,10 +86,7 @@
 		clientCookies:scope.clientCookies,
 		domaincookies:scope.domaincookies,
 				
-		localMode:'update',
-		scopeCascadingType:'strict',
-		allowImplicidQueryCall:false,
-		mergeFormAndUrl:false
+		localMode:'update'
 	},
 	speed:{
 		sessionType:scope.sessionType,
@@ -103,10 +97,7 @@
 		clientCookies:scope.clientCookies,
 		domaincookies:scope.domaincookies,
 				
-		localMode:'always',
-		scopeCascadingType:'strict',
-		allowImplicidQueryCall:false,
-		mergeFormAndUrl:true
+		localMode:'always'
 	}
 }>
 
@@ -387,30 +378,6 @@ Create Datasource --->
 #stText.scopes[request.adminType]#
 
 <table class="tbl" width="700">
-<!--- scope cascading --->
-<tr>
-	<th scope="row">#stText.Scopes.Cascading#</th>
-	<td style="#doStyle(scope.scopeCascadingType,'scope','scopeCascadingType')#">
-		<b>#ucFirst(stText.Scopes[scope.scopeCascadingType])#</b>
-        <br /><div class="comment">#stText.Scopes.CascadingDescription#</div>
-	</td>
-</tr>
-<!--- cascade to result --->
-<tr>
-	<th scope="row">#stText.Scopes.CascadeToResultSet#</th>
-	<td style="#doStyle(scope.allowImplicidQueryCall,'scope','allowImplicidQueryCall')#">
-		<b>#yesNoFormat(scope.allowImplicidQueryCall)#</b>
-		<br /><div class="comment">#stText.Scopes.CascadeToResultSetDescription#</div>
-	</td>
-</tr>
-<!--- Merge URL and Form --->
-<tr>
-	<th scope="row">#stText.Scopes.mergeUrlForm#</th>
-	<td style="#doStyle(scope.mergeFormAndUrl,'scope','mergeFormAndUrl')#">
-		<b>#yesNoFormat(scope.mergeFormAndUrl)#</b>
-		<br /><div class="comment">#stText.Scopes.mergeUrlFormDescription#</div>
-	</td>
-</tr>
 <!--- Local Mode --->
 <tr>
 	<th scope="row">#stText.Scopes.LocalMode#</th>

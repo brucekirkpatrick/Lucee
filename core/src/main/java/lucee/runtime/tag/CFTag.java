@@ -65,8 +65,6 @@ import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.ListUtil;
 import lucee.runtime.type.util.Type;
-import lucee.runtime.util.QueryStack;
-import lucee.runtime.util.QueryStackImpl;
 import lucee.transformer.library.tag.TagLibTag;
 import lucee.transformer.library.tag.TagLibTagAttr;
 
@@ -302,16 +300,11 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 	Variables var = pageContext.variablesScope();
 	pageContext.setVariablesScope(ctVariablesScope);
 
-	QueryStack cs = null;
 	Undefined undefined = pageContext.undefinedScope();
 	int oldMode = undefined.setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	if (oldMode != Undefined.MODE_NO_LOCAL_AND_ARGUMENTS) callerScope.setScope(var, pageContext.localScope(), pageContext.argumentsScope(), true);
 	else callerScope.setScope(var, null, null, false);
 
-	if (pageContext.getConfig().allowImplicidQueryCall()) {
-	    cs = undefined.getQueryStack();
-	    undefined.setQueryStack(new QueryStackImpl());
-	}
 
 	try {
 	    pageContext.doInclude(new PageSource[] { source.getPageSource() }, false);
@@ -324,9 +317,6 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 	    undefined.setMode(oldMode);
 	    // varScopeData=variablesScope.getMap();
 	    pageContext.setVariablesScope(var);
-	    if (pageContext.getConfig().allowImplicidQueryCall()) {
-		undefined.setQueryStack(cs);
-	    }
 	}
 
     }
