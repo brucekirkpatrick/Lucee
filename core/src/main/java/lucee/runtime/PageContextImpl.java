@@ -89,7 +89,6 @@ import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.Constants;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.config.Password;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.db.DataSourceManager;
@@ -153,17 +152,8 @@ import lucee.runtime.tag.TagHandlerPool;
 import lucee.runtime.tag.TagUtil;
 import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.thread.ThreadsImpl;
-import lucee.runtime.type.Array;
-import lucee.runtime.type.Collection;
+import lucee.runtime.type.*;
 import lucee.runtime.type.Collection.Key;
-import lucee.runtime.type.Iterator;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Query;
-import lucee.runtime.type.SVArray;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.UDF;
-import lucee.runtime.type.UDFPlus;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.it.ItAsEnum;
 import lucee.runtime.type.ref.Reference;
@@ -344,7 +334,6 @@ public final class PageContextImpl extends PageContext {
 
     private StackTraceElement[] timeoutStacktrace;
 
-    private boolean fullNullSupport;
 
     /**
      * default Constructor
@@ -432,7 +421,6 @@ public final class PageContextImpl extends PageContext {
 	this.isChild = isChild;
 
 	applicationContext = defaultApplicationContext;
-	setFullNullSupport();
 
 	startTime = System.currentTimeMillis();
 	thread = Thread.currentThread();
@@ -999,7 +987,6 @@ public final class PageContextImpl extends PageContext {
 	if (children == null) children = new ArrayList<PageContext>();
 	children.add(other);
 	other.applicationContext = applicationContext;
-	other.setFullNullSupport();
 	other.thread = Thread.currentThread();
 	other.startTime = System.currentTimeMillis();
 
@@ -1550,7 +1537,7 @@ public final class PageContextImpl extends PageContext {
 	Object value = null;
 	boolean isNew = false;
 
-	Object _null = NullSupportHelper.NULL(this);
+	Object _null = Null.NULL;
 	// get value
 	value = VariableInterpreter.getVariableEL(this, name, _null);
 	if (_null == value) {
@@ -1563,58 +1550,6 @@ public final class PageContextImpl extends PageContext {
 
     }
 
-    /*
-     * private void paramX(String type, String name, Object defaultValue, double min,double max, String
-     * strPattern, int maxLength) throws PageException {
-     * 
-     * // check attributes type if(type==null)type="any"; else type=type.trim().toLowerCase();
-     * 
-     * // check attributes name if(StringUtil.isEmpty(name)) throw new
-     * ExpressionException("The attribute name is required");
-     * 
-     * Object value=null; boolean isNew=false;
-     * 
-     * // get value value=VariableInterpreter.getVariableEL(this,name,NullSupportHelper.NULL(this));
-     * if(NullSupportHelper.NULL(this)==value) { if(defaultValue==null) throw new
-     * ExpressionException("The required parameter ["+name+"] was not provided."); value=defaultValue;
-     * isNew=true; }
-     * 
-     * // cast and set value if(!"any".equals(type)) { // range if("range".equals(type)) { boolean
-     * hasMin=Decision.isValid(min); boolean hasMax=Decision.isValid(max); double number =
-     * Caster.toDoubleValue(value);
-     * 
-     * if(!hasMin && !hasMax) throw new
-     * ExpressionException("you need to define one of the following attributes [min,max], when type is set to [range]"
-     * );
-     * 
-     * if(hasMin && number<min) throw new ExpressionException("The number ["+Caster.toString(number)
-     * +"] is to small, the number must be at least ["+Caster.toString(min)+"]");
-     * 
-     * if(hasMax && number>max) throw new ExpressionException("The number ["+Caster.toString(number)
-     * +"] is to big, the number cannot be bigger than ["+Caster.toString(max)+"]");
-     * 
-     * setVariable(name,Caster.toDouble(number)); } // regex else if("regex".equals(type) ||
-     * "regular_expression".equals(type)) { String str=Caster.toString(value);
-     * 
-     * if(strPattern==null) throw new ExpressionException("Missing attribute [pattern]");
-     * 
-     * if(!Perl5Util.matches(strPattern, str)) throw new
-     * ExpressionException("The value ["+str+"] doesn't match the provided pattern ["+strPattern+"]");
-     * setVariable(name,str); } else if ( type.equals( "int" ) || type.equals( "integer" ) ) {
-     * 
-     * if ( !Decision.isInteger( value ) ) throw new ExpressionException( "The value [" + value +
-     * "] is not a valid integer" );
-     * 
-     * setVariable( name, value ); } else { if(!Decision.isCastableTo(type,value,true,true,maxLength)) {
-     * if(maxLength>-1 && ("email".equalsIgnoreCase(type) || "url".equalsIgnoreCase(type) ||
-     * "string".equalsIgnoreCase(type))) { StringBuilder msg=new
-     * StringBuilder(CasterException.createMessage(value, type));
-     * msg.append(" with a maximum length of "+maxLength+" characters"); throw new
-     * CasterException(msg.toString()); } throw new CasterException(value,type); }
-     * 
-     * setVariable(name,value); //REALCAST setVariable(name,Caster.castTo(this,type,value,true)); } }
-     * else if(isNew) setVariable(name,value); }
-     */
 
     @Override
     public Object removeVariable(String var) throws PageException {
@@ -2113,8 +2048,6 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public final void executeCFML(String realPath, boolean throwExcpetion, boolean onlyTopLevel) throws PageException {
-	requestDialect = currentTemplateDialect = CFMLEngine.DIALECT_CFML;
-	setFullNullSupport();
 	_execute(realPath, throwExcpetion, onlyTopLevel);
     }
 
@@ -2643,13 +2576,11 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public void addPageSource(PageSource ps, boolean alsoInclude) {
-	setFullNullSupport();
 	pathList.add(ps);
 	if (alsoInclude) includePathList.add(ps);
     }
 
     public void addPageSource(PageSource ps, PageSource psInc) {
-	setFullNullSupport();
 	pathList.add(ps);
 	if (psInc != null) includePathList.add(psInc);
     }
@@ -2657,9 +2588,6 @@ public final class PageContextImpl extends PageContext {
     @Override
     public void removeLastPageSource(boolean alsoInclude) {
 	if (!pathList.isEmpty()) pathList.removeLast();
-	if (!pathList.isEmpty()) {
-	    setFullNullSupport();
-	}
 	if (alsoInclude && !includePathList.isEmpty()) includePathList.removeLast();
     }
 
@@ -2696,7 +2624,6 @@ public final class PageContextImpl extends PageContext {
 	session = null;
 	application = null;
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
-	setFullNullSupport();
 	int scriptProtect = applicationContext.getScriptProtect();
 
 	// ScriptProtecting
@@ -3231,15 +3158,6 @@ public final class PageContextImpl extends PageContext {
 	    return arr;
 	}
 	return config.getMailServers();
-    }
-
-    // FUTURE add to interface
-    public boolean getFullNullSupport() {
-	return fullNullSupport;
-    }
-
-    private void setFullNullSupport() {
-	fullNullSupport = currentTemplateDialect != CFMLEngine.DIALECT_CFML || applicationContext.getFullNullSupport();
     }
 
     public void registerLazyStatement(Statement s) {

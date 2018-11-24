@@ -21,7 +21,6 @@ package lucee.runtime.functions.query;
 import java.util.Iterator;
 
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.db.SQLCaster;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
@@ -50,7 +49,7 @@ public class QueryColumnData extends BIF {
 
 	while (it.hasNext()) {
 	    value = it.next();
-	    if (!NullSupportHelper.full(pc) && value == null) value = "";
+	    if(value == null) value = "";
 
 	    // callback call
 	    if (udf != null) value = udf.call(pc, new Object[] { value }, true);

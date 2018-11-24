@@ -45,10 +45,7 @@ import lucee.runtime.listener.ApplicationContext;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
 import lucee.runtime.security.ScriptProtect;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
+import lucee.runtime.type.*;
 import lucee.runtime.type.it.EntryIterator;
 import lucee.runtime.type.it.KeyIterator;
 import lucee.runtime.type.util.KeyConstants;
@@ -201,7 +198,7 @@ public final class CGIImpl extends StructSupport implements CGI, ScriptProtected
 
 	// do we have internal?
 
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object res = internal.get(key, _null);
 	if (res != _null) return res;
 

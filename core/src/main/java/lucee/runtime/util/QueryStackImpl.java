@@ -19,7 +19,6 @@
 package lucee.runtime.util;
 
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.Query;
@@ -66,14 +65,11 @@ public final class QueryStackImpl implements QueryStack {
 
     @Override
     public Object getDataFromACollection(PageContext pc, Key key, Object defaultValue) {
-	// Object rtn;
 	QueryColumn col;
 	// get data from queries
 	for (int i = start; i < queries.length; i++) {
 	    col = queries[i].getColumn(key, null);
-	    if (col != null) return col.get(queries[i].getCurrentrow(pc.getId()), NullSupportHelper.empty(pc));
-	    // rtn=((Objects)queries[i]).get(pc,key,Null.NULL);
-	    // if(rtn!=Null.NULL) return rtn;
+	    if (col != null) return col.get(queries[i].getCurrentrow(pc.getId()), "");
 	}
 	return defaultValue;
     }

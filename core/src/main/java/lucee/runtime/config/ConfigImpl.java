@@ -239,7 +239,6 @@ public abstract class ConfigImpl implements Config {
     private Resource configFile;
     private Resource configDir;
     private String sessionStorage = DEFAULT_STORAGE_SESSION;
-    private String clientStorage = DEFAULT_STORAGE_CLIENT;
 
     private long loadTime;
 
@@ -3632,16 +3631,6 @@ public abstract class ConfigImpl implements Config {
 	return cd == null || StringUtil.isEmpty(cd.getClassName());
     }
 
-    private boolean fullNullSupport = false;
-
-    protected final void setFullNullSupport(boolean fullNullSupport) {
-	this.fullNullSupport = fullNullSupport;
-    }
-
-    @Override
-    public final boolean getFullNullSupport() {
-	return fullNullSupport;
-    }
 
     private Log4jEngine logEngine;
 

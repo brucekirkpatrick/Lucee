@@ -28,6 +28,7 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.KeyImpl;
+import lucee.runtime.type.Null;
 import lucee.runtime.type.ref.VariableReference;
 import lucee.runtime.type.scope.Argument;
 import lucee.runtime.type.scope.CallerImpl;
@@ -218,7 +219,7 @@ public final class VariableInterpreter {
     public static Object getVariableEL(PageContext pc, String var, Object defaultValue) {
 	StringList list = parse(pc, new ParserString(var), false);
 	if (list == null) return defaultValue;
-	Object _null = NullSupportHelper.NULL(pc);
+	Object _null = Null.NULL;
 
 	int scope = scopeString2Int(pc.ignoreScopes(), list.next());
 	Object coll = null;

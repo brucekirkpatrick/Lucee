@@ -601,21 +601,6 @@ Depending on this setting Lucee scans certain scopes to find a variable called f
 		</attribute>
 		<attribute>
 			<type>boolean</type>
-			<name>enableNULLSupport</name>
-			<status>hidden</status>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description></description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>nullSupport</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>enable or disable full null support</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
 			<name>psq</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

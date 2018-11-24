@@ -1233,12 +1233,11 @@ component {
 	* @hint updates the compiler settings for lucee server
 	* @templateCharset Default characterset used to read templates (*.cfm and *.cfc files)
 	* @dotNotationUpperCase Convert all struct keys defined with "dot notation" to upper case or need to preserve case.
-	* @nullSupport If set, lucee has complete support for null, otherwise a partial null support.
 	* @suppressWSBeforeArg If set, Lucee suppresses whitespace defined between the "cffunction" starting tag and the last "cfargument" tag.
 	* @handleUnquotedAttrValueAsString Handle unquoted tag attribute values as strings.
 	* @externalizeStringGTE Externalize strings from generated class files to separate files.
 	*/
-	public void function updateCompilerSettings( required string templateCharset, required string dotNotationUpperCase, boolean nullSupport, boolean suppressWSBeforeArg, boolean handleUnquotedAttrValueAsString, numeric externalizeStringGTE){
+	public void function updateCompilerSettings( required string templateCharset, required string dotNotationUpperCase, boolean suppressWSBeforeArg, boolean handleUnquotedAttrValueAsString, numeric externalizeStringGTE){
 		var dotNotUpper=true;
 		if(isDefined('arguments.dotNotationUpperCase') and arguments.dotNotationUpperCase EQ "oc"){
 			dotNotUpper=false;
@@ -1251,7 +1250,6 @@ component {
 
 			templateCharset="#arguments.templateCharset#"
 			dotNotationUpperCase="#dotNotUpper#"
-			nullSupport=isNull(arguments.nullSupport) || isEmpty(arguments.nullSupport) ? existing.nullSupport  : arguments.nullSupport
 			suppressWSBeforeArg=isNull(arguments.suppressWSBeforeArg) || isEmpty(arguments.suppressWSBeforeArg) ? existing.suppressWSBeforeArg : arguments.suppressWSBeforeArg
 			handleUnquotedAttrValueAsString=isNull(arguments.handleUnquotedAttrValueAsString) || isEmpty(arguments.handleUnquotedAttrValueAsString) ? existing.handleUnquotedAttrValueAsString  : arguments.handleUnquotedAttrValueAsString
 			externalizeStringGTE=isNull(arguments.externalizeStringGTE) || isEmpty(arguments.externalizeStringGTE) ? existing.externalizeStringGTE  : arguments.externalizeStringGTE
@@ -1267,7 +1265,6 @@ component {
 			type="#variables.type#"
 			password="#variables.password#"
 
-			nullSupport=""
 			dotNotationUpperCase=""
 			suppressWSBeforeArg=""
 			handleUnquotedAttrValueAsString=""

@@ -33,13 +33,10 @@ import java.sql.Time;
 import java.sql.Types;
 import java.util.Date;
 
-import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.FormatUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.sql.SQLUtil;
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
-import lucee.runtime.db.CFTypes;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.db.DatasourceConnection;
 import lucee.runtime.db.SQL;
@@ -301,9 +298,7 @@ public class QueryUtil {
      */
     @Deprecated
     public static Object getValue(QueryColumn column, int row) {// print.ds();
-	if (NullSupportHelper.full()) return column.get(row, null);
-	Object v = column.get(row, "");
-	return v == null ? "" : v;
+		return column.get(row, "");
     }
 
     public static QueryColumnImpl duplicate2QueryColumnImpl(QueryImpl targetQuery, QueryColumn col, boolean deepCopy) {
