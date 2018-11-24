@@ -1,3 +1,0 @@
-<cfscript>
-numberOfRuns++;
-</cfscript>

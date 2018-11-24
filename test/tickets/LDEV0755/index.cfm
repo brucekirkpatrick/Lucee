@@ -1,1 +1,0 @@
-<cfoutput><!--- outside:#request.outside_false#,#request.outside_true#;--->inside:#request.inside_false#,#request.inside_true#;</cfoutput>

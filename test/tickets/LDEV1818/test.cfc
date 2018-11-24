@@ -1,4 +1,0 @@
-interface
-{
-    public function Name()
-}
