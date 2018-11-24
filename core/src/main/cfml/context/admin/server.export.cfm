@@ -273,9 +273,9 @@ this.mappings["#mappings.virtual#"]=<cfif len(mappings.strPhysical) && !len(mapp
 
 <h1>#stText.settings.exportAppCFC#</h1>	
 <div class="pageintro">#stText.settings.exportAppCFCDesc#</div>
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 <input type="submit" class="button submit" onclick="disableBlockUI=true;" name="subAction" value="#stText.Buttons.export#">
-</cfformClassic>
+</form>
 
 
 <cfset renderCodingTip( codeSample,false, false )>

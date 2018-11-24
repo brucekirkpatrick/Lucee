@@ -190,7 +190,7 @@
 
 	<div class="pageintro">#driver.getDescription()#</div>
 	
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 
 		<input type="hidden" name="name" value="#datasource.name#">
 		<input type="hidden" name="type" value="#dbdriver#">
@@ -233,9 +233,9 @@
 					<th scope="row">Name</th>
 					<td>
 						<cfif error.message NEQ "" OR error.Detail NEQ "">
-							<cfinputClassic type="text" name="newName" value="#form.newname#" class="large">
+							<input type="text" name="newName" value="#form.newname#" class="large">
 						<cfelse>
-							<cfinputClassic type="text" name="newName" value="#datasource.name#" class="large">
+							<input type="text" name="newName" value="#datasource.name#" class="large">
 						</cfif>
 					</td>
 				</tr>
@@ -245,7 +245,7 @@
 					<tr>
 						<th scope="row">#stText.Settings.dbHost#</th>
 						<td>
-							<cfinputClassic type="text" name="host" 
+							<input type="text" name="host"
 							value="#datasource.host#" class="large" required="#typeHost EQ TYPE_REQUIRED#">
 							<div class="comment">#stText.Settings.dbHostDesc#</div>
 						</td>
@@ -256,7 +256,7 @@
 					<tr>
 						<th scope="row">#stText.Settings.dbDatabase#</th>
 						<td>
-							<cfinputClassic type="text" name="database" 
+							<input type="text" name="database"
 							value="#datasource.database#" class="large" required="#typeDataBase EQ TYPE_REQUIRED#">
 							<div class="comment">#stText.Settings.dbDatabaseDesc#</div>
 						</td>
@@ -267,7 +267,7 @@
 					<tr>
 						<th scope="row">#stText.Settings.dbPort#</th>
 						<td>
-							<cfinputClassic type="text" name="port" validate="integer" 
+							<input type="text" name="port" validate="integer"
 							value="#datasource.port#" class="small" required="#typePort EQ TYPE_REQUIRED#">
 							<div class="comment">#stText.Settings.dbPortDesc#</div>
 						</td>
@@ -294,7 +294,7 @@
 					<tr>
 						<th scope="row">#stText.Settings.dbUser#</th>
 						<td>
-							<cfinputClassic type="text" name="username" 
+							<input type="text" name="username"
 							value="#datasource.username#" class="medium" required="#typeUsername EQ TYPE_REQUIRED#">
 							<div class="comment">#stText.Settings.dbUserDesc#</div>
 						</td>
@@ -305,7 +305,7 @@
 					<tr>
 						<th scope="row">#stText.Settings.dbPass#</th>
 						<td>
-							<cfinputClassic type="password" name="Password"  passthrough='autocomplete="off"'
+							<input type="password" name="Password"  passthrough='autocomplete="off"'
 							value="#datasource.password#" class="medium" onClick="this.value='';" required="#typePassword EQ TYPE_REQUIRED#">
 							<div class="comment">#stText.Settings.dbPassDesc#</div>
 						</td>
@@ -336,7 +336,7 @@
 						<select name="ConnectionTimeout" class="select small">
 							<cfloop index="idx" from="0" to="20"><option  <cfif datasource.ConnectionTimeout EQ idx>selected</cfif>>#idx#</option></cfloop>
 						</select>
-						<!--- <cfinputClassic type="text" name="ConnectionTimeout" 
+						<!--- <input type="text" name="ConnectionTimeout"
 						validate="integer" value="#datasource.ConnectionTimeout#" style="width:60px"> --->
 						<div class="comment">#stText.Settings.dbConnTimeoutDesc#</div>
 					</td>
@@ -345,7 +345,7 @@
 				<tr>
 					<th scope="row">#stText.Settings.dbValidate#</th>
 					<td>
-						<cfinputClassic type="checkbox" class="checkbox" name="validate" value="yes" checked="#isDefined('datasource.validate') and datasource.validate#">
+						<input type="checkbox" class="checkbox" name="validate" value="yes" checked="#isDefined('datasource.validate') and datasource.validate#">
 						<div class="comment">#stText.Settings.dbValidateDesc#</div>
 					</td>
 				</tr>
@@ -386,7 +386,7 @@
 				<tr>
 					<th scope="row">#stText.Settings.dbBlob#</th>
 					<td>
-						<cfinputClassic type="checkbox" class="checkbox" name="blob" value="yes" checked="#datasource.blob#">
+						<input type="checkbox" class="checkbox" name="blob" value="yes" checked="#datasource.blob#">
 						<div class="comment">#stText.Settings.dbBlobDesc#</div>
 					</td>
 				</tr>
@@ -394,7 +394,7 @@
 				<tr>
 					<th scope="row">#stText.Settings.dbClob#</th>
 					<td>
-						<cfinputClassic type="checkbox" class="checkbox" name="clob" value="yes" checked="#datasource.clob#">
+						<input type="checkbox" class="checkbox" name="clob" value="yes" checked="#datasource.clob#">
 						<div class="comment">#stText.Settings.dbClobDesc#</div>
 					</td>
 				</tr>
@@ -409,15 +409,15 @@
 						</div>
 
 						<ul class="radiolist float">
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_select" value="yes" checked="#datasource.select#"> <b>Select</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_insert" value="yes" checked="#datasource.insert#"> <b>Insert</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_update" value="yes" checked="#datasource.update#"> <b>Update</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_delete" value="yes" checked="#datasource.delete#"> <b>Delete</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_create" value="yes" checked="#datasource.create#"> <b>Create</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_drop" value="yes" checked="#datasource.drop#"> <b>Drop</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_revoke" value="yes" checked="#datasource.revoke#"> <b>Revoke</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_alter" value="yes" checked="#datasource.alter#"> <b>Alter</b></label></li>
-							<li class="small"><label><cfinputClassic type="checkbox" class="checkbox" name="allowed_grant" value="yes" checked="#datasource.grant#"> <b>Grant</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_select" value="yes" checked="#datasource.select#"> <b>Select</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_insert" value="yes" checked="#datasource.insert#"> <b>Insert</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_update" value="yes" checked="#datasource.update#"> <b>Update</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_delete" value="yes" checked="#datasource.delete#"> <b>Delete</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_create" value="yes" checked="#datasource.create#"> <b>Create</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_drop" value="yes" checked="#datasource.drop#"> <b>Drop</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_revoke" value="yes" checked="#datasource.revoke#"> <b>Revoke</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_alter" value="yes" checked="#datasource.alter#"> <b>Alter</b></label></li>
+							<li class="small"><label><input type="checkbox" class="checkbox" name="allowed_grant" value="yes" checked="#datasource.grant#"> <b>Grant</b></label></li>
 						</ul>
 					</td>
 				</tr>
@@ -425,7 +425,7 @@
 				<tr>
 					<th scope="row">#stText.Settings.dbStorage#</th>
 					<td>
-						<cfinputClassic type="checkbox" class="checkbox" name="storage" value="yes" checked="#isDefined('datasource.storage') and datasource.storage#">
+						<input type="checkbox" class="checkbox" name="storage" value="yes" checked="#isDefined('datasource.storage') and datasource.storage#">
 						<div class="comment">#stText.Settings.dbStorageDesc#</div>
 					</td>
 				</tr>
@@ -472,7 +472,7 @@
 						<th scope="row">#field.getDisplayName()#</th>
 						<td>
 							<cfif type EQ "text" or type EQ "password">
-								<cfinputClassic type="#type#" 
+								<input type="#type#"
 									name="custom_#field.getName()#" 
 									value="#default#" class="large" required="#field.getRequired()#" 
 									message="Missing value for field #field.getDisplayName()#">
@@ -490,7 +490,7 @@
 							<cfelseif type EQ "radio">
 								<cfif default EQ field.getDefaultValue() and field.getRequired()><cfset default=listGetAt(default,field.getDefaultValueIndex())></cfif>
 								<cfloop index="item" list="#field.getDefaultValue()#">
-									<cfinputClassic type="radio" class="radio" name="custom_#field.getName()#" value="#item#" checked="#item EQ default#">
+									<input type="radio" class="radio" name="custom_#field.getName()#" value="#item#" checked="#item EQ default#">
 									#item#
 								</cfloop>
 							<!--- @todo type checkbox,radio --->
@@ -516,7 +516,7 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 	
 		
 		<cfif actionType EQ "update">

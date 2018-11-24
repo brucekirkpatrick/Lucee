@@ -155,7 +155,7 @@ Redirtect to entry --->
 	<cfif not hasAccess><cfset noAccess(stText.setting.noAccess)></cfif>
 	
 	<h2>#stText.CustomTags.CustomtagSetting#</h2>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<input type="hidden" name="subAction" value="setting" />
 		<table class="maintbl">
 			<tbody>
@@ -225,7 +225,7 @@ Redirtect to entry --->
 									<label>
 										<input type="radio" class="radio" name="extensions" value="custom"<cfif not has> checked="checked"</cfif>>
 									</label>
-									<cfinputClassic type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
+									<input type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
 									<div class="comment inline">#stText.CustomTags.mode.custom#</div>
 								</li>
 							</ul>
@@ -250,11 +250,11 @@ Redirtect to entry --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 	
 	<h2>#stText.CustomTags.CustomtagMappings#</h2>
 	<div class="itemintro">#stText.CustomTags.CustomtagMappingsDesc#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl checkboxtbl">
 			<thead>
 				<tr>
@@ -299,7 +299,7 @@ Redirtect to entry --->
 									#mappings.strphysical#
 								</cfif>
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+								<input onKeyDown="checkTheBox(this)" type="text"
 									name="physical_#mappings.currentrow#" value="#mappings.strphysical#" required="no"  
 									class="xlarge"
 									message="#stText.CustomTags.PhysicalMissing##mappings.currentrow#">
@@ -315,7 +315,7 @@ Redirtect to entry --->
 									#mappings.strarchive#
 								</cfif>
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+								<input onKeyDown="checkTheBox(this)" type="text"
 									name="archive_#mappings.currentrow#" value="#mappings.strarchive#" required="no"  
 									class="xlarge" 
 									message="#stText.CustomTags.ArchiveMissing##mappings.currentrow#)">
@@ -362,15 +362,15 @@ Redirtect to entry --->
 							<input type="checkbox" class="checkbox" name="row_#mappings.recordcount+1#" value="#mappings.recordcount+1#">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="name_#mappings.recordcount+1#" value="" required="no" class="xlarge"  message="#stText.customtags.nameMissing#">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="physical_#mappings.recordcount+1#" value="" required="no" class="xlarge">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="archive_#mappings.recordcount+1#" value="" required="no"  class="xlarge">
 						</td>
 						<td>
@@ -405,5 +405,5 @@ Redirtect to entry --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

@@ -41,7 +41,7 @@ function printError(error,boolean longversion=false) {
 			<button id="error-details">Show Details</button>
 			<div id="stack-trace" style="display: none;">#arguments.error.exception.StackTrace#</div>');
 
-			htmlbody {
+			//htmlbody {
 				echo(
 				'<script>
 					$("##error-details").click(function(){
@@ -54,7 +54,7 @@ function printError(error,boolean longversion=false) {
 					});
 				</script>'
 				);
-			}
+			//}
 		}
 		writeOutput('<br>');
 		writeOutput(br(arguments.error.detail));

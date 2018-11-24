@@ -79,7 +79,7 @@ Error Output --->
 	
 	<div class="pageintro">#stText.charset[request.adminType]#</div>
 	
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- Template --->
@@ -155,5 +155,5 @@ Error Output --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

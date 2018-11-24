@@ -62,7 +62,7 @@ Redirtect to entry  --->
 	<cfset printError(error)>
 	<h2>#stText.Settings.orm.title#</h2>
 	<div class="pageintro">#stText.Settings.orm.desc#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- autogenmap --->
@@ -235,5 +235,5 @@ Redirtect to entry  --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

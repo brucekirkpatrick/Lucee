@@ -435,6 +435,7 @@ stText=variables.stText;
 		return "nav_" & rereplace(arguments.value, "[^0-9a-zA-Z]", "_", "all");
 	}
 	request.getRemoteClients=getRemoteClients;
+	request.adminLayoutCom=createObject("component", "adminLayout");
 </cfscript>
 
 <cfif not StructKeyExists(session,"password"&request.adminType)>
@@ -443,15 +444,24 @@ stText=variables.stText;
 			type="#request.adminType#"
 			returnVariable="hasPassword">
 	<cfif hasPassword>
-		<cfmodule template="admin_layout.cfm" width="480" title="Login" onload="doFocus()">
+		<cfscript>
+			request.adminLayoutCom.title="Login";
+			request.adminLayoutCom.onload="doFocus()";
+			request.adminLayoutCom.width="480";
+			request.adminLayoutCom.header();
+		</cfscript>
+		<!---<cfmodule template="admin_layout.cfm" width="480" title="Login" onload="doFocus()">--->
 			<cfif login_error NEQ ""><span class="CheckError"><cfoutput>#login_error#</cfoutput></span><br></cfif>
 			<cfinclude template="login.cfm">
-		</cfmodule>
+		<!---</cfmodule>--->
+		<cfscript>
+			request.adminLayoutCom.footer();
+		</cfscript>
 	<cfelse>
-		<cfmodule template="admin_layout.cfm" width="480" title="New Password">
+		<!---<cfmodule template="admin_layout.cfm" width="480" title="New Password">--->
 			<cfif login_error NEQ ""><span class="CheckError"><cfoutput>#login_error#</cfoutput></span><br></cfif>
 			<cfinclude template="login.new.cfm">
-		</cfmodule>
+		<!---</cfmodule>--->
 	</cfif>
 <cfelse>
 	<cfsavecontent variable="content">
@@ -466,7 +476,7 @@ stText=variables.stText;
 	<cfif request.disableFrame>
     	<cfoutput>#content#</cfoutput>
     <cfelse>
-		<cfhtmlbody>
+		<!---<cfhtmlbody>--->
 			<script type="text/javascript">
 				$(function() {
 					initMenu();
@@ -483,13 +493,13 @@ stText=variables.stText;
 					}
 				});
 			</script>
-		</cfhtmlbody>
+		<!---</cfhtmlbody>--->
 
 		<cfoutput>#strNav#</cfoutput>
 
-    	<cfmodule template="admin_layout.cfm" width="960" navigation="#strNav#" right="#context#" title="#current.label#" favorites="#favoriteLis#">
+    	<!---<cfmodule template="admin_layout.cfm" width="960" navigation="#strNav#" right="#context#" title="#current.label#" favorites="#favoriteLis#">--->
 			<cfoutput>#content#</cfoutput>
-        </cfmodule>
+        <!---</cfmodule>--->
     </cfif>
 </cfif>
 <cfif current.action neq "overview">

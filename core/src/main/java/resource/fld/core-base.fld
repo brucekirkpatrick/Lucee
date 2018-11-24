@@ -2241,6 +2241,22 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 			<type>string</type>
 		</return>
 	</function>
+
+	<!-- datasourceFlushMetaCache -->
+	<function>
+		<name>datasourceFlushMetaCache</name>
+		<class>lucee.runtime.functions.other.DatasourceFlushMetaCache</class>
+		<description>Flush the meta data stored for a certain datasource used for stored procedures, this is only supported for Oracle datasources</description>
+		<argument>
+			<name>datasourceName</name>
+			<type>string</type>
+			<required>no</required>
+			<description>name of the datasource to flush, when not defined all caches are flushed</description>
+		</argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
 	<!-- dateAdd -->
 	<function>
 		<name>dateAdd</name>
@@ -3314,6 +3330,22 @@ You may also specify other algorithm names as well as the feedback mode and padd
 		</return>
 	</function>
 
+	<!-- evaluateJava -->
+	<function>
+		<name>evaluateJava</name>
+		<class>lucee.runtime.functions.dynamicEvaluation.EvaluateJava</class>
+		<status>hidden</status>
+		<description>literal representation of a serializable Java Object, used by the serialize method.</description>
+		<argument>
+			<name>stringOrBinary</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description></description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
 
 	<!-- exp -->
 	<function>
@@ -4351,6 +4383,25 @@ Example Values:
 			<type>struct</type>
 		</return>
 	</function>
+
+	<!-- GetContextInfo -->
+	<function>
+		<name>getContextInfo</name>
+		<class>lucee.runtime.functions.system.GetContextInfo</class>
+		<description>Returns information to the current context.</description>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
+	<!-- GetContextRoot -->
+	<function>
+		<name>getContextRoot</name>
+		<class>lucee.runtime.functions.system.GetContextRoot</class>
+		<description>Returns path to the J2EE server context root for the current request.</description>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
 	<!-- GetCPUUsage -->
 	<function>
 		<name>GetCPUUsage</name>
@@ -4590,7 +4641,24 @@ The returned number of unallocated bytes is a hint, but not a guarantee, that it
 			<type>struct</type>
 		</return>
 	</function>
-	
+
+
+	<!-- GetVFSMetaData -->
+	<function>
+		<name>GetVFSMetaData</name>
+		<class>lucee.runtime.functions.file.GetVFSMetaData</class>
+		<description>Returns metadata for VFS</description>
+		<argument>
+			<name>scheme</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>the scheme of the virtual filesystem (ram,file,s3,http,https,zip,tar ...).</description>
+		</argument>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
+
 	<!-- GetLocalHostIP -->
 	<function>
 		<name>GetLocalHostIP</name>
@@ -4613,6 +4681,46 @@ The returned number of unallocated bytes is a hint, but not a guarantee, that it
 		</return>
 	</function>
 
+
+	<!-- getLuceeId -->
+	<function>
+		<name>GetLuceeId</name>
+		<class>lucee.runtime.functions.other.GetLuceeId</class>
+		<description>return ids of the current context</description>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
+	<!-- getTagData-->
+	<function>
+		<name>getTagData</name>
+		<class>lucee.runtime.functions.other.GetTagData</class>
+		<description>return information to a Tag as Struct</description>
+		<argument>
+			<name>nameSpaceWithSeperator</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>The namespace of the tag with the seperator Example: cf, rc: aso.</description>
+		</argument>
+		<argument>
+			<name>tagName</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>The tag name without namespace Example: login,mail aso.</description>
+		</argument>
+		<argument>
+			<name>dialect</name>
+			<type>string</type>
+			<required>no</required>
+			<values>cfml,lucee</values>
+			<default>cfml</default>
+			<introduced>5.0.0.0</introduced>
+			<description>the dialect you need (cfml,lucee)</description>
+		</argument>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
 
 	<!-- getFunctionList -->
 	<function>
@@ -4758,6 +4866,242 @@ if this attribute is not provided all types are returned.</description>
 		</return>
 	</function>
 
+	<!-- getProfileSections -->
+	<function>
+		<name>getProfileSections</name>
+		<class>lucee.runtime.functions.other.GetProfileSections</class>
+		<description>Gets all the sections of an initialization file.
+			An initialization file, as a struct whose format is as follows:
+			- Each initialization file section name is a key in the
+			struct
+			- Each list of entries in a section of an initialization
+			file is a value in the struct</description>
+		<argument>
+			<name>iniFile</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>path to a ini file.</description>
+		</argument>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
+	<!-- getProfileString -->
+	<function>
+		<name>getProfileString</name>
+		<class>lucee.runtime.functions.system.GetProfileString</class>
+		<description>Gets an initialization file entry.
+			An initialization file assigns values to configuration
+			variables, also known as entries, that are set when the system
+			boots, the operating system comes up, or an application starts.
+			Returns the entry - if no value, returns an empty string.</description>
+		<argument>
+			<name>iniPath</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Absolute path (drive, directory, filename, extension) of initialization file; for example, C:\\boot.ini</description>
+		</argument>
+		<argument>
+			<name>section</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Section of initialization file from which to extract information</description>
+		</argument>
+		<argument>
+			<name>entry</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Name of value to get</description>
+		</argument>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
+	<!-- GetSOAPRequest -->
+	<function>
+		<name>getSOAPRequest</name>
+		<class>lucee.runtime.functions.xml.GetSOAPRequest</class>
+		<status>implemented</status>
+		<keywords>webservice</keywords>
+		<description>Returns an XML object that contains the entire SOAP
+			request. Usually called from within a web service CFC.</description>
+		<argument>
+			<name>webservice</name>
+			<type>any</type>
+			<required>no</required>
+			<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
+	<!-- GetSOAPRequestHeader -->
+	<function>
+		<name>getSOAPRequestHeader</name>
+		<class>lucee.runtime.functions.xml.GetSOAPRequestHeader</class>
+		<keywords>webservice</keywords>
+		<description>Obtains a SOAP request header. Call only from within
+			a CFC web service function that is processing a request
+			as a SOAP web service.</description>
+		<argument>
+			<name>namespace</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the namespace for the header.</description>
+		</argument>
+		<argument>
+			<name>name</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the name of the header</description>
+		</argument>
+		<argument>
+			<name>asXML</name>
+			<type>boolean</type>
+			<required>No</required>
+			<description>If True, the header is returned as a XML object;
+				if false (default), the header is returned as a Java object.</description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
+
+	<!-- AddSOAPRequestHeader -->
+	<function>
+		<name>AddSOAPRequestHeader</name>
+		<class>lucee.runtime.functions.xml.AddSOAPRequestHeader</class>
+		<status>implemented</status>
+		<keywords>webservice</keywords>
+		<description>Adds a SOAP header to a web service request before making the request.</description>
+		<argument>
+			<name>webservice</name>
+			<type>object</type>
+			<required>Yes</required>
+			<description>A web service object as returned from the cfobject tag or the CreateObject function.</description>
+		</argument>
+		<argument>
+			<name>namespace</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the namespace for the header.</description>
+		</argument>
+		<argument>
+			<name>name</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the name of the header</description>
+		</argument>
+		<argument>
+			<name>value</name>
+			<type>object</type>
+			<required>Yes</required>
+			<description>the value for the SOAP header; this can be a CFML XML value.</description>
+		</argument>
+		<argument>
+			<name>mustUnderstand</name>
+			<type>boolean</type>
+			<required>No</required>
+			<description>Sets the SOAP mustunderstand value for this header.</description>
+		</argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
+
+	<!-- addSOAPResponseHeader -->
+	<function>
+		<name>addSOAPResponseHeader</name>
+		<class>lucee.runtime.functions.xml.AddSOAPResponseHeader</class>
+		<status>implemented</status>
+		<keywords>webservice</keywords>
+		<description>Adds a SOAP response header to a web service response. Call only from within a CFC web service function that is processing a request as a SOAP web service.</description>
+		<argument>
+			<name>namespace</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the namespace for the header.</description>
+		</argument>
+		<argument>
+			<name>name</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the name of the header</description>
+		</argument>
+		<argument>
+			<name>value</name>
+			<type>object</type>
+			<required>Yes</required>
+			<description>the value for the SOAP header; this can be a XML value.</description>
+		</argument>
+		<argument>
+			<name>mustUnderstand</name>
+			<type>boolean</type>
+			<required>No</required>
+			<description>Sets the SOAP mustunderstand value for this header.</description>
+		</argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
+
+	<!-- GetSOAPResponse -->
+	<function>
+		<name>getSOAPResponse</name>
+		<class>lucee.runtime.functions.xml.GetSOAPResponse</class>
+		<keywords>webservice</keywords>
+		<description>Returns an XML object that contains the entire
+			SOAP response after invoking a web service.</description>
+		<argument>
+			<name>webservice</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
+	<!-- GetSOAPResponseHeader -->
+	<function>
+		<name>getSOAPResponseHeader</name>
+		<class>lucee.runtime.functions.xml.GetSOAPResponseHeader</class>
+		<keywords>webservice</keywords>
+		<description>Returns a SOAP response header. Call this function
+			from within code that is invoking a web service after
+			making a web service request.</description>
+		<argument>
+			<name>webservice</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>A webservice object as returned from the cfobject tag or the CreateObject function.</description>
+		</argument>
+		<argument>
+			<name>namespace</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the namespace for the header.</description>
+		</argument>
+		<argument>
+			<name>name</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>A String that is the name of the SOAP header.</description>
+		</argument>
+		<argument>
+			<name>asXML</name>
+			<type>boolean</type>
+			<required>No</required>
+			<description>If True, the header is returned as a XML object;
+				if false (default), the header is returned as a Java object.</description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
 
 	<!-- getTempDirectory -->
 	<function>
@@ -5168,6 +5512,32 @@ The following things are considered to be empty:
 		</return>
 	</function>
 
+	<!-- IsIPInRange -->
+	<function>
+		<name>IsIPInRange</name>
+		<class>lucee.runtime.functions.decision.IsIPInRange</class>
+		<keywords>decision</keywords>
+		<description>Checks if an ip is in the range of a list of given ips. IPv4 and IPv6 are supported.</description>
+		<argument>
+			<name>ips</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>A comma separated list of strings or a string array of ip definitions. The following patterns are allowed:
+				- a single ip, like "127.0.0.1"
+				- an ip with wildcards like "127.0.0.*", in this case all ips between "127.0.0.0" and "127.0.0.255" are valid
+				- an ip range like "127.0.0.1-127.0.0.10", in this case all ips between "127.0.0.1" and "127.0.0.10" are valid
+			</description>
+		</argument>
+		<argument>
+			<name>ip</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>ip to search</description>
+		</argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
 	<!-- IsJson -->
 	<function>
 		<name>IsJson</name>
@@ -5181,6 +5551,23 @@ The following things are considered to be empty:
 			<required>Yes</required>
 		<description>A string or variable that represents one.</description>
     </argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
+	<!-- IsIPv6 -->
+	<function>
+		<name>IsIPv6</name>
+		<class>lucee.runtime.functions.decision.IsIPv6</class>
+		<keywords>decision</keywords>
+		<description>checks if given IP is of IPV6 format</description>
+		<argument>
+			<name>hostname</name>
+			<alias>value</alias>
+			<type>string</type>
+			<required>no</required>
+			<description>the hostname to check</description>
+		</argument>
 		<return>
 			<type>boolean</type>
 		</return>
@@ -5450,6 +5837,24 @@ The following things are considered to be empty:
 		</return>
 	</function>
 
+	<!-- IsDDX -->
+	<function>
+		<name>IsDDX</name>
+		<class>lucee.runtime.functions.decision.IsDDX</class>
+		<status>unimplemented</status>
+		<keywords>decision</keywords>
+		<description>Determines whether a DDX file exists and is valid, or if a string contains valid DDX instructions.</description>
+		<argument>
+			<name>pathOrString</name>
+			<alias>value,path,string</alias>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Pathname to the DDX file or a string of DDX instructions. The pathname can be absolute or relative to the CFM page that calls it and must be enclosed in quotation marks.</description>
+		</argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
 	<!-- IsInstanceOf -->
 	<function>
 		<name>IsInstanceOf</name>
@@ -5599,6 +6004,18 @@ The following things are considered to be empty:
 			<required>Yes</required>
 		<description>Variable or expression</description>
     </argument>
+		<return>
+			<type>boolean</type>
+		</return>
+	</function>
+
+	<!-- IsSOAPRequest -->
+	<function>
+		<name>IsSOAPRequest</name>
+		<class>lucee.runtime.functions.decision.IsSOAPRequest</class>
+		<status>implemented</status>
+		<keywords>decision,webservice</keywords>
+		<description>Determines whether a CFC is being called as a web service.</description>
 		<return>
 			<type>boolean</type>
 		</return>
@@ -10820,6 +11237,29 @@ _- asc (default): ascending (a to z) sort order
 		</return>
 	</function>
 
+	<!-- htmlParse -->
+	<function>
+		<name>htmlParse</name>
+		<class>lucee.runtime.functions.xml.HtmlParse</class>
+		<keywords>HTML</keywords>
+		<description>parse the given html (not only xhtml) as xml Object, work similar to xmlParse, but this function is very forgiving with the syntax..</description>
+		<argument>
+			<name>html</name>
+			<alias>string,text</alias>
+			<type>string</type>
+			<required>Yes</required>
+			<description></description>
+		</argument>
+		<argument>
+			<name>caseSensitive</name>
+			<type>boolean</type>
+			<required>No</required>
+			<description></description>
+		</argument>
+		<return>
+			<type>xml</type>
+		</return>
+	</function>
 	<!-- xmlSearch -->
 	<function>
 		<name>xmlSearch</name>

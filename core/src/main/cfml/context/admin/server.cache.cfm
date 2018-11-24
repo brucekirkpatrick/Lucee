@@ -205,7 +205,7 @@ Create Datasource --->
 
 	<div class="pageintro">#stText.setting.cacheDesc#</div>
 	
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- Template Cache for Request --->
@@ -365,5 +365,5 @@ Create Datasource --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

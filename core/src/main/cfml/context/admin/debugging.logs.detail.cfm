@@ -55,11 +55,11 @@
 		</table>
 		
 	<table class="tbl" width="740">
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 	<tr>
 		<td ><input type="submit" name="mainAction" class="submit" value="#stText.buttons.back#" /></td>
 	</tr>
-	</cfformClassic>
+	</form>
 	</table>
 	<cfif template EQ "lucee-modern">
 		<div id="blockerContainer" class="jquery-modal current">

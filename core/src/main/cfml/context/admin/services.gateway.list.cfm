@@ -142,7 +142,7 @@ Redirtect to entry --->
 		<h2>#stText.Settings.gateway.titleReadOnly#</h2>
 		
 		<div class="pageintro">#stText.Settings.cache.descReadOnly#</div>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
@@ -200,7 +200,7 @@ Redirtect to entry --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif> --->
 
 	<!--- LIST --->
@@ -210,7 +210,7 @@ Redirtect to entry --->
 	<cfif qry.recordcount>
 		<h2>#type=='local'?stText.Settings.gateway.titleExisting:stText.Settings.gateway.titleReadONly#</h2>
 		<div class="itemintro">#type=='local'?stText.Settings.gateway.descExisting:stText.settings.gateway.descreadonly#</div>
-    	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+    	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
@@ -275,7 +275,7 @@ Redirtect to entry --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 	</cfloop>
 
@@ -288,12 +288,12 @@ Redirtect to entry --->
 		<cfset _drivers=ListSort(StructKeyList(drivers),'textnocase')>
 	    <cfif listLen(_drivers)>
 			<h2>#stText.Settings.gateway.titleCreate#</h2>
-			<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+			<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 				<table class="maintbl">
 					<tbody>
 						<tr>
 							<th scope="row">#stText.Settings.gateway.id#</th>
-							<td><cfinputClassic type="text" name="_id" value="" class="medium" required="yes" message="#stText.Settings.gateway.nameMissing#"></td>
+							<td><input type="text" name="_id" value="" class="medium" required="yes" message="#stText.Settings.gateway.nameMissing#"></td>
 						</tr>
 						<tr>
 							<th scope="row">#stText.Settings.gateway.type#</th>
@@ -316,7 +316,7 @@ Redirtect to entry --->
 						</tr>
 					</tfoot>
 				</table>   
-			</cfformClassic>
+			</form>
 	    <cfelse>
     		<div class="txt">#stText.Settings.gateway.noDriver#</div>
     	</cfif>

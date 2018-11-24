@@ -98,7 +98,7 @@ Error Output --->
 	</cfif>
 	<div class="pageintro">#stText.err.descr#</div>
 
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<cfloop list="500,404" index="statusCode">
@@ -179,5 +179,5 @@ Error Output --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

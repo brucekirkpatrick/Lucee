@@ -20,7 +20,7 @@
 <cfoutput>
 	<h2>#stText.Security.general#</h2>
 	<div class="itemintro">#stText.Security.generalDesc#</div>
-	<cfformClassic onerror="customError" action="#go(url.action,"update#iif(type EQ "generell",de('Default'),de(''))#SecurityManager")#" method="post">
+	<form onerror="customError" action="#go(url.action,"update#iif(type EQ "generell",de('Default'),de(''))#SecurityManager")#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- Access Read --->
@@ -53,7 +53,7 @@
 			</tbody>
 		</table>
 
-<!--- <cfformClassic onerror="customError" action="#go(url.action,"update#iif(type EQ "generell",de('Default'),de(''))#SecurityManager")#" method="post">--->
+<!--- <form onerror="customError" action="#go(url.action,"update#iif(type EQ "generell",de('Default'),de(''))#SecurityManager")#" method="post">--->
 		<h2>#stText.Security.WebAdministrator#</h2>
 		<div class="itemintro">#stText.Security.WebAdministratorDescription#</div>
 		<table class="maintbl">
@@ -232,14 +232,14 @@
 									<tr name="fileAccess" style="display:#access.file EQ 'local'?'':'none'#">
 										<!--- path --->
 										<td nowrap>
-											<cfinputClassic type="text" name="path_#idx#" 
+											<input type="text" name="path_#idx#"
 											value="#access.file_access[idx]#" required="no" class="large">
 										</td>
 									</tr>
 								</cfloop>
 								<!--- INSERT --->
 								<tr name="fileAccess" style="display:#access.file EQ 'local'?'':'none'#">
-									<td nowrap><cfinputClassic type="text" name="path_#arrayLen(access.file_access)+1#" value="" required="no" class="large"> <input type="button" name="addFileAccessDirectory" class="addFileAccessDirectory" data-index="#arrayLen(access.file_access)+1#" value="Add"></td>
+									<td nowrap><input type="text" name="path_#arrayLen(access.file_access)+1#" value="" required="no" class="large"> <input type="button" name="addFileAccessDirectory" class="addFileAccessDirectory" data-index="#arrayLen(access.file_access)+1#" value="Add"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -264,7 +264,7 @@
 		</cfscript>
 		<cfsavecontent variable="fileAccessDirectoryTemplate">
 			<tr name="fileAccess">
-				<td nowrap><cfinputClassic type="text" name="{FIELDNAME}" value="" required="no" class="large"> <input type="button" name="addFileAccessDirectory" class="addFileAccessDirectory" value="Add" data-index="{INDEX}" onclick="this.style.display='none';"></td>
+				<td nowrap><input type="text" name="{FIELDNAME}" value="" required="no" class="large"> <input type="button" name="addFileAccessDirectory" class="addFileAccessDirectory" value="Add" data-index="{INDEX}" onclick="this.style.display='none';"></td>
 			</tr>
 		</cfsavecontent>
 		<input type="hidden" name="fileAccessDirectoryTemplate" id="fileAccessDirectoryTemplate" value="#htmleditformat(fileAccessDirectoryTemplate)#">
@@ -322,5 +322,5 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

@@ -99,9 +99,9 @@ Redirtect to entry --->
 
 	<h2>#driver.getLabel()#</h2>
 	<div class="itemintro">#driver.getDescription()#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
-		<cfinputClassic type="hidden" name="type" value="#entry.type#" >
-		<cfinputClassic type="hidden" name="label" value="#entry.label#" >
+	<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+		<input type="hidden" name="type" value="#entry.type#" >
+		<input type="hidden" name="label" value="#entry.label#" >
 		<table class="maintbl">
 			<tbody>
 				<tr>
@@ -111,7 +111,7 @@ Redirtect to entry --->
 				<tr>
 					<th scope="row">#stText.debug.iprange#</th>
 					<td>
-						<cfinputClassic type="text" 
+						<input type="text"
 							name="iprange" 
 							value="#entry.iprange#" class="large" required="yes"
 							message="#stText.debug.iprangeMissing#">
@@ -157,19 +157,19 @@ Redirtect to entry --->
 		
 			</cfif>
 			<cfif type EQ "text" or type EQ "password">
-				<cfinputClassic type="#type#" 
+				<input type="#type#"
 					name="custom_#field.getName()#" 
 					value="#default#" class="large" required="#field.getRequired()#" 
 					message="Missing value for field #field.getDisplayName()#">
 			<cfelseif left(type,4) EQ "text">
-				<cfinputClassic type="text" 
+				<input type="text"
 					name="custom_#field.getName()#" 
 					value="#default#" style="width:#mid(type,5)#px" required="#field.getRequired()#" 
 					message="Missing value for field #field.getDisplayName()#"> 
 			<cfelseif type EQ "textarea">
 				<textarea style="height:100px;" class="xlarge" name="custom_#field.getName()#">#default#</textarea>
 			<cfelseif type EQ "hidden">
-				<cfinputClassic type="hidden" name="custom_#field.getName()#" value="#default#">
+				<input type="hidden" name="custom_#field.getName()#" value="#default#">
 			<cfelseif type EQ "time">
 				<cfsilent>
 					<cfset doBR=false>
@@ -203,19 +203,19 @@ Redirtect to entry --->
 					</thead>
 					<tbody>
 						<tr>
-							<td><cfinputClassic type="text" 
+							<td><input type="text"
 								name="custompart_d_#field.getName()#" 
 								value="#addZero(d)#" style="width:40px" required="#field.getRequired()#"   validate="integer"
 								message="Missing value for field #field.getDisplayName()#"></td>
-							<td><cfinputClassic type="text" 
+							<td><input type="text"
 								name="custompart_h_#field.getName()#" 
 								value="#addZero(h)#" style="width:40px" required="#field.getRequired()#"  maxlength="2"  validate="integer"
 								message="Missing value for field #field.getDisplayName()#"></td>
-							<td><cfinputClassic type="text" 
+							<td><input type="text"
 								name="custompart_m_#field.getName()#" 
 								value="#addZero(m)#" style="width:40px" required="#field.getRequired()#"  maxlength="2" validate="integer" 
 								message="Missing value for field #field.getDisplayName()#"></td>
-							<td><cfinputClassic type="text" 
+							<td><input type="text"
 								name="custompart_s_#field.getName()#" 
 								value="#addZero(s)#" style="width:40px" required="#field.getRequired()#"  maxlength="2"  validate="integer"
 								message="Missing value for field #field.getDisplayName()#"></td>
@@ -241,7 +241,7 @@ Redirtect to entry --->
 					<cfloop index="item" list="#field.getValues()#">
 						<li>
 							<label>
-								<cfinputClassic type="#type#" name="custom_#field.getName()#" value="#item#" checked="#listFindNoCase(default,item)#">
+								<input type="#type#" name="custom_#field.getName()#" value="#item#" checked="#listFindNoCase(default,item)#">
 								<b>#item#</b>
 							</label>
 							<cfif isStruct(desc) and StructKeyExists(desc,item)>
@@ -289,5 +289,5 @@ Redirtect to entry --->
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

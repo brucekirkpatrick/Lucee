@@ -173,7 +173,7 @@
 	<cfsavecontent variable="tmpContent">
 		<div  class="topBottomSpace">
 			<div class="whitePanel">
-				<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+				<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 					<select name="UPDATE" id="upt_version"  class="large">
 						<option value="">--- select the version ---</option>
 						<cfloop list="#listVrs#" index="key">
@@ -199,7 +199,7 @@
 							<div class="itemintro"><b>#stText.services.update.short[key]# :</b> #stText.services.update[key&"Desc"]#</div>
 						</cfloop>
 					</div>
-				</cfformClassic>
+				</form>
 			</div>
 		</div>
 	</cfsavecontent>
@@ -210,7 +210,7 @@
 	</div>
 
 	<!--- for custom --->
-	<cfformClassic onerror="customError" action="#go(url.action,"settings")#" method="post">
+	<form onerror="customError" action="#go(url.action,"settings")#" method="post">
 		<h1>#stText.services.update.customProvider#</h1>
 		<table class="maintbl alignLeft">
 			<tbody>
@@ -258,7 +258,7 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 
 	<cfhtmlbody>
 		<script type="text/javascript">

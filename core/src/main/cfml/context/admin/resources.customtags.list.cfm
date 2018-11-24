@@ -11,7 +11,7 @@
 	<cfif not hasAccess><cfset noAccess(stText.setting.noAccess)></cfif>
 	
 	<h2>#stText.CustomTags.CustomtagSetting#</h2>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<input type="hidden" name="subAction" value="setting" />
 		<table class="maintbl">
 			<tbody>
@@ -80,7 +80,7 @@
 									<label>
 										<input type="radio" class="radio" name="extensions" value="custom"<cfif not has> checked="checked"</cfif>>
 									</label>
-									<cfinputClassic type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
+									<input type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
 									<div class="comment inline">#stText.CustomTags.mode.custom#</div>
 								</li>
 							</ul>
@@ -105,7 +105,7 @@
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 	
 	
 	
@@ -116,7 +116,7 @@
 <!---	
 	<h2>#stText.CustomTags.CustomtagMappings#</h2>
 	<div class="itemintro">#stText.CustomTags.CustomtagMappingsDesc#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl checkboxtbl">
 			<thead>
 				<tr>
@@ -161,7 +161,7 @@
 									#mappings.strphysical#
 								</cfif>
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+								<input onKeyDown="checkTheBox(this)" type="text"
 									name="physical_#mappings.currentrow#" value="#mappings.strphysical#" required="no"  
 									class="xlarge"
 									message="#stText.CustomTags.PhysicalMissing##mappings.currentrow#">
@@ -177,7 +177,7 @@
 									#mappings.strarchive#
 								</cfif>
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+								<input onKeyDown="checkTheBox(this)" type="text"
 									name="archive_#mappings.currentrow#" value="#mappings.strarchive#" required="no"  
 									class="xlarge" 
 									message="#stText.CustomTags.ArchiveMissing##mappings.currentrow#)">
@@ -224,15 +224,15 @@
 							<input type="checkbox" class="checkbox" name="row_#mappings.recordcount+1#" value="#mappings.recordcount+1#">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="name_#mappings.recordcount+1#" value="" required="no" class="xlarge"  message="#stText.customtags.nameMissing#">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="physical_#mappings.recordcount+1#" value="" required="no" class="xlarge">
 						</td>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 								name="archive_#mappings.recordcount+1#" value="" required="no"  class="xlarge">
 						</td>
 						<td>
@@ -267,7 +267,7 @@
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic> --->
+	</form> --->
 	
 	
 <!--- LIST MAPPINGS --->
@@ -275,7 +275,7 @@
 	
 	<h2>#stText.customTags.customtagMappings#</h2>
 	<div class="itemintro">#stText.customTags.customtagMappingsDesc#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl checkboxtbl">
 			<thead>
 				<tr>
@@ -321,7 +321,7 @@
 							<cfif mappings.ReadOnly>
 								#mappings.strphysical#
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text"
+								<input onKeyDown="checkTheBox(this)" type="text"
 								name="physical_#mappings.currentrow#" value="#mappings.strphysical#" required="no"
 								class="xlarge"
 								message="#stText.customTags.PhysicalMissing##mappings.currentrow#)">
@@ -333,7 +333,7 @@
 							<cfif mappings.ReadOnly>
 								#mappings.strarchive#
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text"
+								<input onKeyDown="checkTheBox(this)" type="text"
 								name="archive_#mappings.currentrow#" value="#mappings.strarchive#" required="no"
 								class="xlarge"
 								message="#stText.customTags.ArchiveMissing##mappings.currentrow#)">
@@ -398,7 +398,7 @@
 				</cfif>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 
 	
 	
@@ -406,7 +406,7 @@
 	
 		<cfif hasAccess>
 		<h2>#stText.customTags.createnewcustomtagmapping#</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<input type="hidden" name="row_1" value="1">
 			<input type="hidden" name="virtual_1" value="/#mappings.recordcount+1#">
 			<table class="maintbl">
@@ -414,21 +414,21 @@
 					<tr>
 						<th scope="row">#stText.customtags.name#</th>
 						<td>
-							<cfinputClassic type="text" name="name_1" value="" required="yes" class="large" message="#stText.customtags.nameMissing#">
+							<input type="text" name="name_1" value="" required="yes" class="large" message="#stText.customtags.nameMissing#">
 							<div class="comment">#stText.customtags.nameDesc#</div>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">#stText.customtags.Physical#</th>
 						<td>
-							<cfinputClassic type="text" name="physical_1" value="" required="no" class="large">
+							<input type="text" name="physical_1" value="" required="no" class="large">
 							<div class="comment">#stText.customtags.PhysicalDesc#</div>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">#stText.customtags.Archive#</th>
 						<td>
-							<cfinputClassic type="text" name="archive_1" value="" required="no" class="large">
+							<input type="text" name="archive_1" value="" required="no" class="large">
 							<div class="comment">#stText.customtags.archiveDesc#</div>
 						</td>
 					</tr>
@@ -470,7 +470,7 @@
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 	
 </cfoutput>

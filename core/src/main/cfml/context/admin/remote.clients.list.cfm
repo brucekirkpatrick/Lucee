@@ -112,7 +112,7 @@ list all mappings and display necessary edit fields --->
 	
 	<cfif clients.recordcount>
 		<h2>#stText.remote.listClients#</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
@@ -179,7 +179,7 @@ list all mappings and display necessary edit fields --->
 					</tfoot>
 				</cfif>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 </cfoutput>
 
@@ -187,8 +187,8 @@ list all mappings and display necessary edit fields --->
 	<cfoutput>
 		<!--- Create Remote Client --->
 		<h2>New remote client</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 			<input type="submit" class="button submit" name="run" value="#stText.remote.newClient#">
-		</cfformClassic>
+		</form>
 	</cfoutput>
 </cfif>

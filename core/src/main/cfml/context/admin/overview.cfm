@@ -717,7 +717,7 @@ Error Output --->
 		<div class="itemintro">
 			#stText.Overview.contexts.desc# 
 		</div>
-		<cfformClassic onerror="customError" action="#request.self#" method="post">
+		<form onerror="customError" action="#request.self#" method="post">
 			<table class="maintbl">
 				<thead>
 					<tr>
@@ -766,7 +766,7 @@ Error Output --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 </cfoutput>
 <cfscript>

@@ -22,7 +22,7 @@
 		<cfif extCount GT 30>
 		<div class="filterform">
 	
-			<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+			<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 				<ul>
 					<li>
 						<label for="filter">#stText.search.searchterm#:</label>
@@ -33,7 +33,7 @@
 					</li>
 				</ul>
 				<div class="clear"></div>
-			</cfformClassic>
+			</form>
 		</div>
 		</cfif>
 		<cfloop list="#request.adminType=="web"?"server,web":"web"#" item="_type">
@@ -142,7 +142,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 	<cfif unInstalledExt.recordcount GT 30>
 
 	<div class="filterform">
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<ul>
 				<li>
 					<label for="filter2">#stText.search.searchterm#:</label>
@@ -153,7 +153,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 				</li>
 			</ul>
 			<div class="clear"></div>
-		</cfformClassic>
+		</form>
 	</div><br>
 </cfif>
 </cfoutput>
@@ -252,7 +252,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 			Deployed Lucee Extension, see deploy.log for details.
 		</div>
 	</cfif>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=upload" method="post" enctype="multipart/form-data">
+	<form onerror="customError" action="#request.self#?action=#url.action#&action2=upload" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="mainAction" value="uploadExt" />
 		<table class="tbl maintbl">
 			<tbody>
@@ -270,7 +270,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 
 	
 

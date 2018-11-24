@@ -4661,6 +4661,82 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 	</tag>
 
 
+	<!-- Wddx -->
+	<tag>
+		<name>wddx</name>
+		<tag-class>lucee.runtime.tag.Wddx</tag-class>
+		<body-content>empty</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
+		<description>Serializes and de-serializes CFML data structures to the XML-based WDDX format.
+			Generates JavaScript statements to instantiate JavaScript objects equivalent to the contents of a
+			WDDX packet or some CFML data structures.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>action</name>
+			<values>cfml2wddx,wddx2cfml,cfml2js,wddx2js</values>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Specifies the action taken by the cfwddx tag.</description>
+		</attribute>
+		<attribute>
+			<type>any</type>
+			<name>input</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>The value to be processed.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>output</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>The name of the variable to hold the output of the operation. This attribute is required for
+				action = 'WDDX2CFML'. For all other actions, if this attribute is not provided, the result of the
+				WDDX processing is outputted in the HTML stream.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>topLevelVariable</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>The name of the top-level JavaScript object created by the deserialization process. The object
+				created is an instance of the WddxRecordset object, explained in WddxRecordset Object.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>useTimeZoneInfo</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Indicates whether to output time-zone information when serializing CFML to WDDX. If time-zone
+				information is taken into account, the hour-minute offset, as represented in the ISO8601 format, is
+				calculated in the date-time output. If time-zone information is not taken into account, the local
+				time is output. The default is Yes.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>validate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Applies if action = "wddx2cfml" or "wddx2js".
+				- Yes: validates WDDX input with an XML parser using
+				WDDX DTD. If parser processes input without error,
+				packet is deserialized. Otherwise, an error is
+				thrown.
+				- No: no input validation</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>xmlConform</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>if set to true generate valid xml, if set to false (default) the xml generated is compatible to other engines, but not valid xml (use for example single quotes for attribute values)</description>
+		</attribute>
+	</tag>
 	<!-- Xml -->
 	<tag>
 		<name>xml</name>

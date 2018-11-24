@@ -1,7 +1,7 @@
 <cfoutput>
 <!--- <h2>#stText.Mail.Settings#</h2> --->
 <h2>Send test email</h2>
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&row=#url.row#" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#&row=#url.row#" method="post">
 	<!--- <input type="hidden" name="mainAction" value="#stText.Buttons.Setting#">
 	<input type="hidden" name="mainAction" value="#stText.Buttons.Setting#"> --->
 	<table class="maintbl">
@@ -9,7 +9,7 @@
 			<tr>
 				<th scope="row">Email</th>
 				<td>
-					<cfinputClassic type="text" name="toMail" value="" class="medium" required="yes" message="Please enter a valid email, to where you need to send the test email.">
+					<input type="text" name="toMail" value="" class="medium" required="yes" message="Please enter a valid email, to where you need to send the test email.">
 				</td>
 			</tr>
 		</tbody>
@@ -21,5 +21,5 @@
 			</tr>
 		</tfoot>
 	</table>
-</cfformClassic>
+</form>
 </cfoutput>

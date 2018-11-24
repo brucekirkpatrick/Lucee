@@ -1426,11 +1426,11 @@
     <echots message="build loader"/>
     
 
-    <!-- genrates the jar from the loader
+    <!-- genrates the jar from the loader -->
     <jar 
       basedir="${temp}/loader" 
       jarfile="${trgLoader}/lucee-${version}.jar" 
-      manifest="${goal}/META-INF/MANIFEST.MF"/> -->
+      manifest="${goal}/META-INF/MANIFEST.MF"/>
 
 
     <echots message="done"/>

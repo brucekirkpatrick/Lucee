@@ -7,7 +7,7 @@
 		</cfif>
 	</div>
 	
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- Base Component ---->
@@ -29,7 +29,7 @@
 							<td class="tblContent#css#" title="#component["strBaseComponentTemplate"&dialect]#
 #component["BaseComponentTemplate"&dialect]#">
 							<cfif hasAccess>
-								<cfinputClassic type="text" name="baseComponentTemplate#dialect#" value="#component["strBaseComponentTemplate"&dialect]#" style="width:350px" 
+								<input type="text" name="baseComponentTemplate#dialect#" value="#component["strBaseComponentTemplate"&dialect]#" style="width:350px"
 									required="no" 
 									message="#stText.Components.BaseComponentMissing#">
 							<cfelse>
@@ -41,7 +41,7 @@
 
 
 							<cfif hasAccess>
-								<cfinputClassic type="text" name="baseComponentTemplateCFML" value="#component["strBaseComponentTemplateCFML"]#" style="width:350px" 
+								<input type="text" name="baseComponentTemplateCFML" value="#component["strBaseComponentTemplateCFML"]#" style="width:350px"
 									required="no" 
 									message="#stText.Components.BaseComponentMissing#">
 							<cfelse>
@@ -59,7 +59,7 @@
 					<th scope="row">#stText.Components.AutoImport#</th>
 					<td>
 						<cfif hasAccess>
-							<cfinputClassic type="text" name="componentDefaultImport" value="#component.componentDefaultImport#" style="width:350px" 
+							<input type="text" name="componentDefaultImport" value="#component.componentDefaultImport#" style="width:350px"
 								required="no" 
 								message="#stText.Components.AutoImportMissing#">
 						<cfelse>
@@ -123,7 +123,7 @@
 					<td class="tblContent#css#" title="#component.strcomponentDumpTemplate#
 #component.componentDumpTemplate#">
 						<cfif hasAccess>
-							<cfinputClassic type="text" name="componentDumpTemplate" value="#component.strcomponentDumpTemplate#" class="large"
+							<input type="text" name="componentDumpTemplate" value="#component.strcomponentDumpTemplate#" class="large"
 								required="no" 
 								message="#stText.Components.ComponentDumpTemplateMissing#">
 						<cfelse>
@@ -207,12 +207,12 @@
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 	
 	
 	<h2>#stText.Components.componentMappings#</h2>
 	<div class="itemintro">#stText.Components.componentMappingsDesc#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl checkboxtbl">
 			<thead>
 				<tr>
@@ -255,7 +255,7 @@
 							<cfif mappings.ReadOnly>
 								#mappings.strphysical#
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text"
+								<input onKeyDown="checkTheBox(this)" type="text"
 								name="physical_#mappings.currentrow#" value="#mappings.strphysical#" required="no"
 								class="xlarge"
 								message="#stText.Components.PhysicalMissing##mappings.currentrow#)">
@@ -267,7 +267,7 @@
 							<cfif mappings.ReadOnly>
 								#mappings.strarchive#
 							<cfelse>
-								<cfinputClassic onKeyDown="checkTheBox(this)" type="text"
+								<input onKeyDown="checkTheBox(this)" type="text"
 								name="archive_#mappings.currentrow#" value="#mappings.strarchive#" required="no"
 								class="xlarge"
 								message="#stText.Components.ArchiveMissing##mappings.currentrow#)">
@@ -331,11 +331,11 @@
 				</cfif>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 
 	<cfif hasAccess>
 		<h2>#stText.components.createnewcompmapping#</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<input type="hidden" name="row_1" value="1">
 			<input type="hidden" name="virtual_1" value="/#mappings.recordcount+1#">
 			<table class="maintbl">
@@ -343,21 +343,21 @@
 					<tr>
 						<th scope="row">#stText.Components.name#</th>
 						<td>
-							<cfinputClassic type="text" name="name_1" value="" required="yes" class="large" message="#stText.Components.nameMissing#">
+							<input type="text" name="name_1" value="" required="yes" class="large" message="#stText.Components.nameMissing#">
 							<div class="comment">#stText.Components.nameDesc#</div>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">#stText.Components.Physical#</th>
 						<td>
-							<cfinputClassic type="text" name="physical_1" value="" required="no" class="large">
+							<input type="text" name="physical_1" value="" required="no" class="large">
 							<div class="comment">#stText.Components.PhysicalDesc#</div>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">#stText.Components.Archive#</th>
 						<td>
-							<cfinputClassic type="text" name="archive_1" value="" required="no" class="large">
+							<input type="text" name="archive_1" value="" required="no" class="large">
 							<div class="comment">#stText.Components.archiveDesc#</div>
 						</td>
 					</tr>
@@ -399,6 +399,6 @@
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 </cfoutput>

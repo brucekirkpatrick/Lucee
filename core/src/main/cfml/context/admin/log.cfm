@@ -17,7 +17,7 @@
 <tr>
 	<td colspan="2"><h2>#ucFirst(logs.name)# #stText.log.title#</h2> <!---#attributes.title##attributes.description#---></td>
 </tr>
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 <tr>
 	<th scope="row">#stText.log.level#</th>
 	<td>
@@ -27,16 +27,16 @@
 </tr>
 <tr>
 	<th scope="row">#stText.log.source#</th>
-	<td><cfinputClassic type="text" name="#logs.name#_source" title="#logs.path#" value="#logs.virtualpath#" style="width:300px" required="yes" message=""></td>
+	<td><input type="text" name="#logs.name#_source" title="#logs.path#" value="#logs.virtualpath#" style="width:300px" required="yes" message=""></td>
 </tr>
 
 <tr>
 	<th scope="row">#stText.log.maxFile#</th>
-	<td><cfinputClassic type="text" name="#logs.name#_maxFile" value="#logs.maxFile#" style="width:60px" required="yes" message=""></td>
+	<td><input type="text" name="#logs.name#_maxFile" value="#logs.maxFile#" style="width:60px" required="yes" message=""></td>
 </tr>
 <tr>
 	<th scope="row">#stText.log.maxFileSize#</th>
-	<td><cfinputClassic type="text" name="#logs.name#_maxFileSize" value="#isNumeric(logs.maxFileSize)?logs.maxFileSize/1024:''#" style="width:60px" required="yes" message=""></td>
+	<td><input type="text" name="#logs.name#_maxFileSize" value="#isNumeric(logs.maxFileSize)?logs.maxFileSize/1024:''#" style="width:60px" required="yes" message=""></td>
 </tr>
 
 
@@ -51,7 +51,7 @@
 		<input type="submit" class="button submit" name="run" value="#stText.Buttons.update#">
 	</td>
 </tr>
-</cfformClassic>
+</form>
 
 </table>
 </cfloop>

@@ -171,7 +171,7 @@ Redirtect to entry --->
 		</div>
 		
 		<div class="filterform">
-			<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+			<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 				<ul>
 					<li>
 						<label for="filter">#stText.Schedule.Name#:</label>
@@ -190,10 +190,10 @@ Redirtect to entry --->
 					</li>
 				</ul>
 				<div class="clear"></div>
-			</cfformClassic>
+			</form>
 		</div>
 
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<cfset sort = "asc">
 			<cfif sort EQ 'asc'>
 				<cfset sorting = "desc">
@@ -270,23 +270,23 @@ Redirtect to entry --->
 					</tr>
 				</tfoot>
 			 </table>
-		</cfformClassic>
+		</form>
 	</cfif>
 
 	<!--- Create Task --->
 	<h2>#stText.Schedule.CreateTask#</h2>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 		<table class="maintbl">
 			<tbody>
 				<tr>
 					<th scope="row">#stText.Schedule.Name#</th>
-					<td><cfinputClassic type="text" name="name" value="" class="large" required="yes" 
+					<td><input type="text" name="name" value="" class="large" required="yes"
 						message="#stText.Schedule.NameMissing#"></td>
 				</tr>
 				<tr>
 					<th scope="row">#stText.Schedule.URL#</th>
 					<td>
-						<cfinputClassic type="text" name="url" value="" class="xlarge" required="yes" 
+						<input type="text" name="url" value="" class="xlarge" required="yes"
 						message="#stText.Schedule.URLMissing#">
 						<div class="comment">#stText.Schedule.URLDescription#</div>
 					</td>
@@ -317,9 +317,9 @@ Redirtect to entry --->
 							</thead>
 							<tbody>
 								<tr>
-									<td><cfinputClassic type="text" name="start_day" value="#two(day(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
-									<td><cfinputClassic type="text" name="start_month" value="#two(month(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
-									<td><cfinputClassic type="text" name="start_year" value="#two(year(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_day" value="#two(day(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_month" value="#two(month(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_year" value="#two(year(now()))#" class="number" required="yes" validate="integer">&nbsp;</td>
 								</tr>
 							</tbody>
 						</table>
@@ -338,9 +338,9 @@ Redirtect to entry --->
 							</thead>
 							<tbody>
 								<tr>
-									<td><cfinputClassic type="text" name="start_hour" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
-									<td><cfinputClassic type="text" name="start_minute" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
-									<td><cfinputClassic type="text" name="start_second" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_hour" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_minute" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
+									<td><input type="text" name="start_second" value="00" class="number" required="yes" validate="integer">&nbsp;</td>
 								</tr>
 							</tbody>
 						</table>
@@ -361,7 +361,7 @@ Redirtect to entry --->
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>
 
 <!---

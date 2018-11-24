@@ -33,12 +33,12 @@
 		}
 	</script>
 
-	<cfformClassic name="login" action="#request.self#" method="post"><!--- onerror="customError"--->
+	<form name="login" action="#request.self#" method="post"><!--- onerror="customError"--->
 		<table class="maintbl autowidth">
 			<tbody>
 				<tr>
 					<th scope="row" class="right">#stText.Login.Password#</th>
-					<td><cfinputClassic type="password" name="login_password#request.adminType#" value="" passthrough='autocomplete="off"'
+					<td><input type="password" name="login_password#request.adminType#" value="" passthrough='autocomplete="off"'
 						class="medium" required="yes" message="#stText.Login.PasswordMissing#">
 					</td>
 				</tr>
@@ -70,7 +70,7 @@
 							<td>
 								<cfset ImageWriteToBrowser(imageCaptcha(cap,180,180,"medium"))>
 								<a style="font-size : 10px" href="#request.self#<cfif structKeyExists(url,"action")>?action=#url.action#</cfif>">Reload</a><br />
-								<cfinputClassic type="text" name="captcha" value="" passthrough='autocomplete="off"'
+								<input type="text" name="captcha" value="" passthrough='autocomplete="off"'
 									class="medium" required="yes" message="#stText.login.captchaHelpMiss#">
 								<div class="comment">#stText.login.captchaHelpDesc#</div>
 							</td>
@@ -96,7 +96,7 @@
 									document.getElementById("capBack").style.backgroundColor = "rgb("+val3*100+","+val4*100+","+val5*100+")"; 
 								</script>
 								<a style="font-size : 10px" href="#request.self#<cfif structKeyExists(url,"action")>?action=#url.action#</cfif>">Reload</a><br />
-								<cfinputClassic type="text" name="captcha" value="" passthrough='autocomplete="off"'
+								<input type="text" name="captcha" value="" passthrough='autocomplete="off"'
 									class="medium" required="yes" message="#stText.login.captchaHelpMiss#">
 								<div class="comment">#stText.login.captchaHelpDesc#</div>
 							</td>
@@ -124,5 +124,5 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 </cfoutput>

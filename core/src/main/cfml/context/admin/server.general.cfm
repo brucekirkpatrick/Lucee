@@ -268,23 +268,23 @@ Create Datasource --->
 
 
 
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 
 <table class="tbl" width="700">
 <!---- data member default access --->
 
         <tr>
-        	<td style="border-color:#colorCompatibility#;" width="10"><cfinputClassic type="radio" class="radio" name="mode" value="compatibility"></td>
+        	<td style="border-color:#colorCompatibility#;" width="10"><input type="radio" class="radio" name="mode" value="compatibility"></td>
             <td style="border-color:#colorCompatibility#;#style#"><b>#stText.setting.general.compatibility#</b><br />
             <div class="comment">#stText.setting.general.compatibilityDesc#</div></td>
         </tr>
         <tr>
-        	<td style="border-color:#colorStrict#;" width="10"><cfinputClassic type="radio" class="radio" name="mode" value="strict"></td>
+        	<td style="border-color:#colorStrict#;" width="10"><input type="radio" class="radio" name="mode" value="strict"></td>
             <td style="border-color:#colorStrict#;#style#"><b>#stText.setting.general.strict#</b><br />
             <div class="comment">#stText.setting.general.strictDesc#</div></td>
         </tr>
         <tr>
-        	<td style="border-color:#colorSpeed#;" width="10"><cfinputClassic type="radio" class="radio" name="mode" value="speed"></td>
+        	<td style="border-color:#colorSpeed#;" width="10"><input type="radio" class="radio" name="mode" value="speed"></td>
             <td style="border-color:#colorSpeed#;#style#"><b>#stText.setting.general.speed#</b>
             <br /><div class="comment">#stText.setting.general.speedDesc#</div></td>
         </tr>
@@ -477,6 +477,6 @@ Create Datasource --->
     </td>
 </tr>
 </table>
-</cfformClassic>
+</form>
 </cfoutput>
 <br><br>

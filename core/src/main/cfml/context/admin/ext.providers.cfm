@@ -136,7 +136,7 @@ list all mappings and display necessary edit fields --->
 	<cfset columns=doMode?5:4>
 
 	<div class="itemintro">#stText.ext.prov.IntroText#</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		
 		<table class="maintbl checkboxtbl">
 			<thead>
@@ -226,11 +226,11 @@ list all mappings and display necessary edit fields --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfformClassic>
+	</form>
 	
 	<cfif hasAccess>
 		<h2>#stText.ext.prov.new#</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<input type="hidden" name="row_1" value="1">
 			<table class="maintbl" style="width:75%">
 				<tbody>
@@ -239,7 +239,7 @@ list all mappings and display necessary edit fields --->
 							#stText.ext.prov.host#
 						</th>
 						<td>
-							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
+							<input onKeyDown="checkTheBox(this)" type="text"
 							name="url" value="" required="yes" class="xlarge">
 							<div class="comment">#stText.ext.prov.hostDesc#</div>
 						</td>
@@ -253,7 +253,7 @@ list all mappings and display necessary edit fields --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 
 

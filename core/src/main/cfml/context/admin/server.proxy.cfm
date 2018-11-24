@@ -128,7 +128,7 @@ function doEnableProxy(enableProxy) {
 
 <table class="tbl" width="600">
 
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 
 <tr>
 	<td colspan="2">#stText.proxy[request.adminType]#</td>
@@ -158,7 +158,7 @@ function doEnableProxy(enableProxy) {
 	<td>
 		<div class="comment">#stText.proxy.serverDescription#</div><br />
 		<cfif hasAccess>
-		<cfinputClassic type="text" name="server" value="#proxy.server#" 
+		<input type="text" name="server" value="#proxy.server#"
 			style="width:200px" required="no">
 		
 		<cfelse>
@@ -175,7 +175,7 @@ function doEnableProxy(enableProxy) {
 	<td>
 		<div class="comment">#stText.proxy.portDescription#</div><br />
 		<cfif hasAccess>
-		<cfinputClassic type="text" name="port" value="#proxy.port#" 
+		<input type="text" name="port" value="#proxy.port#"
 			style="width:50px" required="yes" message="#stText.proxy.missingPort#">
 		
 		<cfelse>
@@ -192,7 +192,7 @@ function doEnableProxy(enableProxy) {
 	<td>
 		<div class="comment">#stText.proxy.usernameDescription#</div><br />
 		<cfif hasAccess>
-		<cfinputClassic type="text" name="username" value="#proxy.username#" 
+		<input type="text" name="username" value="#proxy.username#"
 			style="width:200px" required="no">
 		
 		<cfelse>
@@ -209,7 +209,7 @@ function doEnableProxy(enableProxy) {
 	<td>
 		<div class="comment">#stText.proxy.passwordDescription#</div><br />
 		<cfif hasAccess>
-		<cfinputClassic type="password" name="password" value="#proxy.password#" 
+		<input type="password" name="password" value="#proxy.password#"
 			style="width:200px" required="no" passthrough='autocomplete="off"'>
 		
 		<cfelse>
@@ -229,7 +229,7 @@ function doEnableProxy(enableProxy) {
 </cfif>
 </cfif>
 
-</cfformClassic>
+</form>
 	
 </table></cfoutput>
 <br><br>

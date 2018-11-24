@@ -446,7 +446,25 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		</return>
 	</function>
 
-	
+
+	<!-- dE -->
+	<function>
+		<name>dE</name>
+		<class>lucee.runtime.functions.dynamicEvaluation.DE</class>
+		<description>Postpones evaluation of a string as an expression, when it is
+			passed as a parameter to the IIf or Evaluate functions. Escapes
+			any double quotation marks in the parameter and wraps the
+			result in double quotation marks.</description>
+		<argument>
+			<name>string</name>
+			<type>string</type>
+			<required>Yes</required>
+			<description>String to evaluate, after delay</description>
+		</argument>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
 	<!-- decimalFormat -->
 	<function>
 		<name>decimalFormat</name>
@@ -538,6 +556,37 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 	</function>
 
 
+	<!-- iIf -->
+	<function>
+		<name>iIf</name>
+		<class>lucee.runtime.functions.dynamicEvaluation.IIf</class>
+		<description>Evaluates a Boolean conditional dynamic expression. Depending
+			on whether the expression is true or false, dynamically
+			evaluates one of two string expressions and returns the result.</description>
+		<argument>
+			<name>condition</name>
+			<type>boolean</type>
+			<required>Yes</required>
+			<description>An expression that can be evaluated as a Boolean.</description>
+		</argument>
+		<argument>
+			<name>string_expression1</name>
+			<alias>expression1</alias>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Expression to evaluate and return if condition is true.</description>
+		</argument>
+		<argument>
+			<name>string_expression2</name>
+			<alias>expression2</alias>
+			<type>string</type>
+			<required>Yes</required>
+			<description>Expression to evaluate and return if condition is false.</description>
+		</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
 	
 	<!-- Invoke -->
 	<function>
@@ -1560,6 +1609,60 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 		</return>
 	</function>
 
+	<!-- yesNoFormat -->
+	<function>
+		<name>yesNoFormat</name>
+		<class>lucee.runtime.functions.displayFormatting.YesNoFormat</class>
+		<member-name>yesNoFormat</member-name>
+		<member-type>boolean</member-type>
+		<keywords>boolean,formatting</keywords>
+		<description>Yes, for a non-zero value; No, otherwise.</description>
+		<argument>
+			<name>value</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>a value that can be casted to a boolean</description>
+		</argument>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
+
+	<!-- trueFalseFormat -->
+	<function>
+		<name>trueFalseFormat</name>
+		<class>lucee.runtime.functions.displayFormatting.TrueFalseFormat</class>
+		<keywords>boolean,formatting</keywords>
+		<description>True, for a non-zero value; False, otherwise.</description>
+		<argument>
+			<name>value</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>a value that can be casted to a boolean</description>
+		</argument>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
+
+	<!-- booleanFormat -->
+	<function>
+		<name>booleanFormat</name>
+		<class>lucee.runtime.functions.displayFormatting.TrueFalseFormat</class>
+		<member-name>booleanFormat</member-name>
+		<member-type>boolean</member-type>
+		<keywords>boolean,formatting</keywords>
+		<description>True, for a non-zero value; False, otherwise.</description>
+		<argument>
+			<name>value</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>a value that can be casted to a boolean</description>
+		</argument>
+		<return>
+			<type>string</type>
+		</return>
+	</function>
 	<!-- lSDateTimeFormat -->
 	<function>
 		<name>lSDateTimeFormat</name>

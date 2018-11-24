@@ -3,7 +3,7 @@
 	<div class="pageintro">
 		#stText.debug.settingDesc#
 	</div>
-	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+	<form onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 		<table class="maintbl">
 			<tbody>
 				<tr>
@@ -42,11 +42,11 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfformClassic>
+	</form>
 	
 	<cfif isWeb>
 		<!---<h2>#stText.debug.filterTitle#</h2>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 		<table class="tbl" width="740">
 		<tr>
 			<th scope="row">#stText.debug.minExeTime#</th>
@@ -72,13 +72,13 @@
 				<input type="reset" class="reset" name="cancel" value="#stText.Buttons.Cancel#">
 			</td>
 		</tr>
-		</cfformClassic>
+		</form>
 		</table>
 		<br /><br />--->
 	
 		<h2>#stText.debug.outputTitle#</h2>
 		<div class="itemintro">#stText.debug.outputDesc#</div>
-		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+		<form onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 			<table class="maintbl">
 				<thead>
 					<tr>
@@ -134,6 +134,6 @@
 					</tbody>
 				</cfif>
 			</table>
-		</cfformClassic>
+		</form>
 	</cfif>
 </cfoutput>

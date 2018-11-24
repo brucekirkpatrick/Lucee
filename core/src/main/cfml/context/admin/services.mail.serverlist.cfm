@@ -46,7 +46,7 @@ loop query="ms" {
 	</cfif>
 </cfloop>
 	
-<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+<form onerror="customError" action="#request.self#?action=#url.action#" method="post">
 	<table class="maintbl checkboxtbl">
 		<thead>
 			<tr>
@@ -146,7 +146,7 @@ loop query="ms" {
 			</tfoot>
 		</cfif>
 	</table>
-</cfformClassic>
+</form>
 </cfoutput>
 </cfloop>
 
