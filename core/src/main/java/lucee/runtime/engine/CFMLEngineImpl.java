@@ -605,26 +605,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    }
 	}
 
-	// FUTURE remove and add a new method for it (search:FUTURE add exeServletContextEvent)
-	if ("LuceeServletContextListener".equals(config.getServletName())) {
-	    try {
-		String status = config.getInitParameter("status");
-		if ("release".equalsIgnoreCase(status)) reset();
-	    }
-	    catch (Exception e) {
-		SystemOut.printDate(e);
-	    }
-	    return;
-	}
-
-	// FUTURE remove and add a new method for it (search:FUTURE add exeFilter)
-	/*
-	 * if("LuceeFilter".equals(config.getServletName())) { try { String status =
-	 * config.getInitParameter("status"); if("filter".equalsIgnoreCase(status)) { filter(
-	 * (ServletRequest)_get(config,"getServletRequest"),
-	 * (ServletResponse)_get(config,"getServletResponse"), (FilterChain)_get(config,"getFilterChain"));
-	 * } } catch (Exception e) { SystemOut.printDate(e); } return; }
-	 */
 
 	// add EventListener
 	if (scl == null) {
@@ -661,9 +641,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    if ("org.apache.catalina.core.StandardContext".equals(obj.getClass().getName())) {
 		Method m = null;
 		try {
-		    // TODO check if we already have a listener (lucee.loader.servlet.LuceeServletContextListener), if
-		    // so we do nothing
-		    // sc.getApplicationLifecycleListeners();
 		    m = obj.getClass().getMethod("addApplicationLifecycleListener", new Class[] { Object.class });
 		    CFMLServletContextListener tmp;
 		    m.invoke(obj, new Object[] { tmp = new CFMLServletContextListener(this) });
@@ -956,10 +933,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	return factory;
     }
 
-    @Override
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-	_service(servlet, req, rsp, Request.TYPE_LUCEE);
-    }
 
     @Override
     public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
@@ -969,17 +942,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     private void _service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, short type) throws ServletException, IOException {
 	CFMLFactoryImpl factory = (CFMLFactoryImpl) getCFMLFactory(servlet.getServletConfig(), req);
-	// is Lucee dialect enabled?
-	if (type == Request.TYPE_LUCEE) {
-	    if (!((ConfigImpl) factory.getConfig()).allowLuceeDialect()) {
-		try {
-		    PageContextImpl.notSupported();
-		}
-		catch (ApplicationException e) {
-		    throw new PageServletException(e);
-		}
-	    }
-	}
 	boolean exeReqAsync = exeRequestAsync();
 	PageContextImpl pc = factory.getPageContextImpl(servlet, req, rsp, null, false, -1, false, !exeReqAsync, false, -1, true, false, false);
 	try {
@@ -1430,25 +1392,15 @@ public final class CFMLEngineImpl implements CFMLEngine {
     @Override
     public ScriptEngineFactory getScriptEngineFactory(int dialect) {
 
-	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    if (cfmlScriptEngine == null) cfmlScriptEngine = new ScriptEngineFactoryImpl(this, false, dialect);
 	    return cfmlScriptEngine;
-	}
-
-	if (luceeScriptEngine == null) luceeScriptEngine = new ScriptEngineFactoryImpl(this, false, dialect);
-	return luceeScriptEngine;
     }
 
     @Override
     public ScriptEngineFactory getTagEngineFactory(int dialect) {
 
-	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    if (cfmlTagEngine == null) cfmlTagEngine = new ScriptEngineFactoryImpl(this, true, dialect);
 	    return cfmlTagEngine;
-	}
-
-	if (luceeTagEngine == null) luceeTagEngine = new ScriptEngineFactoryImpl(this, true, dialect);
-	return luceeTagEngine;
     }
 
     @Override
@@ -1501,13 +1453,11 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	String context = config instanceof ConfigWeb ? "Web" : "Server";
 	if (!ThreadLocalPageContext.callOnStart.get()) return;
 
-	Resource listenerTemplateLucee = config.getConfigDir().getRealResource("context/" + context + "." + lucee.runtime.config.Constants.getLuceeComponentExtension());
 	Resource listenerTemplateCFML = config.getConfigDir().getRealResource("context/" + context + "." + lucee.runtime.config.Constants.getCFMLComponentExtension());
 
 	// dialect
 	int dialect;
-	if (listenerTemplateLucee.isFile()) dialect = CFMLEngine.DIALECT_LUCEE;
-	else if (listenerTemplateCFML.isFile()) dialect = CFMLEngine.DIALECT_CFML;
+	if (listenerTemplateCFML.isFile()) dialect = CFMLEngine.DIALECT_CFML;
 	else return;
 
 	// we do not wait for this
@@ -1534,8 +1484,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
 	    String id = CreateUniqueId.invoke();
 	    final String requestURI = "/" + (isWeb ? "lucee" : "lucee-server") + "/" + context + "."
-		    + (dialect == CFMLEngine.DIALECT_LUCEE ? lucee.runtime.config.Constants.getLuceeComponentExtension()
-			    : lucee.runtime.config.Constants.getCFMLComponentExtension());
+		    + (lucee.runtime.config.Constants.getCFMLComponentExtension());
 
 	    // PageContext oldPC = ThreadLocalPageContext.get();
 	    PageContext pc = null;
@@ -1569,8 +1518,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 			    DevNullOutputStream.DEV_NULL_OUTPUT_STREAM, true, Long.MAX_VALUE,
 			    Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.ignore.scopes", null), false));
 		}
-		if (dialect == CFMLEngine.DIALECT_LUCEE) pc.execute(requestURI, true, false);
-		else pc.executeCFML(requestURI, true, false);
+		pc.executeCFML(requestURI, true, false);
 	    }
 	    catch (Throwable t) {
 		// we simply ignore exceptions, if the template itself throws an error it will be handled by the

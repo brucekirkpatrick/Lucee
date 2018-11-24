@@ -304,7 +304,7 @@ public final class Page extends BodyBase implements Root {
 	    if (optionalPS == null) throw new IllegalArgumentException("when Page object has no PageSource, a className is necessary");
 	    className = optionalPS.getClassName();
 	}
-	if (comp != null) className = createSubClass(className, comp.getName(), sourceCode.getDialect());
+	if (comp != null) className = createSubClass(className, comp.getName(), CFMLEngine.DIALECT_CFML);
 	className = className.replace('.', '/');
 	this.className = className;
 
@@ -651,7 +651,7 @@ public final class Page extends BodyBase implements Root {
 		    tc = _it.next();
 		    tc.writeOut(this);
 		}
-		writeGetSubPages(cw, className, subs, sourceCode.getDialect());
+		writeGetSubPages(cw, className, subs, CFMLEngine.DIALECT_CFML);
 	    }
 	}
 
@@ -660,7 +660,7 @@ public final class Page extends BodyBase implements Root {
 
     public static String createSubClass(String name, String subName, int dialect) {
 	if (!StringUtil.isEmpty(subName)) {
-	    String suffix = (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX);
+	    String suffix = Constants.CFML_CLASS_SUFFIX;
 	    subName = subName.toLowerCase();
 	    if (name.endsWith(suffix)) name = name.substring(0, name.length() - 3) + "$" + subName + suffix;
 	    else name += "$" + subName;

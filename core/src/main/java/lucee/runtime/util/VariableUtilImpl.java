@@ -903,12 +903,10 @@ public final class VariableUtilImpl implements VariableUtil {
 	if (obj instanceof Query) {
 	    Key[] columnNames = ((Query) obj).getColumnNames();
 
-	    boolean upperCase = pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML;
-
 	    StringBuilder sb = new StringBuilder();
 	    for (int i = 0; i < columnNames.length; i++) {
 		if (i > 0) sb.append(',');
-		sb.append(upperCase ? columnNames[i].getUpperString() : columnNames[i].getString());
+		sb.append(columnNames[i].getString());
 	    }
 	    return sb.toString();
 

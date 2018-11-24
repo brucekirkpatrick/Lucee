@@ -817,15 +817,6 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract void clearCatch();
 
-    /**
-     * execute a request to the PageConext
-     * 
-     * @param realPath
-     * @param throwException catch or throw exceptions
-     * @param onlyTopLevel only check top level mappings for the matching realpath
-     * @throws PageException
-     */
-    public abstract void execute(String realPath, boolean throwException, boolean onlyTopLevel) throws PageException;
 
     /**
      * execute a request to the PageConext form CFML
@@ -1127,17 +1118,6 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
 
     public abstract Object getCachedWithin(int type);
 
-    /**
-     * 
-     * @return get the dialect for the current template
-     */
-    public abstract int getCurrentTemplateDialect();
-
-    /**
-     * 
-     * @return get the dialect for the current template
-     */
-    public abstract int getRequestDialect();
 
     /**
      * @param create if set to true, lucee creates a session when not exist

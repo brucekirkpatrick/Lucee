@@ -410,9 +410,7 @@ public final class FunctionLibFactory extends DefaultHandler {
     public static FunctionLib[] loadFromSystem(Identification id) throws FunctionLibException {
 	if (systemFLDs[CFMLEngine.DIALECT_CFML] == null) {
 	    FunctionLib cfml = new FunctionLibFactory(null, FLD_BASE, id, true).getLib();
-	    FunctionLib lucee = cfml.duplicate(false);
 	    systemFLDs[CFMLEngine.DIALECT_CFML] = new FunctionLibFactory(cfml, FLD_CFML, id, true).getLib();
-	    systemFLDs[CFMLEngine.DIALECT_LUCEE] = new FunctionLibFactory(lucee, FLD_LUCEE, id, true).getLib();
 	}
 	return systemFLDs;
     }

@@ -60,16 +60,11 @@ public interface Info {
 
     public String[] getCFMLTemplateExtensions();
 
-    public String[] getLuceeTemplateExtensions();
-
     @Deprecated
     public String[] getCFMLComponentExtensions();
 
-    @Deprecated
-    public String[] getLuceeComponentExtensions();
 
     public String getCFMLComponentExtension();
 
-    public String getLuceeComponentExtension();
 
 }

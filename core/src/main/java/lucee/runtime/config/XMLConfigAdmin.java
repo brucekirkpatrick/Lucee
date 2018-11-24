@@ -4488,8 +4488,7 @@ public final class XMLConfigAdmin {
 
 		// event-gateway
 		if (!entry.isDirectory() && (startsWith(path, type, "event-gateways") || startsWith(path, type, "eventGateways"))
-			&& (StringUtil.endsWithIgnoreCase(path, "." + Constants.getCFMLComponentExtension())
-				|| StringUtil.endsWithIgnoreCase(path, "." + Constants.getLuceeComponentExtension()))) {
+			&& (StringUtil.endsWithIgnoreCase(path, "." + Constants.getCFMLComponentExtension()))) {
 		    String sub = subFolder(entry);
 		    logger.log(Log.LEVEL_INFO, "extension", "deploy event-gateway " + sub);
 		    updateEventGateway(zis, sub, false);
@@ -6169,7 +6168,7 @@ public final class XMLConfigAdmin {
 	}
 	String name = ResourceUtil.getName(src.getName());
 	if (!PluginFilter.doAccept(src)) throw new ApplicationException("plugin [" + src.getAbsolutePath() + "] is invalid, missing one of the following files [Action."
-		+ Constants.getCFMLComponentExtension() + " or Action." + Constants.getLuceeComponentExtension() + ",language.xml] in root, existing files are ["
+		+ Constants.getCFMLComponentExtension() + ",language.xml] in root, existing files are ["
 		+ lucee.runtime.type.util.ListUtil.arrayToList(src.list(), ", ") + "]");
 
 	Resource dir = config.getPluginDirectory();
@@ -6215,7 +6214,7 @@ public final class XMLConfigAdmin {
 
 	public static boolean doAccept(Resource res) {
 	    return res.isDirectory() && (res.getRealResource("/Action." + Constants.getCFMLComponentExtension()).isFile()
-		    || res.getRealResource("/Action." + Constants.getLuceeComponentExtension()).isFile()) && res.getRealResource("/language.xml").isFile();
+		   ) && res.getRealResource("/language.xml").isFile();
 	}
 
     }

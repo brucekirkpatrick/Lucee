@@ -134,11 +134,8 @@ public abstract class CFMLFactory extends JspFactory {
 
     public abstract CFMLEngine getEngine();
 
-    public abstract int toDialect(String ext); // FUTURE deprecate
-    // public abstract int toDialect(String ext, int defaultValue);// FUTURE
 
     public abstract Iterator<String> getCFMLExtensions();
 
-    public abstract Iterator<String> getLuceeExtensions();
 
 }

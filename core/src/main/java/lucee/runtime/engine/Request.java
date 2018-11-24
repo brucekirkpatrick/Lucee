@@ -9,8 +9,6 @@ import lucee.runtime.exp.PageException;
 public class Request extends Thread {
 
     public static final short TYPE_CFML = 1;
-    public static final short TYPE_LUCEE = 2;
-    public static final short TYPE_REST = 3;
 
     private PageContext pc;
     private Thread parent;
@@ -40,11 +38,7 @@ public class Request extends Thread {
 	    ThreadQueue tmp = pc.getConfig().getThreadQueue();
 	    tmp.enter(pc);
 	    queue = tmp;
-	    if (type == TYPE_CFML){
-	    	pc.executeCFML(pc.getHttpServletRequest().getServletPath(), throwExcpetion, true);
-		}else{
-	    	pc.execute(pc.getHttpServletRequest().getServletPath(), throwExcpetion, true);
-		}
+	    pc.executeCFML(pc.getHttpServletRequest().getServletPath(), throwExcpetion, true);
 	}
 	finally {
 	    if (queue != null) queue.exit(pc);

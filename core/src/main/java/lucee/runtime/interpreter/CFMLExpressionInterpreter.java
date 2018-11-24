@@ -217,11 +217,8 @@ public class CFMLExpressionInterpreter {
 
     private void init(PageContext pc) {
 	this.pc = pc = ThreadLocalPageContext.get(pc);
-
-	int dialect = CFMLEngine.DIALECT_CFML;
 	if (this.pc != null) {
 	    this.config = (ConfigImpl) this.pc.getConfig();
-	    dialect = this.pc.getCurrentTemplateDialect();
 	}
 	else {
 	    this.config = (ConfigImpl) ThreadLocalPageContext.getConfig();
@@ -232,7 +229,7 @@ public class CFMLExpressionInterpreter {
 		catch (Exception e) {}
 	    }
 	}
-	fld = config.getCombinedFLDs(dialect);
+	fld = config.getCombinedFLDs(CFMLEngine.DIALECT_CFML);
     }
 
     /*
@@ -1380,20 +1377,16 @@ public class CFMLExpressionInterpreter {
 	    if (!firstCanBeNumber) return null;
 	    else if (!cfml.isCurrentDigit()) return null;
 	}
-	boolean doUpper;
 	PageSource ps = pc == null ? null : pc.getCurrentPageSource();
-	if (ps != null) doUpper = !isJson && ps.getDialect() == CFMLEngine.DIALECT_CFML && ((MappingImpl) ps.getMapping()).getDotNotationUpperCase();
-	else doUpper = !isJson && ((ConfigWebImpl) config).getDotNotationUpperCase(); // MUST .lucee should not be upper case
-
 	StringBuilder sb = new StringBuilder();
-	sb.append(doUpper ? cfml.getCurrentUpper() : cfml.getCurrent());
+	sb.append(cfml.getCurrent());
 	do {
 	    cfml.next();
 	    if (!(cfml.isCurrentLetter() || cfml.isCurrentDigit() || cfml.isCurrentSpecial())) {
 		break;
 	    }
 
-	    sb.append(doUpper ? cfml.getCurrentUpper() : cfml.getCurrent());
+	    sb.append(cfml.getCurrent());
 	}
 	while (cfml.isValidIndex());
 	return sb.toString();// cfml.substringLower(start,cfml.getPos()-start);

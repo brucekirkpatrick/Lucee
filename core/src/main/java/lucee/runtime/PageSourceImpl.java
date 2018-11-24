@@ -175,9 +175,7 @@ public final class PageSourceImpl implements PageSource {
 
     /**
      * return page when already loaded, otherwise null
-     * 
-     * @param pc
-     * @param config
+     *
      * @return
      * @throws PageException
      */
@@ -392,12 +390,11 @@ public final class PageSourceImpl implements PageSource {
     private Page _compile(ConfigWeb config, Resource classRootDir, Page existing, boolean returnValue, boolean ignoreScopes)
 	    throws IOException, SecurityException, IllegalArgumentException, PageException {
 	ConfigWebImpl cwi = (ConfigWebImpl) config;
-	int dialect = getDialect();
 
 	long now;
 	if ((getPhyscalFile().lastModified() + 10000) > (now = System.currentTimeMillis())) cwi.getCompiler().watch(this, now);// SystemUtil.get
 	Result result;
-	result = cwi.getCompiler().compile(cwi, this, cwi.getTLDs(dialect), cwi.getFLDs(dialect), classRootDir, returnValue, ignoreScopes);
+	result = cwi.getCompiler().compile(cwi, this, cwi.getTLDs(CFMLEngine.DIALECT_CFML), cwi.getFLDs(CFMLEngine.DIALECT_CFML), classRootDir, returnValue, ignoreScopes);
 
 	try {
 	    Class<?> clazz = mapping.getPhysicalClass(getClassName(), result.barr);
@@ -450,8 +447,7 @@ public final class PageSourceImpl implements PageSource {
 
     public boolean isComponent() {
 	String ext = ResourceUtil.getExtension(getRealpath(), "");
-	if (getDialect() == CFMLEngine.DIALECT_CFML) return Constants.isCFMLComponentExtension(ext);
-	return Constants.isLuceeComponentExtension(ext);
+	return Constants.isCFMLComponentExtension(ext);
     }
 
     /**
@@ -669,7 +665,7 @@ public final class PageSourceImpl implements PageSource {
 		    varName = StringUtil.toVariableName(arr[i].substring(0, index) + "_" + ext);
 		}
 		else varName = StringUtil.toVariableName(arr[i]);
-		varName = varName + (getDialect() == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX);
+		varName = varName + (Constants.CFML_CLASS_SUFFIX);
 		className = varName.toLowerCase();
 		fileName = arr[i];
 	    }
@@ -812,7 +808,7 @@ public final class PageSourceImpl implements PageSource {
     /**
      * is given object equal to this
      * 
-     * @param other
+     * @param ps
      * @return is same
      */
     public boolean equals(PageSource ps) {
@@ -960,26 +956,6 @@ public final class PageSourceImpl implements PageSource {
 	throw new MissingIncludeException(arr[0]);
     }
 
-    @Override
-    public int getDialect() {
-	Config c = getMapping().getConfig();
-	if (!((ConfigImpl) c).allowLuceeDialect()) return CFMLEngine.DIALECT_CFML;
-	// MUST improve performance on this
-	ConfigWeb cw = null;
-
-	String ext = ResourceUtil.getExtension(relPath, Constants.getCFMLComponentExtension());
-
-	if (c instanceof ConfigWeb) cw = (ConfigWeb) c;
-	else {
-	    c = ThreadLocalPageContext.getConfig();
-	    if (c instanceof ConfigWeb) cw = (ConfigWeb) c;
-	}
-	if (cw != null) {
-	    return ((CFMLFactoryImpl) cw.getFactory()).toDialect(ext, CFMLEngine.DIALECT_CFML);
-	}
-
-	return ConfigWebUtil.toDialect(ext, CFMLEngine.DIALECT_CFML);
-    }
 
     /**
      * return if the PageSource represent a template (no component,no interface)

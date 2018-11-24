@@ -109,24 +109,6 @@ public interface Undefined extends Scope {
      */
     public abstract Object getCollection(Collection.Key key) throws PageException;
 
-    /**
-     * gets a key from all cascaded scopes, but not from variables scope
-     * 
-     * @param key key to get
-     * @return matching value or null
-     * @deprecated use instead
-     * @see #getCascading(lucee.runtime.type.Collection.Key, Object)
-     */
-    @Deprecated
-    public abstract Object getCascading(Collection.Key key);
-
-    /**
-     * gets a key from all cascaded scopes, but not from variables scope
-     * 
-     * @param key key to get
-     * @return matching value or null
-     */
-    public Object getCascading(Collection.Key key, Object defaultValue);
 
     /**
      * change the variable scope

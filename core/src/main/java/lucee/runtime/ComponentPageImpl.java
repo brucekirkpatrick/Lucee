@@ -164,7 +164,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    if (pc.getBasePageSource() == this.getPageSource() && pc.getConfig().debug()) pc.getDebugger().setOutput(false);
 	    boolean isPost = pc.getHttpServletRequest().getMethod().equalsIgnoreCase("POST");
 
-	    boolean suppressContent = pc.getRequestDialect() == CFMLEngine.DIALECT_LUCEE || ((PageContextImpl) pc).getSuppressContent();
+	    boolean suppressContent = ((PageContextImpl) pc).getSuppressContent();
 	    if (suppressContent) pc.clear();
 	    Object method;
 
@@ -212,8 +212,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 			Array path = pc.getTemplatePath();
 			// if(path.size()>1 ) {
 			if (path.size() > 1 && !(path.size() == 3 && ListUtil.last(path.getE(2).toString(), "/\\", true)
-					.equalsIgnoreCase(pc.getRequestDialect() == CFMLEngine.DIALECT_CFML ? lucee.runtime.config.Constants.CFML_APPLICATION_EVENT_HANDLER
-							: lucee.runtime.config.Constants.LUCEE_APPLICATION_EVENT_HANDLER))) {// MUSTMUST
+					.equalsIgnoreCase(lucee.runtime.config.Constants.CFML_APPLICATION_EVENT_HANDLER))) {// MUSTMUST
 				// bad
 				// impl
 				// ->

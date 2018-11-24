@@ -59,8 +59,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 
     /**
      * Constructor of the compiler
-     * 
-     * @param config
+     *
      */
     public CFMLCompilerImpl() {
 	cfmlTransformer = new CFMLTransformer();
@@ -112,7 +111,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 	try {
 	    page = sc == null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 		    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-			    sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase(), returnValue, ignoreScopes);
+			    false, returnValue, ignoreScopes);
 	    page.setSplitIfNecessary(false);
 	    try {
 		result = new Result(page, page.execute(className));
@@ -122,7 +121,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
 		    page = sc == null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 			    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-				    sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase(), returnValue, ignoreScopes);
+				    false, returnValue, ignoreScopes);
 
 		    page.setSplitIfNecessary(true);
 		    result = new Result(page, page.execute(className));
@@ -134,7 +133,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (StringUtil.indexOfIgnoreCase(msg, "Invalid method Code length") != -1) {
 		    page = ps != null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 			    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-				    sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase(), returnValue, ignoreScopes);
+				    false, returnValue, ignoreScopes);
 
 		    page.setSplitIfNecessary(true);
 		    result = new Result(page, page.execute(className));
@@ -161,17 +160,15 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 	    String displayPath = ps != null ? "[" + ps.getDisplayPath() + "] " : "";
 	    String srcName = ASMUtil.getClassName(result.barr);
 
-	    int dialect = sc == null ? ps.getDialect() : sc.getDialect();
 	    // source is cfm and target cfc
-	    if (dialect == CFMLEngine.DIALECT_CFML && endsWith(srcName, Constants.getCFMLTemplateExtensions(), dialect) && className
-		    .endsWith("_" + Constants.getCFMLComponentExtension() + (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX))) {
+	    if (endsWith(srcName, Constants.getCFMLTemplateExtensions(), CFMLEngine.DIALECT_CFML) && className
+		    .endsWith("_" + Constants.getCFMLComponentExtension() + (Constants.CFML_CLASS_SUFFIX))) {
 		throw new TemplateException("source file " + displayPath + "contains the bytecode for a regular cfm template not for a component");
 	    }
 	    // source is cfc and target cfm
-	    if (dialect == CFMLEngine.DIALECT_CFML
-		    && srcName.endsWith(
-			    "_" + Constants.getCFMLComponentExtension() + (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX))
-		    && endsWith(className, Constants.getCFMLTemplateExtensions(), dialect))
+	    if (srcName.endsWith(
+			    "_" + Constants.getCFMLComponentExtension() + (Constants.CFML_CLASS_SUFFIX))
+		    && endsWith(className, Constants.getCFMLTemplateExtensions(), CFMLEngine.DIALECT_CFML))
 		throw new TemplateException("source file " + displayPath + "contains a component not a regular cfm template");
 
 	    // rename class name when needed
@@ -224,7 +221,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 
     private boolean endsWith(String name, String[] extensions, int dialect) {
 	for (int i = 0; i < extensions.length; i++) {
-	    if (name.endsWith("_" + extensions[i] + (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX))) return true;
+	    if (name.endsWith("_" + extensions[i] + (Constants.CFML_CLASS_SUFFIX))) return true;
 	}
 	return false;
     }

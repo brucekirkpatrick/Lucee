@@ -24,6 +24,7 @@ package lucee.runtime.functions.other;
 import java.util.Iterator;
 import java.util.Map;
 
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebUtil;
@@ -40,14 +41,11 @@ public final class GetTagList implements Function {
     private static final long serialVersionUID = -5143967669895264247L;
 
     public static lucee.runtime.type.Struct call(PageContext pc) throws PageException {
-	return _call(pc, pc.getCurrentTemplateDialect());
+	return _call(pc, CFMLEngine.DIALECT_CFML);
     }
 
     public static lucee.runtime.type.Struct call(PageContext pc, String strDialect) throws PageException {
-	int dialect = ConfigWebUtil.toDialect(strDialect, -1);
-	if (dialect == -1) throw new FunctionException(pc, "GetTagList", 1, "dialect", "invalid dialect [" + strDialect + "] definition");
-
-	return _call(pc, dialect);
+	return _call(pc, CFMLEngine.DIALECT_CFML);
     }
 
     private static lucee.runtime.type.Struct _call(PageContext pc, int dialect) throws PageException {

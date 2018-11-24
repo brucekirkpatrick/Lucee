@@ -394,8 +394,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    setTop(this, base);
 	}
 	else {
-	    this.dataMemberDefaultAccess = pageContext.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML ? pageContext.getConfig().getComponentDataMemberDefaultAccess()
-		    : Component.ACCESS_PRIVATE;
+	    this.dataMemberDefaultAccess = pageContext.getConfig().getComponentDataMemberDefaultAccess();
 	    this._static = new StaticScope(null, this, componentPage, dataMemberDefaultAccess);
 	    // TODO get per CFC setting
 	    // this._triggerDataMember=pageContext.getConfig().getTriggerComponentDataMember();
@@ -415,7 +414,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	 */
 
 	// scope
-	useShadow = base == null ? (pageSource.getDialect() == CFMLEngine.DIALECT_CFML ? pageContext.getConfig().useComponentShadow() : false) : base.useShadow;
+	useShadow = base == null ? (pageContext.getConfig().useComponentShadow() ) : base.useShadow;
 	if (useShadow) {
 	    if (base == null) scope = new ComponentScopeShadow(this, MapFactory.getConcurrentMap());
 	    else scope = new ComponentScopeShadow(this, (ComponentScopeShadow) base.scope, false);
@@ -770,9 +769,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     /**
      * list of keys
      * 
-     * @param c
      * @param access
-     * @param doBase
      * @return key set
      */
     @Override
@@ -876,10 +873,10 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     /**
      * get entry matching key
      * 
-     * @param access
-     * @param keyLowerCase key lower case (case sensitive)
-     * @param doBase do check also base component
-     * @param dataMember do also check if key super
+     * @param pc
+     * @param key
+     * @param dataMember
+	 * @param superAccess
      * @return matching entry if exists otherwise null
      */
     protected Member getMember(PageContext pc, Collection.Key key, boolean dataMember, boolean superAccess) {
@@ -989,9 +986,8 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 
     @Override
     public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp, int access) {
-	boolean isCFML = getPageSource().getDialect() == CFMLEngine.DIALECT_CFML;
-	DumpTable table = isCFML ? new DumpTable("component", "#ff4542", "#ff9aad", "#000000") : new DumpTable("component", "#ca6b50", "#e9bcac", "#000000");
-	table.setTitle((isCFML ? "Component" : "Class") + " " + getCallPath() + "" + (" " + StringUtil.escapeHTML(top.properties.dspName)));
+	DumpTable table = new DumpTable("component", "#ff4542", "#ff9aad", "#000000");
+	table.setTitle(("Component") + " " + getCallPath() + "" + (" " + StringUtil.escapeHTML(top.properties.dspName)));
 	table.setComment("Only the functions and data members that are accessible from your location are displayed");
 
 	// Extends
@@ -1093,7 +1089,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 		DumpData dd;
 		if (child instanceof Component) {
 		    DumpTable t = new DumpTable("component", "#99cc99", "#ffffff", "#000000");
-		    t.appendRow(1, new SimpleDumpData(((Component) child).getPageSource().getDialect() == CFMLEngine.DIALECT_CFML ? "Component" : "Class"),
+		    t.appendRow(1, new SimpleDumpData("Component"),
 			    new SimpleDumpData(((Component) child).getCallName()));
 		    dd = t;
 		}
@@ -1533,9 +1529,8 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	sct.set(KeyConstants._name, ps.getComponentName());
 	sct.set(KeyConstants._path, ps.getDisplayPath());
 	sct.set(KeyConstants._type, "component");
-	int dialect = comp.getPageSource().getDialect();
 
-	boolean supressWSBeforeArg = dialect != CFMLEngine.DIALECT_CFML || pc.getConfig().getSuppressWSBeforeArg();
+	boolean supressWSBeforeArg = true;
 
 	Class<?> skeleton = comp.getJavaAccessClass(pc, new RefBooleanImpl(false), ((ConfigImpl) pc.getConfig()).getExecutionLogEnabled(), false, false, supressWSBeforeArg);
 	if (skeleton != null) sct.set(KeyConstants._skeleton, skeleton);
@@ -2338,10 +2333,6 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     }
 
     private boolean triggerDataMember(PageContext pc) {
-	// dialect Lucee always triggers data members
-	if (pageSource.getDialect() == CFMLEngine.DIALECT_LUCEE) return true;
-
-	// if(_triggerDataMember!=null) return _triggerDataMember.booleanValue();
 
 	if (pc != null && pc.getApplicationContext() != null) return pc.getApplicationContext().getTriggerComponentDataMember();
 

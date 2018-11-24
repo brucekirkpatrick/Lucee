@@ -464,21 +464,20 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
 	comments(data);
 
 	// do we have a starting component?
-	if (!data.srcCode.isCurrent(getComponentName(data.srcCode.getDialect()))
-		&& (data.srcCode.getDialect() == CFMLEngine.DIALECT_CFML || !data.srcCode.isCurrent(Constants.CFML_COMPONENT_TAG_NAME))) {
+	if (!data.srcCode.isCurrent(getComponentName(CFMLEngine.DIALECT_CFML))) {
 	    data.srcCode.setPos(pos);
 	    return null;
 	}
 
 	// parse the component
-	TagLibTag tlt = CFMLTransformer.getTLT(data.srcCode, getComponentName(data.srcCode.getDialect()), data.config.getIdentification());
+	TagLibTag tlt = CFMLTransformer.getTLT(data.srcCode, getComponentName(CFMLEngine.DIALECT_CFML), data.config.getIdentification());
 	TagComponent comp = (TagComponent) _multiAttrStatement(parent, data, tlt);
 	if (mod != Component.MODIFIER_NONE) comp.addAttribute(new Attribute(false, "modifier", data.factory.createLitString(id), "string"));
 	return comp;
     }
 
     private String getComponentName(int dialect) {
-	return dialect == CFMLEngine.DIALECT_LUCEE ? Constants.LUCEE_COMPONENT_TAG_NAME : Constants.CFML_COMPONENT_TAG_NAME;
+	return Constants.CFML_COMPONENT_TAG_NAME;
     }
 
     /**
@@ -1215,10 +1214,7 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
     private final Tag __multiAttrStatement(Body parent, Data data, TagLibTag tlt) throws TemplateException {
 	if (data.ep == null) return null;
 	String type = tlt.getName();
-	if (data.srcCode.forwardIfCurrent(type) ||
-	// lucee dialect support component as alias for class
-		(data.srcCode.getDialect() == CFMLEngine.DIALECT_LUCEE && type.equalsIgnoreCase(Constants.LUCEE_COMPONENT_TAG_NAME)
-			&& data.srcCode.forwardIfCurrent(Constants.CFML_COMPONENT_TAG_NAME))) {
+	if (data.srcCode.forwardIfCurrent(type)) {
 
 	    boolean isValid = (data.srcCode.isCurrent(' ') || (tlt.getHasBody() && data.srcCode.isCurrent('{')));
 	    if (!isValid) {
@@ -2017,11 +2013,7 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
 		throw new TemplateException(data.srcCode, "invalid syntax, access modifier cannot be used in this context");
 	    }
 	    if (access > -1) {
-		// this is only supported with the Lucee dialect
-		// if(data.srcCode.getDialect()==CFMLEngine.DIALECT_CFML)
-		// throw new TemplateException(data.srcCode,
-		// "invalid syntax, access modifier cannot be used in this context");
-		((Assign) expr).setAccess(access);
+			((Assign) expr).setAccess(access);
 	    }
 	    if (_final) ((Assign) expr).setModifier(Member.MODIFIER_FINAL);
 	}

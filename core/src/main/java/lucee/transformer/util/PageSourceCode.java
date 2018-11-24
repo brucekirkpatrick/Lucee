@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import lucee.commons.digest.HashUtil;
 import lucee.commons.io.IOUtil;
 import lucee.commons.lang.ClassUtil;
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.PageSource;
 
 public class PageSourceCode extends SourceCode {
@@ -32,14 +33,14 @@ public class PageSourceCode extends SourceCode {
     private final PageSource ps;
 
     public PageSourceCode(PageSource ps, Charset charset, boolean writeLog) throws IOException {
-	super(toString(ps, charset), writeLog, ps.getDialect());
+	super(toString(ps, charset), writeLog, CFMLEngine.DIALECT_CFML);
 	this.charset = charset;
 	this.ps = ps;
 	// this.source=ps.getPhyscalFile().getAbsolutePath();
     }
 
     public PageSourceCode(PageSource ps, String text, Charset charset, boolean writeLog) {
-	super(text, writeLog, ps.getDialect());
+	super(text, writeLog, CFMLEngine.DIALECT_CFML);
 	this.charset = charset;
 	this.ps = ps;
     }

@@ -49,118 +49,116 @@ public final class CallerImpl extends StructSupport implements Caller {
     @Override
     public Object get(Collection.Key key) throws PageException {
 
-	char c = key.lowerCharAt(0);
-	if ('a' == c) {
-	    if (KeyConstants._application.equalsIgnoreCase(key)) return pc.applicationScope();
-	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return argumentsScope;// pc.argumentsScope();
-	}
-	else if ('c' == c) {
-	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
-	    if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
-	}
-	else if ('f' == c) {
-	    if (KeyConstants._form.equalsIgnoreCase(key)) return pc.formScope();
-	}
-	else if ('r' == c) {
-	    if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
-	}
-	else if ('l' == c) {
-	    if (KeyConstants._local.equalsIgnoreCase(key) && checkArgs) return localScope;// pc.localScope();
-	}
-	else if ('s' == c) {
-	    if (KeyConstants._session.equalsIgnoreCase(key)) return pc.sessionScope();
-	    if (KeyConstants._server.equalsIgnoreCase(key)) return pc.serverScope();
-	}
-	else if ('u' == c) {
-	    if (KeyConstants._url.equalsIgnoreCase(key)) return pc.urlScope();
-	}
-	else if ('v' == c) {
-	    if (KeyConstants._variables.equalsIgnoreCase(key)) return variablesScope;
-	}
+		char c = key.lowerCharAt(0);
+		switch (c) {
+			case 'a':
+			if (KeyConstants._application.equalsIgnoreCase(key)) return pc.applicationScope();
+			else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key))
+				return argumentsScope;// pc.argumentsScope();
+				break;
+			case 'c':
+				if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
+				if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
+				break;
+			case 'f':
+				if (KeyConstants._form.equalsIgnoreCase(key)) return pc.formScope();
+				break;
+			case 'r':
+				if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
+				break;
+			case 'l':
+				if (KeyConstants._local.equalsIgnoreCase(key) && checkArgs) return localScope;// pc.localScope();
+				break;
+			case 's':
+				if (KeyConstants._session.equalsIgnoreCase(key)) return pc.sessionScope();
+				if (KeyConstants._server.equalsIgnoreCase(key)) return pc.serverScope();
+				break;
+			case 'u':
+				if (KeyConstants._url.equalsIgnoreCase(key)) return pc.urlScope();
+				break;
+			case 'v':
+				if (KeyConstants._variables.equalsIgnoreCase(key)) return variablesScope;
+				break;
+		}
 
-	// upper variable scope
-	Object o;
+		// upper variable scope
+		Object o;
 
-	Object _null = NullSupportHelper.NULL(pc);
-	if (checkArgs) {
-	    o = localScope.get(key, _null);
-	    if (o != _null) return o;
-	    o = argumentsScope.get(key, _null);
-	    if (o != _null) return o;
-	}
-	o = variablesScope.get(key, _null);
-	if (o != _null) return o;
+		Object _null = NullSupportHelper.NULL(pc);
+		if (checkArgs) {
+			o = localScope.get(key, _null);
+			if (o != _null) return o;
+			o = argumentsScope.get(key, _null);
+			if (o != _null) return o;
+		}
+		o = variablesScope.get(key, _null);
+		if (o != _null) return o;
 
-	// get from cascaded scopes
-	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
-	if (o != _null) return o;
-
-	throw new ExpressionException("[" + key.getString() + "] not found in caller scope");
+		throw new ExpressionException("[" + key.getString() + "] not found in caller scope");
     }
 
     @Override
     public Object get(Collection.Key key, Object defaultValue) {
 
-	char c = key.lowerCharAt(0);
-	if ('a' == c) {
-	    if (KeyConstants._application.equalsIgnoreCase(key)) {
-		try {
-		    return pc.applicationScope();
+		char c = key.lowerCharAt(0);
+		switch (c) {
+			case 'a':
+				if (KeyConstants._application.equalsIgnoreCase(key)){
+					try {
+						return pc.applicationScope();
+					}catch (PageException e) {}
+				}else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) {
+					return argumentsScope;// pc.argumentsScope();
+				}
+				break;
+			case 'c':
+				if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
+				if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
+				break;
+			case 'f':
+				if (KeyConstants._form.equalsIgnoreCase(key)) return pc.formScope();
+				break;
+			case 'r':
+				if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
+				break;
+			case 'l':
+				if (KeyConstants._local.equalsIgnoreCase(key) && checkArgs) return localScope;// pc.localScope();
+				break;
+			case 's':
+				if (KeyConstants._session.equalsIgnoreCase(key)) {
+					try {
+						return pc.sessionScope();
+					}
+					catch (PageException e) {}
+				}
+				if (KeyConstants._server.equalsIgnoreCase(key)) {
+					try {
+						return pc.serverScope();
+					}
+					catch (PageException e) {}
+				}
+				break;
+			case 'u':
+				if (KeyConstants._url.equalsIgnoreCase(key)) return pc.urlScope();
+				break;
+			case 'v':
+				if (KeyConstants._variables.equalsIgnoreCase(key)) return variablesScope;
+				break;
 		}
-		catch (PageException e) {}
-	    }
-	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return argumentsScope;// pc.argumentsScope();
-	}
-	else if ('c' == c) {
-	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
-	    if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
-	}
-	else if ('f' == c) {
-	    if (KeyConstants._form.equalsIgnoreCase(key)) return pc.formScope();
-	}
-	else if ('r' == c) {
-	    if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
-	}
-	else if ('l' == c) {
-	    if (checkArgs && KeyConstants._local.equalsIgnoreCase(key)) return localScope;// pc.localScope();
-	}
-	else if ('s' == c) {
-	    if (KeyConstants._session.equalsIgnoreCase(key)) {
-		try {
-		    return pc.sessionScope();
+
+		Object _null = NullSupportHelper.NULL(pc);
+		Object o;
+		if (checkArgs) {
+			o = localScope.get(key, _null);
+			if (o != _null) return o;
+			o = argumentsScope.get(key, _null);
+			if (o != _null) return o;
 		}
-		catch (PageException e) {}
-	    }
-	    if (KeyConstants._server.equalsIgnoreCase(key)) {
-		try {
-		    return pc.serverScope();
-		}
-		catch (PageException e) {}
-	    }
-	}
-	else if ('u' == c) {
-	    if (KeyConstants._url.equalsIgnoreCase(key)) return pc.urlScope();
-	}
-	else if ('v' == c) {
-	    if (KeyConstants._variables.equalsIgnoreCase(key)) return variablesScope;
-	}
+		o = variablesScope.get(key, _null);
+		if (o != _null) return o;
 
-	Object _null = NullSupportHelper.NULL(pc);
-	Object o;
-	if (checkArgs) {
-	    o = localScope.get(key, _null);
-	    if (o != _null) return o;
-	    o = argumentsScope.get(key, _null);
-	    if (o != _null) return o;
-	}
-	o = variablesScope.get(key, _null);
-	if (o != _null) return o;
 
-	// get from cascaded scopes
-	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
-	if (o != _null) return o;
-
-	return defaultValue;
+		return defaultValue;
     }
 
     @Override

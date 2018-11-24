@@ -826,7 +826,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
 
     private boolean getKeyCase(PageContext pc) {
 	pc = ThreadLocalPageContext.get(pc);
-	return pc != null && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !((ConfigWebImpl) pc.getConfig()).preserveCase();
+	return pc != null;
     }
 
     @Override

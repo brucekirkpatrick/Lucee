@@ -523,7 +523,6 @@ public final class TagLibFactory extends DefaultHandler {
 	    TagLib cfml = new TagLibFactory(null, TLD_BASE, id).getLib();
 	    TagLib lucee = cfml.duplicate(false);
 	    systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(cfml, TLD_CFML, id).getLib();
-	    systemTLDs[CFMLEngine.DIALECT_LUCEE] = new TagLibFactory(lucee, TLD_LUCEE, id).getLib();
 	}
 	return systemTLDs;
     }

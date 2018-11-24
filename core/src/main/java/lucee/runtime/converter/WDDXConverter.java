@@ -324,14 +324,11 @@ public final class WDDXConverter extends ConverterSupport {
 
 	// fieldnames
 	PageContext pc = ThreadLocalPageContext.get();
-	boolean upperCase = false;
-	if (pc != null) upperCase = pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !((ConfigWebImpl) pc.getConfig()).preserveCase();
-
 	StringBuilder fn = new StringBuilder();
 	Collection.Key[] keys = CollectionUtil.keys(query);
 	for (int i = 0; i < keys.length; i++) {
 	    if (i > 0) fn.append(',');
-	    fn.append(XMLUtil.escapeXMLString(upperCase ? keys[i].getUpperString() : keys[i].getString()));
+	    fn.append(XMLUtil.escapeXMLString(keys[i].getString()));
 	}
 
 	StringBuilder sb = new StringBuilder(

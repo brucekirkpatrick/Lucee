@@ -70,7 +70,6 @@ import lucee.runtime.util.ZipUtil;
  */
 public interface CFMLEngine {
 
-    public static final int DIALECT_LUCEE = 0;
     public static final int DIALECT_CFML = 1;
     public static final int DIALECT_BOTH = 3;
 
@@ -95,18 +94,6 @@ public interface CFMLEngine {
      * @throws ServletException
      */
     public abstract void addServletConfig(ServletConfig config) throws ServletException;
-
-    /**
-     * method to invoke the engine for a regular Lucee call
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     * @throws ServletException
-     */
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException;
 
     /**
      * method to invoke the engine for CFML

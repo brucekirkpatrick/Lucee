@@ -69,11 +69,6 @@ public class InternalRequest implements Function {
 	    throw new FunctionException(pc, "Invoke", 1, "url", "welcome file listing not supported, please define the template name.");
 	}
 
-	// dialect
-	int dialect = ((CFMLFactoryImpl) pc.getConfig().getFactory()).toDialect(ext, -1);
-	if (dialect == -1) dialect = pc.getCurrentTemplateDialect();
-	// CFMLEngine.DIALECT_LUCEE
-
 	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 	byte[] _barr = null;
@@ -107,8 +102,7 @@ public class InternalRequest implements Function {
 	Charset _charset = null;
 	try {
 
-	    if (CFMLEngine.DIALECT_LUCEE == dialect) _pc.execute(template, true, false);
-	    else _pc.executeCFML(template, true, false);
+	    _pc.executeCFML(template, true, false);
 
 	}
 	finally {

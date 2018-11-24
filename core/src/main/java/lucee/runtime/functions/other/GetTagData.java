@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import lucee.commons.io.res.util.ResourceUtil;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.Component;
 import lucee.runtime.ComponentSpecificAccess;
 import lucee.runtime.PageContext;
@@ -57,14 +58,11 @@ public final class GetTagData implements Function {
     private static final long serialVersionUID = -4928080244340202246L;
 
     public static Struct call(PageContext pc, String nameSpace, String strTagName) throws PageException {
-	return _call(pc, nameSpace, strTagName, pc.getCurrentTemplateDialect());
+	return _call(pc, nameSpace, strTagName, CFMLEngine.DIALECT_CFML);
     }
 
     public static Struct call(PageContext pc, String nameSpace, String strTagName, String strDialect) throws PageException {
-	int dialect = ConfigWebUtil.toDialect(strDialect, -1);
-	if (dialect == -1) throw new FunctionException(pc, "GetTagData", 3, "dialect", "invalid dialect [" + strDialect + "] definition");
-
-	return _call(pc, nameSpace, strTagName, dialect);
+	return _call(pc, nameSpace, strTagName, CFMLEngine.DIALECT_CFML);
     }
 
     private static Struct _call(PageContext pc, String nameSpace, String strTagName, int dialect) throws PageException {

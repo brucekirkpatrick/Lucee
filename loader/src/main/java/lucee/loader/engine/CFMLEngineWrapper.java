@@ -86,10 +86,6 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	engine.addServletConfig(config);
     }
 
-    @Override
-    public void service(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.service(servlet, req, rsp);
-    }
 
     @Override
     public void serviceCFML(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {

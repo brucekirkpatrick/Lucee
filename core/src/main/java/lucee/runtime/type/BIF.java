@@ -27,6 +27,7 @@ import lucee.commons.digest.Hash;
 import lucee.commons.lang.CFTypes;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.Component;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
@@ -64,7 +65,7 @@ public class BIF extends MemberSupport implements UDFPlus {
     public BIF(PageContext pc, String name) throws ApplicationException {
 	super(Component.ACCESS_PUBLIC);
 	ci = (ConfigImpl) pc.getConfig();
-	FunctionLib fl = ci.getCombinedFLDs(pc.getCurrentTemplateDialect());
+	FunctionLib fl = ci.getCombinedFLDs(CFMLEngine.DIALECT_CFML);
 	flf = fl.getFunction(name);
 
 	// BIF not found

@@ -118,11 +118,8 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
     private int permGenCleanUpThreshold = 60;
 
     final TagLib cfmlCoreTLDs;
-    final TagLib luceeCoreTLDs;
     final FunctionLib cfmlCoreFLDs;
-    final FunctionLib luceeCoreFLDs;
 
-    private ServletConfig srvConfig;
 
     /**
      * @param engine
@@ -137,9 +134,7 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
 	    throws TagLibException, FunctionLibException {
 	super(configDir, configFile);
 	this.cfmlCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
-	this.luceeCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_LUCEE, id);
 	this.cfmlCoreFLDs = FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
-	this.luceeCoreFLDs = FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_LUCEE, id);
 
 	this.engine = engine;
 	engine.setConfigServerImpl(this);

@@ -153,61 +153,34 @@ public final class CFMLTransformer {
 	boolean writeLog = config.getExecutionLogEnabled();
 
 	Charset charset = config.getTemplateCharset();
-	boolean dotUpper = ps.getDialect() == CFMLEngine.DIALECT_CFML && ((MappingImpl) ps.getMapping()).getDotNotationUpperCase();
 
 	// parse regular
 	while (true) {
 	    try {
 		sc = new PageSourceCode(ps, charset, writeLog);
-		p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
+		p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), false, returnValue, ignoreScopes);
 		break;
 	    }
 	    catch (ProcessingDirectiveException pde) {
 		if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
-		if (pde.getDotNotationUpperCase() != null) dotUpper = pde.getDotNotationUpperCase().booleanValue();
 		if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
 	    }
 	}
 
 	// could it be a component?
-	boolean isCFML = ps.getDialect() == CFMLEngine.DIALECT_CFML;
-	boolean isCFMLCompExt = isCFML && Constants.isCFMLComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""));
+	boolean isCFMLCompExt = Constants.isCFMLComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""));
 
 	boolean possibleUndetectedComponent = false;
 
 	// we don't have a component or interface
 	if (p.isPage()) {
-	    if (isCFML) possibleUndetectedComponent = isCFMLCompExt;
-	    else if (Constants.isLuceeComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""))) {
-		Expression expr;
-		Statement stat;
-		PrintOut po;
-		LitString ls;
-		List<Statement> statements = p.getStatements();
-
-		// check the root statements for component
-		Iterator<Statement> it = statements.iterator();
-		String str;
-		while (it.hasNext()) {
-		    stat = it.next();
-		    if (stat instanceof PrintOut && (expr = ((PrintOut) stat).getExpr()) instanceof LitString) {
-			ls = (LitString) expr;
-			str = ls.getString();
-			if (str.indexOf(Constants.LUCEE_COMPONENT_TAG_NAME) != -1 || str.indexOf(Constants.LUCEE_INTERFACE_TAG_NAME) != -1
-				|| str.indexOf(Constants.CFML_COMPONENT_TAG_NAME) != -1 // cfml name is supported as alias
-			) {
-			    possibleUndetectedComponent = true;
-			    break;
-			}
-		    }
-		}
-	    }
+	    possibleUndetectedComponent = isCFMLCompExt;
 	}
 
 	if (possibleUndetectedComponent) {
 	    Page _p;
 
-	    TagLibTag scriptTag = CFMLTransformer.getTLT(sc, isCFML ? Constants.CFML_SCRIPT_TAG_NAME : Constants.LUCEE_SCRIPT_TAG_NAME, config.getIdentification());
+	    TagLibTag scriptTag = CFMLTransformer.getTLT(sc, Constants.CFML_SCRIPT_TAG_NAME, config.getIdentification());
 
 	    sc.setPos(0);
 	    SourceCode original = sc;
@@ -224,12 +197,11 @@ public final class CFMLTransformer {
 			sc = new PageSourceCode(ps, text, charset, writeLog);
 		    }
 		    try {
-			_p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
+			_p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), false, returnValue, ignoreScopes);
 			break;
 		    }
 		    catch (ProcessingDirectiveException pde) {
 			if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
-			if (pde.getDotNotationUpperCase() != null) dotUpper = pde.getDotNotationUpperCase().booleanValue();
 			if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
 			sc = null;
 		    }
@@ -255,7 +227,7 @@ public final class CFMLTransformer {
 	TagLib tl;
 	try {
 	    // this is already loaded, oherwise we where not here
-	    tl = TagLibFactory.loadFromSystem(cfml.getDialect(), id);
+	    tl = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
 	    return tl.getTag(name);
 	}
 	catch (TagLibException e) {
@@ -282,13 +254,6 @@ public final class CFMLTransformer {
      */
     public Page transform(Factory factory, ConfigImpl config, SourceCode sc, TagLib[] tlibs, FunctionLib[] flibs, long sourceLastModified, Boolean dotNotationUpperCase,
 	    boolean returnValue, boolean ignoreScope) throws TemplateException {
-	boolean dnuc;
-	if (dotNotationUpperCase == null) {
-	    if (sc instanceof PageSourceCode)
-		dnuc = sc.getDialect() == CFMLEngine.DIALECT_CFML && ((MappingImpl) ((PageSourceCode) sc).getPageSource().getMapping()).getDotNotationUpperCase();
-	    else dnuc = sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase();
-	}
-	else dnuc = dotNotationUpperCase;
 
 	TagLib[][] _tlibs = new TagLib[][] { null, new TagLib[0] };
 	_tlibs[TAG_LIB_GLOBAL] = tlibs;
@@ -298,11 +263,11 @@ public final class CFMLTransformer {
 	}
 
 	Page page = new Page(factory, config, sc, null, ConfigWebUtil.getEngine(config).getInfo().getFullVersionInfo(), sourceLastModified, sc.getWriteLog(),
-		sc.getDialect() == CFMLEngine.DIALECT_LUCEE || config.getSuppressWSBeforeArg(), config.getDefaultFunctionOutput(), returnValue, ignoreScope);
+		config.getSuppressWSBeforeArg(), config.getDefaultFunctionOutput(), returnValue, ignoreScope);
 
-	TransfomerSettings settings = new TransfomerSettings(dnuc, sc.getDialect() == CFMLEngine.DIALECT_CFML && factory.getConfig().getHandleUnQuotedAttrValueAsString(),
+	TransfomerSettings settings = new TransfomerSettings(false, false,
 		ignoreScope);
-	Data data = new Data(factory, page, sc, new EvaluatorPool(), settings, _tlibs, flibs, config.getCoreTagLib(sc.getDialect()).getScriptTags(), false);
+	Data data = new Data(factory, page, sc, new EvaluatorPool(), settings, _tlibs, flibs, config.getCoreTagLib(CFMLEngine.DIALECT_CFML).getScriptTags(), false);
 	transform(data, page);
 	return page;
 
@@ -354,10 +319,8 @@ public final class CFMLTransformer {
      * EBNF:<br />
      * <code>[comment] ("</" | "<" tag body | literal body);</code>
      * 
-     * @param body CFXD Body Element dem der Inhalt zugeteilt werden soll.
-     * @param parseExpression Definiert ob Expressions innerhalb von Literalen uebersetzt werden sollen
-     *            oder nicht.
-     * @param transformer Expression Transfomer zum uebersetzten von Expression.
+     * @param data
+     * @param body
      * @throws TemplateException
      */
     public void body(Data data, Body body) throws TemplateException {
@@ -433,10 +396,7 @@ public final class CFMLTransformer {
      * Liest Literale Zeichenketten ein die sich innerhalb und auserhalb von tgas befinden, beim
      * Einlesen wird unterschieden ob Expression geparsst werden muessen oder nicht, dies ist abhaengig,
      * von der Definition des Tag in dem man sich allenfalls befindet, innerhalb der TLD.
-     * 
-     * @param parent uebergeordnetes Element.
-     * @param parseExpression Definiert on Expressions geparset werden sollen oder nicht.
-     * @param transformer Expression Transfomer zum uebersetzen der Expressions innerhalb des Literals.
+     *
      * @throws TemplateException
      * 
      *             <br />
@@ -586,10 +546,7 @@ public final class CFMLTransformer {
      * ansonsten wird ein Tag einfach als literal-string aufgenommen. <br />
      * EBNF:<br />
      * <code>name-space identifier spaces attributes ("/>" | ">" [body "</" identifier spaces ">"]);(* Ob dem Tag ein Body und ein End-Tag folgt ist abhaengig von Definition des body-content in Tag-Lib, gleices gilt fuer appendix *)</code>
-     * 
-     * @param parent uebergeornetes Tag
-     * @param parseExpression sollen Expresson innerhalb des Body geparste werden oder nicht.
-     * @return Gibt zurueck ob es sich um ein Tag as einer Tag-Lib handelte oder nicht.
+     *
      * @throws TemplateException
      */
     private boolean tag(Data data, Body parent) throws TemplateException {

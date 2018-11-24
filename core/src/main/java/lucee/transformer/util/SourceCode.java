@@ -917,10 +917,6 @@ public class SourceCode {
 	return HashUtil.create64BitHashAsString(getText());
     }
 
-    public int getDialect() {
-	return dialect;
-    }
-
     @Override
     public int hashCode() {
 	return hash;

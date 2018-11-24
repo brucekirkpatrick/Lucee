@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebUtil;
@@ -45,14 +46,11 @@ public final class GetFunctionList implements Function {
     private static final long serialVersionUID = -7313412061811118382L;
 
     public static lucee.runtime.type.Struct call(PageContext pc) throws PageException {
-	return _call(pc, pc.getCurrentTemplateDialect());
+	return _call(pc, CFMLEngine.DIALECT_CFML);
     }
 
     public static lucee.runtime.type.Struct call(PageContext pc, String strDialect) throws PageException {
-	int dialect = ConfigWebUtil.toDialect(strDialect, -1);
-	if (dialect == -1) throw new FunctionException(pc, "GetFunctionList", 1, "dialect", "value [" + strDialect + "] is invalid, valid values are [cfml,lucee]");
-
-	return _call(pc, dialect);
+	return _call(pc, CFMLEngine.DIALECT_CFML);
     }
 
     private static lucee.runtime.type.Struct _call(PageContext pc, int dialect) throws PageException {

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lucee.loader.engine.CFMLEngine;
 import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.xml.XMLLayout;
@@ -191,7 +192,7 @@ public abstract class ApplicationContextSupport implements ApplicationContext {
     @Override
     public void setTagAttributeDefaultValues(PageContext pc, Struct sct) {
 	if (tagDefaultAttributeValues == null) tagDefaultAttributeValues = new HashMap<Collection.Key, Map<Collection.Key, Object>>();
-	initTagDefaultAttributeValues(config, tagDefaultAttributeValues, sct, pc.getCurrentTemplateDialect());
+	initTagDefaultAttributeValues(config, tagDefaultAttributeValues, sct, CFMLEngine.DIALECT_CFML);
     }
 
     public static void initTagDefaultAttributeValues(Config config, Map<Collection.Key, Map<Collection.Key, Object>> tagDefaultAttributeValues, Struct sct, int dialect) {

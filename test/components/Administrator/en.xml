@@ -6,7 +6,6 @@
 	<data key="admin.search.desc">Search for keywords within the Lucee Administrator</data>
 
 	<data key="general.dialect.cfml">Dialect CFML</data>
-	<data key="general.dialect.lucee">Dialect Lucee</data>
 	<data key="general.dialect.cfmlDesc">The following settings are specific to the CFML dialect. This settings have no influence on the Lucee dialect.</data>
 
 	<data key="services.update.type_manually">Manual</data>

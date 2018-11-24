@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import lucee.commons.lang.CFTypes;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
+import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebUtil;
@@ -60,14 +61,11 @@ public final class GetFunctionData implements Function {
     static final Collection.Key INTRODUCED = KeyImpl.intern("introduced");
 
     public static Struct call(PageContext pc, String strFunctionName) throws PageException {
-	return _call(pc, strFunctionName, pc.getCurrentTemplateDialect());
+	return _call(pc, strFunctionName, CFMLEngine.DIALECT_CFML);
     }
 
     public static Struct call(PageContext pc, String strFunctionName, String strDialect) throws PageException {
-	int dialect = ConfigWebUtil.toDialect(strDialect, -1);
-	if (dialect == -1) throw new FunctionException(pc, "GetFunctionData", 2, "dialect", "value [" + strDialect + "] is invalid, valid values are [cfml,lucee]");
-
-	return _call(pc, strFunctionName, dialect);
+	return _call(pc, strFunctionName, CFMLEngine.DIALECT_CFML);
     }
 
     private static Struct _call(PageContext pc, String strFunctionName, int dialect) throws PageException {

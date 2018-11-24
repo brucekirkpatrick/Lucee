@@ -523,26 +523,9 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	throw new RuntimeException("not supported!");
     }
 
-    @Override
-    public int toDialect(String ext) {
-	// MUST improve perfomance
-	if (cfmlExtensions == null) _initExtensions();
-	if (cfmlExtensions.contains(ext.toLowerCase())) return CFMLEngine.DIALECT_CFML;
-	return CFMLEngine.DIALECT_CFML;
-    }
-
-    // FUTURE add to loader
-    public int toDialect(String ext, int defaultValue) {
-	if (ext == null) return defaultValue;
-	if (cfmlExtensions == null) _initExtensions();
-	if (cfmlExtensions.contains(ext = ext.toLowerCase())) return CFMLEngine.DIALECT_CFML;
-	if (luceeExtensions.contains(ext)) return CFMLEngine.DIALECT_LUCEE;
-	return defaultValue;
-    }
 
     private void _initExtensions() {
 	cfmlExtensions = new ArrayList<String>();
-	luceeExtensions = new ArrayList<String>();
 	try {
 
 	    Iterator<?> it = getServlet().getServletContext().getServletRegistrations().entrySet().iterator();
@@ -552,10 +535,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 		e = (Entry<String, ? extends ServletRegistration>) it.next();
 		cn = e.getValue().getClassName();
 
-		if (cn != null && cn.indexOf("LuceeServlet") != -1) {
-		    setExtensions(luceeExtensions, e.getValue().getMappings().iterator());
-		}
-		else if (cn != null && cn.indexOf("CFMLServlet") != -1) {
+		if (cn != null && cn.indexOf("CFMLServlet") != -1) {
 		    setExtensions(cfmlExtensions, e.getValue().getMappings().iterator());
 		}
 	    }
@@ -563,7 +543,6 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	catch (Throwable t) {
 	    ExceptionUtil.rethrowIfNecessary(t);
 	    ArrayUtil.addAll(cfmlExtensions, Constants.getCFMLExtensions());
-	    ArrayUtil.addAll(luceeExtensions, Constants.getLuceeExtensions());
 	}
     }
 
@@ -586,11 +565,6 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	return cfmlExtensions.iterator();
     }
 
-    @Override
-    public Iterator<String> getLuceeExtensions() {
-	if (luceeExtensions == null) _initExtensions();
-	return luceeExtensions.iterator();
-    }
 
     public static RequestTimeoutException createRequestTimeoutException(PageContext pc) {
 	return new RequestTimeoutException(pc, pc.getThread().getStackTrace());

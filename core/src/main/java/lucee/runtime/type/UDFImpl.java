@@ -174,7 +174,6 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		if (funcArgs[i].isRequired()) {
 		    throw new ExpressionException("The parameter " + funcArgs[i].getName() + " to function " + getFunctionName() + " is required but was not passed in.");
 		}
-		if (pageContext.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !pageContext.getConfig().getFullNullSupport()) newArgs.set(name, Argument.NULL);
 	    }
 	    else newArgs.set(name, castTo(pageContext, funcArgs[i], defaultValue, i + 1));
 	}
@@ -300,9 +299,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	pc.setFunctionScopes(newLocal, newArgs);
 	pci.setActiveUDFCalledName(calledName);
 
-	int oldCheckArgs = undefined.setMode(pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML
-		? (properties.getLocalMode() == null ? pc.getApplicationContext().getLocalMode() : properties.getLocalMode().intValue())
-		: Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
+	int oldCheckArgs = undefined.setMode(Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
 
 	PageSource ps = null;
 	PageSource psInc = null;

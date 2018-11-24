@@ -96,7 +96,6 @@ public final class JSONConverter extends ConverterSupport {
     /**
      * @param ignoreRemotingFetch
      * @param charset if set, characters not supported by the charset are escaped.
-     * @param patternCf
      */
     public JSONConverter(boolean ignoreRemotingFetch, Charset charset) {
 	this(ignoreRemotingFetch, charset, JSONDateFormat.PATTERN_CF);
@@ -451,15 +450,12 @@ public final class JSONConverter extends ConverterSupport {
 	    boolean oDoIt = false;
 	    int len = query.getRecordcount();
 	    pc = ThreadLocalPageContext.get(pc);
-	    boolean upperCase = false;
-	    if (pc != null) upperCase = pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && ((ConfigWebImpl) pc.getConfig()).getDotNotationUpperCase();
-
 	    for (int i = 0; i < _keys.length; i++) {
 		if (oDoIt) sb.append(',');
 		oDoIt = true;
 		sb.append(goIn());
 
-		sb.append(StringUtil.escapeJS(upperCase ? _keys[i].getUpperString() : _keys[i].getString(), '"', charsetEncoder));
+		sb.append(StringUtil.escapeJS( _keys[i].getString(), '"', charsetEncoder));
 		sb.append(":[");
 		boolean doIt = false;
 		for (int y = 1; y <= len; y++) {

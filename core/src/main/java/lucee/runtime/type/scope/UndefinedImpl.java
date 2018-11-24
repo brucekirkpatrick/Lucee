@@ -190,15 +190,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    }
 	}
 
-	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getDataFromACollection(pc, key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
-		if (rtn == null && !NullSupportHelper.full(pc)) return "";
-		return rtn;
-	    }
-	}
 
 	// variable
 	rtn = variable.get(key, _null);
@@ -217,16 +208,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    }
 	}
 
-	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
 
 	if (pc.getConfig().debug()) throw new ExpressionException(ExceptionUtil.similarKeyMessage(this, key.getString(), "key", "keys", null, false));
 
@@ -266,12 +247,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    if (rtn != _null) sct.setEL(KeyConstants._arguments, rtn);
 	}
 
-	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getColumnFromACollection(key);
-	    if (rtn != null) sct.setEL(KeyConstants._query, rtn);
-	}
-
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
@@ -284,15 +259,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    if (rtn != _null) sct.setEL(KeyConstants._thread, rtn);
 	}
 
-	// get a scope value (only cfml is searching addional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    sct.setEL(KeyImpl.init(scopes[i].getTypeAsString()), rtn);
-		}
-	    }
-	}
 	return sct;
     }
 
@@ -313,12 +279,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    if (rtn != _null) return argument;
 	}
 
-	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    QueryColumn qc = qryStack.getColumnFromACollection(key);
-	    if (qc != null) return (Query) qc.getParent();
-	}
-
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
@@ -331,15 +291,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    if (rtn != _null) return t;
 	}
 
-	// get a scope value (only cfml is searcing additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    return scopes[i];
-		}
-	    }
-	}
 	return defaultValue;
     }
 
@@ -386,15 +337,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    }
 	}
 
-	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getColumnFromACollection(key);
-	    if (rtn != null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
-		return rtn;
-	    }
-	}
-
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
@@ -411,16 +353,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    }
 	}
 
-	// get a scope value (only CFML is searching addioanl scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
 	throw new ExpressionException("variable [" + key.getString() + "] doesn't exist");
     }
 
@@ -436,15 +368,6 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    rtn = argument.getFunctionArgument(key, _null);
 	    if (rtn != _null) {
 		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return rtn;
-	    }
-	}
-
-	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getDataFromACollection(pc, key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
 		return rtn;
 	    }
 	}
@@ -465,41 +388,9 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	    }
 	}
 
-	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
-
 	return defaultValue;
     }
 
-    @Override
-    public Object getCascading(Collection.Key key) {
-	throw new RuntimeException("this method is no longer supported, use getCascading(Collection.Key key, Object defaultValue) instead");
-    }
-
-    @Override
-    public Object getCascading(Collection.Key key, Object defaultValue) {
-	Object rtn;
-
-	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    Object _null = CollectionUtil.NULL;
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    return rtn;
-		}
-	    }
-	}
-	return defaultValue;
-    }
 
     @Override
     public Object setEL(Collection.Key key, Object value) {

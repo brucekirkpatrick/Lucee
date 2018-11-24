@@ -1293,9 +1293,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
     private static void doCheckChangesInLibraries(ConfigImpl config) {
 	// create current hash from libs
 	TagLib[] ctlds = config.getTLDs(CFMLEngine.DIALECT_CFML);
-	TagLib[] ltlds = config.getTLDs(CFMLEngine.DIALECT_LUCEE);
 	FunctionLib[] cflds = config.getFLDs(CFMLEngine.DIALECT_CFML);
-	FunctionLib[] lflds = config.getFLDs(CFMLEngine.DIALECT_LUCEE);
 
 	StringBuilder sb = new StringBuilder();
 
@@ -1341,15 +1339,9 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	for (int i = 0; i < ctlds.length; i++) {
 	    sb.append(ctlds[i].getHash());
 	}
-	for (int i = 0; i < ltlds.length; i++) {
-	    sb.append(ltlds[i].getHash());
-	}
 	// fld
 	for (int i = 0; i < cflds.length; i++) {
 	    sb.append(cflds[i].getHash());
-	}
-	for (int i = 0; i < lflds.length; i++) {
-	    sb.append(lflds[i].getHash());
 	}
 
 	if (config instanceof ConfigWeb) {
@@ -2577,7 +2569,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		    }
 		    tag.setEL(attrName, attrValue);
 		    ApplicationContextSupport.initTagDefaultAttributeValues(config, trg, tags, CFMLEngine.DIALECT_CFML);
-		    ApplicationContextSupport.initTagDefaultAttributeValues(config, trg, tags, CFMLEngine.DIALECT_LUCEE);
 		    config.setTagDefaultAttributeValues(trg);
 		}
 
@@ -2694,12 +2685,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    // init TLDS
 	    if (hasCS) {
 		config.setTLDs(ConfigImpl.duplicate(configServer.getTLDs(CFMLEngine.DIALECT_CFML), false), CFMLEngine.DIALECT_CFML);
-		config.setTLDs(ConfigImpl.duplicate(configServer.getTLDs(CFMLEngine.DIALECT_LUCEE), false), CFMLEngine.DIALECT_LUCEE);
 	    }
 	    else {
 		ConfigServerImpl cs = (ConfigServerImpl) config;
 		config.setTLDs(ConfigImpl.duplicate(new TagLib[] { cs.cfmlCoreTLDs }, false), CFMLEngine.DIALECT_CFML);
-		config.setTLDs(ConfigImpl.duplicate(new TagLib[] { cs.luceeCoreTLDs }, false), CFMLEngine.DIALECT_LUCEE);
 	    }
 
 	    // TLD Dir
@@ -2739,12 +2728,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    // Init flds
 	    if (hasCS) {
 		config.setFLDs(ConfigImpl.duplicate(configServer.getFLDs(CFMLEngine.DIALECT_CFML), false), CFMLEngine.DIALECT_CFML);
-		config.setFLDs(ConfigImpl.duplicate(configServer.getFLDs(CFMLEngine.DIALECT_LUCEE), false), CFMLEngine.DIALECT_LUCEE);
 	    }
 	    else {
 		ConfigServerImpl cs = (ConfigServerImpl) config;
 		config.setFLDs(ConfigImpl.duplicate(new FunctionLib[] { cs.cfmlCoreFLDs }, false), CFMLEngine.DIALECT_CFML);
-		config.setFLDs(ConfigImpl.duplicate(new FunctionLib[] { cs.luceeCoreFLDs }, false), CFMLEngine.DIALECT_LUCEE);
 	    }
 
 	    // FLDs
@@ -4036,14 +4023,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 		config.setBaseComponentTemplate(CFMLEngine.DIALECT_CFML, strBase);
 
-		// Base Lucee
-		strBase = getAttr(component, "base-lucee");
-		if (StringUtil.isEmpty(strBase, true)) {
-		    if (configServer != null) strBase = configServer.getBaseComponentTemplate(CFMLEngine.DIALECT_LUCEE);
-		    else strBase = "/lucee/Component.lucee";
-
-		}
-		config.setBaseComponentTemplate(CFMLEngine.DIALECT_LUCEE, strBase);
 
 		// deep search
 		if (mode == ConfigImpl.MODE_STRICT) {
@@ -4130,7 +4109,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else if (configServer != null) {
 		config.setBaseComponentTemplate(CFMLEngine.DIALECT_CFML, configServer.getBaseComponentTemplate(CFMLEngine.DIALECT_CFML));
-		config.setBaseComponentTemplate(CFMLEngine.DIALECT_LUCEE, configServer.getBaseComponentTemplate(CFMLEngine.DIALECT_LUCEE));
 		config.setComponentDumpTemplate(configServer.getComponentDumpTemplate());
 		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setComponentDataMemberDefaultAccess(Component.ACCESS_PRIVATE);
@@ -4385,17 +4363,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setExternalizeStringGTE(configServer.getExternalizeStringGTE());
 	    }
 
-	    // allow-lucee-dialect
-	    if (!hasCS) {
-		str = getAttr(compiler, "allow-lucee-dialect");
-		if (str == null || !Decision.isBoolean(str)) str = SystemUtil.getSystemPropOrEnvVar("lucee.enable.dialect", null);
-		if (str != null && Decision.isBoolean(str)) {
-		    config.setAllowLuceeDialect(Caster.toBooleanValue(str, false));
-		}
-	    }
-	    else {
-		config.setAllowLuceeDialect(configServer.allowLuceeDialect());
-	    }
 
 	    // Handle Unquoted Attribute Values As String
 	    if (mode == ConfigImpl.MODE_STRICT) {

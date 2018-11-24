@@ -645,21 +645,6 @@ public final class ConfigWebUtil {
 	}
     }
 
-    public static int toDialect(String strDialect, int defaultValue) {
-	if ("cfml".equalsIgnoreCase(strDialect)) return CFMLEngine.DIALECT_CFML;
-	if ("cfm".equalsIgnoreCase(strDialect)) return CFMLEngine.DIALECT_CFML;
-	if ("cfc".equalsIgnoreCase(strDialect)) return CFMLEngine.DIALECT_CFML;
-	if ("lucee".equalsIgnoreCase(strDialect)) return CFMLEngine.DIALECT_LUCEE;
-
-	return defaultValue;
-    }
-
-    public static String toDialect(int dialect, String defaultValue) {
-	if (dialect == CFMLEngine.DIALECT_CFML) return "cfml";
-	if (dialect == CFMLEngine.DIALECT_LUCEE) return "lucee";
-	return defaultValue;
-    }
-
     public static int toMonitorType(String type, int defaultValue) {
 	if (type == null) return defaultValue;
 

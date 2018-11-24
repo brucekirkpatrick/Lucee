@@ -2088,7 +2088,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 			"source" },
 		new String[] { "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar" }, 0, "tlds");
 
-	int dialect = "lucee".equalsIgnoreCase(getString("dialect", "cfml")) ? CFMLEngine.DIALECT_LUCEE : CFMLEngine.DIALECT_CFML;
+	int dialect = CFMLEngine.DIALECT_CFML;
 
 	TagLib[] libs = config.getTLDs(dialect);
 	for (int i = 0; i < libs.length; i++) {
@@ -2189,7 +2189,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	lucee.runtime.type.Query qry = new QueryImpl(new String[] { "displayname", "namespace", "namespaceseparator", "shortname", "description", "uri", "source" },
 		new String[] { "varchar", "varchar", "varchar", "varchar", "varchar", "varchar", "varchar" }, 0, "tlds");
 
-	int dialect = "lucee".equalsIgnoreCase(getString("dialect", "cfml")) ? CFMLEngine.DIALECT_LUCEE : CFMLEngine.DIALECT_CFML;
+	int dialect = CFMLEngine.DIALECT_CFML;
 
 	FunctionLib[] libs = config.getFLDs(dialect);
 	for (int i = 0; i < libs.length; i++) {
@@ -4103,18 +4103,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	catch (PageException e) {
 	    sct.set("baseComponentTemplateCFML", "");
 	}
-	try {
-	    PageSource psLucee = config.getBaseComponentPageSource(CFMLEngine.DIALECT_LUCEE);
-
-	    if (psLucee != null && psLucee.exists()) sct.set("baseComponentTemplateLucee", psLucee.getDisplayPath());
-	    else sct.set("baseComponentTemplateLucee", "");
-
-	}
-	catch (PageException e) {
-	    sct.set("baseComponentTemplateLucee", "");
-	}
 	sct.set("strBaseComponentTemplateCFML", config.getBaseComponentTemplate(CFMLEngine.DIALECT_CFML));
-	sct.set("strBaseComponentTemplateLucee", config.getBaseComponentTemplate(CFMLEngine.DIALECT_LUCEE));
 
 	// dump template
 	try {

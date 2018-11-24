@@ -66,8 +66,7 @@ public class Component extends EvaluatorSupport {
 	else {
 	    // is in script
 	    Tag p = ASMUtil.getParentTag(tag);
-	    if ((pPage = p.getParent()) instanceof Page && p.getTagLibTag().getName()
-		    .equalsIgnoreCase(((Page) pPage).getSourceCode().getDialect() == CFMLEngine.DIALECT_CFML ? Constants.CFML_SCRIPT_TAG_NAME : Constants.LUCEE_SCRIPT_TAG_NAME)) { // chnaged
+	    if ((pPage = p.getParent()) instanceof Page) { // chnaged
 																						    // order
 																						    // of
 																						    // the
@@ -107,8 +106,7 @@ public class Component extends EvaluatorSupport {
 
 	// is a full grown component or a inline component
 	if (insideCITemplate == Boolean.FALSE) {
-	    throw new EvaluatorException("Wrong Context, " + tlt.getFullName() + " tag must be inside a file with the extension " + Constants.getCFMLComponentExtension() + " or "
-		    + Constants.getLuceeComponentExtension());
+	    throw new EvaluatorException("Wrong Context, " + tlt.getFullName() + " tag must be inside a file with the extension " + Constants.getCFMLComponentExtension());
 	}
 	// if(count>1)
 	// throw new EvaluatorException("inside one cfc file only one tag "+tlt.getFullName()+" is allowed,

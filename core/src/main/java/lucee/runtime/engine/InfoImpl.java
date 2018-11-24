@@ -359,28 +359,16 @@ public final class InfoImpl implements Info {
 	return Constants.getCFMLTemplateExtensions();
     }
 
-    @Override
-    public String[] getLuceeTemplateExtensions() {
-	return Constants.getLuceeTemplateExtensions();
-    }
 
     @Override
     public String[] getCFMLComponentExtensions() {
 	return new String[] { getCFMLComponentExtension() };
     }
 
-    @Override
-    public String[] getLuceeComponentExtensions() {
-	return new String[] { getLuceeComponentExtension() };
-    }
 
     @Override
     public String getCFMLComponentExtension() {
 	return Constants.getCFMLComponentExtension();
     }
 
-    @Override
-    public String getLuceeComponentExtension() {
-	return Constants.getLuceeComponentExtension();
-    }
 }
