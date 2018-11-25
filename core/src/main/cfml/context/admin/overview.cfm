@@ -601,16 +601,6 @@ Error Output --->
 					<td width="50%">
 						<table class="maintbl">
 							<tbody>
-								<tr>
-									<th scope="row">#stText.compiler.nullSupport#</th>
-									<td <cfif !compiler.nullSupport>style="color:##cc0000"</cfif>>
-										<cfif compiler.nullSupport>
-											#stText.compiler.nullSupportFull#
-										<cfelse>
-											#stText.compiler.nullSupportPartial#
-										</cfif>
-								</td>
-								</tr>
 							<tr>
 								<th scope="row">#stText.Scopes.LocalMode#</th>
 								<td <cfif scope.localMode EQ "classic">style="color:##cc0000"</cfif>>

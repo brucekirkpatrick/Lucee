@@ -31,10 +31,7 @@ import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
+import lucee.runtime.type.*;
 import lucee.runtime.type.it.EntryIterator;
 import lucee.runtime.type.util.StructSupport;
 
@@ -139,7 +136,7 @@ public final class RequestImpl extends StructSupport implements Request {
 
     @Override
     public Object remove(Key key) throws PageException {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = remove(key, _null);
 	if (value != _null) return value;
 	throw new ExpressionException("can't remove key [" + key + "] from struct, key doesn't exist");
@@ -157,7 +154,7 @@ public final class RequestImpl extends StructSupport implements Request {
 
     @Override
     public Object get(Key key) throws PageException {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = get(key, _null);
 	if (value == _null) throw invalidKey(null, this, key, "request scope");
 	return value;
@@ -230,7 +227,7 @@ public final class RequestImpl extends StructSupport implements Request {
 
     @Override
     public boolean containsKey(Key key) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	return get(key, _null) != _null;
     }
 

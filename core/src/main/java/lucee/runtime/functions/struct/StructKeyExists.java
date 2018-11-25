@@ -22,7 +22,6 @@
 package lucee.runtime.functions.struct;
 
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
@@ -42,17 +41,13 @@ public final class StructKeyExists extends BIF {
     }
 
     public static boolean call(PageContext pc, lucee.runtime.type.Struct struct, Collection.Key key) {
-	if (struct instanceof CollectionStruct) {
-	    Collection c = ((CollectionStruct) struct).getCollection();
-	    if (c instanceof Query) {
-		return QueryColumnExists.call(pc, (Query) c, key);
-	    }
-	}
-
-	if (!struct.containsKey(key)) return false;
-
-	if (NullSupportHelper.full(pc)) return true;
-	return struct.get(key, null) != null;// do not change, this has do be this way
+		if (struct instanceof CollectionStruct) {
+			Collection c = ((CollectionStruct) struct).getCollection();
+			if (c instanceof Query) {
+			return QueryColumnExists.call(pc, (Query) c, key);
+			}
+		}
+		return struct.containsKey(key) ? true:false;
     }
 
     @Override

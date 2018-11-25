@@ -37,7 +37,6 @@ import lucee.commons.collection.WeakHashMapPro;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.SerializableObject;
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.exp.ExpressionException;
@@ -111,7 +110,6 @@ public class StructImpl extends StructSupport {
     public Object get(Collection.Key key, Object defaultValue) {
 	Object val = map.g(key, CollectionUtil.NULL);
 	if (val == CollectionUtil.NULL) return defaultValue;
-	if (val == null && !NullSupportHelper.full()) return defaultValue;
 	return val;
     }
 
@@ -129,7 +127,6 @@ public class StructImpl extends StructSupport {
     public Object get(Collection.Key key) throws PageException {
 	Object val = map.g(key);
 	if (val != null) return val;
-	if (NullSupportHelper.full()) return val;
 	throw StructSupport.invalidKey(null, this, key, null);
     }
 
@@ -178,10 +175,7 @@ public class StructImpl extends StructSupport {
     @Override
     public Object remove(Collection.Key key) throws PageException {
 
-	Object val = map.r(key);
-	if (val != null || NullSupportHelper.full()) return val;
-
-	throw new ExpressionException("can't remove key [" + key + "] from struct, key value is NULL what is equal do not existing in case full null support is not enabled");
+	return map.r(key);
     }
 
     @Override
@@ -193,7 +187,6 @@ public class StructImpl extends StructSupport {
     public Object remove(Collection.Key key, Object defaultValue) {
 	Object val = map.r(key, CollectionUtil.NULL);
 	if (val == CollectionUtil.NULL) return defaultValue;
-	if (val == null && !NullSupportHelper.full()) return defaultValue;
 	return val;
     }
 

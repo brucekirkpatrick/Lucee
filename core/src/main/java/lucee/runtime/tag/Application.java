@@ -103,7 +103,6 @@ public final class Application extends TagImpl {
     private SerializationSettings serializationSettings;
     private Locale locale;
     private TimeZone timeZone;
-    private Boolean nullSupport;
     private Boolean queryPSQ;
     private int queryVarUsage;
 
@@ -182,7 +181,6 @@ public final class Application extends TagImpl {
 	serializationSettings = null;
 	locale = null;
 	timeZone = null;
-	nullSupport = null;
 	queryPSQ = null;
 	queryVarUsage = 0;
 	webCharset = null;
@@ -314,9 +312,6 @@ public final class Application extends TagImpl {
 
     }
 
-    public void setNullsupport(boolean nullSupport) {
-	this.nullSupport = nullSupport;
-    }
 
     public void setVariableusage(String varUsage) throws ApplicationException {
 	this.queryVarUsage = AppListenerUtil.toVariableUsage(varUsage);
@@ -739,7 +734,6 @@ public final class Application extends TagImpl {
 	if (serializationSettings != null) ((ApplicationContextSupport) ac).setSerializationSettings(serializationSettings);
 	if (locale != null) ac.setLocale(locale);
 	if (timeZone != null) ac.setTimeZone(timeZone);
-	if (nullSupport != null) ((ApplicationContextSupport) ac).setFullNullSupport(nullSupport);
 	if (queryPSQ != null) ((ApplicationContextSupport) ac).setQueryPSQ(queryPSQ);
 	if (queryVarUsage != 0) ((ApplicationContextSupport) ac).setQueryVarUsage(queryVarUsage);
 	if (webCharset != null) ac.setWebCharset(webCharset.toCharset());

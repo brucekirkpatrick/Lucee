@@ -100,8 +100,6 @@ public class GetApplicationSettings extends BIF {
 	sct.setEL(KeyConstants._timezone, TimeZoneUtil.toString(pc.getTimeZone()));
 	// sct.setEL(KeyConstants._timeout,TimeZoneUtil.toString(pc.getRequestTimeout()));
 
-	sct.setEL("nullSupport", ((ApplicationContextSupport) ac).getFullNullSupport());
-	sct.setEL("enableNullSupport", ((ApplicationContextSupport) ac).getFullNullSupport());
 
 	// scope cascading
 	sct.setEL("scopeCascading", ConfigWebUtil.toScopeCascading(ac.getScopeCascading(), null));

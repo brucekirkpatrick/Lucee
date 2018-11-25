@@ -86,14 +86,14 @@ public final class QueryColumnRef implements QueryColumn {
      * @throws PageException
      */
     public Object touch(int row) throws PageException {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object o = query.getAt(columnName, row, _null);
 	if (o != _null) return o;
 	return query.setAt(columnName, row, new StructImpl());
     }
 
     public Object touchEL(int row) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object o = query.getAt(columnName, row, _null);
 	if (o != _null) return o;
 	return query.setAtEL(columnName, row, new StructImpl());
@@ -227,13 +227,13 @@ public final class QueryColumnRef implements QueryColumn {
 
     @Override
     public boolean containsKey(String key) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	return get(key, _null) != _null;
     }
 
     @Override
     public boolean containsKey(Collection.Key key) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	return get(key, _null) != _null;
     }
 
@@ -249,7 +249,7 @@ public final class QueryColumnRef implements QueryColumn {
 
     @Override
     public String castToString(String defaultValue) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toString(value, defaultValue);
@@ -262,7 +262,7 @@ public final class QueryColumnRef implements QueryColumn {
 
     @Override
     public Boolean castToBoolean(Boolean defaultValue) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toBoolean(value, defaultValue);
@@ -275,11 +275,12 @@ public final class QueryColumnRef implements QueryColumn {
 
     @Override
     public double castToDoubleValue(double defaultValue) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toDoubleValue(value, true, defaultValue);
     }
+
 
     @Override
     public DateTime castToDateTime() throws PageException {
@@ -288,7 +289,7 @@ public final class QueryColumnRef implements QueryColumn {
 
     @Override
     public DateTime castToDateTime(DateTime defaultValue) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return DateCaster.toDateAdvanced(value, DateCaster.CONVERTING_TYPE_OFFSET, null, defaultValue);

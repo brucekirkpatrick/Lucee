@@ -39,6 +39,7 @@ import lucee.runtime.op.ThreadLocalDuplication;
 import lucee.runtime.tag.Http;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.KeyImpl;
+import lucee.runtime.type.Null;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.dt.DateTimeImpl;
@@ -199,7 +200,7 @@ public class ThreadsImpl extends StructSupport implements lucee.runtime.type.sco
 
     @Override
     public Object get(Key key, Object defaultValue) {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object meta = getMeta(key, _null);
 	if (meta != _null) return meta;
 	return ct.content.get(key, defaultValue);
@@ -207,7 +208,7 @@ public class ThreadsImpl extends StructSupport implements lucee.runtime.type.sco
 
     @Override
     public Object get(Key key) throws PageException {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object meta = getMeta(key, _null);
 	if (meta != _null) return meta;
 	return ct.content.get(key);
@@ -237,7 +238,7 @@ public class ThreadsImpl extends StructSupport implements lucee.runtime.type.sco
 
     @Override
     public Object remove(Key key) throws PageException {
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	if (isReadonly()) throw errorOutside();
 	Object meta = getMeta(key, _null);
 	if (meta != _null) throw errorMeta(key);
@@ -254,7 +255,7 @@ public class ThreadsImpl extends StructSupport implements lucee.runtime.type.sco
     public Object set(Key key, Object value) throws PageException {
 
 	if (isReadonly()) throw errorOutside();
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object meta = getMeta(key, _null);
 	if (meta != _null) throw errorMeta(key);
 	return ct.content.set(key, value);
@@ -263,7 +264,7 @@ public class ThreadsImpl extends StructSupport implements lucee.runtime.type.sco
     @Override
     public Object setEL(Key key, Object value) {
 	if (isReadonly()) return null;
-	Object _null = NullSupportHelper.NULL();
+	Object _null = Null.NULL;
 	Object meta = getMeta(key, _null);
 	if (meta != _null) return null;
 	return ct.content.setEL(key, value);

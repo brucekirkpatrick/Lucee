@@ -37,7 +37,6 @@ import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.sql.SQLUtil;
 import lucee.runtime.PageContext;
-import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.DatabaseException;
 import lucee.runtime.exp.PageException;
@@ -71,67 +70,61 @@ public final class SQLCaster {
 
     public static Object toSqlType(SQLItem item) throws PageException, DatabaseException {
 	Object value = item.getValue();
-	try {
 
 	    if (item.isNulls() || value == null) {
 		return null;
 	    }
 	    int type = item.getType();
 	    switch (type) {
-	    case Types.BIGINT:
-		return Caster.toLong(value);
-	    case Types.BIT:
-		return Caster.toBoolean(value);
-	    case Types.BLOB:
-		return BlobImpl.toBlob(value);
-	    case Types.CHAR:
-		return Caster.toString(value);
-	    case Types.CLOB:
-	    case Types.NCLOB:
-		return ClobImpl.toClob(value);
-	    case Types.DATE:
-		return new Date(Caster.toDate(value, null).getTime());
-	    case Types.NUMERIC:
-	    case Types.DECIMAL:
-		return new BigDecimal(Caster.toDouble(value).toString());
-	    case Types.DOUBLE:
-		return Caster.toDouble(value);
-	    case Types.FLOAT:
-		return Caster.toFloat(value);
-	    case Types.VARBINARY:
-	    case Types.LONGVARBINARY:
-	    case Types.BINARY:
-		return Caster.toBinary(value);
-	    case Types.REAL:
-		return Caster.toFloat(value);
-	    case Types.TINYINT:
-		return Caster.toByte(value);
-	    case Types.SMALLINT:
-		return Caster.toShort(value);
-	    case Types.INTEGER:
-		return Caster.toInteger(value);
-	    case Types.VARCHAR:
-	    case Types.LONGVARCHAR:
-	    case CFTypes.VARCHAR2:
-	    case Types.NVARCHAR:
-		return Caster.toString(value);
-	    case Types.TIME:
-		return new Time(Caster.toDate(value, null).getTime());
-	    case Types.TIMESTAMP:
-		return new Timestamp(Caster.toDate(value, null).getTime());
-	    case Types.OTHER:
-	    default:
-		if (value instanceof DateTime) return new Date(Caster.toDate(value, null).getTime());
-		if (value instanceof lucee.runtime.type.Array) return Caster.toList(value);
-		if (value instanceof lucee.runtime.type.Struct) return Caster.toMap(value);
+			case Types.BIGINT:
+			return Caster.toLong(value);
+			case Types.BIT:
+			return Caster.toBoolean(value);
+			case Types.BLOB:
+			return BlobImpl.toBlob(value);
+			case Types.CHAR:
+			return Caster.toString(value);
+			case Types.CLOB:
+			case Types.NCLOB:
+			return ClobImpl.toClob(value);
+			case Types.DATE:
+			return new Date(Caster.toDate(value, null).getTime());
+			case Types.NUMERIC:
+			case Types.DECIMAL:
+			return new BigDecimal(Caster.toDouble(value).toString());
+			case Types.DOUBLE:
+			return Caster.toDouble(value);
+			case Types.FLOAT:
+			return Caster.toFloat(value);
+			case Types.VARBINARY:
+			case Types.LONGVARBINARY:
+			case Types.BINARY:
+			return Caster.toBinary(value);
+			case Types.REAL:
+			return Caster.toFloat(value);
+			case Types.TINYINT:
+			return Caster.toByte(value);
+			case Types.SMALLINT:
+			return Caster.toShort(value);
+			case Types.INTEGER:
+			return Caster.toInteger(value);
+			case Types.VARCHAR:
+			case Types.LONGVARCHAR:
+			case CFTypes.VARCHAR2:
+			case Types.NVARCHAR:
+			return Caster.toString(value);
+			case Types.TIME:
+			return new Time(Caster.toDate(value, null).getTime());
+			case Types.TIMESTAMP:
+			return new Timestamp(Caster.toDate(value, null).getTime());
+			case Types.OTHER:
+			default:
+				if (value instanceof DateTime) return new Date(Caster.toDate(value, null).getTime());
+				if (value instanceof lucee.runtime.type.Array) return Caster.toList(value);
+				if (value instanceof lucee.runtime.type.Struct) return Caster.toMap(value);
 
-		return value;// toSQLObject(value); TODO alle lucee spezifischen typen sollten in sql typen uebersetzt werden
+				return value;// toSQLObject(value); TODO alle lucee spezifischen typen sollten in sql typen uebersetzt werden
 	    }
-	}
-	catch (PageException pe) {
-	    if (!NullSupportHelper.full() && value instanceof String && StringUtil.isEmpty((String) value)) return null;
-	    throw pe;
-	}
     }
 
     public static void setValue(PageContext pc, TimeZone tz, PreparedStatement stat, int parameterIndex, SQLItem item) throws PageException, SQLException, DatabaseException {
@@ -142,174 +135,67 @@ public final class SQLCaster {
 	    return;
 	}
 	int type = item.getType();
-	boolean fns = NullSupportHelper.full(pc);
 	switch (type) {
 	/*
 	 * case Types.ARRAY: stat.setArray(parameterIndex,toArray(item.getValue())); return;
 	 */
 	case Types.BIGINT:
-	    try {
 		stat.setLong(parameterIndex, Caster.toLongValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.BIT:
-	    try {
 		stat.setBoolean(parameterIndex, Caster.toBooleanValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.BLOB:
-	    try {
 		stat.setBlob(parameterIndex, SQLUtil.toBlob(stat.getConnection(), value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.CLOB:
-	    try {
 		stat.setClob(parameterIndex, SQLUtil.toClob(stat.getConnection(), value));
-		/*
-		 * if(value instanceof String) { try{ stat.setString(parameterIndex,Caster.toString(value)); }
-		 * catch(Throwable t){ExceptionUtil.rethrowIfNecessary(t);
-		 * stat.setClob(parameterIndex,SQLUtil.toClob(stat.getConnection(),value)); }
-		 * 
-		 * } else stat.setClob(parameterIndex,SQLUtil.toClob(stat.getConnection(),value));
-		 */
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.CHAR:
 	    String str = Caster.toString(value);
-	    // if(str!=null && str.length()==0) str=null;
 	    stat.setObject(parameterIndex, str, type);
-	    //// stat.setString(parameterIndex,str);
 	    return;
 	case Types.DECIMAL:
 	case Types.NUMERIC:
-	    try {
 		stat.setDouble(parameterIndex, (Caster.toDoubleValue(value)));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 
 	case Types.DOUBLE:
 	case Types.FLOAT:
-	    try {
 		if (type == Types.FLOAT) stat.setFloat(parameterIndex, Caster.toFloatValue(value));
 		else if (type == Types.DOUBLE) stat.setDouble(parameterIndex, Caster.toDoubleValue(value));
 		else stat.setObject(parameterIndex, Caster.toDouble(value), type);
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.VARBINARY:
 	case Types.LONGVARBINARY:
 	case Types.BINARY:
-	    try {
 		stat.setObject(parameterIndex, Caster.toBinary(value), type);
-		//// stat.setBytes(parameterIndex,Caster.toBinary(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.REAL:
-	    try {
 		stat.setObject(parameterIndex, Caster.toFloat(value), type);
-		//// stat.setFloat(parameterIndex,Caster.toFloatValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.TINYINT:
-	    try {
 		stat.setObject(parameterIndex, Caster.toByte(value), type);
-		//// stat.setByte(parameterIndex,Caster.toByteValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.SMALLINT:
-	    try {
 		stat.setObject(parameterIndex, Caster.toShort(value), type);
-		//// stat.setShort(parameterIndex,Caster.toShortValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.INTEGER:
-	    try {
 		stat.setObject(parameterIndex, Caster.toInteger(value), type);
-		//// stat.setInt(parameterIndex,Caster.toIntValue(value));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.VARCHAR:
 	case Types.LONGVARCHAR:
 	case CFTypes.VARCHAR2:
 	    stat.setObject(parameterIndex, Caster.toString(value), type);
-	    //// stat.setString(parameterIndex,Caster.toString(value));
 	    return;
 	case Types.DATE:
-	    try {
 		stat.setDate(parameterIndex, new Date(Caster.toDate(value, tz).getTime()), JREDateTimeUtil.getThreadCalendar(tz));
-
-		// stat.setDate(parameterIndex,new Date((Caster.toDate(value,null).getTime())));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.TIME:
-	    try {
-
-		// stat.setObject(parameterIndex, new Time((Caster.toDate(value,null).getTime())), type);
 		stat.setTime(parameterIndex, new Time(Caster.toDate(value, tz).getTime()), JREDateTimeUtil.getThreadCalendar(tz));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
 	    return;
 	case Types.TIMESTAMP:
-	    try {
-		// stat.setObject(parameterIndex, new Timestamp((Caster.toDate(value,null).getTime())), type);
-		// stat.setObject(parameterIndex, value, type);
 		stat.setTimestamp(parameterIndex, new Timestamp(Caster.toDate(value, tz).getTime()), JREDateTimeUtil.getThreadCalendar(tz));
-	    }
-	    catch (PageException pe) {
-		if (!fns && value instanceof String && StringUtil.isEmpty((String) value)) stat.setNull(parameterIndex, item.getType());
-		else throw pe;
-	    }
-
 	    return;
 	case Types.OTHER:
 	    stat.setObject(parameterIndex, value, Types.OTHER);
