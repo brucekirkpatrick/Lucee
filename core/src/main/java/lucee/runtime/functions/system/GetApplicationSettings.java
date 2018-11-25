@@ -101,13 +101,6 @@ public class GetApplicationSettings extends BIF {
 	// sct.setEL(KeyConstants._timeout,TimeZoneUtil.toString(pc.getRequestTimeout()));
 
 
-	// scope cascading
-	sct.setEL("scopeCascading", ConfigWebUtil.toScopeCascading(ac.getScopeCascading(), null));
-
-	if (ac.getScopeCascading() != Config.SCOPE_SMALL) {
-	    sct.setEL("searchImplicitScopes", ac.getScopeCascading() == Config.SCOPE_STANDARD);
-	}
-
 	Struct cs = new StructImpl(Struct.TYPE_LINKED);
 	cs.setEL("web", pc.getWebCharset().name());
 	cs.setEL("resource", ((PageContextImpl) pc).getResourceCharset().name());

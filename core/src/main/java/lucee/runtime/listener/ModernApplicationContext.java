@@ -119,7 +119,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key LOCAL_MODE = KeyImpl.intern("localMode");
     private static final Collection.Key BUFFER_OUTPUT = KeyImpl.intern("bufferOutput");
     private static final Collection.Key SESSION_CLUSTER = KeyImpl.intern("sessionCluster");
-    private static final Collection.Key CLIENT_CLUSTER = KeyImpl.intern("clientCluster");
 
     private static final Collection.Key DEFAULT_DATA_SOURCE = KeyImpl.intern("defaultdatasource");
     private static final Collection.Key DEFAULT_CACHE = KeyImpl.intern("defaultcache");
@@ -127,10 +126,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key ORM_ENABLED = KeyImpl.intern("ormenabled");
     private static final Collection.Key ORM_SETTINGS = KeyImpl.intern("ormsettings");
     private static final Collection.Key IN_MEMORY_FILESYSTEM = KeyImpl.intern("inmemoryfilesystem");
-    private static final Collection.Key REST_SETTING = KeyImpl.intern("restsettings");
     private static final Collection.Key JAVA_SETTING = KeyImpl.intern("javasettings");
-    private static final Collection.Key SCOPE_CASCADING = KeyImpl.intern("scopeCascading");
-    private static final Collection.Key SEARCH_IMPLICIT_SCOPES = KeyImpl.intern("searchImplicitScopes");
     private static final Collection.Key TYPE_CHECKING = KeyImpl.intern("typeChecking");
     private static final Collection.Key CGI_READONLY = KeyImpl.intern("CGIReadOnly");
     private static final Collection.Key SUPPRESS_CONTENT = KeyImpl.intern("suppressRemoteComponentContent");
@@ -151,13 +147,10 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     private String name = null;
 
-    private boolean setClientCookies;
     private boolean setDomainCookies;
     private boolean setSessionManagement;
-    private boolean setClientManagement;
     private TimeSpan applicationTimeout;
     private TimeSpan sessionTimeout;
-    private TimeSpan clientTimeout;
     private TimeSpan requestTimeout;
     private int loginStorage = Scope.SCOPE_COOKIE;
     private int scriptProtect;
@@ -170,9 +163,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private short wstype;
     private boolean wsMaintainSession = false;
     private boolean sessionCluster;
-    private boolean clientCluster;
-
-    private String clientStorage;
     private String sessionStorage;
     private String secureJsonPrefix = "//";
     private boolean secureJson;
@@ -253,7 +243,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private Resource antiSamyPolicyResource;
 
 
-    private short scopeCascading = -1;
 
     private Server[] mailServers;
     private boolean initMailServer;
@@ -268,12 +257,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     public ModernApplicationContext(PageContext pc, Component cfc, RefBoolean throwsErrorWhileInit) {
 	super(pc.getConfig());
 	ConfigImpl ci = ((ConfigImpl) config);
-	setClientCookies = config.isClientCookies();
 	setDomainCookies = config.isDomainCookies();
 	setSessionManagement = config.isSessionManagement();
-	setClientManagement = config.isClientManagement();
 	sessionTimeout = config.getSessionTimeout();
-	clientTimeout = config.getClientTimeout();
 	requestTimeout = config.getRequestTimeout();
 	applicationTimeout = config.getApplicationTimeout();
 	scriptProtect = config.getScriptProtect();
@@ -302,8 +288,6 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
 	initAntiSamyPolicyResource(pc);
 	if (antiSamyPolicyResource == null) this.antiSamyPolicyResource = ((ConfigImpl) config).getAntiSamyPolicy();
-	// read scope cascading
-	initScopeCascading();
 	initSameFieldAsArray(pc);
 	initWebCharset(pc);
 
@@ -322,28 +306,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	}
     }
 
-    public void initScopeCascading() {
-	Object o = get(component, SCOPE_CASCADING, null);
-	if (o != null) {
-	    scopeCascading = ConfigWebUtil.toScopeCascading(Caster.toString(o, null), (short) -1);
-	}
-	else {
-	    Boolean b = Caster.toBoolean(get(component, SEARCH_IMPLICIT_SCOPES, null), null);
-	    if (b != null) scopeCascading = ConfigWebUtil.toScopeCascading(b);
-	}
 
-    }
-
-    @Override
-    public short getScopeCascading() {
-	if (scopeCascading == -1) return config.getScopeCascadingType();
-	return scopeCascading;
-    }
-
-    @Override
-    public void setScopeCascading(short scopeCascading) {
-	this.scopeCascading = scopeCascading;
-    }
 
     @Override
     public void reinitORM(PageContext pc) throws PageException {

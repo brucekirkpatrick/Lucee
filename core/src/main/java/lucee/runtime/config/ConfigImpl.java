@@ -210,10 +210,6 @@ public abstract class ConfigImpl implements Config {
 
     private FunctionLib combinedCFMLFLDs;
 
-    private short type = SCOPE_STANDARD;
-    private boolean _allowImplicidQueryCall = true;
-    private boolean _mergeFormAndURL = false;
-
     private Map<String, LoggerAndSourceData> loggers = new HashMap<String, LoggerAndSourceData>();
 
     private int _debug;
@@ -483,21 +479,6 @@ public abstract class ConfigImpl implements Config {
 	this.configFileLastModified = configFile.lastModified();
     }
 
-    @Override
-    public short getScopeCascadingType() {
-	return type;
-    }
-    /*
-     * @Override public String[] getCFMLExtensions() { return getAllExtensions(); }
-     * 
-     * @Override public String getCFCExtension() { return getComponentExtension(); }
-     * 
-     * @Override public String[] getAllExtensions() { return Constants.ALL_EXTENSION; }
-     * 
-     * @Override public String getComponentExtension() { return Constants.COMPONENT_EXTENSION; }
-     * 
-     * @Override public String[] getTemplateExtensions() { return Constants.TEMPLATE_EXTENSIONS; }
-     */
 
     protected void setFLDs(FunctionLib[] flds, int dialect) {
 	    cfmlFlds = flds;
@@ -529,16 +510,6 @@ public abstract class ConfigImpl implements Config {
 
     protected void setTLDs(TagLib[] tlds, int dialect) {
 	cfmlTlds = tlds;
-    }
-
-    @Override
-    public boolean allowImplicidQueryCall() {
-	return _allowImplicidQueryCall;
-    }
-
-    @Override
-    public boolean mergeFormAndURL() {
-	return _mergeFormAndURL;
     }
 
     @Override
@@ -1061,14 +1032,6 @@ public abstract class ConfigImpl implements Config {
 	this.password = password;
     }
 
-    /**
-     * set how lucee cascade scopes
-     * 
-     * @param type cascading type
-     */
-    protected void setScopeCascadingType(short type) {
-	this.type = type;
-    }
 
     protected void addTag(String nameSpace, String nameSpaceSeperator, String name, int dialect, ClassDefinition cd) {
 	if (dialect == CFMLEngine.DIALECT_BOTH) {
@@ -1397,24 +1360,6 @@ public abstract class ConfigImpl implements Config {
 	return functionLib.getDisplayName().toLowerCase();
     }
 
-    /**
-     * sets if it is allowed to implict query call, call a query member without define name of the
-     * query.
-     * 
-     * @param _allowImplicidQueryCall is allowed
-     */
-    protected void setAllowImplicidQueryCall(boolean _allowImplicidQueryCall) {
-	this._allowImplicidQueryCall = _allowImplicidQueryCall;
-    }
-
-    /**
-     * sets if url and form scope will be merged
-     * 
-     * @param _mergeFormAndURL merge yes or no
-     */
-    protected void setMergeFormAndURL(boolean _mergeFormAndURL) {
-	this._mergeFormAndURL = _mergeFormAndURL;
-    }
 
     /**
      * @param strApplicationTimeout The applicationTimeout to set.

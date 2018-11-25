@@ -225,23 +225,6 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 	    return query.get(key, defaultValue);
 	}
 
-	// get it from undefined scope
-	pc = ThreadLocalPageContext.get(pc);
-	if (pc != null) {
-	    Object _null = NullSupportHelper.NULL(pc);
-	    Undefined undefined = pc.undefinedScope();
-	    boolean old = undefined.setAllowImplicidQueryCall(false);
-	    Object sister = undefined.get(this.key, _null);
-	    undefined.setAllowImplicidQueryCall(old);
-	    if (sister != _null) {
-		try {
-		    return pc.get(sister, key);
-		}
-		catch (PageException e) {
-		    return defaultValue;
-		}
-	    }
-	}
 	return defaultValue;
     }
 
