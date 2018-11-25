@@ -828,22 +828,13 @@ you can see the log result at the end of every request, if a debug template is d
 	<data key="scopes.clienttimeout">Client timeout</data>
 	<data key="scopes.sessiontypedescription">JEE Sessions allow to make sessions over a cluster. When you change this setting you will lose your current session and you must make a new login</data>
 	<data key="scopes.web">Here you can define the settings for how Lucee handles scopes.</data>
-	<data key="scopes.localmodeClassic">Classic</data>
 	<data key="scopes.timeoutsecondsvalue">Value seconds for </data>
 	<data key="scopes.sessionmanagementdescription">By default session management can be enabled. This behaviour can be overridden by the tag cfapplication.</data>
 	<data key="scopes.clientcookiesdescription">Enable or disable client cookies. This behaviour can be overridden by the tag cfapplication.</data>
 	<data key="scopes.sessiontimeout">Session timeout</data>
 
-	<data key="scopes.localmodeClassic">Classic (CFML Default)</data>
-	<data key="scopes.localmodeModern">Modern</data>
-
-	<data key="scopes.localmodedesc">Defines how the local scope of a function is invoked when a variable with no scope definition is used.</data>
-
-	<data key="scopes.localmodeModernDesc">the local scope is always invoked</data>
-	<data key="scopes.localmodeClassicDesc">the local scope is only invoked when the key already exists in it</data>
 	<!-- server.scope.cfm -->
 	<data key="Scopes.SessionStorage">Session Storage</data>
-	<data key="Scopes.ClientStorage">Client Storage</data>
 	<data key="Scopes.memory">memory</data>
 	<data key="Scopes.file">file</data>
 	<data key="Scopes.cookie">cookie</data>
@@ -852,7 +843,6 @@ you can see the log result at the end of every request, if a debug template is d
 	<data key="scopes.sessiontype">Session type</data>
 	<data key="scopes.sessionmanagement">Session management</data>
 	<data key="scopes.timeouthoursvalue">Value hours for </data>
-	<data key="scopes.localmode">Local scope mode</data>
 	<data key="scopes.clienttimeoutdescription">Sets the amount of time Lucee will keep the client scope alive. </data>
 	<data key="scopes.small">small</data>
 	<data key="scopes.sessiontype_jee">JEE</data>

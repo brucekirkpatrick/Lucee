@@ -1,11 +1,8 @@
 <cfapplication 
 	name="webadmin#server.lucee.version#" 
-    clientmanagement="no" 
-    clientstorage="file" 
-    scriptprotect="none" 
+    scriptprotect="none"
     sessionmanagement="yes"
     sessiontimeout="#createTimeSpan(0,0,30,0)#"
-    setclientcookies="yes" 
-    setdomaincookies="no" 
+    setdomaincookies="no"
     applicationtimeout="#createTimeSpan(1,0,0,0)#"
-    localmode="update">
+    >

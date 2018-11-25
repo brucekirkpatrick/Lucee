@@ -110,26 +110,6 @@
 			</description>
 		</attribute>
 		<attribute>
-			<type>boolean</type>
-			<name>clientManagement</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Yes or No. Enables client variables. Default is No.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>clientStorage</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-Specifies how Lucee stores client variables:
-- memory: the session is only kept in memory
-- cookie: the session is stored in the client cookie
-- file (default): the session is stored in a local file
-- "datasource-name"|"cache-name": when you select a name of an available datasource or cache, the client scope will be stored in there</description>
-		</attribute>
-
-		<attribute>
 			<type>string</type>
 			<name>sessionType</name>
 			<values>application,jee</values>
@@ -157,28 +137,11 @@ Specifies how Lucee stores session variables:
 		</attribute>
 		<attribute>
 			<type>boolean</type>
-			<name>clientCluster</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>if set to true, lucee uses the storage backend for the client scope as master and Lucee checks for changes in the storage backend with every request,
-			if set to false (default), the storage is only used as slave, lucee only initially gets the data from the storage. Ignored for storage type "memory".</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
 			<name>sessionCluster</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>if set to true, lucee uses the storage backend for the session scope as master and Lucee checks for changes in the storage backend with every request,
 			if set to false (default), the storage is only used as slave, lucee only initially gets the data from the storage. Ignored for storage type "memory".</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>setClientCookies</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Yes or No. Yes enables client cookies. Default is Yes. If you set this attribute to
-		"No", Lucee does not automatically send the CFID and CFTOKEN cookies to the client browser;
-		you must manually code CFID and CFTOKEN on the URL for every page that uses Session or Client variables.</description>
 		</attribute>
 		<attribute>
 			<type>boolean</type>
@@ -194,15 +157,6 @@ Specifies how Lucee stores session variables:
 			<rtexprvalue>true</rtexprvalue>
 			<description>Enter the CreateTimeSpan function and values in days, hours, minutes, and seconds, separated
 		by commas, to specify the lifespan of session variables. The default value is specified in the
-		Variables page of the Lucee Administrator.</description>
-		</attribute>
-		<attribute>
-			<type>timespan</type>
-			<name>clientTimeout</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Enter the CreateTimeSpan function and values in days, hours, minutes, and seconds, separated
-		by commas, to specify the lifespan of client variables. The default value is specified in the
 		Variables page of the Lucee Administrator.</description>
 		</attribute>
 		<attribute>

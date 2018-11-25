@@ -65,16 +65,12 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     private static final long serialVersionUID = 940663152793150953L;
 
     private String name;
-    private boolean setClientCookies;
     private boolean setDomainCookies;
     private boolean setSessionManagement;
-    private boolean setClientManagement;
     private TimeSpan sessionTimeout = null;
     private TimeSpan requestTimeout = null;
-    private TimeSpan clientTimeout;
     private TimeSpan applicationTimeout = null;
     private int loginStorage = -1;
-    private String clientstorage;
     private String sessionstorage;
     private int scriptProtect;
     private boolean typeChecking;
@@ -140,13 +136,10 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     public ClassicApplicationContext(ConfigWeb config, String name, boolean isDefault, Resource source) {
 	super(config);
 	this.name = name;
-	setClientCookies = config.isClientCookies();
 	setDomainCookies = config.isDomainCookies();
 	setSessionManagement = config.isSessionManagement();
-	setClientManagement = config.isClientManagement();
 	sessionTimeout = config.getSessionTimeout();
 	requestTimeout = config.getRequestTimeout();
-	clientTimeout = config.getClientTimeout();
 	applicationTimeout = config.getApplicationTimeout();
 	loginStorage = Scope.SCOPE_COOKIE;
 	scriptProtect = config.getScriptProtect();
@@ -190,16 +183,12 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl._duplicate(this);
 
 	dbl.name = name;
-	dbl.setClientCookies = setClientCookies;
 	dbl.setDomainCookies = setDomainCookies;
 	dbl.setSessionManagement = setSessionManagement;
-	dbl.setClientManagement = setClientManagement;
 	dbl.sessionTimeout = sessionTimeout;
 	dbl.requestTimeout = requestTimeout;
-	dbl.clientTimeout = clientTimeout;
 	dbl.applicationTimeout = applicationTimeout;
 	dbl.loginStorage = loginStorage;
-	dbl.clientstorage = clientstorage;
 	dbl.sessionstorage = sessionstorage;
 	dbl.scriptProtect = scriptProtect;
 	dbl.typeChecking = typeChecking;

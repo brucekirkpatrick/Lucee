@@ -73,9 +73,7 @@
 		sessionManagement:scope.sessionManagement,
 		clientManagement:scope.clientManagement,
 		clientCookies:scope.clientCookies,
-		domaincookies:scope.domaincookies,
-				
-		localMode:'update'
+		domaincookies:scope.domaincookies
 	},
 	strict:{
 		sessionType:scope.sessionType,
@@ -84,9 +82,7 @@
 		sessionManagement:scope.sessionManagement,
 		clientManagement:scope.clientManagement,
 		clientCookies:scope.clientCookies,
-		domaincookies:scope.domaincookies,
-				
-		localMode:'update'
+		domaincookies:scope.domaincookies
 	},
 	speed:{
 		sessionType:scope.sessionType,
@@ -95,9 +91,7 @@
 		sessionManagement:scope.sessionManagement,
 		clientManagement:scope.clientManagement,
 		clientCookies:scope.clientCookies,
-		domaincookies:scope.domaincookies,
-				
-		localMode:'always'
+		domaincookies:scope.domaincookies
 	}
 }>
 
@@ -377,16 +371,6 @@ Create Datasource --->
 <h2>#stText.setting.general.scope#</h2>
 #stText.scopes[request.adminType]#
 
-<table class="tbl" width="700">
-<!--- Local Mode --->
-<tr>
-	<th scope="row">#stText.Scopes.LocalMode#</th>
-	<td style="#doStyle(scope.localMode,'scope','localMode')#">
-		<b>#scope.localMode#</b>
-        <br /><div class="comment">#stText.Scopes.LocalModeDesc#</div>
-	</td>
-</tr>
-</table>
 
 
 
