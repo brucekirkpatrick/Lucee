@@ -740,6 +740,14 @@ When checked, any requested files will be inspected only once for potential upda
 	<data key="scopes.sessiontypedescription">JEE Sessions erlauben es Lucee Sessions über einen JEE Server-Cluster zu verteilen. Wenn Sie diese Einstellung ändern verlieren Sie die aktuelle Session und müssen sich erneut einloggen.</data>
 	<data key="scopes.web">Hier können Sie festlegen, wie Lucee Scopes abarbeitet.</data>
 
+	<data key="scopes.localmodeClassic">Classic (CFML standard)</data>
+	<data key="scopes.localmodeModern">Modern</data>
+
+	<data key="scopes.localmodedesc">Definiert wie der Lokal Scope innerhalb einer UDF von einer Variable ohne Scope angesprochen wird.</data>
+
+	<data key="scopes.localmodeModernDesc">der Lokal Scope wird immer verwendet</data>
+	<data key="scopes.localmodeClassicDesc">er Lokal Scope wird nur verwendet, wenn der entsprechende Key darin bereits existiert</data>
+
 <data key="scopes.timeoutsecondsvalue">Der Wert Sekunden für </data>
 	<data key="scopes.sessionmanagementdescription">Standardmässig kann Session Management eingeschaltet werden. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</data>
 	<data key="scopes.clientcookiesdescription">Client Cookies ein oder ausschalten. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</data>

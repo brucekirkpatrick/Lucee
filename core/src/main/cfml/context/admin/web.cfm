@@ -9,11 +9,15 @@
 	<cfapplication
 		name="webadmin#server.lucee.version#"
 		sessionmanagement="yes"
+		clientmanagement="no"
+		setclientcookies="yes"
 		setdomaincookies="no"
+		clientStorage="file"
 		sessionStorage="memory"
 		scriptprotect="all"
 		sessiontimeout="#createTimeSpan(0,0,30,0)#"
 		applicationtimeout="#createTimeSpan(1,0,0,0)#"
+		localmode="update"
 		webcharset="utf-8"
 		>
 </cfif>

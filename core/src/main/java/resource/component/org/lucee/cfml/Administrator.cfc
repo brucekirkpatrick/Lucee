@@ -2030,25 +2030,35 @@ component {
 	/**
 	* @hint updates scope settings
 	* @sessionManagement Enable or disable session management.
+	* @clientManagement Enable or disable client management.
 	* @domainCookies Enable or disable domain cookies.
+	* @clientCookies Enable or disable client cookies.
+	* @clientTimeout Sets the amount of time Lucee will keep the client scope alive.
 	* @sessionTimeout Sets the amount of time Lucee will keep the session scope alive.
 	* @applicationTimeout Sets the amount of time Lucee will keep the application scope alive.
+	* @clientStorage Default storage for client, can be either [memory,file,cookie or any datasources or any caches defined]
 	* @sessionStorage Default storage for session, can be either [memory,file,cookie or any datasources or any caches defined]
 	* @sessionType type of session handled by lucee, can be either [application,jee]
+	* @localMode Defines how the local scope of a function is invoked when a variable with no scope definition is used, can be either [classic,modern]
 	* @cgiReadonly Defines whether the CGI Scope is read only or not.
 	*/
-	public void function updateScope( boolean sessionManagement, boolean domainCookies, timespan sessionTimeout, string sessionStorage, timespan applicationTimeout, string sessionType, boolean cgiReadonly ){
+	public void function updateScope( boolean sessionManagement, boolean clientManagement, boolean domainCookies, boolean clientCookies, timespan clientTimeout, timespan sessionTimeout, string clientStorage, string sessionStorage, timespan applicationTimeout, string sessionType, string localMode, boolean cgiReadonly ){
 		var existing = getScope();
 		admin
 			action="updateScope"
 			type="#variables.type#"
 			password="#variables.password#"
 			sessionManagement=isNull(arguments.sessionManagement) || isEmpty(arguments.sessionManagement) ? existing.sessionManagement : arguments.sessionManagement
+			clientManagement=isNull(arguments.clientManagement) || isEmpty(arguments.clientManagement) ? existing.clientManagement : arguments.clientManagement
 			domainCookies=isNull(arguments.domainCookies) || isEmpty(arguments.domainCookies) ? existing.domainCookies : arguments.domainCookies
+			clientCookies=isNull(arguments.clientCookies) || isEmpty(arguments.clientCookies) ? existing.clientCookies : arguments.clientCookies
+			clientTimeout=isNull(arguments.clientTimeout) || isEmpty(arguments.clientTimeout) ? existing.clientTimeout : arguments.clientTimeout
 			sessionTimeout=isNull(arguments.sessionTimeout) || isEmpty(arguments.sessionTimeout) ? existing.sessionTimeout : arguments.sessionTimeout
+			clientStorage=isNull(arguments.clientStorage) || isEmpty(arguments.clientStorage) ? existing.clientStorage : arguments.clientStorage
 			sessionStorage=isNull(arguments.sessionStorage) || isEmpty(arguments.sessionStorage) ? existing.sessionStorage : arguments.sessionStorage
 			applicationTimeout=isNull(arguments.applicationTimeout) || isEmpty(arguments.applicationTimeout) ? existing.applicationTimeout : arguments.applicationTimeout
 			sessionType=isNull(arguments.sessionType) || isEmpty(arguments.sessionType) ? existing.sessionType : arguments.sessionType
+			localMode=isNull(arguments.localMode) || isEmpty(arguments.localMode) ? existing.localMode : arguments.localMode
 			cgiReadonly=isNull(arguments.cgiReadonly) || isEmpty(arguments.cgiReadonly) ? existing.cgiReadonly : arguments.cgiReadonly
 			remoteClients="#variables.remoteClients#";
 	}
@@ -2062,11 +2072,16 @@ component {
 			type="#variables.type#"
 			password="#variables.password#"
 			sessionManagement=""
+			clientManagement=""
 			domainCookies=""
+			clientCookies=""
+			clientTimeout=""
 			sessionTimeout=""
+			clientStorage=""
 			sessionStorage=""
 			applicationTimeout=""
 			sessionType=""
+			localMode=""
 			cgiReadonly=""
 			remoteClients="#variables.remoteClients#";
 	}

@@ -2329,6 +2329,9 @@ public final class XMLConfigAdmin {
 	else scope.removeAttribute("sessiontimeout");
     }
 
+    public void updateClientStorage(String storage) throws SecurityException, ApplicationException {
+	updateStorage("client", storage);
+    }
 
     public void updateSessionStorage(String storage) throws SecurityException, ApplicationException {
 	updateStorage("session", storage);

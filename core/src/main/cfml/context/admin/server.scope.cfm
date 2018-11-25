@@ -32,11 +32,18 @@ Defaults --->
 					password="#session["password"&request.adminType]#"
 					
 					sessionType="#form.sessionType#"
+					localMode="#form.localMode#"
+					
+					
+					clientTimeout="#CreateTimeSpan(form.client_days,form.client_hours,form.client_minutes,form.client_seconds)#"
 					sessionTimeout="#CreateTimeSpan(form.session_days,form.session_hours,form.session_minutes,form.session_seconds)#"
 					applicationTimeout="#CreateTimeSpan(form.application_days,form.application_hours,form.application_minutes,form.application_seconds)#"
 					sessionManagement="#isDefined("form.sessionManagement") and form.sessionManagement#"
+					clientManagement="#isDefined("form.clientManagement") and form.clientManagement#"
+					clientCookies="#isDefined("form.clientCookies") and form.clientCookies#"
 					domaincookies="#isDefined("form.domaincookies") and form.domaincookies#"
 					sessionStorage="#form.sessionStorage#"
+					clientStorage="#form.clientStorage#"
 					cgiReadonly="#isDefined("form.cgiReadonly") and form.cgiReadonly#"
 					remoteClients="#request.getRemoteClients()#">
 				
@@ -49,11 +56,16 @@ Defaults --->
 					password="#session["password"&request.adminType]#"
 					
 					sessionType=""
+					localMode=""
 					sessionTimeout=""
 					applicationTimeout=""
 					sessionManagement=""
+					clientManagement=""
+					clientCookies=""
 					domaincookies=""
+					clientTimeout=""
 					sessionStorage=""
+					clientStorage=""
 					cgiReadonly=""
 					remoteClients="#request.getRemoteClients()#">
 				
@@ -315,8 +327,54 @@ Error Output --->
 						<cfset renderCodingTip( codeSample )>
 					</td>
 				</tr>
+				<!--- Client Timeout --->
+				<tr>
+					<th scope="row">#stText.Scopes.ClientTimeout#</th>
+					<td>
+						<cfset timeout=scope.clientTimeout>
+						<table class="maintbl" style="width:auto">
+							<thead>
+								<tr>
+									<th>#stText.General.Days#</td>
+									<th>#stText.General.Hours#</td>
+									<th>#stText.General.Minutes#</td>
+									<th>#stText.General.Seconds#</td>
+								</tr>
+							</thead>
+							<tbody>
+								<cfif hasAccess>
+									<tr>
+										<td><input type="text" name="client_days" value="#scope.clientTimeout_day#" class="number" required="yes" validate="integer" message="#stText.Scopes.TimeoutDaysValue#client#stText.Scopes.TimeoutEndValue#"></td>
+										<td><input type="text" name="client_hours" value="#scope.clientTimeout_hour#" class="number" required="yes" validate="integer" message="#stText.Scopes.TimeoutHoursValue#client#stText.Scopes.TimeoutEndValue#"></td>
+										<td><input type="text" name="client_minutes" value="#scope.clientTimeout_minute#" class="number" required="yes" validate="integer" message="#stText.Scopes.TimeoutMinutesValue#client#stText.Scopes.TimeoutEndValue#"></td>
+										<td><input type="text" name="client_seconds" value="#scope.clientTimeout_second#" class="number" required="yes" validate="integer" message="#stText.Scopes.TimeoutSecondsValue#client#stText.Scopes.TimeoutEndValue#"></td>
+									</tr>
+								<cfelse>
+									<tr>
+										<td align="center"><b>#scope.clientTimeout_day#</b></td>
+										<td align="center"><b>#scope.clientTimeout_hour#</b></td>
+										<td align="center"><b>#scope.clientTimeout_minute#</b></td>
+										<td align="center"><b>#scope.clientTimeout_second#</b></td>
+									</tr>
+								</cfif>
+							</tbody>
+						</table>
+						<div class="comment">#stText.Scopes.ClientTimeoutDescription#</div>
+					
+						<cfsavecontent variable="codeSample">
+							this.clientTimeout = createTimeSpan( #scope.clientTimeout_day#, #scope.clientTimeout_hour#, #scope.clientTimeout_minute#, #scope.clientTimeout_second# );
+						</cfsavecontent>
+						<cfset renderCodingTip( codeSample )>
+					</td>
+				</tr>
 				
 				<cfset stText.Scopes.SessionStorageDesc="Default Storage for Session, possible values are:<br>
+						- memory: the data are only in the memory, so in fact no persistent storage<br>
+						- file: the data are stored in the local filesystem<br>
+						- cookie: the data are stored in the users cookie<br>
+						- &lt;cache-name&gt;: name of a cache instance that has ""Storage"" enabled<br>
+						- &lt;datasource-name&gt;: name of a datasource instance that has ""Storage"" enabled">
+				<cfset stText.Scopes.ClientStorageDesc="Default Storage for Session, possible values are:<br>
 						- memory: the data are only in the memory, so in fact no persistent storage<br>
 						- file: the data are stored in the local filesystem<br>
 						- cookie: the data are stored in the users cookie<br>
@@ -374,7 +432,95 @@ Error Output --->
 						<cfset renderCodingTip( codeSample )>
 					</td>
 				</tr>
+				
+				<!--- client storage --->
+				<tr>
+					<th scope="row">#stText.Scopes.clientStorage#</th>
+					<td>
+						<select name="clientStorage" class="medium">
+							<option value="memory" <cfif scope.clientStorage EQ "memory">selected</cfif>>#ucFirst(stText.Scopes.memory)#</option>
+							<option value="file" <cfif scope.clientStorage EQ "file">selected</cfif>>#ucFirst(stText.Scopes.file)#</option>
+							<option value="cookie" <cfif scope.clientStorage EQ "cookie">selected</cfif>>#ucFirst(stText.Scopes.cookie)#</option>
+							<cfloop from="1" to="#arrayLen(cacheConnections)#" index="key">
+								<cfif key EQ 1>
+									<optgroup label="Cache">
+								</cfif>
+								<option value="#cacheConnections[key]#" <cfif scope.clientStorage EQ cacheConnections[key]>selected</cfif>>cache: #cacheConnections[key]#</option>
+								<cfif key EQ arrayLen(cacheConnections)>
+									</optgroup>
+								</cfif>
+							</cfloop>
+							<cfloop from="1" to="#arrayLen(datasources)#" index="key">
+								<cfif key EQ 1>
+									<optgroup label="Datasources">
+								</cfif>
+								<option value="#datasources[key]#" <cfif scope.clientStorage EQ datasources[key]>selected</cfif>>dsn: #datasources[key]#</option>
+								<cfif key EQ arrayLen(datasources)>
+									</optgroup>
+								</cfif>
+							</cfloop>
+						</select>
+						<!--- <input type="text" name="clientStorage" value="#scope.clientStorage#"> --->
+						<div class="comment">#stText.Scopes.clientStorageDesc#</div>
 
+						<cfsavecontent variable="codeSample">
+							this.clientStorage = "#scope.clientStorage#";
+						</cfsavecontent>
+						<cfset renderCodingTip( codeSample )>
+					</td>
+				</tr>
+<!---
+			</tbody>
+		</table>
+
+		<h3>#stText.general.dialect.cfml#</h3>
+		<div class="itemintro">#stText.general.dialect.cfmlDesc#</div>
+		
+		<table class="maintbl">
+			<tbody>
+--->
+
+
+
+
+				<!--- Local Mode --->
+				<tr>
+					<th scope="row">#stText.Scopes.LocalMode#</th>
+					<td>
+						<div class="comment">#stText.scopes.localmodeDesc#</div>
+						<cfif hasAccess>
+							<ul class="radiolist">
+								<li>
+									<!--- modern --->
+									<label>
+										<input class="radio" type="radio" name="LocalMode" value="modern"<cfif scope.LocalMode EQ "modern"> checked="checked"</cfif>>
+										<b>#stText.Scopes.LocalModeModern#</b>
+									</label>
+									<div class="comment">#stText.scopes.localmodeModernDesc#</div>
+								</li>
+								<li>
+									<!--- classic --->
+									<label>
+										<input class="radio" type="radio" name="LocalMode" value="classic"<cfif scope.LocalMode EQ "classic"> checked="checked"</cfif>>
+										<b>#stText.Scopes.LocalModeClassic#</b>
+									</label>
+									<div class="comment">#stText.scopes.localmodeClassicDesc#</div>
+								</li>
+							</ul>
+						<cfelse>
+							<input type="hidden" name="localMode" value="#scope.LocalMode#">
+							<b>#stText.Scopes["LocalMode"& scope.LocalMode]#</b><br />
+							<div class="comment">#stText.Scopes["LocalMode"& scope.LocalMode&"desc"]#</div>
+						</cfif>
+						
+						<cfsavecontent variable="codeSample">
+							this.localMode = "#scope.LocalMode#"; // or "#scope.localMode=="modern"?"classic":"modern"#"
+// or as part of a function declaration
+function test() localMode="#scope.LocalMode#" {}
+						</cfsavecontent>
+						<cfset renderCodingTip( codeSample )>
+					</td>
+				</tr>
 
 				<cfif hasAccess>
 					<cfmodule template="remoteclients.cfm" colspan="2">
@@ -395,5 +541,19 @@ Error Output --->
 			</cfif>
 		</table>
 	</form>
-
+	
+<!--- Tip
+<div class="tip">
+	#stText.settings.appcfcdesc#:
+	<pre>	this.sessionType="#scope.sessionType#"; // or "#scope.sessionType=="application"?"jee":"application"#"
+	this.SessionManagement=#scope.sessionManagement#; // or #scope.sessionManagement?false:true#
+	this.clientManagement=#scope.clientManagement#; // or #scope.clientManagement?false:true#
+	this.setDomainCookies=#scope.domainCookies#; // or #scope.domainCookies?false:true#
+	this.setClientCookies=#scope.clientCookies#; // or #scope.clientCookies?false:true#
+	this.localMode="#scope.LocalMode#"; // or "#scope.localMode=="modern"?"classic":"modern"#"
+	this.sessionTimeout=createTimeSpan(#scope.sessionTimeout_day#,#scope.sessionTimeout_hour#,#scope.sessionTimeout_minute#,#scope.sessionTimeout_second#);
+	this.applicationTimeout=createTimeSpan(#scope.applicationTimeout_day#,#scope.applicationTimeout_hour#,#scope.applicationTimeout_minute#,#scope.applicationTimeout_second#);
+	this.clientTimeout=createTimeSpan(#scope.clientTimeout_day#,#scope.clientTimeout_hour#,#scope.clientTimeout_minute#,#scope.clientTimeout_second#);
+	this.sessionStorage="#scope.sessionStorage#";
+	this.clientStorage="#scope.clientStorage#";</pre></div> --->
 </cfoutput>

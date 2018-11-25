@@ -95,6 +95,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final long serialVersionUID = -8230105685329758613L;
 
     private static final Collection.Key APPLICATION_TIMEOUT = KeyConstants._applicationTimeout;
+    private static final Collection.Key CLIENT_MANAGEMENT = KeyConstants._clientManagement;
+    private static final Collection.Key CLIENT_STORAGE = KeyImpl.intern("clientStorage");
     private static final Collection.Key SESSION_STORAGE = KeyImpl.intern("sessionStorage");
     private static final Collection.Key LOGIN_STORAGE = KeyImpl.intern("loginStorage");
     private static final Collection.Key SESSION_TYPE = KeyImpl.intern("sessionType");
@@ -104,7 +106,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key INVOKE_IMPLICIT_ACCESSOR = KeyImpl.intern("InvokeImplicitAccessor");
     private static final Collection.Key SESSION_MANAGEMENT = KeyImpl.intern("sessionManagement");
     private static final Collection.Key SESSION_TIMEOUT = KeyImpl.intern("sessionTimeout");
+    private static final Collection.Key CLIENT_TIMEOUT = KeyImpl.intern("clientTimeout");
     private static final Collection.Key REQUEST_TIMEOUT = KeyImpl.intern("requestTimeout");
+    private static final Collection.Key SET_CLIENT_COOKIES = KeyImpl.intern("setClientCookies");
     private static final Collection.Key SET_DOMAIN_COOKIES = KeyImpl.intern("setDomainCookies");
     private static final Collection.Key SCRIPT_PROTECT = KeyImpl.intern("scriptProtect");
     private static final Collection.Key CUSTOM_TAG_PATHS = KeyImpl.intern("customtagpaths");

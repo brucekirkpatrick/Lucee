@@ -502,10 +502,15 @@ Wanneer aangevinkt zal elk opgevraagd bestand slechts eenmaal in een request voo
 	<data key="scopes.applicationtimeoutdescription">Stelt de tijdspanne in waarvoor Lucee de application scope actief moet houden. Deze instelling kan eventueel worden aangepast via de cfapplication tag.</data>
 	<data key="scopes.sessiontypedescription">J2EE Sessies maken het mogelijk om sessies aan te maken over de breedte van een cluster. Wanneer je deze instelling veranderd zal jouw huidige sessie verloren gaan en zal je dus opnieuw moeten inloggen</data>
 	<data key="scopes.web">Hier kan je de instellingen definiëren voor hoe Lucee scopes verwerkt.</data>
+	<data key="scopes.localmodealways">always</data>
 	<data key="scopes.timeoutsecondsvalue">Voor seconden waarde </data>
 	<data key="scopes.sessionmanagementdescription">Er kan standaard session management worden ingeschakeld. Deze instelling kan eventueel worden aangepast via de cfapplication tag.</data>
 	<data key="scopes.clientcookiesdescription">Client cookies inschakelen of uitschakelen. Deze instelling kan eventueel worden aangepast via de cfapplication tag.</data>
 	<data key="scopes.sessiontimeout">Session timeout</data>
+	<data key="scopes.localmodeupdate">update (CFML standaard)</data>
+	<data key="scopes.localmodedesc">Definieerd hoe de local scope van een functie wordt ingeroepen wanneer er een variabele zonder scope definitie wordt gebruikt.&lt;br&gt;
+- always: de local scope wordt altijd ingeroepen&lt;br&gt;
+- update (CFML standaard): de local scope wordt alleen ingeroepen wanneer de key ook al in de scope bestaat</data>
 
 	<data key="scopes.timeoutdaysvalue">Voor dagen waarde </data>
 	<data key="scopes.sessiontype">Session type</data>

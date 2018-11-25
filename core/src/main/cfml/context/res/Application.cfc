@@ -20,7 +20,9 @@ component {
 
 	this.name = "__LUCEE_STATIC_RESOURCE" & (left(CGI.CF_TEMPLATE_PATH, 6) == "zip://" ? "_ARC" : "");
 
+	this.clientManagement  = false;
 	this.sessionManagement = false;
+	this.setClientCookies  = false;
 	this.setDomainCookies  = false;
 	this.applicationTimeout= createTimeSpan(1,0,0,0);
 	this.localMode         = true;

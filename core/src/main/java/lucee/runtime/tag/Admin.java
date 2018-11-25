@@ -3724,9 +3724,13 @@ public final class Admin extends TagImpl implements DynamicAttributes {
     private void doUpdateScope() throws PageException {
 
 	admin.updateSessionManagement(getBoolObject("admin", action, "sessionManagement"));
+	admin.updateClientManagement(getBoolObject("admin", action, "clientManagement"));
 	admin.updateDomaincookies(getBoolObject("admin", action, "domainCookies"));
+	admin.updateClientCookies(getBoolObject("admin", action, "clientCookies"));
 	// admin.updateRequestTimeout(getTimespan("admin",action,"requestTimeout"));
+	admin.updateClientTimeout(getTimespan("admin", action, "clientTimeout"));
 	admin.updateSessionTimeout(getTimespan("admin", action, "sessionTimeout"));
+	admin.updateClientStorage(getString("admin", action, "clientStorage"));
 	admin.updateSessionStorage(getString("admin", action, "sessionStorage"));
 	admin.updateApplicationTimeout(getTimespan("admin", action, "applicationTimeout"));
 	admin.updateSessionType(getString("admin", action, "sessionType"));

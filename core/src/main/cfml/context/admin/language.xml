@@ -491,6 +491,13 @@
 		<custom key="scopes.clientmanagementdescription">Standardmässig kann Client Management eingeschaltet werden. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</custom>
 		<custom key="scopes.domaincookies">Domain Cookies</custom>
 		<custom key="scopes.domaincookiesdescription">Domain Cookies ein oder ausschalten. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</custom>
+	
+		<custom key="scopes.localmode">Local Scope Modus</custom>
+		<custom key="scopes.localmodealways">Always</custom>
+		<custom key="scopes.localmodedesc">Definiert wie der Lokal Scope innerhalb einer UDF von einer Variable ohne Scope angesprochen wird.&lt;br&gt;
+	- always: der Lokal Scope wird immer verwendet&lt;br&gt;
+	- update (CFML Standard): der Lokal Scope wird nur verwendet, wenn der entsprechende Key darin bereits existiert.</custom>
+		<custom key="scopes.localmodeupdate">Update (CFML Standard)</custom>
 
 		<custom key="scopes.server">Definert Scopeeneinstellungen, die als Standardwert für alle Webs gelten sollen.</custom>
 		<custom key="scopes.sessionmanagement">Session Management</custom>
@@ -1203,6 +1210,13 @@
 		<custom key="scopes.clientmanagementdescription">By default client management can be enabled. This behaviour can be overridden by the tag cfapplication.</custom>
 		<custom key="scopes.domaincookies">Domain cookies</custom>
 		<custom key="scopes.domaincookiesdescription">Enable or disable domain cookies. This behaviour can be overridden by the tag cfapplication.</custom>
+		<custom key="scopes.localmode">Local scope mode</custom>
+	
+		<custom key="scopes.localmodealways">always</custom>
+		<custom key="scopes.localmodedesc">Defines how the local scope of a function is invoked when a variable with no scope definition is used.&lt;br&gt;
+	- always: the local scope is always invoked&lt;br&gt;
+	- update (CFML standard): the local scope is only invoked when the key already exists in it</custom>
+		<custom key="scopes.localmodeupdate">update (CFML standard)</custom>
 
 		<custom key="scopes.server">Here you can define the scope settings that will be used as &lt;strong&gt;default&lt;/strong&gt; for all webs.&lt;br/&gt;</custom>
 		<custom key="scopes.sessionmanagement">Session management</custom>
