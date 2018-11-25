@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.dump.DumpTable;
@@ -144,24 +145,33 @@ public class ArrayClassic extends ArraySupport {
 		ai.dimension = dimension - 1;
 		return setEL(key, ai);
 	    }
+	    if (!NullSupportHelper.full()) return defaultValue;
 	}
 	return o;
     }
 
     @Override
     public synchronized Object getE(int key) throws ExpressionException {
-		if (key < 1) {
-			throw invalidPosition(key);
-		}
-		else if (key > size) {
-			if (dimension > 1) return setE(key, new ArrayClassic(dimension - 1));
-			throw invalidPosition(key);
-		}
+	if (key < 1) {
+	    throw invalidPosition(key);
+	}
+	else if (key > size) {
+	    if (dimension > 1) return setE(key, new ArrayClassic(dimension - 1));
+	    throw invalidPosition(key);
+	}
 
-		Object o = arr[(offset + key) - 1];
+	Object o = arr[(offset + key) - 1];
 
-		if (o == null && dimension > 1) return setE(key, new ArrayClassic(dimension - 1));
-		return o;
+	if (NullSupportHelper.full()) {
+	    if (o == null && dimension > 1) return setE(key, new ArrayClassic(dimension - 1));
+	    return o;
+	}
+
+	if (o == null) {
+	    if (dimension > 1) return setE(key, new ArrayClassic(dimension - 1));
+	    throw invalidPosition(key);
+	}
+	return o;
     }
 
     /**

@@ -74,8 +74,7 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
      * Constructor of the class
      * 
      * @param component
-     * @param scope
-     * @param cloneShadow
+     * @param shadow
      */
     public ComponentScopeShadow(ComponentImpl component, ComponentScopeShadow scope, boolean cloneShadow) {
 	this.component = component;
@@ -136,6 +135,7 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 
 	Object val = shadow.g(key, CollectionUtil.NULL);
 	if (val == CollectionUtil.NULL) return defaultValue;
+	if (val == null && !NullSupportHelper.full()) return defaultValue;
 	return val;
     }
 
@@ -176,7 +176,11 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 	if (key.equalsIgnoreCase(KeyConstants._this) || key.equalsIgnoreCase(KeyConstants._super) || key.equalsIgnoreCase(KeyConstants._static))
 	    throw new ExpressionException("key [" + key.getString() + "] is part of the component and can't be removed");
 
-	    return shadow.r(key);
+	if (NullSupportHelper.full()) return shadow.r(key);
+
+	Object o = shadow.remove(key);
+	if (o != null) return o;
+	throw new ExpressionException("can't remove key [" + key.getString() + "] from struct, key doesn't exist");
     }
 
     @Override

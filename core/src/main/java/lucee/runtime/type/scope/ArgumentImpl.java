@@ -104,6 +104,13 @@ public final class ArgumentImpl extends ScopeSupport implements Argument, ArrayP
 
     @Override
     public Object get(Collection.Key key, Object defaultValue) {
+	/*
+	 * if(NullSupportHelper.full()) { Object o=super.get(key,NullSupportHelper.NULL());
+	 * if(o!=NullSupportHelper.NULL())return o;
+	 * 
+	 * o=get(Caster.toIntValue(key.getString(),-1),NullSupportHelper.NULL());
+	 * if(o!=NullSupportHelper.NULL())return o; return defaultValue; }
+	 */
 
 	Object o = super.g(key, Null.NULL);
 	if (o != Null.NULL) return o;
@@ -115,6 +122,15 @@ public final class ArgumentImpl extends ScopeSupport implements Argument, ArrayP
 
     @Override
     public Object get(Collection.Key key) throws ExpressionException {
+	/*
+	 * if(NullSupportHelper.full()) { Object o=super.get(key,NullSupportHelper.NULL());
+	 * if(o!=NullSupportHelper.NULL())return o;
+	 * 
+	 * o=get(Caster.toIntValue(key.getString(),-1),NullSupportHelper.NULL());
+	 * if(o!=NullSupportHelper.NULL())return o; throw new ExpressionException("key ["+key.getString()
+	 * +"] doesn't exist in argument scope. existing keys are ["+
+	 * lucee.runtime.type.List.arrayToList(CollectionUtil.keys(this),", ") +"]"); }
+	 */
 
 	// null is supported as returned value with argument scope
 	Object o = super.g(key, Null.NULL);
@@ -377,7 +393,7 @@ public final class ArgumentImpl extends ScopeSupport implements Argument, ArrayP
     public boolean containsKey(Collection.Key key) {
 	Object val = super.g(key, CollectionUtil.NULL);
 	if (val == CollectionUtil.NULL) return false;
-	if (val == null) return false;
+	if (val == null && !NullSupportHelper.full()) return false;
 	return true;
     }
     /*

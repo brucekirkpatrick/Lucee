@@ -26,6 +26,7 @@ import java.util.Comparator;
 
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
+import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.exp.DatabaseException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.PageRuntimeException;
@@ -61,7 +62,7 @@ public final class QuerySort extends BIF {
 	Key[] columns = query.getColumnNames();
 	QueryRow[] rows = new QueryRow[recordcount];
 	Struct sct;
-	Object empty = "";
+	Object empty = NullSupportHelper.full(pc) ? null : "";
 	for (int row = 1; row <= recordcount; row++) {
 	    sct = new StructImpl();
 	    for (int col = 0; col < columns.length; col++) {

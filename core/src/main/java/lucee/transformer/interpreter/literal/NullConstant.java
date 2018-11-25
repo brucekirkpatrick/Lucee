@@ -18,8 +18,13 @@ public class NullConstant extends ExpressionBase {
 
     @Override
     public Class<?> _writeOut(InterpreterContext ic, int mode) throws PageException {
-		ic.stack((Object) null);
-		return Object.class;
+	if (NullSupportHelper.full(ic.getPageContext())) {
+	    ic.stack((Object) null);
+	}
+	else {
+	    ic.stack(ic.getPageContext().undefinedScope().get(KeyConstants._NULL));
+	}
+	return Object.class;
     }
 
     public Variable toVariable() {

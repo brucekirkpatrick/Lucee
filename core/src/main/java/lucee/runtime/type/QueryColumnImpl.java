@@ -253,7 +253,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
      * @throws DatabaseException
      */
     public Object touch(int row) {
-	if (row < 1 || row > size) return "";
+	if (row < 1 || row > size) return NullSupportHelper.full() ? null : "";
 	Object o = data[row - 1];
 	if (o != null) return o;
 	return setEL(row, new StructImpl());
@@ -391,6 +391,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 		data[i - 1] = data[i];
 	    }
 	    size--;
+	    if (NullSupportHelper.full()) return o;
 	    return o == null ? "" : o;
 	}
     }
@@ -503,7 +504,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public String castToString(String defaultValue) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toString(value, defaultValue);
@@ -516,7 +517,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public Boolean castToBoolean(Boolean defaultValue) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toBoolean(value, defaultValue);
@@ -529,7 +530,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public double castToDoubleValue(double defaultValue) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return Caster.toDoubleValue(value, true, defaultValue);
@@ -542,7 +543,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public DateTime castToDateTime(DateTime defaultValue) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	Object value = get(query.getCurrentrow(ThreadLocalPageContext.get().getId()), _null);
 	if (value == _null) return defaultValue;
 	return DateCaster.toDateAdvanced(value, DateCaster.CONVERTING_TYPE_OFFSET, null, defaultValue);
@@ -629,7 +630,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public boolean containsKey(Collection.Key key) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	return get(key, _null) != _null;
     }
 
@@ -905,7 +906,7 @@ public class QueryColumnImpl implements QueryColumnPro, Objects {
 
     @Override
     public boolean containsKey(int key) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL();
 	return get(key, _null) != _null;
     }
 

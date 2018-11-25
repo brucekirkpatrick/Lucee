@@ -544,7 +544,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
     /**
      * constructor of the class, to generate a empty resultset (no database execution)
      * 
-     * @param columnKeys columns for the resultset
+     * @param strColumns columns for the resultset
      * @param rowNumber count of rows to generate (empty fields)
      * @param name
      */
@@ -591,7 +591,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
     /**
      * constructor of the class, to generate a empty resultset (no database execution)
      * 
-     * @param columnNames columns for the resultset
+     * @param strColumns columns for the resultset
      * @param strTypes array of the types
      * @param rowNumber count of rows to generate (empty fields)
      * @param name
@@ -657,7 +657,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
     /**
      * constructor of the class
      * 
-     * @param strColumnNames columns definition as String Array
+     * @param columnNames columns definition as String Array
      * @param arrColumns values
      * @param name
      * @throws DatabaseException
@@ -729,7 +729,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
     /**
      * constructor of the class
      * 
-     * @param strColumnList
+     * @param columnList
      * @param data
      * @param name
      * @throws DatabaseException
@@ -843,7 +843,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
 	    if (row > 0 && row <= recordcount) {
 		Object val = columns[index].get(row, CollectionUtil.NULL);
 		if (val != CollectionUtil.NULL) return val;
-		return "";
+		return NullSupportHelper.full() ? null : "";
 	    }
 	    else return defaultValue;
 	    // */
@@ -868,7 +868,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
 	if (index != -1) {
 	    Object val = columns[index].get(row, CollectionUtil.NULL);
 	    if (val != CollectionUtil.NULL) return val;
-	    return "";
+	    return NullSupportHelper.full() ? null : "";
 	}
 	if (key.length() >= 10) {
 	    if (key.equals(KeyConstants._RECORDCOUNT)) return new Double(getRecordcount());
@@ -1616,11 +1616,12 @@ public class QueryImpl implements Query, Objects, QueryResult {
 	if (col < 1 || col > keys.length) {
 	    new IndexOutOfBoundsException("invalid column index to retrieve Data from query, valid index goes from 1 to " + keys.length);
 	}
-	Object _null =Null.NULL;
+	boolean fns = NullSupportHelper.full();
+	Object _null = NullSupportHelper.NULL(fns);
 
 	Object o = getAt(keys[col - 1], row, _null);
 	if (o == _null) throw new IndexOutOfBoundsException("invalid row index to retrieve Data from query, valid index goes from 1 to " + getRecordcount());
-	return Caster.toString(o, "");
+	return Caster.toString(o, fns ? null : "");
     }
 
     @Override

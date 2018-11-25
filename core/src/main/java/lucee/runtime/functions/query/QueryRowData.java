@@ -19,6 +19,7 @@
 package lucee.runtime.functions.query;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
@@ -45,7 +46,7 @@ public class QueryRowData extends BIF {
 	Struct result = new StructImpl();
 
 	for (int col = 0; col < colNames.length; col++)
-	    result.setEL(colNames[col], query.getAt(colNames[col], row, ""));
+	    result.setEL(colNames[col], query.getAt(colNames[col], row, NullSupportHelper.empty(pc)));
 
 	return result;
     }

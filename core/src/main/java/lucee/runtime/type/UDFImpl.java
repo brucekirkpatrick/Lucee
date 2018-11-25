@@ -41,6 +41,7 @@ import lucee.runtime.cache.tag.CacheItem;
 import lucee.runtime.cache.tag.udf.UDFCacheItem;
 import lucee.runtime.component.MemberSupport;
 import lucee.runtime.config.Config;
+import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.exp.ExpressionException;
@@ -118,11 +119,12 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
     private void defineArguments(PageContext pc, FunctionArgument[] funcArgs, Object[] args, Argument newArgs) throws PageException {
 	// define argument scope
-	Object _null = Null.NULL;
+	boolean fns = NullSupportHelper.full(pc);
+	Object _null = NullSupportHelper.NULL(fns);
 
 	for (int i = 0; i < funcArgs.length; i++) {
 	    // argument defined
-	    if (args.length > i && (args[i] != null)) {
+	    if (args.length > i && (args[i] != null || fns)) {
 		newArgs.setEL(funcArgs[i].getName(), castToAndClone(pc, funcArgs[i], args[i], i + 1));
 	    }
 	    // argument not defined
@@ -132,6 +134,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		    if (funcArgs[i].isRequired()) {
 			throw new ExpressionException("The parameter " + funcArgs[i].getName() + " to function " + getFunctionName() + " is required but was not passed in.");
 		    }
+		    if (!fns) newArgs.setEL(funcArgs[i].getName(), Argument.NULL);
 		}
 		else {
 		    newArgs.setEL(funcArgs[i].getName(), castTo(pc, funcArgs[i], d, i + 1));
@@ -149,7 +152,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	// print.out(values.size());
 	Object value;
 	Collection.Key name;
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL(pageContext);
 
 	for (int i = 0; i < funcArgs.length; i++) {
 	    // argument defined
@@ -352,7 +355,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    }
 	    // BodyContentUtil.clearAndPop(pc,bc);
 
-	    if (returnValue == null) return returnValue;
+	    if (returnValue == null && ((PageContextImpl) pc).getFullNullSupport()) return returnValue;
 	    if (properties.getReturnType() == CFTypes.TYPE_ANY || !((PageContextImpl) pc).getTypeChecking()) return returnValue;
 	    if (Decision.isCastableTo(properties.getReturnTypeAsString(), returnValue, false, false, -1)) return returnValue;
 	    throw new UDFCasterException(this, properties.getReturnTypeAsString(), returnValue);

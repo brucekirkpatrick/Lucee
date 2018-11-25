@@ -32,6 +32,9 @@ Defaults --->
             <cfif not isDefined('form.suppressWSBeforeArg')>
             	<cfset form.suppressWSBeforeArg=false>
             </cfif>
+            <cfif not isDefined('form.nullSupport')>
+            	<cfset form.nullSupport=false>
+            </cfif>
 			<cfif not isDefined('form.handleUnquotedAttrValueAsString')>
             	<cfset form.handleUnquotedAttrValueAsString=false>
             </cfif>
@@ -40,7 +43,8 @@ Defaults --->
 				action="updateCompilerSettings"
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
-
+				
+				nullSupport="#form.nullSupport#"
 				dotNotationUpperCase="#dotNotUpper#"
                 suppressWSBeforeArg="#form.suppressWSBeforeArg#"
                 handleUnquotedAttrValueAsString="#form.handleUnquotedAttrValueAsString#"
@@ -56,7 +60,8 @@ Defaults --->
 				action="updateCompilerSettings"
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
-
+				
+				nullSupport=""
 				dotNotationUpperCase=""
 				suppressWSBeforeArg=""
 				templateCharset=""
@@ -186,6 +191,38 @@ Redirtect to entry --->
 		<table class="maintbl">
 			<tbody>
 --->
+				<!--- Null Support --->
+				<tr>
+					<th scope="row">#stText.compiler.nullSupport#</th>
+					<td>
+						<cfif hasAccess >
+							<ul class="radiolist">
+								<li>
+									<!--- full --->
+									<label>
+										<input class="radio" type="radio" name="nullSupport" value="true"<cfif setting.nullSupport> checked="checked"</cfif>>
+										<b>#stText.compiler.nullSupportFull#</b>
+									</label>
+									<div class="comment">#stText.compiler.nullSupportFullDesc#</div>
+								</li>
+								<li>
+									<!--- partial --->
+									<label>
+										<input class="radio" type="radio" name="nullSupport" value="false"<cfif !setting.nullSupport> checked="checked"</cfif>>
+										<b>#stText.compiler.nullSupportPartial#</b>
+									</label>
+									<div class="comment">#stText.compiler.nullSupportPartialDesc#</div>
+								</li>
+							</ul>
+						<cfelse>
+							<cfset strNullSupport=setting.nullSupport?"full":"partial">
+							<input type="hidden" name="nullSupport" value="#setting.nullSupport#">
+							<b>#stText.compiler["nullSupport"& strNullSupport]#</b><br />
+							<div class="comment">#stText.compiler["nullSupport"& strNullSupport&"Desc"]#</div>
+						</cfif>
+					</td>
+				</tr>
+
 				<!--- Dot Notation --->
 				<tr>
 					<th scope="row">#stText.setting.dotNotation#</th>

@@ -783,6 +783,7 @@ public interface Config {
 
     public boolean getRememberMe();
 
+    public boolean getFullNullSupport();
 
     public ORMEngine getORMEngine(PageContext pc) throws PageException;
 

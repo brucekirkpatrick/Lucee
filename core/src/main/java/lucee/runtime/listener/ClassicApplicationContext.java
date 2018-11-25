@@ -128,6 +128,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
     private boolean wsMaintainSession;
 
+    private boolean fullNullSupport;
     private SerializationSettings serializationSettings = SerializationSettings.DEFAULT;
 
     private boolean queryPSQ;
@@ -161,6 +162,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
 	this.locale = config.getLocale();
 	this.timeZone = config.getTimeZone();
+	this.fullNullSupport = config.getFullNullSupport();
 	this.scopeCascading = config.getScopeCascadingType();
 
 	this.webCharset = ((ConfigImpl) config).getWebCharSet();
@@ -226,6 +228,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl.queryVarUsage = queryVarUsage;
 	dbl.locale = locale;
 	dbl.timeZone = timeZone;
+	dbl.fullNullSupport = fullNullSupport;
 	dbl.scopeCascading = scopeCascading;
 	dbl.webCharset = webCharset;
 	dbl.resourceCharset = resourceCharset;
@@ -524,6 +527,11 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     }
 
     @Override
+    public boolean getFullNullSupport() {
+	return fullNullSupport;
+    }
+
+    @Override
     public Charset getWebCharset() {
 	return CharsetUtil.toCharset(webCharset);
     }
@@ -559,6 +567,10 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.timeZone = timeZone;
     }
 
+    @Override
+    public void setFullNullSupport(boolean fullNullSupport) {
+	this.fullNullSupport = fullNullSupport;
+    }
 
     @Override
     public void setWebCharset(Charset webCharset) {

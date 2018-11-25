@@ -26,24 +26,28 @@ import lucee.runtime.type.Null;
 public class NullSupportHelper {
 
     public static boolean full(PageContext pc) {
-	return true;
+	return ((PageContextImpl) pc).getFullNullSupport();
     }
 
-    public static boolean full() {return true;  }
+    public static boolean full() {
+	PageContext pc = ThreadLocalPageContext.get();
+	if (pc == null) return false;
+	return ((PageContextImpl) pc).getFullNullSupport();
+    }
 
     public static Object NULL(boolean fns) {
-	return Null.NULL;
+	return fns ? Null.NULL : null;
     }
 
     public static Object NULL(PageContext pc) {
-	return Null.NULL;
+	return full(pc) ? Null.NULL : null;
     }
 
     public static Object NULL() {
-	return Null.NULL;
+	return full() ? Null.NULL : null;
     }
 
     public static Object empty(PageContext pc) {
-	return "";
+	return full(pc) ? null : "";
     }
 }

@@ -140,6 +140,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key SESSION_COOKIE = KeyImpl.intern("sessioncookie");
     private static final Collection.Key AUTH_COOKIE = KeyImpl.intern("authcookie");
 
+    private static final Key ENABLE_NULL_SUPPORT = KeyImpl.intern("enableNULLSupport");
+    private static final Key NULL_SUPPORT = KeyImpl.intern("nullSupport");
     private static final Key PSQ = KeyImpl.intern("psq");
     private static final Key PSQ_LONG = KeyImpl.intern("preservesinglequote");
     private static final Key VAR_USAGE = KeyImpl.intern("varusage");
@@ -192,6 +194,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private AuthCookieData authCookie;
     private Object mailListener;
     private TagListener queryListener;
+    private boolean fullNullSupport;
     private SerializationSettings serializationSettings;
 
     private boolean queryPSQ;
@@ -202,21 +205,27 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private boolean initCustomTypes;
     private boolean initMailListener;
     private boolean initQueryListener;
+    private boolean initFullNullSupport;
     private boolean initCachedWithins;
 
     private boolean initApplicationTimeout;
     private boolean initSessionTimeout;
+    private boolean initClientTimeout;
     private boolean initRequestTimeout;
+    private boolean initSetClientCookies;
+    private boolean initSetClientManagement;
     private boolean initSetDomainCookies;
     private boolean initSetSessionManagement;
     private boolean initScriptProtect;
     private boolean initTypeChecking;
     private boolean initAllowCompression;
     private boolean initDefaultAttributeValues;
+    private boolean initClientStorage;
     private boolean initSecureJsonPrefix;
     private boolean initSecureJson;
     private boolean initSessionStorage;
     private boolean initSessionCluster;
+    private boolean initClientCluster;
     private boolean initLoginStorage;
     private boolean initSessionType;
     private boolean initWS;
@@ -229,9 +238,11 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private boolean initLocalMode;
     private boolean initBufferOutput;
     private boolean initSuppressContent;
+    private boolean initS3;
     private boolean initFTP;
     private boolean ormEnabled;
     private ORMConfiguration ormConfig;
+    private boolean initRestSetting;
     private boolean initJavaSettings;
     private JavaSettings javaSettings;
     private Object ormDatasource;
@@ -252,6 +263,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     private Resource antiSamyPolicyResource;
 
+    private Resource[] restCFCLocations;
 
     private short scopeCascading = -1;
 
@@ -290,6 +302,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.sessionType = config.getSessionType();
 	this.wstype = WS_TYPE_AXIS1;
 	this.cgiScopeReadonly = ci.getCGIScopeReadonly();
+	this.fullNullSupport = ci.getFullNullSupport();
 	this.queryPSQ = ci.getPSQL();
 	this.queryVarUsage = ci.getQueryVarUsage();
 
@@ -1654,6 +1667,23 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	}
     }
 
+    @Override
+    public boolean getFullNullSupport() {
+	if (!initFullNullSupport) {
+	    Boolean b = Caster.toBoolean(get(component, NULL_SUPPORT, null), null);
+	    if (b == null) b = Caster.toBoolean(get(component, ENABLE_NULL_SUPPORT, null), null);
+	    if (b != null) fullNullSupport = b.booleanValue();
+
+	    initFullNullSupport = true;
+	}
+	return fullNullSupport;
+    }
+
+    @Override
+    public void setFullNullSupport(boolean fullNullSupport) {
+	this.fullNullSupport = fullNullSupport;
+	this.initFullNullSupport = true;
+    }
 
     @Override
     public boolean getQueryPSQ() {

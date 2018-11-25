@@ -28,7 +28,6 @@ import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.Collection;
-import lucee.runtime.type.Null;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
@@ -85,7 +84,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 		// upper variable scope
 		Object o;
 
-		Object _null = Null.NULL;
+		Object _null = NullSupportHelper.NULL(pc);
 		if (checkArgs) {
 			o = localScope.get(key, _null);
 			if (o != _null) return o;
@@ -147,7 +146,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 				break;
 		}
 
-		Object _null = Null.NULL;
+		Object _null = NullSupportHelper.NULL(pc);
 		Object o;
 		if (checkArgs) {
 			o = localScope.get(key, _null);

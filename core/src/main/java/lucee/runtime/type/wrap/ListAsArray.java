@@ -90,7 +90,10 @@ public class ListAsArray extends ArraySupport implements Array, List {
 	try {
 	    Object rtn = list.get(key - 1);
 	    if (rtn == null) {
-			return defaultValue;
+		if (NullSupportHelper.full()) {
+		    return null;
+		}
+		return defaultValue;
 	    }
 	    return rtn;
 	}
@@ -112,6 +115,9 @@ public class ListAsArray extends ArraySupport implements Array, List {
 	if (key > list.size()) throw new ExpressionException("Array index [" + key + "] out of range, array size is [" + list.size() + "]");
 	Object rtn = list.get(key - 1);
 	if (rtn == null) {
+	    if (NullSupportHelper.full()) {
+		return null;
+	    }
 	    throw new ExpressionException("Element at position [" + key + "] does not exist in list");
 	}
 	return rtn;

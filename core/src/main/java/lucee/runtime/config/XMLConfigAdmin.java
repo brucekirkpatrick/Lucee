@@ -5465,7 +5465,7 @@ public final class XMLConfigAdmin {
 	el.setAttribute("layout-arguments", toStringCSSStyle(layoutArgs));
     }
 
-    public void updateCompilerSettings(Boolean dotNotationUpperCase, Boolean suppressWSBeforeArg,Boolean handleUnQuotedAttrValueAsString,
+    public void updateCompilerSettings(Boolean dotNotationUpperCase, Boolean suppressWSBeforeArg, Boolean nullSupport, Boolean handleUnQuotedAttrValueAsString,
 	    Integer externalizeStringGTE) throws PageException {
 
 	Element element = _getRootElement("compiler");
@@ -5488,6 +5488,13 @@ public final class XMLConfigAdmin {
 	    element.setAttribute("suppress-ws-before-arg", Caster.toString(suppressWSBeforeArg));
 	}
 
+	// full null support
+	if (nullSupport == null) {
+	    if (element.hasAttribute("full-null-support")) element.removeAttribute("full-null-support");
+	}
+	else {
+	    element.setAttribute("full-null-support", Caster.toString(nullSupport));
+	}
 
 	// externalize-string-gte
 	if (externalizeStringGTE == null) {

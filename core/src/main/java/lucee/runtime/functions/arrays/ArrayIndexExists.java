@@ -28,14 +28,14 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Array;
-import lucee.runtime.type.Null;
 
 public final class ArrayIndexExists extends BIF {
 
     private static final long serialVersionUID = -4490011932571314711L;
 
     public static boolean call(PageContext pc, Array array, double index) {
-	return array.get((int) index, Null.NULL) != Null.NULL;
+	Object _null = NullSupportHelper.NULL(pc);
+	return array.get((int) index, _null) != _null;
     }
 
     @Override

@@ -87,7 +87,17 @@ import lucee.runtime.op.Operator;
 import lucee.runtime.op.ThreadLocalDuplication;
 import lucee.runtime.op.date.DateCaster;
 import lucee.runtime.thread.ThreadUtil;
-import lucee.runtime.type.*;
+import lucee.runtime.type.ArrayImpl;
+import lucee.runtime.type.Collection;
+import lucee.runtime.type.FunctionArgument;
+import lucee.runtime.type.KeyImpl;
+import lucee.runtime.type.Struct;
+import lucee.runtime.type.StructImpl;
+import lucee.runtime.type.UDF;
+import lucee.runtime.type.UDFGSProperty;
+import lucee.runtime.type.UDFImpl;
+import lucee.runtime.type.UDFPlus;
+import lucee.runtime.type.UDFProperties;
 import lucee.runtime.type.cfc.ComponentEntryIterator;
 import lucee.runtime.type.cfc.ComponentValueIterator;
 import lucee.runtime.type.comparator.ArrayOfStructComparator;
@@ -1947,7 +1957,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     }
 
     public boolean contains(PageContext pc, String name) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL(pc);
 	return get(pc, KeyImpl.init(name), _null) != _null;
     }
 
@@ -1958,7 +1968,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      */
     @Override
     public boolean contains(PageContext pc, Key key) {
-	Object _null = Null.NULL;
+	Object _null = NullSupportHelper.NULL(pc);
 	return get(pc, key, _null) != _null;
     }
 
@@ -1968,12 +1978,14 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     }
 
     public boolean contains(int access, String name) {
-	return get(access, name, Null.NULL) != Null.NULL;
+	Object _null = NullSupportHelper.NULL();
+	return get(access, name, _null) != _null;
     }
 
     @Override
     public boolean contains(int access, Key name) {
-	return get(access, name, Null.NULL) != Null.NULL;
+	Object _null = NullSupportHelper.NULL();
+	return get(access, name, _null) != _null;
     }
 
     @Override
