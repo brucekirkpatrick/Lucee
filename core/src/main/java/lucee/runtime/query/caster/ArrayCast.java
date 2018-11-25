@@ -29,7 +29,7 @@ public class ArrayCast implements Cast {
     @Override
     public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 	Array arr = rst.getArray(columnIndex);
-	if (arr == null) return null;
+	if (arr == null) return "";
 	return arr.getArray();
     }
 

@@ -32,7 +32,7 @@ public class BigIntCast implements Cast {
 	String str = rst.getString(columnIndex);
 	if (str != null && str.length() > 9) return str;
 
-	Double dbl = Caster.toDouble(str, null);
+	Double dbl = Caster.toDouble(str, 0.0);
 	if (dbl != null) return dbl;
 	return str;
     }

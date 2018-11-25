@@ -466,8 +466,11 @@ public final class SQLCaster {
 	    }
 	    else if (value instanceof Array) {
 		return ((java.sql.Array) value).getArray();
-	    }
-	    else return value;
+	    }else if(value == null){
+	    	return defaultValue;
+		}else{
+	    	return value;
+		}
 	}
 	catch (Exception e) {
 	    return defaultValue;
@@ -487,8 +490,11 @@ public final class SQLCaster {
 	    }
 	    else if (value instanceof ResultSet) {
 		return new QueryImpl((ResultSet) value, "query", null);
-	    }
-	    else return value;
+	    }else if(value == null){
+			return "";
+		}else{
+	    	return value;
+		}
 	}
 	catch (SQLException e) {
 	    throw new DatabaseException(e, null);
@@ -507,9 +513,10 @@ public final class SQLCaster {
 	// char types
 	else if (type == Types.CHAR || type == Types.NCHAR) {
 	    return Caster.toString(value);
-	}
-	// long types
-	else if (type == Types.BIGINT) {
+	}else if(value == null) {
+		return "";
+		// long types
+	}else if (type == Types.BIGINT) {
 	    return Caster.toLong(value);
 	}
 	// int types

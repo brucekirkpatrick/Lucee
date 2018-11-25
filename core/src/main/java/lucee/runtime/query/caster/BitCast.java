@@ -31,7 +31,7 @@ public class BitCast implements Cast {
     @Override
     public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 	Object o = rst.getObject(columnIndex);
-	if (o == null) return null;
+	if (o == null) return "";
 	return Caster.toDouble(o, Constants.DOUBLE_ZERO);
     }
 

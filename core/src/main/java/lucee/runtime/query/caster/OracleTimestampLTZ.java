@@ -33,7 +33,7 @@ public class OracleTimestampLTZ implements Cast {
     @Override
     public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 	Object o = rst.getObject(columnIndex);
-	if (o == null) return null;
+	if (o == null) return "";
 
 	// we do not have oracle.sql.TIMESTAMPTZ in the core, so we need reflection for this
 	try {
