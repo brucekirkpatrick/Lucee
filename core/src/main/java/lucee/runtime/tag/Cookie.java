@@ -174,7 +174,7 @@ public final class Cookie extends TagImpl {
 
 	    }
 	}
-	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, encode);
+	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, false, encode);
 	return SKIP_BODY;
     }
 

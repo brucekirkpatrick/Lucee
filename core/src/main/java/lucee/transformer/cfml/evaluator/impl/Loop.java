@@ -151,7 +151,7 @@ public final class Loop extends EvaluatorSupport {
 		Page page = ASMUtil.getAncestorPage(tag);
 		ConfigImpl config = (ConfigImpl) page.getConfig();
 		Data data = new Data(BytecodeFactory.getInstance(config), page, new SourceCode(text, false, CFMLEngine.DIALECT_CFML), new EvaluatorPool(),
-			new TransfomerSettings(false, false, page.ignoreScopes),
+			new TransfomerSettings(page.ignoreScopes),
 			null, flibs, config.getCoreTagLib(CFMLEngine.DIALECT_CFML).getScriptTags(), false);
 		Expression expr = transformer.transform(data);
 
