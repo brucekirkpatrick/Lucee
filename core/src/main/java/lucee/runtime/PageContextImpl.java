@@ -355,7 +355,7 @@ public final class PageContextImpl extends PageContext {
 	manager = new DatasourceManagerImpl(config);
 
 	this.scopeContext = scopeContext;
-	undefined = new UndefinedImpl(this);
+	undefined = new UndefinedImpl(this, getScopeCascadingType());
 	server = ScopeContext.getServerScope(this, jsr223);
 	defaultApplicationContext = new ClassicApplicationContext(config, "", true, null);
 
@@ -453,7 +453,7 @@ public final class PageContextImpl extends PageContext {
 	    _url = new URLImpl();
 	    _form = new FormImpl();
 	    urlForm = new UrlFormImpl(_form, _url);
-	    undefined = new UndefinedImpl(this);
+	    undefined = new UndefinedImpl(this, getScopeCascadingType());
 
 	    hasFamily = false;
 	}
@@ -463,8 +463,18 @@ public final class PageContextImpl extends PageContext {
 	}
 	request.initialize(this);
 
-	url = urlForm;
-	form = urlForm;
+	if (config.mergeFormAndURL()) {
+	    url = urlForm;
+	    form = urlForm;
+	}
+	else {
+	    url = _url;
+	    form = _form;
+	}
+	// url.initialize(this);
+	// form.initialize(this);
+	// undefined.initialize(this);
+
 	_psq = null;
 
 	fdEnabled = !config.allowRequestTimeout();
@@ -1000,7 +1010,7 @@ public final class PageContextImpl extends PageContext {
 	other._url = _url;
 	other._form = _form;
 	other.variables = variables;
-	other.undefined = new UndefinedImpl(other);
+	other.undefined = new UndefinedImpl(other, (short) other.undefined.getType());
 
 	// writers
 	other.bodyContentStack.init(config.getCFMLWriter(this, other.req, other.rsp));
@@ -2616,12 +2626,20 @@ public final class PageContextImpl extends PageContext {
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
 	int scriptProtect = applicationContext.getScriptProtect();
 
-	form.setScriptProtecting(applicationContext,
+	// ScriptProtecting
+	if (config.mergeFormAndURL()) {
+	    form.setScriptProtecting(applicationContext,
 		    (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0 || (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
+	}
+	else {
+	    form.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0);
+	    url.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
+	}
 	cookie.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_COOKIE) > 0);
 	// CGI
 	cgiR.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
 	cgiRW.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
+	undefined.reinitialize(this);
     }
 
     /**
@@ -3101,6 +3119,10 @@ public final class PageContextImpl extends PageContext {
 	return config.getWebCharset();
     }
 
+    public short getScopeCascadingType() {
+	if (applicationContext == null) return config.getScopeCascadingType();
+	return applicationContext.getScopeCascading();
+    }
 
     public boolean getTypeChecking() {
 	if (applicationContext == null) return config.getTypeChecking();

@@ -180,7 +180,8 @@ component {
 // charset
 	this.charset.web="#charset.webCharset#";
 	this.charset.resource="#charset.resourceCharset#";
-
+	
+	this.scopeCascading = "#scope.scopeCascadingType#";
 
 //////////////////////////////////////////////
 //               MAIL SERVERS               //

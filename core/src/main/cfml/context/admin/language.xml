@@ -485,6 +485,11 @@
 	
 		<custom key="scopes.applicationtimeout">Application Timeout</custom>
 		<custom key="scopes.applicationtimeoutdescription">Legt die Zeit fest, wie lange Lucee für inaktive Applikationen den Application-Scope erhält. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</custom>
+		<custom key="scopes.cascadetoresultset">Resultsets durchsuchen</custom>
+		<custom key="scopes.cascadetoresultsetdescription">Wenn eine Variable keinen vorangestellten Scope hat (Beispiel: #myVar# anstelle von #variables.myVar#), kann Lucee (nach dem CFML Standard) auch verfügbare Query-Resultsets durchsuchen.</custom>
+		<custom key="scopes.cascading">Cascading</custom>
+		<custom key="scopes.cascadingdescription">Abhängig von dieser Einstellung durchsucht Lucee gewisse Scopes, um eine im CFML-Code aufgerufene Variable zu finden. Dieses passiert jedoch nur, wenn die Variable ohne vorangestellten Scope aufgerufen wird. (Beispiel: #myVar# anstelle von #variables.myVar#)&lt;br&gt;- strict: durchsucht nur den Variables Scope&lt;br&gt;- small:	durchsucht die Scopes: Variables, Cgi, Url und Form&lt;br&gt;- standard (CFML Standard):	durchsucht die Scopes: Variables, Cgi, Url, Form und Cookie</custom>
+	
 		<custom key="scopes.clientcookies">Client Cookies</custom>
 		<custom key="scopes.clientcookiesdescription">Client Cookies ein oder ausschalten. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</custom>
 		<custom key="scopes.clientmanagement">Client Management</custom>
@@ -498,7 +503,9 @@
 	- always: der Lokal Scope wird immer verwendet&lt;br&gt;
 	- update (CFML Standard): der Lokal Scope wird nur verwendet, wenn der entsprechende Key darin bereits existiert.</custom>
 		<custom key="scopes.localmodeupdate">Update (CFML Standard)</custom>
-
+	
+		<custom key="scopes.mergeurlform">Url und Form kombinieren</custom>
+		<custom key="scopes.mergeurlformdescription">Mit dieser Einstellung kann festgelegt werden, ob Lucee den Url und Form Scope zu einem einzigen Scope zusammenfasst oder nicht. Beim CFML Standard findet diese Zusammenfassung nicht statt.</custom>
 		<custom key="scopes.server">Definert Scopeeneinstellungen, die als Standardwert für alle Webs gelten sollen.</custom>
 		<custom key="scopes.sessionmanagement">Session Management</custom>
 		<custom key="scopes.sessionmanagementdescription">Standardmässig kann Session Management eingeschaltet werden. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</custom>
@@ -1203,6 +1210,11 @@
 		<custom key="schedule.weekly">weekly</custom>
 		<custom key="scopes.applicationtimeout">Application timeout</custom>
 		<custom key="scopes.applicationtimeoutdescription">Sets the amount of time Lucee will keep the application scope alive. This behaviour can be overridden by the tag cfapplication.</custom>
+		<custom key="scopes.cascadetoresultset">Search resultsets</custom>
+	
+		<custom key="scopes.cascadetoresultsetdescription">When a variable has no scope defined (Example: #myVar# instead of #variables.myVar#), Lucee will also search available resultsets (CFML&amp;nbsp;Standard) or not</custom>
+		<custom key="scopes.cascading">Cascading</custom>
+		<custom key="scopes.cascadingdescription">Depending on this setting Lucee scans certain scopes to find a variable called from the CFML source. This will only happen, when the variable is called without a scope. (Example: #myVar# instead of #variables.myVar#)&lt;br/&gt;- strict: scans only the variables scope&lt;br/&gt;- small: scans the scopes variables,cgi,url,form&lt;br/&gt;- standard (CFML Standard): scans the scopes variables,cgi,url,form,cookie</custom>
 		<custom key="scopes.clientcookies">Client cookies</custom>
 	
 		<custom key="scopes.clientcookiesdescription">Enable or disable client cookies. This behaviour can be overridden by the tag cfapplication.</custom>
@@ -1217,7 +1229,9 @@
 	- always: the local scope is always invoked&lt;br&gt;
 	- update (CFML standard): the local scope is only invoked when the key already exists in it</custom>
 		<custom key="scopes.localmodeupdate">update (CFML standard)</custom>
-
+		<custom key="scopes.mergeurlform">Merge URL and form</custom>
+	
+		<custom key="scopes.mergeurlformdescription">This setting defines if the scopes URL and form will be merged together or not. CFML Default is false.</custom>
 		<custom key="scopes.server">Here you can define the scope settings that will be used as &lt;strong&gt;default&lt;/strong&gt; for all webs.&lt;br/&gt;</custom>
 		<custom key="scopes.sessionmanagement">Session management</custom>
 		<custom key="scopes.sessionmanagementdescription">By default session management can be enabled. This behaviour can be overridden by the tag cfapplication.</custom>

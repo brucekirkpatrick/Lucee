@@ -512,6 +512,26 @@ A struct that defines default ftp settings, this settings can be overwritten as 
 			<description>character set used for reading from/writing to various resources</description>
 		</attribute>
 		<attribute>
+			<type>String</type>
+			<name>scopecascading</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+Depending on this setting Lucee scans certain scopes to find a variable called from the CFML source. This will only happen, when the variable is called without a scope. (Example: #myVar# instead of #variables.myVar#), the following values are supported:
+- strict: scans only the variables scope
+- small: scans the scopes variables,url,form
+- standard: scans the scopes variables,cgi,url,form,cookie
+			</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>searchImplicitScopes</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>alias to the attribute "scopecascading", takes a boolean value where true is equal to "standard" and false is equal to "struct" scope cascading mode.
+			For details see the description for the attribute "scopecascading".</description>
+		</attribute>
+		<attribute>
 			<type>struct</type>
 			<name>authcookie</name>
 			<required>false</required>

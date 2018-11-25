@@ -498,8 +498,11 @@ Wanneer aangevinkt zal elk opgevraagd bestand slechts eenmaal in een request voo
 	<data key="scopes.sessiontype_cfml">CFML</data>
 	<data key="scopes.clientcookies">Client cookies</data>
 	<data key="scopes.timeoutendvalue">de timeout moet een Integere Waarde hebben</data>
+	<data key="scopes.mergeurlformdescription">Deze instelling definieerd of de URL en form scope wel of niet samen zullen worden gevoegd. De CFML Standaard is false.</data>
 	<data key="scopes.timeoutminutesvalue">Voor minuten waarde </data>
 	<data key="scopes.applicationtimeoutdescription">Stelt de tijdspanne in waarvoor Lucee de application scope actief moet houden. Deze instelling kan eventueel worden aangepast via de cfapplication tag.</data>
+	<data key="scopes.cascadetoresultsetdescription">Wanneer een variabele geen gedefinieerde scope heeft (Bijvoorbeeld: #myVar# in plaats van #variables.myVar#), zal Lucee ook wel of niet beschikbare resultaten sets zoeken (CFML&amp;nbsp;Standard)</data>
+	<data key="scopes.cascadingdescription">Afhankelijk van deze instelling scanned Lucee bepaalde scopes om een variabele te vinden die verzocht is via de CFML code. Dit gebeurd alleen als een variabele wordt opgevraagt zonder scope. (Bijvoorbeeld: #myVar# in plaats van #variables.myVar#)&lt;br/&gt;- strict: scanned alleen de variabelen scope&lt;br/&gt;- small: scanned de scope variabelen,cgi,url,form&lt;br/&gt;- standard (CFML Standaard): scanned de scope variabelen,cgi,url,form,cookie</data>
 	<data key="scopes.sessiontypedescription">J2EE Sessies maken het mogelijk om sessies aan te maken over de breedte van een cluster. Wanneer je deze instelling veranderd zal jouw huidige sessie verloren gaan en zal je dus opnieuw moeten inloggen</data>
 	<data key="scopes.web">Hier kan je de instellingen definiëren voor hoe Lucee scopes verwerkt.</data>
 	<data key="scopes.localmodealways">always</data>
@@ -511,7 +514,9 @@ Wanneer aangevinkt zal elk opgevraagd bestand slechts eenmaal in een request voo
 	<data key="scopes.localmodedesc">Definieerd hoe de local scope van een functie wordt ingeroepen wanneer er een variabele zonder scope definitie wordt gebruikt.&lt;br&gt;
 - always: de local scope wordt altijd ingeroepen&lt;br&gt;
 - update (CFML standaard): de local scope wordt alleen ingeroepen wanneer de key ook al in de scope bestaat</data>
-
+	<data key="scopes.mergeurlform">URL en form samenvoegen</data>
+	<data key="scopes.cascading">Cascading</data>
+	<data key="scopes.cascadetoresultset">Zoekresultaten sets</data>
 	<data key="scopes.timeoutdaysvalue">Voor dagen waarde </data>
 	<data key="scopes.sessiontype">Session type</data>
 	<data key="scopes.sessionmanagement">Session management</data>

@@ -27,4 +27,5 @@ component {
 	this.applicationtimeout="#createTimeSpan(1,0,0,0)#";
 	this.localmode="update";
 	this.web.charset="utf-8";
+	this.scopeCascading="strict";
 }

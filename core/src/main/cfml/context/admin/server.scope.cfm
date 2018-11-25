@@ -33,6 +33,10 @@ Defaults --->
 					
 					sessionType="#form.sessionType#"
 					localMode="#form.localMode#"
+					scopeCascadingType="#form.scopeCascadingType#"
+					allowImplicidQueryCall="#isDefined("form.allowImplicidQueryCall") and form.allowImplicidQueryCall#"
+					mergeFormAndUrl="#isDefined("form.mergeFormAndUrl") and form.mergeFormAndUrl#"
+					
 					
 					
 					clientTimeout="#CreateTimeSpan(form.client_days,form.client_hours,form.client_minutes,form.client_seconds)#"
@@ -57,6 +61,9 @@ Defaults --->
 					
 					sessionType=""
 					localMode=""
+					scopeCascadingType=""
+					allowImplicidQueryCall=""
+					mergeFormAndUrl=""
 					sessionTimeout=""
 					applicationTimeout=""
 					sessionManagement=""
@@ -129,6 +136,20 @@ Error Output --->
 					 </td>
 				</tr>
 
+				<!--- 
+				Merge URL and Form --->
+				<tr>
+					<th scope="row">#stText.Scopes.mergeUrlForm#</th>
+					<td>
+						<cfif hasAccess>
+							<input type="checkbox" class="checkbox" name="mergeFormAndUrl" value="yes" 
+							<cfif scope.mergeFormAndUrl>checked</cfif>>
+						<cfelse>
+							<b>#iif(scope.mergeFormAndUrl,de('Yes'),de('No'))#</b>
+						</cfif>
+						<div class="comment">#stText.Scopes.mergeUrlFormDescription#</div>
+					</td>
+				</tr>
 
 				<!--- Session Management --->
 				<tr>
@@ -522,6 +543,41 @@ function test() localMode="#scope.LocalMode#" {}
 					</td>
 				</tr>
 
+				<!--- scope cascading --->
+				<tr>
+					<th scope="row">#stText.Scopes.Cascading#</th>
+					<td>
+						<cfset type=scope.scopeCascadingType>
+						<cfif hasAccess>
+							<select name="scopeCascadingType" class="medium">
+								<option value="strict" <cfif type EQ "strict">selected</cfif>>#ucFirst(stText.Scopes.Strict)#</option>
+								<option value="small" <cfif type EQ "small">selected</cfif>>#ucFirst(stText.Scopes.Small)#</option>
+								<option value="standard" <cfif type EQ "standard">selected</cfif>>#ucFirst(stText.Scopes.Standard)#</option>
+							</select>
+						<cfelse>
+							<b>#ucFirst(type)#</b>
+						</cfif>
+						<div class="comment">#stText.Scopes.CascadingDescription#</div>
+						
+						<cfsavecontent variable="codeSample">
+							this.scopeCascading = "#type#";
+						</cfsavecontent>
+						<cfset renderCodingTip( codeSample)>
+					</td>
+				</tr>
+				<!--- cascade to result --->
+				<tr>
+					<th scope="row">#stText.Scopes.CascadeToResultSet#</th>
+					<td>
+						<cfif hasAccess>
+							<input class="checkbox" type="checkbox" class="checkbox" name="allowImplicidQueryCall" value="yes" <cfif scope.allowImplicidQueryCall>checked</cfif>>
+						<cfelse>
+							<b>#iif(scope.allowImplicidQueryCall,de('Yes'),de('No'))#</b>
+						</cfif>
+						<div class="comment">#stText.Scopes.CascadeToResultSetDescription#</div>
+					</td>
+				</tr>
+				
 				<cfif hasAccess>
 					<cfmodule template="remoteclients.cfm" colspan="2">
 				</cfif>

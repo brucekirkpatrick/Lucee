@@ -20,9 +20,12 @@ package lucee.runtime.type.scope;
 
 import java.util.List;
 
+import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Collection;
+import lucee.runtime.type.Query;
 import lucee.runtime.type.Struct;
+import lucee.runtime.util.QueryStack;
 
 /**
  * interface of the cope undefined
@@ -60,6 +63,29 @@ public interface Undefined extends Scope {
      */
     public abstract void setFunctionScopes(Local local, Argument argument);
 
+    /**
+     * @return returns current collection stack
+     */
+    public abstract QueryStack getQueryStack();
+
+    /**
+     * sets a individual query stack to the undefined scope
+     * 
+     * @param qryStack Query stack
+     */
+    public abstract void setQueryStack(QueryStack qryStack);
+
+    /**
+     * add a collection to the undefined scope
+     * 
+     * @param qry Query to add to undefined scope
+     */
+    public abstract void addQuery(Query qry);
+
+    /**
+     * remove a collection from the undefined scope
+     */
+    public abstract void removeQuery();
 
     /**
      * return value matching key, if value is from Query return a QueryColumn
@@ -98,5 +124,7 @@ public interface Undefined extends Scope {
 
     public Struct getScope(Collection.Key key);
 
+    public boolean setAllowImplicidQueryCall(boolean allowImplicidQueryCall);
 
+    public void reinitialize(PageContext pc);
 }

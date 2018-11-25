@@ -2029,6 +2029,9 @@ component {
 
 	/**
 	* @hint updates scope settings
+	* @scopeCascadingType Depending on this setting Lucee scans certain scopes to find a variable called from the CFML source.
+	* @allowImplicidQueryCall When a variable has no scope defined, Lucee will search available result sets (CFML Standard) or not.
+	* @mergeFormAndUrl Defines if the scopes URL and Form will be merged together. If a key already exists in Form and URL Scopes, the value from the Form Scope is used.
 	* @sessionManagement Enable or disable session management.
 	* @clientManagement Enable or disable client management.
 	* @domainCookies Enable or disable domain cookies.
@@ -2042,12 +2045,15 @@ component {
 	* @localMode Defines how the local scope of a function is invoked when a variable with no scope definition is used, can be either [classic,modern]
 	* @cgiReadonly Defines whether the CGI Scope is read only or not.
 	*/
-	public void function updateScope( boolean sessionManagement, boolean clientManagement, boolean domainCookies, boolean clientCookies, timespan clientTimeout, timespan sessionTimeout, string clientStorage, string sessionStorage, timespan applicationTimeout, string sessionType, string localMode, boolean cgiReadonly ){
+	public void function updateScope( string scopeCascadingType, boolean allowImplicidQueryCall, boolean mergeFormAndUrl, boolean sessionManagement, boolean clientManagement, boolean domainCookies, boolean clientCookies, timespan clientTimeout, timespan sessionTimeout, string clientStorage, string sessionStorage, timespan applicationTimeout, string sessionType, string localMode, boolean cgiReadonly ){
 		var existing = getScope();
 		admin
 			action="updateScope"
 			type="#variables.type#"
 			password="#variables.password#"
+			scopeCascadingType=isNull(arguments.scopeCascadingType) || isEmpty(arguments.scopeCascadingType) ? existing.scopeCascadingType : arguments.scopeCascadingType
+			allowImplicidQueryCall=isNull(arguments.allowImplicidQueryCall) || isEmpty(arguments.allowImplicidQueryCall) ? existing.allowImplicidQueryCall : arguments.allowImplicidQueryCall
+			mergeFormAndUrl=isNull(arguments.mergeFormAndUrl) || isEmpty(arguments.mergeFormAndUrl) ? existing.mergeFormAndUrl : arguments.mergeFormAndUrl
 			sessionManagement=isNull(arguments.sessionManagement) || isEmpty(arguments.sessionManagement) ? existing.sessionManagement : arguments.sessionManagement
 			clientManagement=isNull(arguments.clientManagement) || isEmpty(arguments.clientManagement) ? existing.clientManagement : arguments.clientManagement
 			domainCookies=isNull(arguments.domainCookies) || isEmpty(arguments.domainCookies) ? existing.domainCookies : arguments.domainCookies
@@ -2071,6 +2077,9 @@ component {
 			action="updateScope"
 			type="#variables.type#"
 			password="#variables.password#"
+			scopeCascadingType=""
+			allowImplicidQueryCall=""
+			mergeFormAndUrl=""
 			sessionManagement=""
 			clientManagement=""
 			domainCookies=""

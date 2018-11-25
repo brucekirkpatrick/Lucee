@@ -734,9 +734,12 @@ When checked, any requested files will be inspected only once for potential upda
 	<data key="scopes.sessiontype_application">Application</data>
 	<data key="scopes.clientcookies">Client Cookies</data>
 	<data key="scopes.timeoutendvalue">den Timeout muss ein ganzzahlige Wert sein.</data>
+	<data key="scopes.mergeurlformdescription">Mit dieser Einstellung kann festgelegt werden, ob Lucee den Url und Form Scope zu einem einzigen Scope zusammenfasst oder nicht. Wenn eine Name (Key) sowohl im Form wie URL Scope vorhanden ist, wird der Wert aus dem Form Scope verwendet.</data>
 	<data key="scopes.timeoutminutesvalue">Der Wert Minuten für </data>
 	<data key="scopes.applicationtimeoutdescription">Legt fest wielange Client Scope Daten behalten werden bevor sie gelöscht werden.</data>
 	<data key="scopes.clienttimeout">Client Timeout</data>
+	<data key="scopes.cascadetoresultsetdescription">Wenn eine Variable keinen vorangestellten Scope hat (Beispiel: #myVar# anstelle von #variables.myVar#), kann Lucee (nach dem CFML Standard) auch verfügbare Query-Resultsets durchsuchen.</data>
+	<data key="scopes.cascadingdescription">Abhängig von dieser Einstellung durchsucht Lucee gewisse Scopes, um eine im CFML-Code aufgerufene Variable zu finden. Dieses passiert jedoch nur, wenn die Variable ohne vorangestellten Scope aufgerufen wird. (Beispiel: #myVar# anstelle von #variables.myVar#)&lt;br&gt;- strict: durchsucht nur den Variables Scope&lt;br&gt;- small:	durchsucht die Scopes: Variables, Url und Form&lt;br&gt;- standard (CFML Standard):	durchsucht die Scopes: Variables, Cgi, Url, Form und Cookie</data>
 	<data key="scopes.sessiontypedescription">JEE Sessions erlauben es Lucee Sessions über einen JEE Server-Cluster zu verteilen. Wenn Sie diese Einstellung ändern verlieren Sie die aktuelle Session und müssen sich erneut einloggen.</data>
 	<data key="scopes.web">Hier können Sie festlegen, wie Lucee Scopes abarbeitet.</data>
 
@@ -753,6 +756,9 @@ When checked, any requested files will be inspected only once for potential upda
 	<data key="scopes.clientcookiesdescription">Client Cookies ein oder ausschalten. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</data>
 	<data key="scopes.sessiontimeout">Session Timeout</data>
 
+	<data key="scopes.mergeurlform">Url und Form kombinieren</data>
+	<data key="scopes.cascading">Cascading</data>
+	<data key="scopes.cascadetoresultset">Resultsets durchsuchen</data>
 	<data key="scopes.timeoutdaysvalue">Der Wert Tage für </data>
 	<data key="scopes.sessiontype">Session Typ</data>
 	<data key="scopes.sessionmanagement">Session Management</data>

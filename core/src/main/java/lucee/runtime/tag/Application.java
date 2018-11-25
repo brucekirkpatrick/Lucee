@@ -136,6 +136,7 @@ public final class Application extends TagImpl {
     private Array mails;
     private Struct caches;
     private UDF onmissingtemplate;
+    private short scopeCascading = -1;
     private Boolean suppress;
     private boolean cgiReadOnly = true;
     private SessionCookieData sessionCookie;
@@ -211,6 +212,7 @@ public final class Application extends TagImpl {
 	cacheWebservice = null;
 	antiSamyPolicyResource = null;
 	onmissingtemplate = null;
+	scopeCascading = -1;
 	authCookie = null;
 	sessionCookie = null;
     }
@@ -317,6 +319,19 @@ public final class Application extends TagImpl {
 
     public void setPsq(boolean psq) {
 	this.queryPSQ = psq;
+    }
+
+    public void setScopecascading(String scopeCascading) throws ApplicationException {
+	if (StringUtil.isEmpty(scopeCascading)) return;
+	short NULL = -1;
+	short tmp = ConfigWebUtil.toScopeCascading(scopeCascading, NULL);
+	if (tmp == NULL) throw new ApplicationException("invalid value (" + scopeCascading + ") for attribute [ScopeCascading], valid values are [strict,small,standard]");
+	this.scopeCascading = tmp;
+    }
+
+    public void setSearchimplicitscopes(boolean searchImplicitScopes) throws ApplicationException {
+	short tmp = ConfigWebUtil.toScopeCascading(searchImplicitScopes);
+	this.scopeCascading = tmp;
     }
 
     public void setWebcharset(String charset) {
@@ -605,6 +620,11 @@ public final class Application extends TagImpl {
 	    pageContext.setApplicationContext(ac);
 	}
 
+	// scope cascading
+	if (((UndefinedImpl) pageContext.undefinedScope()).getScopeCascadingType() != ac.getScopeCascading()) {
+	    pageContext.undefinedScope().initialize(pageContext);
+	}
+
 	// ORM
 	if (initORM) ORMUtil.resetEngine(pageContext, false);
 
@@ -746,6 +766,8 @@ public final class Application extends TagImpl {
 	ac.setCGIScopeReadonly(cgiReadOnly);
 	if (ftp != null) ((ApplicationContextSupport) ac).setFTP(AppListenerUtil.toFTP(ftp));
 
+	// Scope cascading
+	if (scopeCascading != -1) ac.setScopeCascading(scopeCascading);
 
 	// ORM
 	boolean initORM = false;

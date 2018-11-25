@@ -3723,6 +3723,9 @@ public final class Admin extends TagImpl implements DynamicAttributes {
      */
     private void doUpdateScope() throws PageException {
 
+	admin.updateScopeCascadingType(getString("admin", action, "scopeCascadingType"));
+	admin.updateAllowImplicidQueryCall(getBoolObject("admin", action, "allowImplicidQueryCall"));
+	admin.updateMergeFormAndUrl(getBoolObject("admin", action, "mergeFormAndUrl"));
 	admin.updateSessionManagement(getBoolObject("admin", action, "sessionManagement"));
 	admin.updateClientManagement(getBoolObject("admin", action, "clientManagement"));
 	admin.updateDomaincookies(getBoolObject("admin", action, "domainCookies"));
@@ -4021,6 +4024,8 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 
 	Struct sct = new StructImpl();
 	pageContext.setVariable(getString("admin", action, "returnVariable"), sct);
+	sct.set("allowImplicidQueryCall", Caster.toBoolean(config.allowImplicidQueryCall()));
+	sct.set("mergeFormAndUrl", Caster.toBoolean(config.mergeFormAndURL()));
 
 	sct.set("sessiontype", sessionType);
 	sct.set("localmode", localMode);
@@ -4044,6 +4049,10 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	sct.set("applicationTimeout_second", Caster.toInteger(ts.getSecond()));
 
 
+	// scope cascading type
+	if (config.getScopeCascadingType() == Config.SCOPE_STRICT) sct.set("scopeCascadingType", "strict");
+	else if (config.getScopeCascadingType() == Config.SCOPE_SMALL) sct.set("scopeCascadingType", "small");
+	else if (config.getScopeCascadingType() == Config.SCOPE_STANDARD) sct.set("scopeCascadingType", "standard");
     }
 
     /**
