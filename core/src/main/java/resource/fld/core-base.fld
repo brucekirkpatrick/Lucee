@@ -4428,6 +4428,17 @@ Example Values:
 			<type>string</type>
 		</return>
 	</function>
+
+	<!-- getCurrentContext -->
+	<function>
+		<name>getCurrentContext</name>
+		<class>lucee.runtime.functions.system.GetCurrentContext</class>
+		<status>deprecated</status>
+		<description>this function is deprecated, use function CallStackGet instead.</description>
+		<return>
+			<type>array</type>
+		</return>
+	</function>
 	<!-- CallStackDump -->
 	<function>
 		<name>CallStackDump</name>

@@ -1642,11 +1642,12 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	}
 	else {
 	    Member existing = _data.get(key);
-	    if (loaded && !isAccessible(pc, existing != null ? existing.getAccess() : dataMemberDefaultAccess))
+	    int access=existing != null ? existing.getAccess() : dataMemberDefaultAccess;
+	    if (loaded && !isAccessible(pc, access))
 		throw new ExpressionException("Component [" + getCallName() + "] has no accessible Member with name [" + key + "]",
 			"enable [trigger data member] in administrator to also invoke getters and setters");
 	    _data.put(key,
-		    new DataMember(existing != null ? existing.getAccess() : dataMemberDefaultAccess, existing != null ? existing.getModifier() : Member.MODIFIER_NONE, value));
+		    new DataMember(access, existing != null ? existing.getModifier() : Member.MODIFIER_NONE, value));
 	}
 	return value;
     }

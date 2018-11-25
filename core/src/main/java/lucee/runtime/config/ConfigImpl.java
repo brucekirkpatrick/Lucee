@@ -160,6 +160,8 @@ public abstract class ConfigImpl implements Config {
     public static final int DEBUG_IMPLICIT_ACCESS = 16;
     public static final int DEBUG_QUERY_USAGE = 32;
     public static final int DEBUG_DUMP = 64;
+    public static final int MODE_CUSTOM = 1;
+    public static final int MODE_STRICT = 2;
 
     private static final Extension[] EXTENSIONS_EMPTY = new Extension[0];
     private static final RHExtension[] RHEXTENSIONS_EMPTY = new RHExtension[0];
@@ -176,6 +178,7 @@ public abstract class ConfigImpl implements Config {
     public static final int QUERY_VAR_USAGE_WARN = 2;
     public static final int QUERY_VAR_USAGE_ERROR = 4;
 
+    private int mode = MODE_CUSTOM;
 
     private PhysicalClassLoader rpcClassLoader;
     private Map<String, DataSource> datasources = new HashMap<String, DataSource>();
@@ -274,7 +277,7 @@ public abstract class ConfigImpl implements Config {
     private short clientType = CLIENT_SCOPE_TYPE_COOKIE;
 
     private String componentDumpTemplate;
-    private int componentDataMemberDefaultAccess = Component.ACCESS_PRIVATE;
+    private int componentDataMemberDefaultAccess = Component.ACCESS_PUBLIC;
     private boolean triggerComponentDataMember = false;
 
     private short sessionType = SESSION_TYPE_APPLICATION;
@@ -1142,7 +1145,7 @@ public abstract class ConfigImpl implements Config {
 	    // now overwrite with new data
 	    if (tagDirectory.isDirectory()) {
 		String[] files = tagDirectory
-			.list(new ExtensionResourceFilter(Constants.getComponentExtensions()));
+			.list(new ExtensionResourceFilter(getMode() == ConfigImpl.MODE_STRICT ? Constants.getComponentExtensions() : Constants.getExtensions()));
 		for (int i = 0; i < files.length; i++) {
 		    if (tlc != null) createTag(tlc, files[i], mappingName);
 		}
@@ -3121,6 +3124,14 @@ public abstract class ConfigImpl implements Config {
 	return getSuppressWSBeforeArg;
     }
 
+
+    protected void setMode(int mode) {
+	this.mode = mode;
+    }
+
+    public int getMode() {
+	return mode;
+    }
 
     // do not move to Config interface, do instead getCFMLWriterClass
     protected void setCFMLWriterType(int writerType) {

@@ -192,8 +192,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
     public static final boolean LOG = true;
     private static final int DEFAULT_MAX_CONNECTION = 100;
 
-    private static int MODE_STRICT=2;
-
     /**
      * creates a new ServletConfig Impl Object
      * 
@@ -419,7 +417,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (config instanceof ConfigWeb) ConfigWebUtil.deployWeb(cs, (ConfigWeb) config, false);
 	if (LOG) SystemOut.printDate("deploy web context");
 	loadConfig(cs, config, doc);
-	int mode = MODE_STRICT;
+	int mode = config.getMode();
 	Log log = config.getLog("application");
 	if (LOG) SystemOut.printDate("loaded config");
 	loadConstants(cs, config, doc, log);
@@ -1308,6 +1306,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	// charset
 	sb.append(config.getTemplateCharset().name()).append(';');
 
+
 	// suppress ws before arg
 	sb.append(config.getSuppressWSBeforeArg());
 	sb.append(';');
@@ -1407,6 +1406,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	}
     }
 
+
     /**
      * load mappings from XML Document
      * 
@@ -1477,7 +1477,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		    ApplicationListener listener = ConfigWebUtil.loadListener(listenerType, null);
 		    if (listener != null || listenerMode != -1) {
 			// type
-			if (mode == MODE_STRICT) listener = new ModernAppListener();
+			if (mode == ConfigImpl.MODE_STRICT) listener = new ModernAppListener();
 			else if (listener == null) listener = ConfigWebUtil.loadListener(ConfigWebUtil.toListenerType(config.getApplicationListener().getType(), -1), null);
 			if (listener == null)// this should never be true
 			    listener = new ModernAppListener();
@@ -2305,7 +2305,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 
 	    // do custom tag local search
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setDoLocalCustomTag(false);
 	    }
 	    else {
@@ -2319,7 +2319,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 
 	    // do custom tag deep search
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setDoCustomTagDeepSearch(false);
 	    }
 	    else {
@@ -2333,7 +2333,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 
 	    // extensions
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setCustomTagExtensions(Constants.getComponentExtensions());
 	    }
 	    else {
@@ -2474,6 +2474,16 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    if (pw != null) ((ConfigServerImpl) config).setDefaultPassword(pw);
 	}
 
+	// mode
+	String mode = getAttr(luceeConfiguration, "mode");
+	if (!StringUtil.isEmpty(mode, true)) {
+	    mode = mode.trim();
+	    if ("custom".equalsIgnoreCase(mode)) config.setMode(ConfigImpl.MODE_CUSTOM);
+	    if ("strict".equalsIgnoreCase(mode)) config.setMode(ConfigImpl.MODE_STRICT);
+	}
+	else if (configServer != null) {
+	    config.setMode(configServer.getMode());
+	}
 
 	// check config file for changes
 	String cFc = getAttr(luceeConfiguration, "check-for-changes");
@@ -3365,7 +3375,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 
 	    // Local Mode
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setLocalMode(Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
 	    }
 	    else {
@@ -3942,7 +3952,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 
 		// deep search
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setDoComponentDeepSearch(false);
 		}
 		else {
@@ -3963,7 +3973,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setComponentDumpTemplate(strDumpRemplate);
 
 		// data-member-default-access
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setComponentDataMemberDefaultAccess(Component.ACCESS_PRIVATE);
 		}
 		else {
@@ -3981,7 +3991,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 
 		// trigger-properties
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setTriggerComponentDataMember(true);
 		}
 		else {
@@ -3993,7 +4003,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 
 		// local search
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setComponentLocalSearch(false);
 		}
 		else {
@@ -4012,7 +4022,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 
 		// use component shadow
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setUseComponentShadow(false);
 		}
 		else {
@@ -4027,7 +4037,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    else if (configServer != null) {
 		config.setBaseComponentTemplate(CFMLEngine.DIALECT_CFML, configServer.getBaseComponentTemplate(CFMLEngine.DIALECT_CFML));
 		config.setComponentDumpTemplate(configServer.getComponentDumpTemplate());
-		if (mode == MODE_STRICT) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    config.setComponentDataMemberDefaultAccess(Component.ACCESS_PRIVATE);
 		    config.setTriggerComponentDataMember(true);
 		}
@@ -4037,7 +4047,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 	    }
 
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setDoComponentDeepSearch(false);
 		config.setComponentDataMemberDefaultAccess(Component.ACCESS_PRIVATE);
 		config.setTriggerComponentDataMember(true);
@@ -4200,7 +4210,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			Element compiler = getChildByName(doc.getDocumentElement(), "compiler");
 
 			// suppress WS between cffunction and cfargument
-			if (mode == MODE_STRICT) {
+			if (mode == ConfigImpl.MODE_STRICT) {
 			config.setSuppressWSBeforeArg(true);
 			}
 			else {
@@ -4260,7 +4270,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	    // Listener type
 	    ApplicationListener listener;
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		listener = new ModernAppListener();
 	    }
 	    else {
@@ -4304,7 +4314,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    config.setApplicationListener(listener);
 
 	    // Req Timeout URL
-	    if (mode == MODE_STRICT) {
+	    if (mode == ConfigImpl.MODE_STRICT) {
 		config.setAllowURLRequestTimeout(false);
 	    }
 	    else {
@@ -4338,7 +4348,16 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	    // classic-date-parsing
 	    if (config instanceof ConfigServer) {
+		if (mode == ConfigImpl.MODE_STRICT) {
 		    DateCaster.classicStyle = true;
+		}
+		else {
+		    String strClassicDateParsing = getAttr(application, "classic-date-parsing");
+
+		    if (!StringUtil.isEmpty(strClassicDateParsing)) {
+			DateCaster.classicStyle = Caster.toBooleanValue(strClassicDateParsing, false);
+		    }
+		}
 	    }
 
 	    // Cache
