@@ -881,7 +881,6 @@ public final class Page extends BodyBase implements Root {
 	adapter.invokeVirtual(Types.PAGE_CONTEXT, PUSH_BODY);
 	adapter.storeLocal(localBC);
 
-	// int oldCheckArgs= pc.undefinedScope().setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	final int oldCheckArgs = adapter.newLocal(Types.INT_VALUE);
 	adapter.loadArg(0);
 	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
