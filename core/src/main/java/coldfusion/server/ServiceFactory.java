@@ -142,10 +142,6 @@ public class ServiceFactory {
 
     }
 
-    public static final void setClientScopeService(ClientScopeService service) {
-
-    }
-
     public static final void setMetricsService(MetricsService service) {
 
     }

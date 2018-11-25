@@ -112,7 +112,6 @@ public final class Application extends TagImpl {
     private Boolean ormenabled;
     private Struct ormsettings;
     private Struct tag;
-    private Struct s3;
     private Struct ftp;
 
     private Boolean triggerDataMember = null;
@@ -183,7 +182,6 @@ public final class Application extends TagImpl {
 	ormenabled = null;
 	ormsettings = null;
 	tag = null;
-	s3 = null;
 	ftp = null;
 	// appContext=null;
 
@@ -428,12 +426,6 @@ public final class Application extends TagImpl {
 	this.tag = tag;
     }
 
-    /**
-     * @param s3 the s3 to set
-     */
-    public void setS3(Struct s3) {
-	this.s3 = s3;
-    }
 
     /**
      * @param ftp the s3 to set

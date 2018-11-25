@@ -1391,16 +1391,6 @@ public abstract class ConfigImpl implements Config {
 	this.sessionTimeout = sessionTimeout;
     }
 
-    protected void setClientTimeout(String strClientTimeout) throws PageException {
-	setClientTimeout(Caster.toTimespan(strClientTimeout));
-    }
-
-    /**
-     * @param clientTimeout The sessionTimeout to set.
-     */
-    protected void setClientTimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
 
     /**
      * @param strRequestTimeout The requestTimeout to set.
@@ -1431,12 +1421,6 @@ public abstract class ConfigImpl implements Config {
 	this.developMode = developMode;
     }
 
-    /**
-     * @param clientManagement The clientManagement to set.
-     */
-    protected void setClientManagement(boolean clientManagement) {
-	this.clientManagement = clientManagement;
-    }
 
     /**
      * @param domainCookies The domainCookies to set.
@@ -1680,29 +1664,6 @@ public abstract class ConfigImpl implements Config {
 
     }
 
-
-    /**
-     * @param clientType
-     */
-    protected void setClientType(short clientType) {
-	this.clientType = clientType;
-    }
-
-    /**
-     * @param strClientType
-     */
-    protected void setClientType(String strClientType) {
-	strClientType = strClientType.trim().toLowerCase();
-	if (strClientType.equals("file")) clientType = Config.CLIENT_SCOPE_TYPE_FILE;
-	else if (strClientType.equals("db")) clientType = Config.CLIENT_SCOPE_TYPE_DB;
-	else if (strClientType.equals("database")) clientType = Config.CLIENT_SCOPE_TYPE_DB;
-	else clientType = Config.CLIENT_SCOPE_TYPE_COOKIE;
-    }
-
-    @Override
-    public short getClientType() {
-	return this.clientType;
-    }
 
 
     @Override

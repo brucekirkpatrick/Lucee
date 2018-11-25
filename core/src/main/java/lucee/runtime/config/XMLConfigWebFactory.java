@@ -3451,12 +3451,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else if (hasCS) config.setApplicationTimeout(configServer.getApplicationTimeout());
 
-	    // Client Type
-	    String strClientType = getAttr(scope, "clienttype");
-	    if (hasAccess && !StringUtil.isEmpty(strClientType)) {
-		config.setClientType(strClientType);
-	    }
-	    else if (hasCS) config.setClientType(configServer.getClientType());
 
 	    // Session Management
 	    String strSessionManagement = getAttr(scope, "sessionmanagement");
@@ -3464,20 +3458,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setSessionManagement(toBoolean(strSessionManagement, true));
 	    }
 	    else if (hasCS) config.setSessionManagement(configServer.isSessionManagement());
-
-	    // Client Management
-	    String strClientManagement = getAttr(scope, "clientmanagement");
-	    if (hasAccess && !StringUtil.isEmpty(strClientManagement)) {
-		config.setClientManagement(toBoolean(strClientManagement, false));
-	    }
-	    else if (hasCS) config.setClientManagement(configServer.isClientManagement());
-
-	    // Client Cookies
-	    String strClientCookies = getAttr(scope, "setclientcookies");
-	    if (hasAccess && !StringUtil.isEmpty(strClientCookies)) {
-		config.setClientCookies(toBoolean(strClientCookies, true));
-	    }
-	    else if (hasCS) config.setClientCookies(configServer.isClientCookies());
 
 	    // Domain Cookies
 	    String strDomainCookies = getAttr(scope, "setdomaincookies");

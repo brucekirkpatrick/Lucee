@@ -23,7 +23,6 @@ component {
 	this.sessionManagement = false;
 	this.setDomainCookies  = false;
 	this.applicationTimeout= createTimeSpan(1,0,0,0);
-	this.localMode         = true;
 	this.scriptProtect     = "all";
 	this.web.charset       = "utf-8";
 

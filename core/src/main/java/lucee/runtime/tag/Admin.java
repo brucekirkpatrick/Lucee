@@ -544,7 +544,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	else if (check("updatecomponent", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateComponent();
 	else if (check("updatescope", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateScope();
 	else if (check("updateDevelopMode", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateDevelopMode();
-	else if (check("updateRestSettings", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateRestSettings();
 	else if (check("updateApplicationSetting", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateApplicationSettings();
 	else if (check("updateOutputSetting", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateOutputSettings();
 	else if (check("updateQueueSetting", ACCESS_NOT_WHEN_WEB) && check2(ACCESS_WRITE)) doUpdateQueueSettings();
@@ -3747,13 +3746,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	adminSync.broadcast(attributes, config);
     }
 
-    private void doUpdateRestSettings() throws PageException {
-
-	admin.updateRestList(getBool("list", null));
-	// admin.updateRestAllowChanges(getBool("allowChanges", null));
-	store();
-	adminSync.broadcast(attributes, config);
-    }
 
     private void doUpdateApplicationSettings() throws PageException {
 	admin.updateRequestTimeout(getTimespan("admin", action, "requestTimeout"));

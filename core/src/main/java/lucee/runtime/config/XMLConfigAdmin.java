@@ -701,55 +701,6 @@ public final class XMLConfigAdmin {
 
     }
 
-    public void updateRestMapping(String virtual, String physical, boolean _default) throws ExpressionException, SecurityException {
-	checkWriteAccess();
-	boolean hasAccess = true;// TODO ConfigWebUtil.hasAccess(config,SecurityManager.TYPE_REST);
-	virtual = virtual.trim();
-	physical = physical.trim();
-	if (!hasAccess) throw new SecurityException("no access to update REST mapping");
-
-	// check virtual
-	if (virtual == null || virtual.length() == 0) throw new ExpressionException("virtual path cannot be a empty value");
-	virtual = virtual.replace('\\', '/');
-	if (virtual.equals("/")) throw new ExpressionException("virtual path cannot be /");
-
-	if (virtual.endsWith("/")) virtual = virtual.substring(0, virtual.length() - 1);
-
-	if (virtual.charAt(0) != '/') virtual = "/" + virtual;
-
-	if ((physical.length()) == 0) throw new ExpressionException("physical path cannot be a empty value");
-
-	Element rest = _getRootElement("rest");
-	Element[] children = XMLConfigWebFactory.getChildren(rest, "mapping");
-
-	// remove existing default
-	if (_default) {
-	    for (int i = 0; i < children.length; i++) {
-		if (Caster.toBooleanValue(children[i].getAttribute("default"), false)) children[i].setAttribute("default", "false");
-	    }
-	}
-
-	// Update
-	String v;
-	Element el = null;
-	for (int i = 0; i < children.length; i++) {
-	    v = children[i].getAttribute("virtual");
-	    if (v != null && v.equals(virtual)) {
-		el = children[i];
-	    }
-	}
-
-	// Insert
-	if (el == null) {
-	    el = doc.createElement("mapping");
-	    rest.appendChild(el);
-	}
-
-	el.setAttribute("virtual", virtual);
-	el.setAttribute("physical", physical);
-	el.setAttribute("default", Caster.toString(_default));
-
-    }
 
     /**
      * delete a mapping on system
@@ -3210,17 +3161,6 @@ public final class XMLConfigAdmin {
 	else rest.setAttribute("list", Caster.toString(list.booleanValue()));
     }
 
-    /*
-     * public void updateRestAllowChanges(Boolean allowChanges) throws SecurityException {
-     * checkWriteAccess(); boolean hasAccess=true;// TODO
-     * ConfigWebUtil.hasAccess(config,SecurityManager.TYPE_REST); if(!hasAccess) throw new
-     * SecurityException("no access to update rest setting");
-     * 
-     * 
-     * Element rest=_getRootElement("rest"); if(allowChanges==null) {
-     * if(rest.hasAttribute("allow-changes"))rest.removeAttribute("allow-changes"); } else
-     * rest.setAttribute("allow-changes", Caster.toString(allowChanges.booleanValue())); }
-     */
 
     /**
      * updates update settingd for Lucee
