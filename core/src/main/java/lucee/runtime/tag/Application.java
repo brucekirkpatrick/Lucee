@@ -72,15 +72,11 @@ public final class Application extends TagImpl {
     private static final int ACTION_CREATE = 0;
     private static final int ACTION_UPDATE = 1;
 
-    private Boolean setClientCookies;
     private Boolean setDomainCookies;
     private Boolean setSessionManagement;
-    private String clientstorage;
     private String sessionstorage;
-    private Boolean setClientManagement;
     private TimeSpan applicationTimeout;
     private TimeSpan sessionTimeout;
-    private TimeSpan clientTimeout;
     private TimeSpan requestTimeout;
     private Mapping[] mappings;
     private Mapping[] customTagMappings;
@@ -111,7 +107,6 @@ public final class Application extends TagImpl {
     private short sessionType = -1;
     private short wsType = -1;
     private boolean sessionCluster;
-    private boolean clientCluster;
     private Boolean compression;
 
     private Boolean ormenabled;
@@ -145,14 +140,10 @@ public final class Application extends TagImpl {
     @Override
     public void release() {
 	super.release();
-	setClientCookies = null;
 	setDomainCookies = null;
 	setSessionManagement = null;
-	clientstorage = null;
 	sessionstorage = null;
-	setClientManagement = null;
 	sessionTimeout = null;
-	clientTimeout = null;
 	requestTimeout = null;
 	applicationTimeout = null;
 	mappings = null;
@@ -187,7 +178,6 @@ public final class Application extends TagImpl {
 	sessionType = -1;
 	wsType = -1;
 	sessionCluster = false;
-	clientCluster = false;
 	compression = null;
 
 	ormenabled = null;
@@ -215,18 +205,6 @@ public final class Application extends TagImpl {
 	sessionCookie = null;
     }
 
-    /**
-     * set the value setclientcookies Yes or No. Yes enables client cookies. Default is Yes. If you set
-     * this attribute to "No", CFML does not automatically send the CFID and CFTOKEN cookies to the
-     * client browser; you must manually code CFID and CFTOKEN on the URL for every page that uses
-     * Session or Client variables.
-     * 
-     * @param setClientCookies value to set
-     **/
-    public void setSetclientcookies(boolean setClientCookies) {
-	this.setClientCookies = setClientCookies ? Boolean.TRUE : Boolean.FALSE;
-	// getAppContext().setSetClientCookies(setClientCookies);
-    }
 
     /**
      * set the value setdomaincookies Yes or No. Sets the CFID and CFTOKEN cookies for a domain, not
@@ -337,28 +315,11 @@ public final class Application extends TagImpl {
 
     }
 
-    /**
-     * set the value clientstorage Specifies how the engine stores client variables
-     * 
-     * @param clientstorage value to set
-     **/
-    public void setClientstorage(String clientstorage) {
-	this.clientstorage = clientstorage;
-    }
 
     public void setSessionstorage(String sessionstorage) {
 	this.sessionstorage = sessionstorage;
     }
 
-    /**
-     * set the value clientmanagement Yes or No. Enables client variables. Default is No.
-     * 
-     * @param setClientManagement value to set
-     **/
-    public void setClientmanagement(boolean setClientManagement) {
-	this.setClientManagement = setClientManagement ? Boolean.TRUE : Boolean.FALSE;
-	// getAppContext().setSetClientManagement(setClientManagement);
-    }
 
     /**
      * set the value sessiontimeout Enter the CreateTimeSpan function and values in days, hours,
@@ -378,17 +339,11 @@ public final class Application extends TagImpl {
 	this.wsType = AppListenerUtil.toWSType(wstype);
     }
 
-    public void setClientcluster(boolean clientCluster) {
-	this.clientCluster = clientCluster;
-    }
 
     public void setSessioncluster(boolean sessionCluster) {
 	this.sessionCluster = sessionCluster;
     }
 
-    public void setClienttimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
 
     public void setRequesttimeout(TimeSpan requestTimeout) {
 	this.requestTimeout = requestTimeout;

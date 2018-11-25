@@ -574,7 +574,7 @@ Error Output --->
 					</td>
 				</tr>
 				<tr>
-					<td width="50%">
+					<td colspan="2">
 						<table class="maintbl">
 							<tbody>
 								<tr>
@@ -595,18 +595,6 @@ Error Output --->
 										<cfif compiler.DotNotationUpperCase>#stText.setting.dotNotationUpperCase#<cfelse>#stText.setting.dotNotationOriginalCase#</cfif>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</td>
-					<td width="50%">
-						<table class="maintbl">
-							<tbody>
-							<tr>
-								<th scope="row">#stText.Scopes.LocalMode#</th>
-								<td <cfif scope.localMode EQ "classic">style="color:##cc0000"</cfif>>
-									<cfif scope.localMode EQ "modern">#stText.Scopes.LocalModeModern#<cfelse>#stText.Scopes.LocalModeClassic#</cfif>
-								</td>
-							</tr>
 							</tbody>
 						</table>
 					</td>

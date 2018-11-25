@@ -538,15 +538,10 @@ When checked, any requested files will be inspected only once for potential upda
 	<data key="scopes.clienttimeout">Client Timeout</data>
 	<data key="scopes.sessiontypedescription">J2EE Sessions erlauben es Lucee Sessions über einen J2EE Server-Cluster zu verteilen. Wenn Sie diese Einstellung ändern verlieren Sie die aktuelle Session und müssen sich erneut einloggen.</data>
 	<data key="scopes.web">Hier können Sie festlegen, wie Lucee Scopes abarbeitet.</data>
-	<data key="scopes.localmodealways">Always</data>
 	<data key="scopes.timeoutsecondsvalue">Der Wert Sekunden für </data>
 	<data key="scopes.sessionmanagementdescription">Standardmässig kann Session Management eingeschaltet werden. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</data>
 	<data key="scopes.clientcookiesdescription">Client Cookies ein oder ausschalten. Diese Verhaltensweise kann von dem Tag CFApplication übersteuert werden.</data>
 	<data key="scopes.sessiontimeout">Session Timeout</data>
-	<data key="scopes.localmodeupdate">Update (CFML Standard)</data>
-	<data key="scopes.localmodedesc">Definiert wie der Lokal Scope innerhalb einer UDF von einer Variable ohne Scope angesprochen wird.&lt;br&gt;
-- always: der Lokal Scope wird immer verwendet&lt;br&gt;
-- update (CFML Standard): der Lokal Scope wird nur verwendet, wenn der entsprechende Key darin bereits existiert.</data>
 	<data key="scopes.timeoutdaysvalue">Der Wert Tage für </data>
 	<data key="scopes.sessiontype">Session Typ</data>
 	<data key="scopes.sessionmanagement">Session Management</data>
