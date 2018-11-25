@@ -2730,9 +2730,9 @@ public final class Admin extends TagImpl implements DynamicAttributes {
     }
 
     private void doUpdateCompilerSettings() throws SecurityException, PageException {
-	admin.updateCompilerSettings(getBoolObject("admin", "UpdateCompilerSettings", "dotNotationUpperCase"),
+	admin.updateCompilerSettings(
 		getBoolObject("admin", "UpdateCompilerSettings", "suppressWSBeforeArg"),
-		getBoolObject("admin", "UpdateCompilerSettings", "handleUnquotedAttrValueAsString"), getInteger("admin", "UpdateCompilerSettings", "externalizeStringGTE"));
+		 getInteger("admin", "UpdateCompilerSettings", "externalizeStringGTE"));
 	admin.updateTemplateCharset(getString("admin", action, "templateCharset"));
 
 	store();
@@ -2766,9 +2766,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	Struct sct = new StructImpl();
 	pageContext.setVariable(returnVariable, sct);
 
-	sct.set("DotNotationUpperCase", config.getDotNotationUpperCase() ? Boolean.TRUE : Boolean.FALSE);
 	sct.set("suppressWSBeforeArg", config.getSuppressWSBeforeArg() ? Boolean.TRUE : Boolean.FALSE);
-	sct.set("handleUnquotedAttrValueAsString", config.getHandleUnQuotedAttrValueAsString() ? Boolean.TRUE : Boolean.FALSE);
 	sct.set("templateCharset", config.getTemplateCharset());
 	sct.set("externalizeStringGTE", Caster.toDouble(config.getExternalizeStringGTE()));
 

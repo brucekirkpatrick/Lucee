@@ -42,15 +42,6 @@ public final class ProcessingDirective extends EvaluatorSupport {
     @Override
     public TagLib execute(Config config, Tag tag, TagLibTag libTag, FunctionLib[] flibs, Data data) throws TemplateException {
 	// dot notation
-	Boolean dotNotationUpperCase = null;
-	if (tag.containsAttribute("preservecase")) {
-	    Boolean preservecase = ASMUtil.getAttributeBoolean(tag, "preservecase", null);
-	    if (preservecase == null) throw new TemplateException(data.srcCode, "attribute [preserveCase] of the tag [processingdirective] must be a constant boolean value");
-	    dotNotationUpperCase = preservecase.booleanValue() ? Boolean.FALSE : Boolean.TRUE;
-
-	    if (dotNotationUpperCase == data.settings.dotNotationUpper) dotNotationUpperCase = null;
-
-	}
 
 	// page encoding
 	Charset cs = null;
@@ -75,15 +66,6 @@ public final class ProcessingDirective extends EvaluatorSupport {
 	    if (exeLog.booleanValue() == data.srcCode.getWriteLog()) exeLog = null;
 	}
 
-	if (cs != null || exeLog != null || dotNotationUpperCase != null) {
-	    if (cs == null) {
-		if (data.srcCode instanceof PageSourceCode) cs = ((PageSourceCode) data.srcCode).getCharset();
-		else cs = CharsetUtil.UTF8;
-	    }
-	    if (exeLog == null) exeLog = data.srcCode.getWriteLog() ? Boolean.TRUE : Boolean.FALSE;
-	    if (dotNotationUpperCase == null) dotNotationUpperCase = data.settings.dotNotationUpper;
-	    throw new ProcessingDirectiveException(data.srcCode, cs, dotNotationUpperCase, exeLog);
-	}
 
 	return null;
     }

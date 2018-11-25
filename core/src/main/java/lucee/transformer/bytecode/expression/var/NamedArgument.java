@@ -45,12 +45,10 @@ public final class NamedArgument extends Argument {
 		    new Method("newInstance", Types.FUNCTION_VALUE, new Type[] { Types.STRING_ARRAY, Types.OBJECT }) } };
 
     private Expression name;
-    private boolean varKeyUpperCase;
 
-    public NamedArgument(Expression name, Expression value, String type, boolean varKeyUpperCase) {
+    public NamedArgument(Expression name, Expression value, String type) {
 	super(value, type);
-	this.name = name instanceof Null || name instanceof NullConstant ? name.getFactory().createLitString(varKeyUpperCase ? "NULL" : "null") : name;
-	this.varKeyUpperCase = varKeyUpperCase;
+	this.name = name instanceof Null || name instanceof NullConstant ? name.getFactory().createLitString("null") : name;
     }
 
     @Override
@@ -67,7 +65,7 @@ public final class NamedArgument extends Argument {
 		av.visitBegin(adapter, Types.STRING, arr.length);
 		for (int y = 0; y < arr.length; y++) {
 		    av.visitBeginItem(adapter, y);
-		    adapter.push(varKeyUpperCase ? arr[y].toUpperCase() : arr[y]);
+		    adapter.push(arr[y]);
 		    av.visitEndItem(bc.getAdapter());
 		}
 		av.visitEnd();
@@ -75,7 +73,7 @@ public final class NamedArgument extends Argument {
 	    else {
 		// VariableString.toExprString(name).writeOut(bc, MODE_REF);
 		String str = VariableString.variableToString((Variable) name, true);
-		name = bc.getFactory().createLitString(varKeyUpperCase ? str.toUpperCase() : str);
+		name = bc.getFactory().createLitString(str);
 		getFactory().registerKey(bc, VariableString.toExprString(name), false);
 		type = KEY;
 	    }

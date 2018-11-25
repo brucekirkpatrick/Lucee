@@ -589,12 +589,6 @@ Error Output --->
 										</cfif>
 									</td>
 								</tr>
-								<tr>
-									<th scope="row">#stText.setting.dotNotation#</th>
-									<td <cfif compiler.DotNotationUpperCase>style="color:##cc0000"</cfif>>
-										<cfif compiler.DotNotationUpperCase>#stText.setting.dotNotationUpperCase#<cfelse>#stText.setting.dotNotationOriginalCase#</cfif>
-									</td>
-								</tr>
 							</tbody>
 						</table>
 					</td>

@@ -164,8 +164,6 @@ public abstract class ConfigImpl implements Config {
     private static final Extension[] EXTENSIONS_EMPTY = new Extension[0];
     private static final RHExtension[] RHEXTENSIONS_EMPTY = new RHExtension[0];
 
-    public static final int MODE_CUSTOM = 1;
-    public static final int MODE_STRICT = 2;
 
     public static final int CFML_WRITER_REFULAR = 1;
     public static final int CFML_WRITER_WS = 2;
@@ -178,7 +176,6 @@ public abstract class ConfigImpl implements Config {
     public static final int QUERY_VAR_USAGE_WARN = 2;
     public static final int QUERY_VAR_USAGE_ERROR = 4;
 
-    private int mode = MODE_CUSTOM;
 
     private PhysicalClassLoader rpcClassLoader;
     private Map<String, DataSource> datasources = new HashMap<String, DataSource>();
@@ -392,7 +389,6 @@ public abstract class ConfigImpl implements Config {
     private List<Layout> resourceLayouts = new ArrayList<Layout>();
 
     private Map<Key, Map<Key, Object>> tagDefaultAttributeValues;
-    private boolean handleUnQuotedAttrValueAsString = true;
 
     private Map<Integer, Object> cachedWithins = new HashMap<Integer, Object>();
 
@@ -1146,7 +1142,7 @@ public abstract class ConfigImpl implements Config {
 	    // now overwrite with new data
 	    if (tagDirectory.isDirectory()) {
 		String[] files = tagDirectory
-			.list(new ExtensionResourceFilter(getMode() == ConfigImpl.MODE_STRICT ? Constants.getComponentExtensions() : Constants.getExtensions()));
+			.list(new ExtensionResourceFilter(Constants.getComponentExtensions()));
 		for (int i = 0; i < files.length; i++) {
 		    if (tlc != null) createTag(tlc, files[i], mappingName);
 		}
@@ -3105,20 +3101,6 @@ public abstract class ConfigImpl implements Config {
 	return debugMaxRecordsLogged;
     }
 
-    private boolean dotNotationUpperCase = true;
-
-    protected void setDotNotationUpperCase(boolean dotNotationUpperCase) {
-	this.dotNotationUpperCase = dotNotationUpperCase;
-    }
-
-    public boolean getDotNotationUpperCase() {
-	return dotNotationUpperCase;
-    }
-
-    public boolean preserveCase() {
-	return !dotNotationUpperCase;
-    }
-
     private boolean defaultFunctionOutput = true;
 
     protected void setDefaultFunctionOutput(boolean defaultFunctionOutput) {
@@ -3139,14 +3121,6 @@ public abstract class ConfigImpl implements Config {
 	return getSuppressWSBeforeArg;
     }
 
-
-    protected void setMode(int mode) {
-	this.mode = mode;
-    }
-
-    public int getMode() {
-	return mode;
-    }
 
     // do not move to Config interface, do instead getCFMLWriterClass
     protected void setCFMLWriterType(int writerType) {
@@ -3302,14 +3276,6 @@ public abstract class ConfigImpl implements Config {
 	this.tagDefaultAttributeValues = values;
     }
 
-    @Override
-    public Boolean getHandleUnQuotedAttrValueAsString() {
-	return handleUnQuotedAttrValueAsString;
-    }
-
-    protected void setHandleUnQuotedAttrValueAsString(boolean handleUnQuotedAttrValueAsString) {
-	this.handleUnQuotedAttrValueAsString = handleUnQuotedAttrValueAsString;
-    }
 
     protected void setCachedWithin(int type, Object value) {
 	cachedWithins.put(type, value);

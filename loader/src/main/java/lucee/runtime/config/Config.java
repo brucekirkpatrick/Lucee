@@ -741,7 +741,6 @@ public interface Config {
 
     public Log getLog(String name);
 
-    public Boolean getHandleUnQuotedAttrValueAsString();
 
     public Object getCachedWithin(int type);
 

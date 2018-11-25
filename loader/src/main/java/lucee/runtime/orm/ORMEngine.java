@@ -32,8 +32,6 @@ public interface ORMEngine {
      */
     public String getLabel();
 
-    public int getMode();
-
     public ORMSession createSession(PageContext pc) throws PageException;
 
     // public Object getSessionFactory(PageContext pc) throws PageException;

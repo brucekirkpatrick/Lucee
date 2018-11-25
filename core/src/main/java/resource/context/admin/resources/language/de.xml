@@ -661,23 +661,6 @@ Diese werden dann am Ende eines Request ausgegeben, falls sie ein Debug Template
 	<data key="general.enabled">Enabled</data>
 
 	<data key="setting.compiler">Lucee Compiler Einstellungen, dies beeinflusst wie der Lucee Compiler den Source Code übersetzt. Das ändern dieser Einstellungen löscht alle existierenden Class Files.</data>
-	<data key="setting.dotNotation">Key case</data>
-
-
-	<data key="setting.dotNotationUpperCaseDesc">Konvertiert Struct Keys definiert mit "Dot Notation" als grossgeschrieben (CFML Standard).
-Beispiel:
-sct.dotNotation --> keyname: "DOTNOTATION"
-sct[""bracketNotation""] --> keyname: "bracketNotation"</data>
-
-<data key="setting.dotNotationOriginalCaseDesc">Belässt Struct Keys definiert mit "Dot Notation" wie sie sind (wie "Bracked Notation").
-
-Beispiel:
-sct.dotNotation --> keyname: "dotNotation"
-sct[""bracketNotation""] --> keyname: "bracketNotation"</data>
-
-
-	<data key="setting.dotNotationUpperCase">Übersetzt zu grossgeschrieben (CFML Standard)</data>
-	<data key="setting.dotNotationOriginalCase">Behält die Keys wie sie sind (wie "Bracked Notation")</data>
 	<data key="setting.suppressWSBeforeArg">Unterdrückt White-Space vor cfargument</data>
 	<data key="setting.suppressWSBeforeArgDesc">Wenn gesetzt, unterdrückt Lucee White-Spaces definiert zwischen dem "cffunction" Starttag und dem letzten "cfargument" Tag.
 	Dieses Setting wird ignoriert wenn es zwischen den Tags ein andere Ausgabe als White-Spaces hat.</data>

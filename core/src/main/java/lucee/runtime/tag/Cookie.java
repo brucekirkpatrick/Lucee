@@ -62,7 +62,6 @@ public final class Cookie extends TagImpl {
     private String name;
 
     private boolean httponly;
-    private boolean preservecase;
     private boolean encode = true;
 
     @Override
@@ -75,7 +74,6 @@ public final class Cookie extends TagImpl {
 	expires = null;
 	name = null;
 	httponly = false;
-	preservecase = false;
 	encode = true;
     }
 
@@ -153,9 +151,6 @@ public final class Cookie extends TagImpl {
 	this.httponly = httponly;
     }
 
-    public void setPreservecase(boolean preservecase) {
-	this.preservecase = preservecase;
-    }
 
     public void setEncodevalue(boolean encode) {
 	this.encode = encode;
@@ -179,7 +174,7 @@ public final class Cookie extends TagImpl {
 
 	    }
 	}
-	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, preservecase, encode);
+	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, encode);
 	return SKIP_BODY;
     }
 

@@ -278,24 +278,24 @@ public abstract class AbstrCFMLExprTransformer {
      * @return CFXD Element
      * @throws TemplateException
      */
-    private Argument functionArgument(Data data, boolean varKeyUpperCase) throws TemplateException {
-	return functionArgument(data, null, varKeyUpperCase);
+    private Argument functionArgument(Data data) throws TemplateException {
+	return functionArgument(data, null);
     }
 
-    private Argument functionArgument(Data data, String type, boolean varKeyUpperCase) throws TemplateException {
+    private Argument functionArgument(Data data, String type) throws TemplateException {
 	Expression expr = assignOp(data);
 	try {
 	    if (data.srcCode.forwardIfCurrent(":")) {
 		comments(data);
-		return new NamedArgument(expr, assignOp(data), type, varKeyUpperCase);
+		return new NamedArgument(expr, assignOp(data), type);
 	    }
 	    else if (expr instanceof DynAssign) {
 		DynAssign da = (DynAssign) expr;
-		return new NamedArgument(da.getName(), da.getValue(), type, varKeyUpperCase);
+		return new NamedArgument(da.getName(), da.getValue(), type);
 	    }
 	    else if (expr instanceof Assign && !(expr instanceof OpVariable)) {
 		Assign a = (Assign) expr;
-		return new NamedArgument(a.getVariable(), a.getValue(), type, varKeyUpperCase);
+		return new NamedArgument(a.getVariable(), a.getValue(), type);
 	    }
 	}
 	catch (TransformerException be) {
@@ -1296,7 +1296,7 @@ public abstract class AbstrCFMLExprTransformer {
 	    comments(data);
 	    if (data.srcCode.isCurrent(end)) break;
 
-	    bif.addArgument(functionArgument(data, data.settings.dotNotationUpper));
+	    bif.addArgument(functionArgument(data));
 	    comments(data);
 	}
 	while (data.srcCode.forwardIfCurrent(','));
@@ -1412,7 +1412,7 @@ public abstract class AbstrCFMLExprTransformer {
 		if (name == null) throw new TemplateException(data.srcCode, "Invalid identifier");
 		comments(data);
 		nameProp = Identifier.toIdentifier(data.factory, name, line, data.srcCode.getPosition());
-		namePropUC = Identifier.toIdentifier(data.factory, name, data.settings.dotNotationUpper ? Identifier.CASE_UPPER : Identifier.CASE_ORIGNAL, line,
+		namePropUC = Identifier.toIdentifier(data.factory, name, Identifier.CASE_UPPER, line,
 			data.srcCode.getPosition());
 	    }
 
@@ -1680,7 +1680,7 @@ public abstract class AbstrCFMLExprTransformer {
 	}
 	while (data.srcCode.isValidIndex());
 	return Identifier.toIdentifier(data.factory, data.srcCode.substring(start.pos, data.srcCode.getPos() - start.pos),
-		upper && data.settings.dotNotationUpper ? Identifier.CASE_UPPER : Identifier.CASE_ORIGNAL, start, data.srcCode.getPosition());
+		Identifier.CASE_UPPER, start, data.srcCode.getPosition());
     }
 
     protected String identifier(Data data, boolean firstCanBeNumber) {
@@ -1771,7 +1771,7 @@ public abstract class AbstrCFMLExprTransformer {
 		    while (it.hasNext()) {
 			arg = it.next();
 			if (arg.getDefaultValue() != null) bif.addArgument(
-				new NamedArgument(data.factory.createLitString(arg.getName()), data.factory.createLitString(arg.getDefaultValue()), arg.getTypeAsString(), false));
+				new NamedArgument(data.factory.createLitString(arg.getName()), data.factory.createLitString(arg.getDefaultValue()), arg.getTypeAsString()));
 		    }
 		}
 	    }
@@ -1862,11 +1862,11 @@ public abstract class AbstrCFMLExprTransformer {
 		catch (IndexOutOfBoundsException e) {
 		    _type = null;
 		}
-		fm.addArgument(functionArgument(data, _type, false));
+		fm.addArgument(functionArgument(data, _type));
 
 	    }
 	    else {
-		fm.addArgument(functionArgument(data, false));
+		fm.addArgument(functionArgument(data));
 	    }
 
 	    comments(data);

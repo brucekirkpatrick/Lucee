@@ -796,7 +796,6 @@ public class KeyConstants {
     public static final Key _secure = KeyImpl._const("secure");
     public static final Key _httponly = KeyImpl._const("httponly");
     public static final Key _domain = KeyImpl._const("domain");
-    public static final Key _preservecase = KeyImpl._const("preservecase");
     public static final Key _encode = KeyImpl._const("encode");
     public static final Key _encodevalue = KeyImpl._const("encodevalue");
     public static final Key _each = KeyImpl._const("each");
@@ -935,8 +934,6 @@ public class KeyConstants {
     public static final Key _mailServers = KeyImpl._const("mailServers");
     public static final Key _smtpServerSettings = KeyImpl._const("smtpServerSettings");
     public static final Key _serialization = KeyImpl._const("serialization");
-    public static final Key _preserveCaseForStructKey = KeyImpl._const("preserveCaseForStructKey");
-    public static final Key _preserveCaseForQueryColumn = KeyImpl._const("preserveCaseForQueryColumn");
     public static final Key _serializeQueryAs = KeyImpl._const("serializeQueryAs");
     public static final Key _structMetaData = KeyImpl._const("structMetaData");
     public static final Key _STACKTRACE = KeyImpl._const("STACKTRACE");

@@ -251,13 +251,11 @@ public final class Page extends BodyBase implements Root {
      * @param factory
      * @param config
      * @param sc SourceCode for this Page
-     * @param className name of the class produced (pattern: org.whatever.Susi)
      * @param tc
      * @param version
      * @param lastModifed
      * @param writeLog
      * @param suppressWSbeforeArg
-     * @param dotNotationUpperCase
      */
     public Page(Factory factory, Config config, SourceCode sc, TagCIObject tc, long version, long lastModifed, boolean writeLog, boolean suppressWSbeforeArg, boolean output,
 	    boolean returnValue, boolean ignoreScopes) {

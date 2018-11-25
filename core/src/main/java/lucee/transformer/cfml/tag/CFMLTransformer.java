@@ -158,7 +158,7 @@ public final class CFMLTransformer {
 	while (true) {
 	    try {
 		sc = new PageSourceCode(ps, charset, writeLog);
-		p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), false, returnValue, ignoreScopes);
+		p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), returnValue, ignoreScopes);
 		break;
 	    }
 	    catch (ProcessingDirectiveException pde) {
@@ -197,7 +197,7 @@ public final class CFMLTransformer {
 			sc = new PageSourceCode(ps, text, charset, writeLog);
 		    }
 		    try {
-			_p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), false, returnValue, ignoreScopes);
+			_p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), returnValue, ignoreScopes);
 			break;
 		    }
 		    catch (ProcessingDirectiveException pde) {
@@ -246,13 +246,12 @@ public final class CFMLTransformer {
      * @param flibs Function Library Deskriptoren, nach denen innerhalb der Expressions der CFML Datei
      *            geprueft werden soll.
      * @param sourceLastModified
-     * @param dotNotationUpperCase
      * @param returnValue if true the method returns the value of the last expression executed inside
      *            when you call the method "call"
      * @return uebersetztes CFXD Dokument Element.
      * @throws TemplateException
      */
-    public Page transform(Factory factory, ConfigImpl config, SourceCode sc, TagLib[] tlibs, FunctionLib[] flibs, long sourceLastModified, Boolean dotNotationUpperCase,
+    public Page transform(Factory factory, ConfigImpl config, SourceCode sc, TagLib[] tlibs, FunctionLib[] flibs, long sourceLastModified,
 	    boolean returnValue, boolean ignoreScope) throws TemplateException {
 
 	TagLib[][] _tlibs = new TagLib[][] { null, new TagLib[0] };
@@ -265,7 +264,7 @@ public final class CFMLTransformer {
 	Page page = new Page(factory, config, sc, null, ConfigWebUtil.getEngine(config).getInfo().getFullVersionInfo(), sourceLastModified, sc.getWriteLog(),
 		config.getSuppressWSBeforeArg(), config.getDefaultFunctionOutput(), returnValue, ignoreScope);
 
-	TransfomerSettings settings = new TransfomerSettings(false, false,
+	TransfomerSettings settings = new TransfomerSettings(
 		ignoreScope);
 	Data data = new Data(factory, page, sc, new EvaluatorPool(), settings, _tlibs, flibs, config.getCoreTagLib(CFMLEngine.DIALECT_CFML).getScriptTags(), false);
 	transform(data, page);
@@ -1154,7 +1153,6 @@ public final class CFMLTransformer {
 		}
 	    }
 	    else {
-		if (data.settings.handleUnQuotedAttrValueAsString) {
 		    boolean alt = data.allowLowerThan;
 		    data.allowLowerThan = true;
 		    try {
@@ -1164,8 +1162,6 @@ public final class CFMLTransformer {
 			data.allowLowerThan = alt;
 		    }
 
-		}
-		else expr = transfomer.transform(data);
 	    }
 	    if (type.length() > 0) {
 		expr = data.factory.toExpression(expr, type);

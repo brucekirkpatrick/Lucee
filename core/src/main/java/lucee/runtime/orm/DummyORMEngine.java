@@ -33,11 +33,6 @@ public class DummyORMEngine implements ORMEngine {
     }
 
     @Override
-    public int getMode() {
-	return ORMEngine.MODE_STRICT;
-    }
-
-    @Override
     public ORMSession createSession(PageContext pc) throws PageException {
 	throw notInstalledEL();
     }

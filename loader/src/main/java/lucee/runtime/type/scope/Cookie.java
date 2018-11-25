@@ -81,11 +81,10 @@ public interface Cookie extends Scope, UserScope {
      * @param domain domain of the cookie
      * @param httpOnly if true, sets cookie as httponly so that it cannot be accessed using JavaScripts.
      *            Note that the browser must have httponly compatibility.
-     * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
      * @throws PageException
      */
-    public abstract void setCookie(Collection.Key name, Object value, Object expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
+    public abstract void setCookie(Collection.Key name, Object value, Object expires, boolean secure, String path, String domain, boolean httpOnly,
 	    boolean encode) throws PageException;
 
     /**
@@ -99,11 +98,10 @@ public interface Cookie extends Scope, UserScope {
      * @param domain domain of the cookie
      * @param httpOnly if true, sets cookie as httponly so that it cannot be accessed using JavaScripts.
      *            Note that the browser must have httponly compatibility.
-     * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
      * @throws PageException
      */
-    public abstract void setCookie(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
+    public abstract void setCookie(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly,
 	    boolean encode) throws PageException;
 
     /**
@@ -117,10 +115,9 @@ public interface Cookie extends Scope, UserScope {
      * @param domain domain of the cookie
      * @param httpOnly if true, sets cookie as httponly so that it cannot be accessed using JavaScripts.
      *            Note that the browser must have httponly compatibility.
-     * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
      */
-    public abstract void setCookieEL(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
+    public abstract void setCookieEL(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly,
 	    boolean encode);
 
 }

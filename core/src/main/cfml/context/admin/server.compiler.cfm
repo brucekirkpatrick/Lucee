@@ -16,24 +16,12 @@ Defaults --->
 <cfparam name="form.mainAction" default="none">
 <cfparam name="form.subAction" default="none">
 
-<cfset stText.setting.handleUnquotedAttrValueAsStringDesc='Handle unquoted tag attribute values as strings.
-<br>Example:<br>
-&lt;cfmail subject=sub from="##f##" to="##t##"/><br>
-<br>The value from attribute "subject" is not quoted, in that case if enabled the string "sub" submitted to the tag, if not enabled Lucee looks for a variable "sub".'>
-
 <cftry>
 	<cfswitch expression="#form.mainAction#">
 	<!--- UPDATE --->
 		<cfcase value="#stText.Buttons.Update#">
-			<cfset dotNotUpper=true>
-			<cfif isDefined('form.dotNotation') and form.dotNotation EQ "oc">
-            	<cfset dotNotUpper=false>
-            </cfif>
             <cfif not isDefined('form.suppressWSBeforeArg')>
             	<cfset form.suppressWSBeforeArg=false>
-            </cfif>
-			<cfif not isDefined('form.handleUnquotedAttrValueAsString')>
-            	<cfset form.handleUnquotedAttrValueAsString=false>
             </cfif>
             
 			<cfadmin 
@@ -41,9 +29,7 @@ Defaults --->
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
 
-				dotNotationUpperCase="#dotNotUpper#"
                 suppressWSBeforeArg="#form.suppressWSBeforeArg#"
-                handleUnquotedAttrValueAsString="#form.handleUnquotedAttrValueAsString#"
 				templateCharset="#form.templateCharset#"
 				externalizeStringGTE="#form.externalizeStringGTE#"
 				remoteClients="#request.getRemoteClients()#">
@@ -57,10 +43,8 @@ Defaults --->
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
 
-				dotNotationUpperCase=""
 				suppressWSBeforeArg=""
 				templateCharset=""
-				handleUnquotedAttrValueAsString=""
 				externalizeStringGTE=""
 
 				remoteClients="#request.getRemoteClients()#">
@@ -164,8 +148,6 @@ Redirtect to entry --->
 										</label>
 									</li>
 								</cfloop>
-								<!--- <div class="comment">#replace(stText.setting.dotNotationOriginalCaseDesc, server.separator.line, '<br />', 'all')#</div> --->
-								
 							</ul>
 						<cfelse>
 							<input type="hidden" name="externalizeStringGTE" value="#setting.externalizeStringGTE#">
@@ -176,54 +158,6 @@ Redirtect to entry --->
 					</td>
 				</tr>
 
-<!---
-			</tbody>
-		</table>
-
-		<h3>#stText.general.dialect.cfml#</h3>
-		<div class="itemintro">#stText.general.dialect.cfmlDesc#</div>
-		
-		<table class="maintbl">
-			<tbody>
---->
-				<!--- Dot Notation --->
-				<tr>
-					<th scope="row">#stText.setting.dotNotation#</th>
-					<td>
-						<cfif hasAccess>
-							<ul class="radiolist">
-								<li>
-									<!--- original case --->
-									<label>
-										<input class="radio" type="radio" name="dotNotation" value="oc"<cfif !setting.dotNotationUpperCase> checked="checked"</cfif>>
-										<b>#stText.setting.dotNotationOriginalCase#</b>
-									</label>
-									<div class="comment">#replace(stText.setting.dotNotationOriginalCaseDesc, server.separator.line, '<br />', 'all')#</div>
-								</li>
-								<li>
-									<!--- upper case --->
-									<label>
-										<input class="radio" type="radio" name="dotNotation" value="uc"<cfif setting.dotNotationUpperCase> checked="checked"</cfif>>
-										<b>#stText.setting.dotNotationUpperCase#</b>
-									</label>
-									<div class="comment">#replace(stText.setting.dotNotationUpperCaseDesc, server.separator.line, '<br />', 'all')#</div>
-								</li>
-							</ul>
-						<cfelse>
-							<cfset strDotNotation=setting.dotNotationUpperCase?"uc":"oc">
-							<cfset strDotNotationID=setting.dotNotationUpperCase?"Upper":"Original">
-							<input type="hidden" name="dotNotation" value="#strDotNotation#">
-							<b>#stText.setting["dotNotation"& strDotNotationID &"Case"]#</b><br />
-							<div class="comment">#replace(stText.setting["dotNotation"& strDotNotationID &"CaseDesc"], server.separator.line, '<br />', 'all')#</div>
-						</cfif>
-						<cfsavecontent variable="codeSample">
-&lt;cfprocessingdirective preserveCase="#!setting.DotNotationUpperCase#">
-&lt;!--- or --->
-&lt;cfscript>processingdirective preserveCase="#!setting.DotNotationUpperCase#";&lt;/cfscript>
-						</cfsavecontent>
-						<cfset renderCodingTip( codeSample ,stText.settings.codetip)>
-					</td>
-				</tr>
 				
 				<!--- Suppress Whitespace in front of cfargument --->
 				<tr>
@@ -237,20 +171,7 @@ Redirtect to entry --->
 						<div class="comment">#stText.setting.suppressWSBeforeArgDesc#</div>
 					</td>
 				</tr>
-				
-				<!--- how to handle unquoted attribute values --->
-				<tr>
-					<th scope="row">#stText.setting.handleUnquotedAttrValueAsString#</th>
-					<td>
-						<cfif hasAccess>
-        					<input class="checkbox" type="checkbox" name="handleUnquotedAttrValueAsString" value="true" <cfif setting.handleUnquotedAttrValueAsString>checked="checked"</cfif> />
-						<cfelse>
-							<b>#yesNoFormat(setting.handleUnquotedAttrValueAsString)#</b><br /><input type="hidden" 
-							name="handleUnquotedAttrValueAsString" value="#setting.handleUnquotedAttrValueAsString#">
-						</cfif>
-						<div class="comment">#stText.setting.handleUnquotedAttrValueAsStringDesc#</div>
-					</td>
-				</tr>
+
 
 				<cfif hasAccess>
 					<cfmodule template="remoteclients.cfm" colspan="2">

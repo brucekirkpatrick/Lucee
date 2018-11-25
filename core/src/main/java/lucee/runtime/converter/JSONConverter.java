@@ -110,7 +110,10 @@ public final class JSONConverter extends ConverterSupport {
     /**
      * serialize Serializable class
      * 
-     * @param serializable
+     * @param pc
+	 * @param test
+	 * @param clazz
+	 * @param obj
      * @param sb
      * @param serializeQueryByColumns
      * @param done
@@ -254,7 +257,6 @@ public final class JSONConverter extends ConverterSupport {
 	    throws ConverterException {
 
 	ApplicationContextSupport acs = (ApplicationContextSupport) pc.getApplicationContext();
-	boolean preserveCase = acs.getSerializationSettings().getPreserveCaseForStructKey(); // preserve case by default for Struct
 
 	// Component
 	if (struct instanceof Component) {
@@ -277,7 +279,6 @@ public final class JSONConverter extends ConverterSupport {
 
 	    e = it.next();
 	    k = e.getKey().getString();
-	    if (!preserveCase) k = k.toUpperCase();
 	    value = e.getValue();
 
 	    if (!addUDFs && (value instanceof UDF || value == null)) continue;
@@ -417,7 +418,6 @@ public final class JSONConverter extends ConverterSupport {
     private void _serializeQuery(PageContext pc, Set test, Query query, StringBuilder sb, boolean serializeQueryByColumns, Set<Object> done) throws ConverterException {
 
 	ApplicationContextSupport acs = (ApplicationContextSupport) pc.getApplicationContext();
-	boolean preserveCase = acs.getSerializationSettings().getPreserveCaseForQueryColumn(); // UPPERCASE column keys by default for Query
 
 	Collection.Key[] _keys = CollectionUtil.keys(query);
 	sb.append(goIn());
@@ -439,7 +439,7 @@ public final class JSONConverter extends ConverterSupport {
 	String[] cols = query.getColumns();
 	for (int i = 0; i < cols.length; i++) {
 	    if (i > 0) sb.append(",");
-	    sb.append(StringUtil.escapeJS(preserveCase ? cols[i] : cols[i].toUpperCase(), '"', charsetEncoder));
+	    sb.append(StringUtil.escapeJS(cols[i], '"', charsetEncoder));
 	}
 	sb.append("],");
 

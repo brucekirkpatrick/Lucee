@@ -11,24 +11,12 @@ public class SerializationSettings {
     public static int SERIALIZE_AS_COLUMN = 2;
     public static int SERIALIZE_AS_STRUCT = 4;
 
-    private boolean preserveCaseForStructKey = true;
-    private boolean preserveCaseForQueryColumn = false;
     private int serializeQueryAs = SERIALIZE_AS_ROW;
 
-    public static final SerializationSettings DEFAULT = new SerializationSettings(true, false, SERIALIZE_AS_ROW);
+    public static final SerializationSettings DEFAULT = new SerializationSettings(SERIALIZE_AS_ROW);
 
-    public SerializationSettings(boolean preserveCaseForStructKey, boolean preserveCaseForQueryColumn, int serializeQueryAs) {
-	this.preserveCaseForStructKey = preserveCaseForStructKey;
-	this.preserveCaseForQueryColumn = preserveCaseForQueryColumn;
+    public SerializationSettings(int serializeQueryAs) {
 	this.serializeQueryAs = serializeQueryAs;
-    }
-
-    public boolean getPreserveCaseForStructKey() {
-	return preserveCaseForStructKey;
-    }
-
-    public boolean getPreserveCaseForQueryColumn() {
-	return preserveCaseForQueryColumn;
     }
 
     public int getSerializeQueryAs() {
@@ -50,14 +38,11 @@ public class SerializationSettings {
     }
 
     public static SerializationSettings toSerializationSettings(Struct sct) {
-	return new SerializationSettings(Caster.toBooleanValue(sct.get("preserveCaseForStructKey", null), true),
-		Caster.toBooleanValue(sct.get("preserveCaseForQueryColumn", null), false), toSerializeQueryAs(Caster.toString(sct.get("serializeQueryAs", null), null)));
+	return new SerializationSettings(toSerializeQueryAs(Caster.toString(sct.get("serializeQueryAs", null), null)));
     }
 
     public Object toStruct() {
 	Struct sct = new StructImpl();
-	sct.setEL("preserveCaseForStructKey", preserveCaseForStructKey);
-	sct.setEL("preserveCaseForQueryColumn", preserveCaseForQueryColumn);
 	sct.setEL("serializeQueryAs", toSerializeQueryAs(serializeQueryAs));
 
 	return sct;

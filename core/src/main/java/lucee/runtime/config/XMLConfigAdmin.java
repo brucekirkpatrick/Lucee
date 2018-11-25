@@ -5335,18 +5335,12 @@ public final class XMLConfigAdmin {
 	el.setAttribute("layout-arguments", toStringCSSStyle(layoutArgs));
     }
 
-    public void updateCompilerSettings(Boolean dotNotationUpperCase, Boolean suppressWSBeforeArg,Boolean handleUnQuotedAttrValueAsString,
+    public void updateCompilerSettings(Boolean suppressWSBeforeArg,
 	    Integer externalizeStringGTE) throws PageException {
 
 	Element element = _getRootElement("compiler");
 
 	checkWriteAccess();
-	if (dotNotationUpperCase == null) {
-	    if (element.hasAttribute("dot-notation-upper-case")) element.removeAttribute("dot-notation-upper-case");
-	}
-	else {
-	    element.setAttribute("dot-notation-upper-case", Caster.toString(dotNotationUpperCase));
-	}
 
 	// remove old settings
 	if (element.hasAttribute("supress-ws-before-arg")) element.removeAttribute("supress-ws-before-arg");
@@ -5367,13 +5361,6 @@ public final class XMLConfigAdmin {
 	    element.setAttribute("externalize-string-gte", Caster.toString(externalizeStringGTE));
 	}
 
-	// handle Unquoted Attribute Values As String
-	if (handleUnQuotedAttrValueAsString == null) {
-	    if (element.hasAttribute("handle-unquoted-attribute-value-as-string")) element.removeAttribute("handle-unquoted-attribute-value-as-string");
-	}
-	else {
-	    element.setAttribute("handle-unquoted-attribute-value-as-string", Caster.toString(handleUnQuotedAttrValueAsString));
-	}
 
     }
 

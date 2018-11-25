@@ -30,13 +30,11 @@ public final class ProcessingDirectiveException extends TemplateException {
 
     private CharSet charset;
     private Boolean writeLog;
-    private Boolean dotNotationUpperCase;
 
-    public ProcessingDirectiveException(SourceCode cfml, Charset charset, Boolean dotNotationUpperCase, Boolean writeLog) {
+    public ProcessingDirectiveException(SourceCode cfml, Charset charset, Boolean writeLog) {
 	super(cfml, createMessage(cfml, charset, writeLog));
 	this.charset = CharsetUtil.toCharSet(charset);
 	this.writeLog = writeLog;
-	this.dotNotationUpperCase = dotNotationUpperCase;
     }
 
     private static String createMessage(SourceCode sc, Charset charset, boolean writeLog) {
@@ -51,10 +49,6 @@ public final class ProcessingDirectiveException extends TemplateException {
 
     public Charset getCharset() {
 	return CharsetUtil.toCharset(charset);
-    }
-
-    public Boolean getDotNotationUpperCase() {
-	return dotNotationUpperCase;
     }
 
     public Boolean getWriteLog() {

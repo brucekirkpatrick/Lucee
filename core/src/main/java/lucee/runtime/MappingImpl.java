@@ -495,10 +495,6 @@ public final class MappingImpl implements Mapping {
 	return config.getApplicationListener();
     }
 
-    public boolean getDotNotationUpperCase() {
-	return ((ConfigImpl) config).getDotNotationUpperCase();
-    }
-
     public void shrink() {
 	// MUST implement
 
