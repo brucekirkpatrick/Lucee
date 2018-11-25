@@ -296,6 +296,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	pc.setFunctionScopes(newLocal, newArgs);
 	pci.setActiveUDFCalledName(calledName);
 
+	int oldCheckArgs = undefined.setMode(Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
+
 	PageSource ps = null;
 	PageSource psInc = null;
 	try {
@@ -364,6 +366,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    pci.removeUDF();
 	    pci.setFunctionScopes(oldLocal, oldArgs);
 	    pci.setActiveUDFCalledName(oldCalledName);
+	    undefined.setMode(oldCheckArgs);
 	    pci.getScopeFactory().recycle(pci, newArgs);
 	    pci.getScopeFactory().recycle(pci, newLocal);
 	}

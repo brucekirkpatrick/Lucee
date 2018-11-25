@@ -45,6 +45,7 @@ public final class CallerImpl extends StructSupport implements Caller {
     private Variables variablesScope;
     private Local localScope;
     private Argument argumentsScope;
+    private boolean checkArgs;
 
     @Override
     public Object get(Collection.Key key) throws PageException {
@@ -53,8 +54,8 @@ public final class CallerImpl extends StructSupport implements Caller {
 		switch (c) {
 			case 'a':
 			if (KeyConstants._application.equalsIgnoreCase(key)) return pc.applicationScope();
-			else if (KeyConstants._arguments.equalsIgnoreCase(key))
-				return argumentsScope;
+			else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key))
+				return argumentsScope;// pc.argumentsScope();
 				break;
 			case 'c':
 				if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
@@ -67,7 +68,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 				if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
 				break;
 			case 'l':
-				if (KeyConstants._local.equalsIgnoreCase(key)) return localScope;
+				if (KeyConstants._local.equalsIgnoreCase(key) && checkArgs) return localScope;// pc.localScope();
 				break;
 			case 's':
 				if (KeyConstants._session.equalsIgnoreCase(key)) return pc.sessionScope();
@@ -82,8 +83,18 @@ public final class CallerImpl extends StructSupport implements Caller {
 		}
 
 		// upper variable scope
-		Object o = localScope.get(key, Null.NULL);
-		if (o != Null.NULL) return o;
+		Object o;
+
+		Object _null = Null.NULL;
+		if (checkArgs) {
+			o = localScope.get(key, _null);
+			if (o != _null) return o;
+			o = argumentsScope.get(key, _null);
+			if (o != _null) return o;
+		}
+		o = variablesScope.get(key, _null);
+		if (o != _null) return o;
+
 		throw new ExpressionException("[" + key.getString() + "] not found in caller scope");
     }
 
@@ -97,8 +108,8 @@ public final class CallerImpl extends StructSupport implements Caller {
 					try {
 						return pc.applicationScope();
 					}catch (PageException e) {}
-				}else if ( KeyConstants._arguments.equalsIgnoreCase(key)) {
-					return argumentsScope;
+				}else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) {
+					return argumentsScope;// pc.argumentsScope();
 				}
 				break;
 			case 'c':
@@ -112,7 +123,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 				if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
 				break;
 			case 'l':
-				if (KeyConstants._local.equalsIgnoreCase(key)) return localScope;
+				if (KeyConstants._local.equalsIgnoreCase(key) && checkArgs) return localScope;// pc.localScope();
 				break;
 			case 's':
 				if (KeyConstants._session.equalsIgnoreCase(key)) {
@@ -137,8 +148,18 @@ public final class CallerImpl extends StructSupport implements Caller {
 		}
 
 		Object _null = Null.NULL;
-		Object o = localScope.get(key, _null);
-		return (o != _null) ? o:defaultValue;
+		Object o;
+		if (checkArgs) {
+			o = localScope.get(key, _null);
+			if (o != _null) return o;
+			o = argumentsScope.get(key, _null);
+			if (o != _null) return o;
+		}
+		o = variablesScope.get(key, _null);
+		if (o != _null) return o;
+
+
+		return defaultValue;
     }
 
     @Override
@@ -147,10 +168,11 @@ public final class CallerImpl extends StructSupport implements Caller {
     }
 
     @Override
-    public void setScope(Variables variablesScope, Local localScope, Argument argumentsScope) {
+    public void setScope(Variables variablesScope, Local localScope, Argument argumentsScope, boolean checkArgs) {
 	this.variablesScope = variablesScope;
 	this.localScope = localScope;
 	this.argumentsScope = argumentsScope;
+	this.checkArgs = checkArgs;
     }
 
     @Override
@@ -175,12 +197,14 @@ public final class CallerImpl extends StructSupport implements Caller {
 
     @Override
     public Object remove(Collection.Key key) throws PageException {
-    	return localScope.remove(key);
+	if (checkArgs && localScope.containsKey(key)) return localScope.remove(key);
+	return variablesScope.remove(key);
     }
 
     @Override
     public Object removeEL(Collection.Key key) {
-    	return localScope.removeEL(key);
+	if (checkArgs && localScope.containsKey(key)) return localScope.removeEL(key);
+	return variablesScope.removeEL(key);
     }
 
     @Override
@@ -190,12 +214,20 @@ public final class CallerImpl extends StructSupport implements Caller {
 
     @Override
     public Object set(Key key, Object value) throws PageException {
-    	return localScope.set(key, value);
+	if (checkArgs) {
+	    if (localScope.containsKey(key)) return localScope.set(key, value);
+	    if (argumentsScope.containsKey(key)) return argumentsScope.set(key, value);
+	}
+	return variablesScope.set(key, value);
     }
 
     @Override
     public Object setEL(Key key, Object value) {
-    	return localScope.setEL(key, value);
+	if (checkArgs) {
+	    if (localScope.containsKey(key)) return localScope.setEL(key, value);
+	    if (argumentsScope.containsKey(key)) return argumentsScope.setEL(key, value);
+	}
+	return variablesScope.setEL(key, value);
     }
 
     @Override
