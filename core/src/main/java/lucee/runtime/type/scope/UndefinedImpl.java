@@ -38,16 +38,13 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.functions.system.CFFunction;
 import lucee.runtime.listener.ApplicationContextSupport;
 import lucee.runtime.op.Duplicator;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.UDF;
-import lucee.runtime.type.UDFPlus;
+import lucee.runtime.type.*;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.StructSupport;
+import lucee.runtime.util.QueryStack;
+import lucee.runtime.util.QueryStackImpl;
 
 /**
  * Undefined Scope
@@ -57,9 +54,10 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     private static final long serialVersionUID = -5626787508494702023L;
 
     private Scope[] scopes;
+    private QueryStackImpl qryStack = new QueryStackImpl();
     private Variables variable;
+    private boolean allowImplicidQueryCall;
     private boolean checkArguments;
-
     private boolean localAlways;
     private boolean isInit;
     private Local local;
@@ -116,7 +114,29 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	this.argument = argument;
     }
 
+
     @Override
+    public QueryStack getQueryStack() {
+        return qryStack;
+    }
+
+    @Override
+    public void setQueryStack(QueryStack qryStack) {
+        this.qryStack = (QueryStackImpl) qryStack;
+    }
+
+    @Override
+    public void addQuery(Query qry) {
+        if (allowImplicidQueryCall) qryStack.addQuery(qry);
+    }
+
+    @Override
+    public void removeQuery() {
+        if (allowImplicidQueryCall) qryStack.removeQuery();
+    }
+
+    @Override
+
     public int size() {
 	return variable.size();
     }
@@ -445,11 +465,13 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     @Override
     public Collection duplicate(boolean deepCopy) {
 	UndefinedImpl dupl = new UndefinedImpl(pc);
-	dupl.checkArguments = checkArguments;
+    dupl.allowImplicidQueryCall = allowImplicidQueryCall;
+    dupl.checkArguments = checkArguments;
 	dupl.argument = deepCopy ? (Argument) Duplicator.duplicate(argument, deepCopy) : argument;
 	dupl.isInit = isInit;
 	dupl.local = deepCopy ? (Local) Duplicator.duplicate(local, deepCopy) : local;
 	dupl.localAlways = localAlways;
+	dupl.qryStack = (deepCopy ? (QueryStackImpl) Duplicator.duplicate(qryStack, deepCopy) : qryStack);
 
 	dupl.variable = deepCopy ? (Variables) Duplicator.duplicate(variable, deepCopy) : variable;
 	dupl.pc = pc;
