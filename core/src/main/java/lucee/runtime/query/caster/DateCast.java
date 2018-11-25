@@ -32,7 +32,7 @@ public class DateCast implements Cast {
     @Override
     public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 	Date d = rst.getDate(columnIndex, JREDateTimeUtil.getThreadCalendar(tz));
-	if (d == null) return null;
+	if (d == null) return "";
 
 	return new DateTimeImpl(d.getTime(), false);
 

@@ -33,7 +33,7 @@ public class BlobCast implements Cast {
 	InputStream is = null;
 	try {
 	    is = rst.getBinaryStream(columnIndex);
-	    if (is == null) return null;
+	    if (is == null) return "";
 	    return IOUtil.toBytes(is);
 	}
 	finally {

@@ -33,7 +33,7 @@ public class OracleClobCast implements Cast {
     @Override
     public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 	Object o = rst.getObject(columnIndex);
-	if (o == null) return null;
+	if (o == null) return "";
 
 	// we do not have oracle.sql.CLOB in the core, so we need reflection for this
 	try {

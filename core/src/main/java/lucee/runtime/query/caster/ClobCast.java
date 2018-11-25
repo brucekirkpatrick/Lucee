@@ -35,7 +35,7 @@ public class ClobCast implements Cast {
 	Reader reader = null;
 	try {
 	    reader = rst.getCharacterStream(columnIndex);
-	    if (reader == null) return null;
+	    if (reader == null) return "";
 	    return IOUtil.toString(reader);
 	}
 	finally {
