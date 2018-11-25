@@ -50,7 +50,7 @@ public final class PageEncoding extends EvaluatorSupport {
 	//
 
 	if (cs != null) {
-	    throw new ProcessingDirectiveException(data.srcCode, cs, null, data.srcCode.getWriteLog());
+	    throw new ProcessingDirectiveException(data.srcCode, cs, data.srcCode.getWriteLog());
 	}
 
 	return null;

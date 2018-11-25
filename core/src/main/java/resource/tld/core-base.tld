@@ -1315,6 +1315,110 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		</attribute>
 	</tag>
 
+	<!-- HtmlBody -->
+	<tag>
+		<name>htmlbody</name>
+		<tag-class>lucee.runtime.tag.HtmlBody</tag-class>
+		<body-content>free</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
+		<description>Writes the text specified in the text attribute to the 'body' section of a generated HTML page.
+			The cfhtmlbody tag can be useful for embedding JavaScript code, or placing other HTML tags that should go at the bottom
+			of the page just before the closing body tag.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>text</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is
+				placed in the 'head' section</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>variable</name>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Name of variable to contain the text for htmlbody.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>id</name>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>ID of the snippet that is added, used to ensure that the same snippet will not be added more than once.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>action</name>
+			<values>append,read,reset,write</values>
+			<default-value>append</default-value>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>possible actions are:
+				- append (default): append text to the html head
+				- read: return the text already set to html head
+				- reset: reset/remove text already set to hrml head
+				- write: write text to html head, overwrite already existing text in html head
+				- flush: writes the buffer in the html head to the response stream
+			</description>
+		</attribute>
+	</tag>
+	<!-- HtmlHead -->
+	<tag>
+		<name>htmlhead</name>
+		<tag-class>lucee.runtime.tag.HtmlHead</tag-class>
+		<body-content>free</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
+		<description>Writes the text specified in the text attribute to the 'head' section of a generated HTML page.
+			The cfhtmlhead tag can be useful for embedding JavaScript code, or placing other HTML tags such, as
+			META, LINK, TITLE, or BASE in an HTML page header.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>text</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is
+				placed in the 'head' section</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>variable</name>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Name of variable to contain the text for htmlhead.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>id</name>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>ID of the snippet that is added, used to ensure that the same snippet will not be added more than once.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>action</name>
+			<values>append,read,reset,write</values>
+			<default-value>append</default-value>
+			<required>no</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>possible actions are:
+				- append (default): append text to the html head
+				- read: return the text already set to html head
+				- reset: reset/remove text already set to hrml head
+				- write: write text to html head, overwrite already existing text in html head
+				- flush: writes the buffer in the html head to the response stream
+			</description>
+		</attribute>
+	</tag>
 	<!-- Http -->
 	<tag>
 		<name>http</name>
@@ -2971,6 +3075,76 @@ Lucee uses the number of characters in the file.</description>
 		</attribute>
 	</tag>
 
+	<!-- Module -->
+	<tag>
+		<name>Module</name>
+		<tag-class>lucee.runtime.tag.Module</tag-class>
+		<handle-exception>true</handle-exception>
+		<body-content>free</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
+		<description>Invokes a custom tag for use in cfml templates. The cfmodule tag can help deal with
+			custom tag name conflicts. Use the template attribute to name a template that contains the custom
+			tag definition, including its path..</description>
+		<attribute-type>dynamic</attribute-type>
+		<attribute-min>1</attribute-min>
+	</tag>
+
+	<!-- ObjectCache -->
+	<tag>
+		<name>ObjectCache</name>
+		<tag-class>lucee.runtime.tag.ObjectCache</tag-class>
+		<body-content>empty</body-content>
+		<body-rtexprvalue>true</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
+		<description>Flushes a object cache or returns the current size.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>action</name>
+			<values>clear,size</values>
+			<default-value>clear</default-value>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>type</name>
+			<values>function,include,object,query,resource,template</values>
+			<default-value>query</default-value>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>cache type to manipulate, query is the default type</description>
+		</attribute>
+		<attribute>
+			<type>object</type>
+			<name>filter</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>filter for the elements to delete</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>filterignorecase</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>filter for the elements to delete</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>result</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>name for variables for action size</description>
+		</attribute>
+	</tag>
 	<!-- Param -->
 	<tag>
 		<name>Param</name>

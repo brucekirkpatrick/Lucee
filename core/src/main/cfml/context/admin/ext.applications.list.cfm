@@ -11,7 +11,6 @@
 	<cfset structDelete(session, "extremoved", false) />
 </cfif>
 <cfset extCount=(serverExtensions.recordcount?:0)+extensions.recordcount>
-
 <cfif extensions.recordcount || (!isNull(serverExtensions) && serverExtensions.recordcount)>
 	<cfoutput>
 		<!--- Installed Applications --->
@@ -54,15 +53,15 @@
 						</cfcatch>
 					</cftry>
 				</cfif>
-				
+
 				<cfset cat=_extensions.categories>
-				<cfif 
+				<cfif
 				session.extFilter.filter eq ""
 				or doFilter(session.extFilter.filter,_extensions.name,false)
 				or doFilter(session.extFilter.filter,arrayToList(cat),false)
 				or doFilter(session.extFilter.filter,provTitle,false)
-				><cfscript>
-	
+				>
+					<cfscript>
 					link="#request.self#?action=#url.action#&action2=detail&id=#_extensions.id#";
 					img=_extensions.image;
 					if(len(img)==0) {
@@ -74,11 +73,11 @@
 						}
 					}
 					dn=getDumpNail(img,130,50);
-					
+
 					hasUpdate=updateAvailable(queryRowData(_extensions,_extensions.currentrow),external);
 					</cfscript><div class="extensionthumb">
 
-					
+
 
 						<a <cfif _type=="web">href="#link#"<cfelse>style="border-color: ##E0E0E0;"</cfif> title="#_extensions.name#
 Categories: #arrayToList(cat)#"><cfif hasUpdate>
@@ -86,7 +85,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 </cfif>
 <cfif _extensions.trial>
        <div class="ribbon-left-wrapper"><div class="ribbon-left" <cfif _type=="server">style="background-color:##bf4f36"</cfif>>TRIAL</div></div>
-</cfif>	
+</cfif>
 							<div class="extimg" id="extimg_#_extensions.id#">
 								<cfif len(dn)>
 
@@ -99,6 +98,7 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 						</a>
 					</div>
 				</cfif>
+
 			</cfloop>
 			<div class="clear"></div>
 		</div>
@@ -106,8 +106,6 @@ Categories: #arrayToList(cat)#"><cfif hasUpdate>
 </cfloop>
 	</cfoutput>
 </cfif>
-
-
 
 
 

@@ -1886,6 +1886,24 @@ sort direction:
 		</return>
 	</function>
 
+	<!-- ctCacheClear -->
+	<function>
+		<name>ctCacheClear</name>
+		<class>lucee.runtime.functions.other.CTCacheClear</class>
+		<description>flush the customtag path cache</description>
+		<return>
+			<type>void</type>
+		</return>
+	</function>
+	<!-- ctCacheList -->
+	<function>
+		<name>ctCacheList</name>
+		<class>lucee.runtime.functions.other.CTCacheList</class>
+		<description>list elements in the customtag path cache</description>
+		<return>
+			<type>struct</type>
+		</return>
+	</function>
 	<!-- compress -->
 	<function>
 		<name>compress</name>

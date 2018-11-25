@@ -137,16 +137,16 @@
 	<cfset qData.created = now() />
 </cfif>
 <!--- provider URL, + get/set info about the provider --->
-<cfif not isValid('url', qData.provider) or not find('.cfc', qData.provider)>
-	<cfset qData.provider = "manualupload" />
-<cfelse>
+<!---<cfif not isValid('url', qData.provider) or not find('.cfc', qData.provider)>--->
+	<!---<cfset qData.provider = "manualupload" />--->
+<!---<cfelse>--->
 	<cftry>
 		<cfset datas=loadProvidersData(qData.provider)>
 		<cfset data=datas[qData.provider]>
 		<cfset qData.info = data.getInfo />
 		<cfcatch></cfcatch>
 	</cftry>
-</cfif>
+<!---</cfif>--->
 
 <cfif not isStruct(qData.info)>
 	<!--- create 'manual' info --->

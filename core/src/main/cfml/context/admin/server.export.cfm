@@ -208,7 +208,7 @@ if(len(datasources.timezone))optional.append("timezone:'#replace(datasources.tim
 if(datasources.storage) optional.append('storage:#datasources.storage# // default: false');
 if(datasources.readOnly) optional.append('readOnly:#datasources.readOnly# // default: false');
 </cfscript>
-	this.datasources<cfif isValid('variableName',datasources.name) and !find('.',datasources.name)>["#datasources.name#"]<cfelse>['#datasources.name#']</cfif> = {
+	this.datasources<cfif !find('.',datasources.name)>["#datasources.name#"]<cfelse>['#datasources.name#']</cfif> = {
 	  class: '#datasources.classname#'
 	, connectionString: '#replace(datasources.dsnTranslated,"'","''","all")#'<cfif len(datasources.password)>
 	, username: '#replace(datasources.username,"'","''","all")#'

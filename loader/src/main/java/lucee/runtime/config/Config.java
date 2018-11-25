@@ -284,10 +284,6 @@ public interface Config {
      */
     public abstract String getBaseComponentTemplate(int dialect);
 
-    /**
-     * @return returns the client type
-     */
-    public abstract short getClientType();
 
     /**
      * @return Returns the componentDataMemberDefaultAccess.

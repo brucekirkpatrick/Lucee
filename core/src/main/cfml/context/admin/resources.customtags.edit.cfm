@@ -20,18 +20,20 @@
 			<tbody>
 				<cfset name=ListCompact(mapping.virtual,'/')>
 						
-				<cfif !isValid("uuid",name)><tr>
+				<!---<cfif !isValid("uuid",name)>--->
+    			<tr>
 					<th scope="row">#stText.customtags.name#</th>
 					<td class="tblContent" nowrap>
 							
-						<cfif isValid("uuid",name)>
-							{undefined}
-						<cfelse>
+						<!---<cfif isValid("uuid",name)>--->
+							<!---{undefined}--->
+						<!---<cfelse>--->
 							#name#
-						</cfif>
+						<!---</cfif>--->
 						<div class="comment">#stText.customtags.nameDesc#</div>
 					</td>
-				</tr></cfif>
+				</tr>
+				<!---</cfif>--->
 				<tr>
 					<th scope="row">#stText.customtags.Physical#</th>
 					<cfset css=iif(len(mapping.physical) EQ 0 and len(mapping.strPhysical) NEQ 0,de('Red'),de(''))>

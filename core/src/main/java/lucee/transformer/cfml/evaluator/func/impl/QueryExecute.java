@@ -42,7 +42,7 @@ public class QueryExecute implements FunctionEvaluator {
 
 	// named arguments
 	if (args[0] instanceof NamedArgument) {
-	    bif.addArgument(new NamedArgument(bif.getFactory().createLitString("name"), bif.getFactory().createLitString(str), "string", false));
+	    bif.addArgument(new NamedArgument(bif.getFactory().createLitString("name"), bif.getFactory().createLitString(str), "string"));
 	}
 	// regular arguments
 	else {

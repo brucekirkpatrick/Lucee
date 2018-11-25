@@ -111,7 +111,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 	try {
 	    page = sc == null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 		    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-			    false, returnValue, ignoreScopes);
+			     returnValue, ignoreScopes);
 	    page.setSplitIfNecessary(false);
 	    try {
 		result = new Result(page, page.execute(className));
@@ -121,7 +121,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
 		    page = sc == null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 			    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-				    false, returnValue, ignoreScopes);
+				     returnValue, ignoreScopes);
 
 		    page.setSplitIfNecessary(true);
 		    result = new Result(page, page.execute(className));
@@ -133,7 +133,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (StringUtil.indexOfIgnoreCase(msg, "Invalid method Code length") != -1) {
 		    page = ps != null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 			    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
-				    false, returnValue, ignoreScopes);
+				     returnValue, ignoreScopes);
 
 		    page.setSplitIfNecessary(true);
 		    result = new Result(page, page.execute(className));
