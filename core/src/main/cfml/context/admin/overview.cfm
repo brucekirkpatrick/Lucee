@@ -398,10 +398,6 @@ Error Output --->
 							<td><b>#stText.setting.scopeSession#</b></td>
 							<td align="right">#systemInfo.sessionCount#</td>
 						</tr>
-						<tr>
-							<td><b>#stText.setting.scopeClient#</b></td>
-							<td align="right">#systemInfo.clientCount#</td>
-						</tr>
 
 					</tbody>
 				</table>
