@@ -509,6 +509,9 @@ public final class PageContextImpl extends PageContext {
     }
 
     public void allowRequestTimeout(boolean value){
+    	if(value && !startTimeoutMonitoring) {
+			startTime = System.currentTimeMillis();
+		}
 		startTimeoutMonitoring=value;
 	}
 	public boolean allowRequestTimeout(){
