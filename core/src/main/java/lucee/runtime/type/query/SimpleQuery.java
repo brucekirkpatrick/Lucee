@@ -2091,7 +2091,8 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     }
 
     public synchronized void enableShowQueryUsage() {
-	throw notSupported();
+        // we don't need exception for this, we can just do nothing instead!
+    	//throw notSupported();
     }
 
     public static PageRuntimeException notSupported() {
