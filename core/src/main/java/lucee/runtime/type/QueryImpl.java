@@ -1235,7 +1235,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
 		    newResult.columns[i] = columns[i].cloneColumnImpl(deepCopy);
 		}
 	    }
-	    newResult.currRow = new HashMapPro<Integer, Integer>();
+	    newResult.currRow = new HashMapPro<>();
 	    newResult.sql = sql;
 	    newResult.template = template;
 	    newResult.recordcount = recordcount;
@@ -3096,7 +3096,7 @@ public class QueryImpl implements Query, Objects, QueryResult {
 		col = qry.getColumn(newResult.columnNames[i], null);
 		newResult.columns[i] = QueryUtil.duplicate2QueryColumnImpl(newResult, col, deepCopy);
 	    }
-	    newResult.currRow = new HashMapPro<Integer, Integer>();
+	    newResult.currRow = new HashMapPro<>();
 	    newResult.sql = qry.getSql();
 	    newResult.template = qry.getTemplate();
 	    newResult.recordcount = qry.getRecordcount();

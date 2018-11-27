@@ -20,24 +20,19 @@ package lucee.commons.collection;
 
 import java.util.Map;
 
-import lucee.commons.collection.concurrent.ConcurrentHashMapPro;
 import lucee.commons.collection.concurrent.ConcurrentHashMapPro8;
 
 public class MapFactory {
     public static <K, V> MapPro<K, V> getConcurrentMap() {
-	    // return new HashMapPro();
-        //	return new ConcurrentHashMapPro<K, V>();
         return new ConcurrentHashMapPro8<>(32, 0.75f);
     }
 
     public static <K, V> MapPro<K, V> getConcurrentMap(int initialCapacity) {
-	// return new HashMapPro();
         return new ConcurrentHashMapPro8<>(initialCapacity, 0.75f);
 	    //return new ConcurrentHashMapPro<K, V>(initialCapacity);
     }
 
     public static <K, V> MapPro<K, V> getConcurrentMap(Map<K, V> map) {
-	// return new HashMapPro(map);
         return new ConcurrentHashMapPro8<>(map);
 	    //return new ConcurrentHashMapPro<K, V>(map);
     }

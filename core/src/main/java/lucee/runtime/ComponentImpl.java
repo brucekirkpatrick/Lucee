@@ -65,7 +65,6 @@ import lucee.runtime.component.Property;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
-import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.debug.DebugEntryTemplate;
 import lucee.runtime.dump.DumpData;
@@ -244,14 +243,14 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 		trg.base = base._duplicate(deepCopy, false);
 
 		trg._data = trg.base._data;
-		trg._udfs = duplicateUTFMap(this, trg, _udfs, new HashMapPro<Key, UDF>(trg.base._udfs));
+		trg._udfs = duplicateUTFMap(this, trg, _udfs, new HashMapPro<>(trg.base._udfs));
 
 		if (useShadow) trg.scope = new ComponentScopeShadow(trg, (ComponentScopeShadow) trg.base.scope, false);
 	    }
 	    else {
 		// clone data member, ignore udfs for the moment
 		trg._data = duplicateDataMember(trg, _data, new HashMapPro(), deepCopy);
-		trg._udfs = duplicateUTFMap(this, trg, _udfs, new HashMapPro<Key, UDF>());
+		trg._udfs = duplicateUTFMap(this, trg, _udfs, new HashMapPro<>());
 
 		if (useShadow) {
 		    ComponentScopeShadow css = (ComponentScopeShadow) scope;
@@ -390,7 +389,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    // this._triggerDataMember=base._triggerDataMember;
 	    this.absFin = base.absFin;
 	    _data = base._data;
-	    _udfs = new HashMapPro<Key, UDF>(base._udfs);
+	    _udfs = new HashMapPro<>(base._udfs);
 	    setTop(this, base);
 	}
 	else {
@@ -399,7 +398,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    this._static = new StaticScope(null, this, componentPage, dataMemberDefaultAccess);
 	    // TODO get per CFC setting
 	    // this._triggerDataMember=pageContext.getConfig().getTriggerComponentDataMember();
-	    _udfs = new HashMapPro<Key, UDF>();
+	    _udfs = new HashMapPro<>();
 	    _data = MapFactory.getConcurrentMap();
 	}
 	// implements

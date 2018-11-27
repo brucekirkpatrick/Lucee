@@ -6,9 +6,9 @@ import static org.apache.commons.collections4.map.AbstractReferenceMap.Reference
 import java.util.Collections;
 import java.util.Map;
 
+import lucee.commons.collection.HashMapPro;
 import org.apache.commons.collections4.map.ReferenceMap;
 
-import lucee.commons.collection.HashMapPro;
 import lucee.runtime.cache.tag.CacheItem;
 import lucee.runtime.cache.tag.MapCacheHandler;
 import lucee.runtime.op.Caster;

@@ -101,7 +101,7 @@ public class IKHandlerDatasource implements IKHandler {
 	}
 	if (lastModified == 0) lastModified = System.currentTimeMillis();
 
-	MapPro<Collection.Key, IKStorageScopeItem> map = new HashMapPro<Collection.Key, IKStorageScopeItem>();
+	MapPro<Collection.Key, IKStorageScopeItem> map = new HashMapPro<Key, IKStorageScopeItem>();
 	Iterator<Entry<Key, Object>> it = sct.entryIterator();
 	Entry<Key, Object> e;
 	while (it.hasNext()) {

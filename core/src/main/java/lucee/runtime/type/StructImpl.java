@@ -24,16 +24,10 @@ import static org.apache.commons.collections4.map.AbstractReferenceMap.Reference
 import java.util.Iterator;
 import java.util.Set;
 
+import lucee.commons.collection.*;
 import lucee.commons.collection.concurrent.ConcurrentHashMapPro8;
 import org.apache.commons.collections4.map.ReferenceMap;
 
-import lucee.commons.collection.HashMapPro;
-import lucee.commons.collection.LinkedHashMapPro;
-import lucee.commons.collection.MapFactory;
-import lucee.commons.collection.MapPro;
-import lucee.commons.collection.MapProWrapper;
-import lucee.commons.collection.SyncMap;
-import lucee.commons.collection.WeakHashMapPro;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.SerializableObject;
 import lucee.runtime.PageContext;
@@ -62,7 +56,7 @@ public class StructImpl extends StructSupport {
      * default constructor
      */
     public StructImpl() {
-        map=new ConcurrentHashMapPro8<Collection.Key, Object>(HashMapPro.DEFAULT_INITIAL_CAPACITY, 0.75f);
+        map=new ConcurrentHashMapPro8<Collection.Key, Object>(ConcurrentHashMapPro8.DEFAULT_INITIAL_CAPACITY, 0.75f);
     }
 
     /**

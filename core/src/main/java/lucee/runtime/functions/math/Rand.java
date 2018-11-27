@@ -34,7 +34,7 @@ import lucee.runtime.ext.function.Function;
 
 public final class Rand implements Function {
 
-    private static Map<String, Random> randoms = new HashMapPro<String, Random>();
+    private static Map<String, Random> randoms = new HashMapPro<>();
 
     public static double call(PageContext pc) throws ExpressionException {
 

@@ -40,7 +40,7 @@ public class SyncMap<K, V> implements MapPro<K, V>, Serializable {
     }
 
     public SyncMap(MapPro<K, V> m) {
-	if (m == null) this.m = new HashMapPro<K, V>();
+	if (m == null) this.m = new HashMapPro<>();
 	else this.m = m;
 	mutex = new SerializableObject();
     }
