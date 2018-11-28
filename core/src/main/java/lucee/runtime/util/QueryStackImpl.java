@@ -24,6 +24,9 @@ import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.Query;
 import lucee.runtime.type.QueryColumn;
+import lucee.runtime.type.query.SimpleQuery;
+
+import java.sql.SQLException;
 
 /**
  * Stack for Query Objects
@@ -55,9 +58,19 @@ public final class QueryStackImpl implements QueryStack {
 
     @Override
     public void removeQuery() {
-	// print.ln("queries["+start+"]=null;");
-	queries[start++] = null;
+		if(queries.length>0 && queries[queries.length-1] instanceof SimpleQuery){
+			SimpleQuery sq=(SimpleQuery) queries[queries.length-1];
+			try {
+				if (!sq.isClosed()) {
+					sq.close();
+				}
+			}catch(SQLException e){
+				throw new RuntimeException("Failed to close query");
+			}
+		}
+		queries[start++] = null;
     }
+
 
     @Override
     public boolean isEmpty() {

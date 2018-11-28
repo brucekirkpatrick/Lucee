@@ -140,12 +140,14 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     @Override
     public void addQuery(Query qry) {
-	if (allowImplicidQueryCall) qryStack.addQuery(qry);
+    	// need to always build stack since we need to close lazy queries
+		qryStack.addQuery(qry);
     }
 
     @Override
     public void removeQuery() {
-	if (allowImplicidQueryCall) qryStack.removeQuery();
+    	// lazy query is closed here too
+		qryStack.removeQuery();
     }
 
     @Override
