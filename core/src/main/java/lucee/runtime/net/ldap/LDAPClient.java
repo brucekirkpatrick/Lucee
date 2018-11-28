@@ -19,7 +19,7 @@
 package lucee.runtime.net.ldap;
 
 import java.io.IOException;
-import java.security.Security;
+//import java.security.Security;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -136,7 +136,7 @@ public final class LDAPClient {
 	    env.put("java.naming.ldap.factory.socket", "javax.net.ssl.SSLSocketFactory");
 	    ClassUtil.loadClass("com.sun.net.ssl.internal.ssl.Provider");
 
-	    Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+//	    Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 
 	}
 	else if (secureLevel == SECURE_CFSSL_CLIENT_AUTH) {

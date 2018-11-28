@@ -3,6 +3,7 @@
   <description>
         Build Lucee Core
   </description> 
+  <property name="javaVersion" value="11"/>
   <property name="build.compiler" value="extJavac"/>
   <property name="agent" value="lucee.runtime.instrumentation.ExternalAgent"/>
   <property name="bundleName" value="Lucee Core"/>
@@ -363,8 +364,8 @@
     <!-- compie the source -->
     <javac 
       srcdir="${srcLoader}" 
-      source="1.8" 
-      target="1.8" 
+      source="${javaVersion}" 
+      target="${javaVersion}" 
       destdir="${temp}/loader"
       debug="true" debuglevel="lines,vars,source" classpath="${dependencies}">
     </javac>
@@ -399,8 +400,8 @@
     <!-- compile the core -->
     <javac 
       srcdir="${srcCore}" 
-      source="1.8" 
-      target="1.8" 
+      source="${javaVersion}" 
+      target="${javaVersion}" 
       destdir="${core}"
       debug="true" debuglevel="lines,vars,source">
        <classpath refid="classpath" />
