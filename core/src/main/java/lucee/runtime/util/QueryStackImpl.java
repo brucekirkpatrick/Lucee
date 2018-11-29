@@ -58,8 +58,9 @@ public final class QueryStackImpl implements QueryStack {
 
     @Override
     public void removeQuery() {
-		if(queries.length>0 && queries[queries.length-1] instanceof SimpleQuery){
-			SimpleQuery sq=(SimpleQuery) queries[queries.length-1];
+		Query qry=queries[start++];
+		if(qry instanceof SimpleQuery){
+			SimpleQuery sq=(SimpleQuery) qry;
 			try {
 				if (!sq.isClosed()) {
 					sq.close();
@@ -68,7 +69,7 @@ public final class QueryStackImpl implements QueryStack {
 				throw new RuntimeException("Failed to close query");
 			}
 		}
-		queries[start++] = null;
+		qry = null;
     }
 
 
