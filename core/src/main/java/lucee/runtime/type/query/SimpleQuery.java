@@ -437,6 +437,7 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     @Override
 
     public synchronized boolean next(int pid) {
+        throwIfClosed();
 	if (recordcount >= (arrCurrentRow.set(pid, arrCurrentRow.get(pid, 0) + 1))) {
 	    return true;
 	}
@@ -497,12 +498,22 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
 
     @Override
     public boolean go(int index, int pid) {
-	if (index > 0 && index <= recordcount) {
-	    arrCurrentRow.set(pid, index);
-	    return true;
-	}
-	arrCurrentRow.set(pid, 0);
-	return false;
+        throwIfClosed();
+        if (index > 0 && index <= recordcount) {
+            arrCurrentRow.set(pid, index);
+            return true;
+        }
+        arrCurrentRow.set(pid, 0);
+        return false;
+    }
+    public void throwIfClosed(){
+        try {
+            if (res.isClosed()) {
+                throw new RuntimeException("The query is already closed and cannot be read again.");
+            }
+        }catch(SQLException e){
+            throw new RuntimeException("The query connection is no longer available.");
+        }
     }
 
     /*

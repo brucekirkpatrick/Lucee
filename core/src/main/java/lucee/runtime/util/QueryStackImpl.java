@@ -52,8 +52,8 @@ public final class QueryStackImpl implements QueryStack {
 
     @Override
     public void addQuery(Query query) {
-	if (start < 1) grow();
-	queries[--start] = query;
+		if (start < 1) grow();
+		queries[--start] = query;
     }
 
     @Override

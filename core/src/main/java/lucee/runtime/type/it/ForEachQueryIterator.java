@@ -39,10 +39,19 @@ public class ForEachQueryIterator implements Iterator, Resetable {
     private Key[] names;
 
     public ForEachQueryIterator(Query qry, int pid) {
-	this.qry = qry;
-	this.pid = pid;
-	this.start = qry.getCurrentrow(pid);
-	this.names = qry.getColumnNames();
+		this.qry = qry;
+		this.pid = pid;
+		this.start = qry.getCurrentrow(pid);
+		this.names = qry.getColumnNames();
+		if(qry instanceof SimpleQuery) {
+			try {
+				if (qry.isClosed()) {
+					throw new RuntimeException("The query is already closed.");
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException("Failed to check if query was closed.");
+			}
+		}
     }
 
     @Override
@@ -52,30 +61,30 @@ public class ForEachQueryIterator implements Iterator, Resetable {
 
     @Override
     public Object next() {
-	try {
-	    if (qry.go(++current, pid)) {
-		Struct sct = new StructImpl();
-		Object empty = NullSupportHelper.full() ? null : "";
-		for (int i = 0; i < names.length; i++) {
-		    sct.setEL(names[i], qry.get(names[i], empty));
+		try {
+			if (qry.go(++current, pid)) {
+			Struct sct = new StructImpl();
+			Object empty = NullSupportHelper.full() ? null : "";
+			for (int i = 0; i < names.length; i++) {
+				sct.setEL(names[i], qry.get(names[i], empty));
+			}
+			return sct;
+			}
 		}
-		return sct;
-	    }
-	}
-	catch (PageException pe) {
-	    throw new PageRuntimeException(pe);
-	}
-	return null;
+		catch (PageException pe) {
+			throw new PageRuntimeException(pe);
+		}
+		return null;
     }
 
     @Override
     public void remove() {
-	try {
-	    qry.removeRow(current);
-	}
-	catch (PageException pe) {
-	    throw new PageRuntimeException(pe);
-	}
+		try {
+			qry.removeRow(current);
+		}
+		catch (PageException pe) {
+			throw new PageRuntimeException(pe);
+		}
     }
 
     @Override
