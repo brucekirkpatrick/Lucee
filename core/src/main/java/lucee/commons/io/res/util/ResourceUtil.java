@@ -794,6 +794,9 @@ public final class ResourceUtil {
     public static String getMimeType(Resource res, String fileName, String defaultValue) {
 	return IOUtil.getMimeType(res, fileName, defaultValue);
     }
+	public static String getMimeType(String fileName, String defaultValue) {
+		return IOUtil.getMimeType(fileName, defaultValue);
+	}
 
     /**
      * check if file is a child of given directory

@@ -31,11 +31,21 @@ public class FileGetMimeType {
     }
 
     public static String call(PageContext pc, Object oSrc, boolean checkHeader) throws PageException {
-	Resource src = Caster.toResource(pc, oSrc, false);
-	pc.getConfig().getSecurityManager().checkFileLocation(src);
-
-	String mimeType = ResourceUtil.getMimeType(src, null);
-	if (StringUtil.isEmpty(mimeType, true)) return "application/octet-stream";
-	return mimeType;
+		String mimeType;
+		if(oSrc instanceof Resource){
+			Resource src = Caster.toResource(pc, oSrc, false);
+			if(checkHeader) {
+				pc.getConfig().getSecurityManager().checkFileLocation(src);
+				mimeType = ResourceUtil.getMimeType(src, null);
+			}else {
+				mimeType = ResourceUtil.getMimeType(src.getAbsolutePath(), null);
+			}
+		}else if(oSrc instanceof String){
+			mimeType = ResourceUtil.getMimeType((String) oSrc, null);
+		}else{
+			throw new RuntimeException("Input must be a file that exists or a string file path.");
+		}
+		if (StringUtil.isEmpty(mimeType, true)) return "application/octet-stream";
+		return mimeType;
     }
 }

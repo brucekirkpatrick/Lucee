@@ -1098,6 +1098,15 @@ public final class IOUtil {
 	    IOUtil.closeEL(is);
 	}
     }
+	public static String getMimeType(String fileName, String defaultValue) {
+		try {
+			Tika tika = new Tika();
+			return tika.detect(fileName);
+		}
+		catch (Exception e) {
+			return defaultValue;
+		}
+	}
 
     public static String getMimeType(URL url, String defaultValue) {
 	try {
