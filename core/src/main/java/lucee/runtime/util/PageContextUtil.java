@@ -188,6 +188,9 @@ public class PageContextUtil {
     }
 
     public static TimeSpan remainingTime(PageContext pc, boolean throwWhenAlreadyTimeout) throws RequestTimeoutException {
+	if(!((PageContextImpl) pc).allowRequestTimeout()) {
+		return TimeSpanImpl.fromMillis(100000000); // prevent too early timeouts
+	}
 	long ms = pc.getRequestTimeout() - (System.currentTimeMillis() - pc.getStartTime());
 	if (ms > 0) {
 	    if (ms < 5) ;
