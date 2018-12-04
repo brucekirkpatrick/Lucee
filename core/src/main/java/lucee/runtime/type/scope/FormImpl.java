@@ -121,21 +121,26 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 
 	String contentType = pc.getHttpServletRequest().getContentType();
 
-	if (contentType == null) return;
-	contentType = StringUtil.toLowerCase(contentType);
-	if (contentType.startsWith("multipart/form-data")) {
-	    headerType = HEADER_MULTIPART_FORM_DATA;
-	    initializeMultiPart(pc, isScriptProtected());
+	if (contentType == null){
+		((PageContextImpl) pc).allowRequestTimeout(true);
+		return;
 	}
-	else if (contentType.startsWith("text/plain")) {
-	    headerType = HEADER_TEXT_PLAIN;
-	    initializeUrlEncodedOrTextPlain(pc, '\n', isScriptProtected());
-	}
-	else if (contentType.startsWith("application/x-www-form-urlencoded")) {
-	    headerType = HEADER_APP_URL_ENC;
-	    initializeUrlEncodedOrTextPlain(pc, '&', isScriptProtected());
-	}
-	setFieldNames();
+		((PageContextImpl) pc).allowRequestTimeout(false);
+		contentType = StringUtil.toLowerCase(contentType);
+		if (contentType.startsWith("multipart/form-data")) {
+			headerType = HEADER_MULTIPART_FORM_DATA;
+			initializeMultiPart(pc, isScriptProtected());
+		}
+		else if (contentType.startsWith("text/plain")) {
+			headerType = HEADER_TEXT_PLAIN;
+			initializeUrlEncodedOrTextPlain(pc, '\n', isScriptProtected());
+		}
+		else if (contentType.startsWith("application/x-www-form-urlencoded")) {
+			headerType = HEADER_APP_URL_ENC;
+			initializeUrlEncodedOrTextPlain(pc, '&', isScriptProtected());
+		}
+		setFieldNames();
+		((PageContextImpl) pc).allowRequestTimeout(true);
 
     }
 

@@ -317,7 +317,7 @@ public final class PageContextImpl extends PageContext {
     private Tag parentTag = null;
     private Tag currentTag = null;
     private Thread thread;
-    private long startTime;
+    private volatile long startTime;
 
     private DatasourceManagerImpl manager;
     private Struct threads;
@@ -330,7 +330,7 @@ public final class PageContextImpl extends PageContext {
     private List<PageContext> children = null;
     private List<Statement> lazyStats;
     private boolean fdEnabled;
-    private boolean startTimeoutMonitoring=false;
+    private volatile boolean startTimeoutMonitoring=false;
     private ExecutionLog execLog;
     private boolean useSpecialMappings;
 
@@ -482,6 +482,7 @@ public final class PageContextImpl extends PageContext {
 	    variables = variablesRoot;
 	}
 	request.initialize(this);
+
 
 	if (config.mergeFormAndURL()) {
 	    url = urlForm;
@@ -3608,7 +3609,6 @@ public final class PageContextImpl extends PageContext {
 
     public void setAppListenerType(int appListenerType) {
 		this.appListenerType = appListenerType;
-		allowRequestTimeout(true);
     }
 
     public int getAppListenerType() {
