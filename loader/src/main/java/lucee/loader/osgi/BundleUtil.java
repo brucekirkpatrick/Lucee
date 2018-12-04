@@ -77,12 +77,28 @@ public class BundleUtil {
     }
 
     public static void start(final CFMLEngineFactory factory, final List<Bundle> bundles) throws BundleException {
-	if (bundles == null || bundles.isEmpty()) return;
+		if (bundles == null || bundles.isEmpty()) return;
 
-	final Iterator<Bundle> it = bundles.iterator();
-	while (it.hasNext())
-	    start(factory, it.next());
-    }
+		// allow bundles to load in parallel
+		Iterator<Bundle> it = bundles.iterator();
+		while (it.hasNext()) {
+			start(factory, it.next(), true);
+		}
+		it = bundles.iterator();
+		// we wait here because Lucee core requires all the bundles and lucee core will load next.
+		while (it.hasNext()) {
+			waitFor(it.next(), Bundle.STARTING, Bundle.RESOLVED, Bundle.INSTALLED, 60000L);
+		}
+	}
+	public static void start(final CFMLEngineFactory factory, final Bundle bundle, boolean async) throws BundleException {
+		final String fh = bundle.getHeaders().get("Fragment-Host");
+		if (!Util.isEmpty(fh)) {
+			factory.log(Logger.LOG_INFO, "do not start [" + bundle.getSymbolicName() + "], because this is a fragment bundle for [" + fh + "]");
+			return;
+		}
+		factory.log(Logger.LOG_INFO, "start bundle:" + bundle.getSymbolicName() + ":" + bundle.getVersion().toString());
+		start(bundle, async);
+	}
 
     public static void start(final CFMLEngineFactory factory, final Bundle bundle) throws BundleException {
 
@@ -107,6 +123,7 @@ public class BundleUtil {
     public static void start(final Bundle bundle) throws BundleException {
 	start(bundle, false);
     }
+
 
     public static void start(final Bundle bundle, boolean async) throws BundleException {
 	bundle.start();
