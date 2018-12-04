@@ -137,7 +137,6 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 	}
 	setFieldNames();
 
-	((PageContextImpl) pc).allowRequestTimeout(true);
     }
 
     @Override

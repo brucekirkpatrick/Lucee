@@ -359,7 +359,6 @@ public final class PageContextImpl extends PageContext {
      * 
      * @param scopeContext
      * @param config Configuration of the CFML Container
-     * @param queryCache Query Cache Object
      * @param id identity of the pageContext
      * @param servlet
      */
@@ -3608,7 +3607,8 @@ public final class PageContextImpl extends PageContext {
     }
 
     public void setAppListenerType(int appListenerType) {
-	this.appListenerType = appListenerType;
+		this.appListenerType = appListenerType;
+		allowRequestTimeout(true);
     }
 
     public int getAppListenerType() {
