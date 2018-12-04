@@ -36,6 +36,9 @@ public final class TagInclude extends TagBaseNoFinal {
 
     private final static Method DO_INCLUDE_RUN_ONCE3 = new Method("doInclude", Type.VOID_TYPE, new Type[] { Types.STRING, Types.BOOLEAN_VALUE, Types.OBJECT });
 
+	private final static Method DO_INCLUDE_RUN_FORCE_RELOAD3 = new Method("doInclude", Type.VOID_TYPE, new Type[] { Types.STRING, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE });
+	private final static Method DO_INCLUDE_RUN_FORCE_RELOAD4 = new Method("doInclude", Type.VOID_TYPE, new Type[] { Types.STRING, Types.BOOLEAN_VALUE, Types.OBJECT, Types.BOOLEAN_VALUE });
+
     public TagInclude(Factory f, Position start, Position end) {
 	super(f, start, end);
     }
@@ -56,10 +59,11 @@ public final class TagInclude extends TagBaseNoFinal {
 	    type = Types.PAGE_CONTEXT_IMPL;
 	    func = DO_INCLUDE_RUN_ONCE3;
 	}
+	Attribute forceReloadAttr = getAttribute("forcereload");
 
 	GeneratorAdapter adapter = bc.getAdapter();
 	adapter.loadArg(0);
-	if (cachedwithin != null) adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+	if (cachedwithin != null || forceReloadAttr != null) adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 
 	// template
 	getAttribute("template").getValue().writeOut(bc, Expression.MODE_REF);
@@ -71,6 +75,18 @@ public final class TagInclude extends TagBaseNoFinal {
 
 	// cachedwithin
 	if (cachedwithin != null) cachedwithin.writeOut(bc, Expression.MODE_REF);
+
+	Expression forcereload = null;
+	if (forceReloadAttr != null && forceReloadAttr.getValue() != null) {
+		type= Types.PAGE_CONTEXT_IMPL;
+		expr = (forceReloadAttr.getValue() == null) ? bc.getFactory().FALSE() : bc.getFactory().toExprBoolean(forceReloadAttr.getValue());
+		expr.writeOut(bc, Expression.MODE_VALUE);
+		if(attr != null && attr.getValue() != null) {
+			func = DO_INCLUDE_RUN_FORCE_RELOAD4;
+		}else{
+			func = DO_INCLUDE_RUN_FORCE_RELOAD3;
+		}
+	}
 
 	adapter.invokeVirtual(type, func);
     }

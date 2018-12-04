@@ -939,22 +939,28 @@ public final class PageSourceImpl implements PageSource {
 	return (ps.getMapping().isTrusted() && ((PageSourceImpl) ps).isLoad()) || ps.exists();
     }
 
-    public static Page loadPage(PageContext pc, PageSource[] arr, Page defaultValue) throws PageException {
+	public static Page loadPage(PageContext pc, PageSource[] arr, Page defaultValue) throws PageException {
+    	return loadPage(pc, arr, defaultValue, false);
+	}
+    public static Page loadPage(PageContext pc, PageSource[] arr, Page defaultValue, boolean forceReload) throws PageException {
 	if (ArrayUtil.isEmpty(arr)) return null;
 	Page p;
 	for (int i = 0; i < arr.length; i++) {
-	    p = arr[i].loadPageThrowTemplateException(pc, false, (Page) null);
+	    p = arr[i].loadPageThrowTemplateException(pc, forceReload, (Page) null);
 	    if (p != null) return p;
 	}
 	return defaultValue;
     }
+	public static Page loadPage(PageContext pc, PageSource[] arr) throws PageException {
+    	return loadPage(pc, arr, false);
+	}
 
-    public static Page loadPage(PageContext pc, PageSource[] arr) throws PageException {
+    public static Page loadPage(PageContext pc, PageSource[] arr, boolean forceReload) throws PageException {
 	if (ArrayUtil.isEmpty(arr)) return null;
 
 	Page p;
 	for (int i = 0; i < arr.length; i++) {
-	    p = arr[i].loadPageThrowTemplateException(pc, false, (Page) null);
+	    p = arr[i].loadPageThrowTemplateException(pc, forceReload, (Page) null);
 	    if (p != null) return p;
 	}
 	throw new MissingIncludeException(arr[0]);

@@ -820,36 +820,51 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public void doInclude(String realPath) throws PageException {
-	_doInclude(getRelativePageSources(realPath), false, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE));
+	_doInclude(getRelativePageSources(realPath), false, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE), false);
     }
 
     @Override
     public void doInclude(String realPath, boolean runOnce) throws PageException {
-	_doInclude(getRelativePageSources(realPath), runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE));
+	_doInclude(getRelativePageSources(realPath), runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE), false);
     }
+	public void doInclude(String realPath, boolean runOnce, boolean forceReload) throws PageException {
+		_doInclude(getRelativePageSources(realPath), runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE), forceReload);
+
+	}
 
     // used by the transformer
     public void doInclude(String realPath, boolean runOnce, Object cachedWithin) throws PageException {
 	if (cachedWithin == null) cachedWithin = getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE);
-	_doInclude(getRelativePageSources(realPath), runOnce, cachedWithin);
+	_doInclude(getRelativePageSources(realPath), runOnce, cachedWithin, false);
     }
+	public void doInclude(String realPath, boolean runOnce, Object cachedWithin, boolean forceReload) throws PageException {
+		if (cachedWithin == null) cachedWithin = getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE);
+		_doInclude(getRelativePageSources(realPath), runOnce, cachedWithin, forceReload);
+	}
 
     @Override
     public void doInclude(PageSource[] sources, boolean runOnce) throws PageException {
-	_doInclude(sources, runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE));
+	_doInclude(sources, runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE), false);
     }
+	public void doInclude(PageSource[] sources, boolean runOnce, boolean forceReload) throws PageException {
+		_doInclude(sources, runOnce, getCachedWithin(ConfigWeb.CACHEDWITHIN_INCLUDE), forceReload);
+	}
+
 
     // IMPORTANT!!! we do not getCachedWithin in this method, because Modern|ClassicAppListener is
     // calling this method and in this case it should not be used
-    public void _doInclude(PageSource[] sources, boolean runOnce, Object cachedWithin) throws PageException {
+    public void _doInclude(PageSource[] sources, boolean runOnce, Object cachedWithin, boolean forceReload) throws PageException {
 	if (cachedWithin == null) {
-	    _doInclude(sources, runOnce);
+	    _doInclude(sources, runOnce, forceReload);
 	    return;
 	}
 
 	// ignore call when runonce an it is not first call
 	if (runOnce) {
-	    Page currentPage = PageSourceImpl.loadPage(this, sources);
+		Page currentPage=null;
+		if(!forceReload) {
+			currentPage = PageSourceImpl.loadPage(this, sources);
+		}
 	    if (runOnce && includeOnce.contains(currentPage.getPageSource())) return;
 	}
 
@@ -857,41 +872,39 @@ public final class PageContextImpl extends PageContext {
 	String cacheId = CacheHandlerCollectionImpl.createId(sources);
 	CacheHandler cacheHandler = config.getCacheHandlerCollection(Config.CACHE_TYPE_INCLUDE, null).getInstanceMatchingObject(cachedWithin, null);
 
-	if (cacheHandler instanceof CacheHandlerPro) {
+	if(!forceReload) {
+		if (cacheHandler instanceof CacheHandlerPro) {
 
-	    CacheItem cacheItem = ((CacheHandlerPro) cacheHandler).get(this, cacheId, cachedWithin);
+			CacheItem cacheItem = ((CacheHandlerPro) cacheHandler).get(this, cacheId, cachedWithin);
 
-	    if (cacheItem instanceof IncludeCacheItem) {
-		try {
-		    write(((IncludeCacheItem) cacheItem).getOutput());
-		    return;
+			if (cacheItem instanceof IncludeCacheItem) {
+				try {
+					write(((IncludeCacheItem) cacheItem).getOutput());
+					return;
+				} catch (IOException e) {
+					throw Caster.toPageException(e);
+				}
+			}
+		} else if (cacheHandler != null) { // TODO this else block can be removed when all cache handlers implement CacheHandlerPro
+
+			CacheItem cacheItem = cacheHandler.get(this, cacheId);
+
+			if (cacheItem instanceof IncludeCacheItem) {
+				try {
+					write(((IncludeCacheItem) cacheItem).getOutput());
+					return;
+				} catch (IOException e) {
+					throw Caster.toPageException(e);
+				}
+			}
 		}
-		catch (IOException e) {
-		    throw Caster.toPageException(e);
-		}
-	    }
 	}
-	else if (cacheHandler != null) { // TODO this else block can be removed when all cache handlers implement CacheHandlerPro
-
-	    CacheItem cacheItem = cacheHandler.get(this, cacheId);
-
-	    if (cacheItem instanceof IncludeCacheItem) {
-		try {
-		    write(((IncludeCacheItem) cacheItem).getOutput());
-		    return;
-		}
-		catch (IOException e) {
-		    throw Caster.toPageException(e);
-		}
-	    }
-	}
-
 	// cached item not found, process and cache result if needed
 	long start = System.nanoTime();
 	BodyContent bc = pushBody();
 
 	try {
-	    _doInclude(sources, runOnce);
+	    _doInclude(sources, runOnce, forceReload);
 	    String out = bc.getString();
 
 	    if (cacheHandler != null) {
@@ -904,15 +917,21 @@ public final class PageContextImpl extends PageContext {
 	    BodyContentUtil.flushAndPop(this, bc);
 	}
     }
+	private void _doInclude(PageSource[] sources) throws PageException {
+		_doInclude(sources, false, false);
+	}
+	private void _doInclude(PageSource[] sources, boolean runOnce) throws PageException {
+    	_doInclude(sources, runOnce, false);
+	}
 
-    private void _doInclude(PageSource[] sources, boolean runOnce) throws PageException {
+    private void _doInclude(PageSource[] sources, boolean runOnce, boolean forceReload) throws PageException {
 	// debug
 	if (!gatewayContext && config.debug()) {
 	    long currTime = executionTime;
 	    long exeTime = 0;
 	    long time = System.nanoTime();
 
-	    Page currentPage = PageSourceImpl.loadPage(this, sources);
+	    Page currentPage= PageSourceImpl.loadPage(this, sources, forceReload);
 	    notSupported(config, currentPage.getPageSource());
 	    if (runOnce && includeOnce.contains(currentPage.getPageSource())) return;
 	    DebugEntryTemplate debugEntry = debugger.getEntry(this, currentPage.getPageSource());
@@ -946,7 +965,7 @@ public final class PageContextImpl extends PageContext {
 	}
 	// no debug
 	else {
-	    Page currentPage = PageSourceImpl.loadPage(this, sources);
+		Page currentPage = PageSourceImpl.loadPage(this, sources, forceReload);
 	    notSupported(config, currentPage.getPageSource());
 	    if (runOnce && includeOnce.contains(currentPage.getPageSource())) return;
 	    try {

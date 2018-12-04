@@ -52,7 +52,7 @@ public final class ClassicAppListener extends AppListenerSupport {
 	pci.setAppListenerType(ApplicationListener.TYPE_CLASSIC);
 
 	// on requestStart
-	if (application != null) pci._doInclude(new PageSource[] { application }, false, null);
+	if (application != null) pci._doInclude(new PageSource[] { application }, false, null, false);
 
 	if (rl != null) {
 	    requestedPage = rl.execute(pc, requestedPage);
@@ -61,7 +61,7 @@ public final class ClassicAppListener extends AppListenerSupport {
 
 	// request
 	try {
-	    pci._doInclude(new PageSource[] { requestedPage }, false, null);
+	    pci._doInclude(new PageSource[] { requestedPage }, false, null, false);
 	}
 	catch (MissingIncludeException mie) {
 	    ApplicationContext ac = pc.getApplicationContext();
@@ -80,7 +80,7 @@ public final class ClassicAppListener extends AppListenerSupport {
 	// on Request End
 	if (application != null) {
 	    PageSource onReqEnd = application.getRealPage(Constants.CFML_CLASSIC_APPLICATION_END_EVENT_HANDLER);
-	    if (onReqEnd.exists()) pci._doInclude(new PageSource[] { onReqEnd }, false, null);
+	    if (onReqEnd.exists()) pci._doInclude(new PageSource[] { onReqEnd }, false, null, false);
 	}
     }
 

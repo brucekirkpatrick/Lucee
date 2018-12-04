@@ -4048,6 +4048,16 @@ To use cached data, the function must be called with the exact same arguments.
 			if set to true, the given template is only included once within the current request.
 			</description>
 		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>forceReload</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<script-support>optional</script-support>
+			<description>
+				If set to true, the CFML page will be forcefully recompiled.
+			</description>
+		</attribute>
 	</tag>
 	<!-- Index -->
 	<tag>
