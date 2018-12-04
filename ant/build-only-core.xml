@@ -3,7 +3,7 @@
   <description>
         Build Lucee Core
   </description> 
-  <property name="javaVersion" value="11"/>
+  <property name="javaVersion" value="1.8"/>
   <property name="build.compiler" value="extJavac"/>
   <property name="agent" value="lucee.runtime.instrumentation.ExternalAgent"/>
   <property name="bundleName" value="Lucee Core"/>
