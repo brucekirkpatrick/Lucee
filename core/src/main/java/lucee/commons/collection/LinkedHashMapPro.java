@@ -148,7 +148,12 @@ public class LinkedHashMapPro<K, V> extends AbstractMapPro<K, V> implements Seri
 
 	@Override
 	public V g(K key) throws PageException {
-		return map.get(key);
+		V value=map.get(key);
+		if(value==null) {
+			throw AbstractMapPro.invalidKey(map, key, false);
+		}else{
+			return value;
+		}
 	}
 
 	@Override
@@ -158,7 +163,12 @@ public class LinkedHashMapPro<K, V> extends AbstractMapPro<K, V> implements Seri
 
 	@Override
 	public V r(K key) throws PageException {
-		return map.get(key);
+		V value=map.get(key);
+		if(value==null) {
+			throw AbstractMapPro.invalidKey(map, key, false);
+		}else{
+			return value;
+		}
 	}
 
 	@Override

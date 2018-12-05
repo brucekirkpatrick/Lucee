@@ -145,7 +145,12 @@ public class WeakHashMapPro<K, V> extends AbstractMapPro<K, V> implements Serial
 
 	@Override
 	public V g(K key) throws PageException {
-		return map.get(key);
+		V value=map.get(key);
+		if(value==null) {
+			throw AbstractMapPro.invalidKey(map, key, false);
+		}else{
+			return value;
+		}
 	}
 
 	@Override
@@ -155,7 +160,12 @@ public class WeakHashMapPro<K, V> extends AbstractMapPro<K, V> implements Serial
 
 	@Override
 	public V r(K key) throws PageException {
-		return map.get(key);
+		V value=map.get(key);
+		if(value==null) {
+			throw AbstractMapPro.invalidKey(map, key, false);
+		}else{
+			return value;
+		}
 	}
 
 	@Override

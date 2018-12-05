@@ -154,7 +154,12 @@ public class ConcurrentHashMapPro8<K, V> extends AbstractMapPro<K, V> implements
 
     @Override
     public V g(K key) throws PageException {
-        return map.get(key);
+        V value=map.get(key);
+        if(value==null) {
+            throw AbstractMapPro.invalidKey(map, key, false);
+        }else{
+            return value;
+        }
     }
 
     @Override
@@ -164,7 +169,12 @@ public class ConcurrentHashMapPro8<K, V> extends AbstractMapPro<K, V> implements
 
     @Override
     public V r(K key) throws PageException {
-        return map.get(key);
+        V value=map.get(key);
+        if(value==null) {
+            throw AbstractMapPro.invalidKey(map, key, false);
+        }else{
+            return value;
+        }
     }
 
     @Override
