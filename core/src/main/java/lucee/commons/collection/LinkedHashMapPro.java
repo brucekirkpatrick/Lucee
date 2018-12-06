@@ -3,10 +3,7 @@ package lucee.commons.collection;
 import lucee.runtime.exp.PageException;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -16,7 +13,7 @@ public class LinkedHashMapPro<K, V> extends AbstractMapPro<K, V> implements Seri
 	public static final float DEFAULT_LOAD_FACTOR = 0.75f;
 	HashMap<K, V> map;
 	public LinkedHashMapPro(int initialCapacity, float loadFactor) {
-		map=new HashMap<K, V>(initialCapacity, loadFactor);
+		map=new LinkedHashMap<>(initialCapacity, loadFactor);
 	}
 	public LinkedHashMapPro(int initialCapacity) {
 		this(initialCapacity, DEFAULT_LOAD_FACTOR);
