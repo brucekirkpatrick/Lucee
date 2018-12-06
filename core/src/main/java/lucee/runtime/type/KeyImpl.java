@@ -49,7 +49,7 @@ public class KeyImpl implements Collection.Key, Castable, Comparable, Externaliz
     private transient String ucKey;
     private transient int wjh;
     private transient int sfm = -1;
-    private transient long h64;
+    private transient Long h64;
 
     public KeyImpl() {
 	// DO NOT USE, JUST FOR UNSERIALIZE
@@ -115,19 +115,19 @@ public class KeyImpl implements Collection.Key, Castable, Comparable, Externaliz
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 	key = (String) in.readObject();
 	ucKey = key.toUpperCase();
-	h64 = createHash64(ucKey);
+//	h64 = createHash64(ucKey);
     }
 
     public KeyImpl(String key) {
 	this.key = key;
 	this.ucKey = key.toUpperCase();
-	h64 = createHash64(ucKey);
+//	h64 = createHash64(ucKey);
     }
 
     /**
      * for dynamic loading of key objects
      * 
-     * @param string
+     * @param key
      * @return
      */
     public static Collection.Key init(String key) {
@@ -201,9 +201,9 @@ public class KeyImpl implements Collection.Key, Castable, Comparable, Externaliz
     public boolean equalsIgnoreCase(Key other) {
 	if (this == other) return true;
 	if (other instanceof KeyImpl) {
-	    return h64 == ((KeyImpl) other).h64;// return lcKey.equals((((KeyImpl)other).lcKey));
+	    return hash() == ((KeyImpl) other).hash();// return lcKey.equals((((KeyImpl)other).lcKey));
 	}
-	return ucKey.equalsIgnoreCase(other.getLowerString());
+	return ucKey.equalsIgnoreCase(other.getUpperString());
     }
 
     @Override
@@ -213,7 +213,10 @@ public class KeyImpl implements Collection.Key, Castable, Comparable, Externaliz
 
     @Override
     public long hash() {
-	return h64;
+		if(h64==null){
+			h64 = createHash64(ucKey);
+		}
+    	return h64;
     }
 
     @Override
