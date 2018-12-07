@@ -165,20 +165,36 @@ public final class Cookie extends TagImpl {
 	this.encode = encode;
     }
 
+    private void throwIfInternalName(Key key) throws PageException{
+        String appName = Login.getApplicationName(pageContext.getApplicationContext());
+        boolean isAppName = false;
+        char[] chars=key.getUpperString().toCharArray();
+        boolean internal=false;
+        if(chars.length==4){
+            // check C F I D
+            if(chars[0] == 67 && chars[1] == 70 && chars[2] == 73 && chars[3] == 68){
+                internal=true;
+            }
+        }else if(chars.length==7){
+            // check C F T O K E N
+            if(chars[0] == 67 && chars[1] == 70 && chars[2] == 84 && chars[3] == 79 && chars[4] == 75 && chars[5] == 69 && chars[6] == 78){
+                internal=true;
+            }
+        }
+        if (internal || (isAppName = key.equals(appName))) {
+            ApplicationContext ac = pageContext.getApplicationContext();
+            if (ac instanceof ApplicationContextSupport) {
+                ApplicationContextSupport acs = (ApplicationContextSupport) ac;
+                CookieData data = isAppName ? acs.getAuthCookie() : acs.getSessionCookie();
+                if (data != null && data.isDisableUpdate()) throw new ExpressionException("customize " + key + " is disabled!");
+
+            }
+        }
+    }
     @Override
     public int doStartTag() throws PageException {
 	Key key = KeyImpl.getInstance(name);
-	String appName = Login.getApplicationName(pageContext.getApplicationContext());
-	boolean isAppName = false;
-	if (KeyConstants._CFID.equalsIgnoreCase(key) || KeyConstants._CFTOKEN.equalsIgnoreCase(key) || (isAppName = key.equals(appName))) {
-	    ApplicationContext ac = pageContext.getApplicationContext();
-	    if (ac instanceof ApplicationContextSupport) {
-		ApplicationContextSupport acs = (ApplicationContextSupport) ac;
-		CookieData data = isAppName ? acs.getAuthCookie() : acs.getSessionCookie();
-		if (data != null && data.isDisableUpdate()) throw new ExpressionException("customize " + key + " is disabled!");
-
-	    }
-	}
+	throwIfInternalName(key);
 	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, preservecase, encode);
 	return SKIP_BODY;
     }

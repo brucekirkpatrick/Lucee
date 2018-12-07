@@ -204,7 +204,6 @@ public class KeyConstants {
     public static final Key _QRY = KeyImpl._const("QRY");
     public static final Key _QUERY = KeyImpl._const("QUERY");
     public static final Key _LUCEE = KeyImpl._const("LUCEE");
-    public static final Key _RAILO = KeyImpl._const("RAILO");
     public static final Key _RBundles = KeyImpl._const("RBundles");
     public static final Key _RES = KeyImpl._const("RES");
     public static final Key _RESULT = KeyImpl._const("RESULT");
@@ -541,7 +540,6 @@ public class KeyConstants {
     public static final Key _queryError = KeyImpl._const("queryError");
     public static final Key _r99f = KeyImpl._const("r99f");
     public static final Key _lucee = KeyImpl._const("lucee");
-    public static final Key _railo = KeyImpl._const("railo");
     public static final Key _luceeweb = KeyImpl._const("luceeweb");
     public static final Key _rank = KeyImpl._const("rank");
     public static final Key _rel = KeyImpl._const("rel");

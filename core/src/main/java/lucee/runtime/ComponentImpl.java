@@ -855,7 +855,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     @Override
     public Member getMember(int access, Collection.Key key, boolean dataMember, boolean superAccess) {
 	// check super
-	if (dataMember && access == ACCESS_PRIVATE && key.equalsIgnoreCase(KeyConstants._super)) {
+	if (dataMember && access == ACCESS_PRIVATE && isSuperKey(key)) {
 	    Component ac = ComponentUtil.getActiveComponent(ThreadLocalPageContext.get(), this);
 	    return SuperComponent.superMember((ComponentImpl) ac.getBaseComponent());
 	    // return SuperComponent . superMember(base);
@@ -871,6 +871,17 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	}
 	return null;
     }
+	public boolean isSuperKey(Collection.Key key){
+		int length=key.length();
+		if(length==5) {
+			char[] chars = key.getUpperString().toCharArray();
+			// check for S U P E R
+			if (chars[0] == 83 && chars[1] == 85 && chars[2] == 80 && chars[3] == 69 && chars[4] == 82) {
+				return true;
+			}
+		}
+		return false;
+	}
 
     /**
      * get entry matching key
@@ -883,7 +894,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      */
     protected Member getMember(PageContext pc, Collection.Key key, boolean dataMember, boolean superAccess) {
 	// check super
-	if (dataMember && key.equalsIgnoreCase(KeyConstants._super) && isPrivate(pc)) {
+	if (dataMember && isSuperKey(key) && isPrivate(pc)) {
 	    Component ac = ComponentUtil.getActiveComponent(pc, this);
 	    return SuperComponent.superMember((ComponentImpl) ac.getBaseComponent());
 	}

@@ -18,6 +18,7 @@
  */
 package lucee.runtime;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import lucee.commons.collection.MapFactory;
@@ -124,19 +125,56 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 	throw new ExpressionException("Component [" + component.getCallName() + "] has no accessible Member with name [" + key + "]");
     }
 
+    public boolean isComponentScopeLiteral(Key key){
+        int length=key.length();
+        if(length==4) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for T H I S
+            if (chars[0] == 84 && chars[1] == 72 && chars[2] == 73 && chars[3] == 83) {
+                return true;
+            }
+        }else if(length==5) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for S U P E R
+            if (chars[0] == 83 && chars[1] == 85 && chars[2] == 80 && chars[3] == 69 && chars[4] == 82) {
+                return true;
+            }
+        }else if(length==6) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for S T A T I C
+            if (chars[0] == 83 && chars[1] == 84 && chars[2] == 65 && chars[3] == 84 && chars[4] == 73 && chars[5] == 67) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Object get(Key key, Object defaultValue) {
-	if (key.equalsIgnoreCase(KeyConstants._SUPER)) {
-	    Component ac = ComponentUtil.getActiveComponent(ThreadLocalPageContext.get(), component);
-	    return SuperComponent.superInstance((ComponentImpl) ac.getBaseComponent());
-	}
-	if (key.equalsIgnoreCase(KeyConstants._THIS)) return component.top;
-	if (key.equalsIgnoreCase(KeyConstants._STATIC)) return component.staticScope();
-
-	Object val = shadow.g(key, CollectionUtil.NULL);
-	if (val == CollectionUtil.NULL) return defaultValue;
-	if (val == null && !NullSupportHelper.full()) return defaultValue;
-	return val;
+        int length=key.length();
+        if(length==4) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for T H I S
+            if (chars[0] == 84 && chars[1] == 72 && chars[2] == 73 && chars[3] == 83) {
+                return component.top;
+            }
+        }else if(length==5) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for S U P E R
+            if (chars[0] == 83 && chars[1] == 85 && chars[2] == 80 && chars[3] == 69 && chars[4] == 82) {
+                return SuperComponent.superInstance((ComponentImpl) ComponentUtil.getActiveComponent(ThreadLocalPageContext.get(), component).getBaseComponent());
+            }
+        }else if(length==6) {
+            char[] chars = key.getUpperString().toCharArray();
+            // check for S T A T I C
+            if (chars[0] == 83 && chars[1] == 84 && chars[2] == 65 && chars[3] == 84 && chars[4] == 73 && chars[5] == 67) {
+                return component.staticScope();
+            }
+        }
+        Object val = shadow.g(key, CollectionUtil.NULL);
+        if (val == CollectionUtil.NULL) return defaultValue;
+        if (val == null && !NullSupportHelper.full()) return defaultValue;
+        return val;
     }
 
     @Override
@@ -173,7 +211,7 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 
     @Override
     public Object remove(Collection.Key key) throws PageException {
-	if (key.equalsIgnoreCase(KeyConstants._this) || key.equalsIgnoreCase(KeyConstants._super) || key.equalsIgnoreCase(KeyConstants._static))
+	if (isComponentScopeLiteral(key))
 	    throw new ExpressionException("key [" + key.getString() + "] is part of the component and can't be removed");
 
 	if (NullSupportHelper.full()) return shadow.r(key);
@@ -185,14 +223,14 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 
     @Override
     public Object removeEL(Key key) {
-	if (key.equalsIgnoreCase(KeyConstants._this) || key.equalsIgnoreCase(KeyConstants._super) || key.equalsIgnoreCase(KeyConstants._static)) return null;
+	if (isComponentScopeLiteral(key)) return null;
 
 	return shadow.remove(key);
     }
 
     @Override
     public Object set(Collection.Key key, Object value) throws ApplicationException {
-	if (key.equalsIgnoreCase(KeyConstants._this) || key.equalsIgnoreCase(KeyConstants._super) || key.equalsIgnoreCase(KeyConstants._static)) return value;
+	if (isComponentScopeLiteral(key)) return value;
 
 	if (!component.afterConstructor && value instanceof UDF) {
 	    component.addConstructorUDF(key, (UDF) value);

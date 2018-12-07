@@ -232,25 +232,21 @@ public final class ServerImpl extends ScopeSupport implements Server, SharedScop
 
     @Override
     public Object get(Key key, Object defaultValue) {
-	if (key.equalsIgnoreCase(KeyConstants._railo)) return super.get(KeyConstants._lucee, defaultValue);
 	return super.get(key, defaultValue);
     }
 
     @Override
     public Object g(Key key, Object defaultValue) {
-	if (key.equalsIgnoreCase(KeyConstants._railo)) return super.g(KeyConstants._lucee, defaultValue);
 	return super.g(key, defaultValue);
     }
 
     @Override
     public Object g(Key key) throws PageException {
-	if (key.equalsIgnoreCase(KeyConstants._railo)) return super.g(KeyConstants._lucee);
 	return super.g(key);
     }
 
     @Override
     public Object get(Key key) throws PageException {
-	if (key.equalsIgnoreCase(KeyConstants._railo)) return super.get(KeyConstants._lucee);
 	return super.get(key);
     }
 
