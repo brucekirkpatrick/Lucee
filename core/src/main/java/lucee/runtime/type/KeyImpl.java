@@ -135,7 +135,9 @@ public class KeyImpl implements Collection.Key, Castable, Comparable, Externaliz
     }
 
     public static Collection.Key _const(String key) {
-	return new KeyImpl(key);
+    	KeyImpl k=new KeyImpl(key);
+    	k.hash();
+		return k;
     }
 
     public static Collection.Key getInstance(String key) {
