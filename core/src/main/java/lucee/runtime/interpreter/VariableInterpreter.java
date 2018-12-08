@@ -538,6 +538,9 @@ public final class VariableInterpreter {
 	    else if ('l' == c) {
 		if ("local".equals(type)) return Scope.SCOPE_LOCAL;// LLL
 	    }
+		else if ('j' == c) {
+			if ("jetendo".equals(type)) return Scope.SCOPE_JETENDO;// LLL
+		}
 
 	    else if ('r' == c) {
 		if ("request".equals(type)) return Scope.SCOPE_REQUEST;
@@ -566,6 +569,9 @@ public final class VariableInterpreter {
 	}
 	else if ('l' == c) {
 	    if ("local".equals(type)) return Scope.SCOPE_LOCAL;// LLL
+	}
+	else if ('j' == c) {
+		if ("jetendo".equals(type)) return Scope.SCOPE_JETENDO;
 	}
 	else if ('r' == c) {
 	    if ("request".equals(type)) return Scope.SCOPE_REQUEST;
@@ -597,6 +603,9 @@ public final class VariableInterpreter {
 	}
 	else if ('f' == c) {
 	    if (KeyConstants._form.equalsIgnoreCase(type)) return Scope.SCOPE_FORM;
+	}
+	else if ('j' == c) {
+		if (KeyConstants._jetendo.equalsIgnoreCase(type)) return Scope.SCOPE_JETENDO;
 	}
 	else if ('r' == c) {
 	    if (KeyConstants._request.equalsIgnoreCase(type)) return Scope.SCOPE_REQUEST;
@@ -650,6 +659,8 @@ public final class VariableInterpreter {
 	    return pc.variablesScope();
 	case Scope.SCOPE_REQUEST:
 	    return pc.requestScope();
+	case Scope.SCOPE_JETENDO:
+		return pc.jetendoScope();
 	case Scope.SCOPE_CGI:
 	    return pc.cgiScope();
 	case Scope.SCOPE_APPLICATION:

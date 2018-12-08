@@ -443,6 +443,7 @@ public class KeyConstants {
     public static final Key _item = KeyImpl._const("item");
     public static final Key _iterator = KeyImpl._const("iterator");
     public static final Key _j = KeyImpl._const("j");
+    public static final Key _jetendo = KeyImpl._const("jetendo");
     public static final Key _java = KeyImpl._const("java");
     public static final Key _javaLoader = KeyImpl._const("javaLoader");
     public static final Key _jsessionid = KeyImpl._const("jsessionid");

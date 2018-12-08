@@ -139,6 +139,9 @@ public final class CallerImpl extends StructSupport implements Caller {
 	else if ('f' == c) {
 	    if (KeyConstants._form.equalsIgnoreCase(key)) return pc.formScope();
 	}
+	else if ('j' == c) {
+		if (KeyConstants._jetendo.equalsIgnoreCase(key)) return pc.jetendoScope();
+	}
 	else if ('r' == c) {
 	    if (KeyConstants._request.equalsIgnoreCase(key)) return pc.requestScope();
 	}

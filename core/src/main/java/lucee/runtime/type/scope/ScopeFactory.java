@@ -91,6 +91,8 @@ public final class ScopeFactory {
 	    return "cgi";
 	case Scope.SCOPE_CLIENT:
 	    return "client";
+	case Scope.SCOPE_JETENDO:
+		return "jetendo";
 	case Scope.SCOPE_COOKIE:
 	    return "cookie";
 	case Scope.SCOPE_FORM:

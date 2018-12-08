@@ -1385,6 +1385,7 @@ public abstract class AbstrCFMLExprTransformer {
 	return flf;
     }
 
+    // this does something key in expression scope.key
     private Expression subDynamic(Data data, Expression expr, boolean tryStatic, boolean isStaticChild) throws TemplateException {
 
 	String name = null;
@@ -1643,6 +1644,7 @@ public abstract class AbstrCFMLExprTransformer {
 	    }
 	}
 	else if (idStr.equals("VARIABLES")) return data.factory.createVariable(Scope.SCOPE_VARIABLES, line, data.srcCode.getPosition());
+	else if (idStr.equals("JETENDO")) return data.factory.createVariable(Scope.SCOPE_JETENDO, line, data.srcCode.getPosition());
 	else if (idStr.equals("REQUEST")) return data.factory.createVariable(Scope.SCOPE_REQUEST, line, data.srcCode.getPosition());
 	else if (idStr.equals("SERVER")) return data.factory.createVariable(Scope.SCOPE_SERVER, line, data.srcCode.getPosition());
 

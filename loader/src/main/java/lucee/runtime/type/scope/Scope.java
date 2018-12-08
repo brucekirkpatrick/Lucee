@@ -89,7 +89,10 @@ public interface Scope extends Struct {
 
     public static final int SCOPE_VAR = 15;
 
-    public static final int SCOPE_COUNT = 16;
+    public static final int SCOPE_JETENDO=16;
+
+
+    public static final int SCOPE_COUNT = 17;
 
     /**
      * return if the scope is Initialized

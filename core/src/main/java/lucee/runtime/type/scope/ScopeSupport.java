@@ -74,7 +74,7 @@ public abstract class ScopeSupport extends StructImpl implements Scope {
      * 
      * @param name name of the scope
      * @param type scope type (SCOPE_APPLICATION,SCOPE_COOKIE use)
-     * @param doubleLinked mean that the struct has predictable iteration order this make the input
+     * @param mapType mean that the struct has predictable iteration order this make the input
      *            order fix
      */
     public ScopeSupport(String name, int type, int mapType) {

@@ -47,23 +47,7 @@ import lucee.runtime.type.Iterator;
 import lucee.runtime.type.Query;
 import lucee.runtime.type.UDF;
 import lucee.runtime.type.ref.Reference;
-import lucee.runtime.type.scope.Application;
-import lucee.runtime.type.scope.Argument;
-import lucee.runtime.type.scope.CGI;
-import lucee.runtime.type.scope.Client;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.Cookie;
-import lucee.runtime.type.scope.Form;
-import lucee.runtime.type.scope.Local;
-import lucee.runtime.type.scope.Request;
-import lucee.runtime.type.scope.Scope;
-import lucee.runtime.type.scope.Server;
-import lucee.runtime.type.scope.Session;
-import lucee.runtime.type.scope.Threads;
-import lucee.runtime.type.scope.URL;
-import lucee.runtime.type.scope.URLForm;
-import lucee.runtime.type.scope.Undefined;
-import lucee.runtime.type.scope.Variables;
+import lucee.runtime.type.scope.*;
 import lucee.runtime.util.VariableUtil;
 
 /**
@@ -159,6 +143,7 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
 
     public abstract void setFunctionScopes(Local local, Argument argument);
 
+    public abstract Jetendo jetendoScope();
     /**
      * @return server scope
      * @throws PageException

@@ -20,6 +20,9 @@ package lucee.runtime;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.invoke.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -172,38 +175,7 @@ import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.it.ItAsEnum;
 import lucee.runtime.type.ref.Reference;
 import lucee.runtime.type.ref.VariableReference;
-import lucee.runtime.type.scope.Application;
-import lucee.runtime.type.scope.Argument;
-import lucee.runtime.type.scope.ArgumentImpl;
-import lucee.runtime.type.scope.CGI;
-import lucee.runtime.type.scope.CGIImpl;
-import lucee.runtime.type.scope.CGIImplReadOnly;
-import lucee.runtime.type.scope.Client;
-import lucee.runtime.type.scope.ClosureScope;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.Cookie;
-import lucee.runtime.type.scope.CookieImpl;
-import lucee.runtime.type.scope.Form;
-import lucee.runtime.type.scope.FormImpl;
-import lucee.runtime.type.scope.Local;
-import lucee.runtime.type.scope.LocalNotSupportedScope;
-import lucee.runtime.type.scope.Request;
-import lucee.runtime.type.scope.RequestImpl;
-import lucee.runtime.type.scope.Scope;
-import lucee.runtime.type.scope.ScopeContext;
-import lucee.runtime.type.scope.ScopeFactory;
-import lucee.runtime.type.scope.ScopeSupport;
-import lucee.runtime.type.scope.Server;
-import lucee.runtime.type.scope.Session;
-import lucee.runtime.type.scope.Threads;
-import lucee.runtime.type.scope.URL;
-import lucee.runtime.type.scope.URLForm;
-import lucee.runtime.type.scope.URLImpl;
-import lucee.runtime.type.scope.Undefined;
-import lucee.runtime.type.scope.UndefinedImpl;
-import lucee.runtime.type.scope.UrlFormImpl;
-import lucee.runtime.type.scope.Variables;
-import lucee.runtime.type.scope.VariablesImpl;
+import lucee.runtime.type.scope.*;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
@@ -273,6 +245,7 @@ public final class PageContextImpl extends PageContext {
     private Local local = localUnsupportedScope;
     private Session session;
     private Server server;
+    private Jetendo jetendo;
     private Cluster cluster;
     private CookieImpl cookie = new CookieImpl();
     private Client client;
@@ -376,6 +349,7 @@ public final class PageContextImpl extends PageContext {
 	this.scopeContext = scopeContext;
 	undefined = new UndefinedImpl(this, getScopeCascadingType());
 	server = ScopeContext.getServerScope(this, jsr223);
+	jetendo = ScopeContext.getJetendoScope(this, jsr223);
 	defaultApplicationContext = new ClassicApplicationContext(config, "", true, null);
 
 	this.id = id;
@@ -466,6 +440,7 @@ public final class PageContextImpl extends PageContext {
 
 	// Scopes
 	server = ScopeContext.getServerScope(this, ignoreScopes);
+	jetendo= ScopeContext.getJetendoScope(this, ignoreScopes);
 	if (hasFamily) {
 	    variablesRoot = new VariablesImpl();
 	    variables = variablesRoot;
@@ -1155,6 +1130,8 @@ public final class PageContextImpl extends PageContext {
 	    return sessionScope();
 	case Scope.SCOPE_SERVER:
 	    return serverScope();
+	case Scope.SCOPE_JETENDO:
+		return jetendoScope();
 	case Scope.SCOPE_COOKIE:
 	    return cookieScope();
 	case Scope.SCOPE_CLIENT:
@@ -1176,6 +1153,7 @@ public final class PageContextImpl extends PageContext {
 	    if ("request".equals(strScope)) return requestScope();
 	    if ("variables".equals(strScope)) return variablesScope();
 	    if ("server".equals(strScope)) return serverScope();
+		if ("jetendo".equals(strScope)) return jetendoScope();
 	    return defaultValue;
 	}
 
@@ -1189,6 +1167,7 @@ public final class PageContextImpl extends PageContext {
 	if ("arguments".equals(strScope)) return argumentsScope();
 	if ("session".equals(strScope)) return sessionScope();
 	if ("server".equals(strScope)) return serverScope();
+	if ("jetendo".equals(strScope)) return jetendoScope();
 	if ("cookie".equals(strScope)) return cookieScope();
 	if ("client".equals(strScope)) return clientScope();
 	if ("local".equals(strScope)) return localScope();
@@ -1425,6 +1404,11 @@ public final class PageContextImpl extends PageContext {
 	// if(!server.isInitalized()) server.initialize(this);
 	return server;
     }
+
+	@Override
+	public Jetendo jetendoScope() {
+		return jetendo;
+	}
 
     public void reset() {
 	server = ScopeContext.getServerScope(this, ignoreScopes());

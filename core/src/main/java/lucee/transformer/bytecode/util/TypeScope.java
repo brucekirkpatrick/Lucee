@@ -18,29 +18,14 @@
  **/
 package lucee.transformer.bytecode.util;
 
+import lucee.runtime.type.scope.*;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
-import lucee.runtime.type.scope.Application;
-import lucee.runtime.type.scope.Argument;
-import lucee.runtime.type.scope.CGI;
-import lucee.runtime.type.scope.Client;
-import lucee.runtime.type.scope.Cluster;
-import lucee.runtime.type.scope.Cookie;
-import lucee.runtime.type.scope.Form;
-import lucee.runtime.type.scope.Local;
-import lucee.runtime.type.scope.Request;
-import lucee.runtime.type.scope.Scope;
-import lucee.runtime.type.scope.ScopeSupport;
-import lucee.runtime.type.scope.Server;
-import lucee.runtime.type.scope.Session;
-import lucee.runtime.type.scope.URL;
-import lucee.runtime.type.scope.Undefined;
-
 public final class TypeScope {
 
-    public static int SCOPE_UNDEFINED_LOCAL = 16;
+    public static int SCOPE_UNDEFINED_LOCAL = 17;
 
     public final static Type SCOPE = Type.getType(Scope.class);
     public final static Type[] SCOPES = new Type[ScopeSupport.SCOPE_COUNT];
@@ -60,6 +45,7 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_VARIABLES] = Types.VARIABLES;
 	SCOPES[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
 	SCOPES[Scope.SCOPE_VAR] = SCOPES[Scope.SCOPE_LOCAL];
+	SCOPES[Scope.SCOPE_JETENDO] = Type.getType(Jetendo.class);
 	// SCOPES[SCOPE_UNDEFINED_LOCAL]= SCOPES[Scope.SCOPE_LOCAL];
     }
 
@@ -80,6 +66,7 @@ public final class TypeScope {
 	METHODS[Scope.SCOPE_VARIABLES] = new Method("variablesScope", SCOPES[Scope.SCOPE_VARIABLES], new Type[] {});
 	METHODS[Scope.SCOPE_CLUSTER] = new Method("clusterScope", SCOPES[Scope.SCOPE_CLUSTER], new Type[] {});
 	METHODS[Scope.SCOPE_VAR] = new Method("localScope", SCOPES[Scope.SCOPE_VAR], new Type[] {});
+	METHODS[Scope.SCOPE_JETENDO] = new Method("jetendoScope", SCOPES[Scope.SCOPE_JETENDO], new Type[] {});
 	METHODS[SCOPE_UNDEFINED_LOCAL] = new Method("usl", SCOPE, new Type[] {});
     }
     // Argument argumentsScope (boolean)
