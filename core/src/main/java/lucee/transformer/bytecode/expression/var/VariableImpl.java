@@ -17,11 +17,17 @@
  */
 package lucee.transformer.bytecode.expression.var;
 
+import java.lang.invoke.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import lucee.runtime.exp.PageException;
+import lucee.runtime.type.scope.JetendoImpl;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -56,6 +62,10 @@ import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
 import lucee.transformer.library.function.FunctionLibFunction;
 import lucee.transformer.library.function.FunctionLibFunctionArg;
+
+import static org.objectweb.asm.Opcodes.H_GETFIELD;
+import static org.objectweb.asm.Opcodes.H_GETSTATIC;
+import static org.objectweb.asm.Opcodes.H_INVOKESTATIC;
 
 public class VariableImpl extends ExpressionBase implements Variable {
 
@@ -324,7 +334,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
     /**
      * outputs a empty Variable, only scope Example: pc.formScope();
      * 
-     * @param adapter
+     * @param bc
      * @throws TemplateException
      */
     private Type _writeOutEmpty(BytecodeContext bc) throws TransformerException {
@@ -655,6 +665,51 @@ public class VariableImpl extends ExpressionBase implements Variable {
 	    defaultValue.writeOut(bc, MODE_VALUE);
 	    adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHOD_LOCAL_EL);
 	    rtn = Types.OBJECT;
+	}else if (scope == Scope.SCOPE_JETENDO){
+		adapter.loadArg(0);
+        rtn=TypeScope.invokeScope(adapter, scope);
+        String memberName=member.getName().toString();
+//		Field field = JetendoImpl.getField(memberName);
+//		if(field==null){
+//			throw new RuntimeException("There is no field named: "+memberName+" in JetendoImpl");
+//		}
+//		adapter.visitFieldInsn(Opcodes.GETSTATIC, Type.getInternalName(JetendoImpl.class), "memberBool", "Z");
+//		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "JetendoImpl", "getMemberBool", "()LAdder;", false);
+//		mv.visitInsn(Opcodes.POP);
+//		mv.visitFieldInsn(Opcodes.GETSTATIC, "Adder", "memberBool", "Z");
+//		adapter.visitVarInsn(Opcodes.ALOAD, 5);
+//		adapter.visitInsn(Opcodes.POP);
+		adapter.getStatic(rtn, "memberName", Types.BOOLEAN);
+		//adapter.invokeInterface(TypeScope.SCOPES[scope], _last ? METHOD_SCOPE_GET_COLLECTION_KEY : METHOD_SCOPE_GET_KEY);
+
+// good examples: https://www.programcreek.com/java-api-examples/?class=org.objectweb.asm.MethodVisitor&method=visitInvokeDynamicInsn
+		// https://www.programcreek.com/java-api-examples/?code=inferjay/r8/r8-master/src/test/examplesAndroidO/invokecustom/TestGenerator.java#
+//		MethodType mt=MethodType.methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class);
+//
+//		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC, Type.getInternalName(JetendoImpl.class), "bsmCreateCallCallingtargetMethod", mt.toMethodDescriptorString());
+/*
+hboot=new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false);
+h2=new Handle(Opcodes.H_INVOKESTATIC, "Main", "lambda$main$0", "()Ljava/lang/Object;", false);
+            mv.visitInvokeDynamicInsn("call", "()Ljava/util/concurrent/Callable;", hboot, new Object[]{Type.getType("()Ljava/lang/Object;"), h2, Type.getType("()Ljava/lang/Object;")});
+
+Signature    Java Type
+Z    boolean
+B    byte
+C    char
+S    short
+I    int
+J    long
+F    float
+D    double
+V    void
+L fully-qualified-class ;    fully-qualified-class
+[ type   type[]
+
+ */
+//		Handle handle=new Handle(H_GETSTATIC, Type.getInternalName(JetendoImpl.class), memberName, "Z");
+		//Llucee/runtime/type/scope/JetendoImpl;
+//		adapter.invokeDynamic(memberName, "Z", bootstrap, handle);
+		return Types.OBJECT;
 	}
 	else { // all other scopes
 	    adapter.loadArg(0);
@@ -785,7 +840,6 @@ public class VariableImpl extends ExpressionBase implements Variable {
      * 
      * @param funcName
      * @param args
-     * @param line
      * @return
      * @throws TransformerException
      */

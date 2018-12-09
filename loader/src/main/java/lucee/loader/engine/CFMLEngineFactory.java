@@ -306,60 +306,61 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	try {
 	    // Load core version when no patch available
 	    if (lucee == null) {
-		log(Logger.LOG_DEBUG, "Load Build in Core");
-		//
+			log(Logger.LOG_DEBUG, "Load Build in Core - 1");
+			//
 
-		final String coreExt = "lco";
-		final String coreExtPack = "lco.pack.gz";
-		boolean isPack200 = false;
-		// copy core
+			final String coreExt = "lco";
+			final String coreExtPack = "lco.pack.gz";
+			boolean isPack200 = false;
+			// copy core
 
-		final File rc = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExt);
-		File rcPack200 = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExtPack);
-		InputStream is = null;
-		OutputStream os = null;
-		try {
-		    is = new TP().getClass().getResourceAsStream("/core/core." + coreExt);
-		    if (is == null) {
-			is = new TP().getClass().getResourceAsStream("/core/core." + coreExtPack);
-			isPack200 = true;
-		    }
-		    os = new BufferedOutputStream(new FileOutputStream(isPack200 ? rcPack200 : rc));
-		    copy(is, os);
-		}
-		finally {
-		    closeEL(is);
-		    closeEL(os);
-		}
+			final File rc = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExt);
+			File rcPack200 = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExtPack);
+			InputStream is = null;
+			OutputStream os = null;
+			try {
+				is = new TP().getClass().getResourceAsStream("/core/core." + coreExt);
+				if (is == null) {
+				is = new TP().getClass().getResourceAsStream("/core/core." + coreExtPack);
+				isPack200 = true;
+				}
+				os = new BufferedOutputStream(new FileOutputStream(isPack200 ? rcPack200 : rc));
+				copy(is, os);
+			}
+			finally {
+				closeEL(is);
+				closeEL(os);
+			}
 
-		// unpack if necessary
-		if (isPack200) {
-		    Pack200Util.pack2Jar(rcPack200, rc);
-		    log(Logger.LOG_DEBUG, "unpack " + rcPack200 + " to " + rc);
-		    rcPack200.delete();
-		}
+			// unpack if necessary
+			if (isPack200) {
+				Pack200Util.pack2Jar(rcPack200, rc);
+				log(Logger.LOG_DEBUG, "unpack " + rcPack200 + " to " + rc);
+				rcPack200.delete();
+			}
 
-		lucee = new File(patcheDir, getVersion(rc) + "." + coreExt);
-		try {
-		    is = new FileInputStream(rc);
-		    os = new BufferedOutputStream(new FileOutputStream(lucee));
-		    copy(is, os);
-		}
-		finally {
-		    closeEL(is);
-		    closeEL(os);
-		    rc.delete();
-		}
+			lucee = new File(patcheDir, getVersion(rc) + "." + coreExt);
+			try {
+				is = new FileInputStream(rc);
+				os = new BufferedOutputStream(new FileOutputStream(lucee));
+				copy(is, os);
+			}
+			finally {
+				closeEL(is);
+				closeEL(os);
+				rc.delete();
+			}
 
-		setEngine(_getCore(lucee));
+			setEngine(_getCore(lucee));
 	    }
 	    else {
 
-		bundleCollection = BundleLoader.loadBundles(this, getFelixCacheDirectory(), getBundleDirectory(), lucee, bundleCollection);
-		// bundle=loadBundle(lucee);
-		log(Logger.LOG_DEBUG, "loaded bundle:" + bundleCollection.core.getSymbolicName());
-		setEngine(getEngine(bundleCollection));
-		log(Logger.LOG_DEBUG, "loaded engine:" + singelton);
+			log(Logger.LOG_DEBUG, "Bundle Directory: "+getBundleDirectory());
+			bundleCollection = BundleLoader.loadBundles(this, getFelixCacheDirectory(), getBundleDirectory(), lucee, bundleCollection);
+			// bundle=loadBundle(lucee);
+			log(Logger.LOG_DEBUG, "loaded bundle:" + bundleCollection.core.getSymbolicName());
+			setEngine(getEngine(bundleCollection));
+			log(Logger.LOG_DEBUG, "loaded engine:" + singelton);
 	    }
 	    version = singelton.getInfo().getVersion();
 

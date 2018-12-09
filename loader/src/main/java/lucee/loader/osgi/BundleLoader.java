@@ -34,6 +34,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -43,6 +44,7 @@ import lucee.loader.engine.CFMLEngineFactorySupport;
 import lucee.loader.util.Util;
 
 public class BundleLoader {
+	public static CFMLEngineFactory engine;
 
     /**
      * build (if necessary) a bundle and load it
@@ -59,6 +61,10 @@ public class BundleLoader {
     public static BundleCollection loadBundles(final CFMLEngineFactory engFac, final File cacheRootDir, final File jarDirectory, final File rc, final BundleCollection old)
 	    throws IOException, BundleException {
 	if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1) System.err.println(rc.getName());
+
+	engine=engFac;
+		engine.log(Logger.LOG_DEBUG, "Bundle jar directory:" +jarDirectory.getAbsolutePath());
+		//jars[i].getAbsolutePath());
 
 	final JarFile jf = new JarFile(rc);// TODO this should work in any case, but we should still improve this code
 	try {
@@ -137,7 +143,11 @@ public class BundleLoader {
 		     * RuntimeException(sb.toString());
 		     */
 		}
-		if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+		if(f==null){
+			//System.out.println("Bundle missing:"+e.getKey()+" : "+e.getValue());
+			throw new IOException("lucee core [" + rc + "] is missing required bundle in available jars:"+e.getKey()+" : "+e.getValue());
+		}
+//		if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
 		bundles.add(BundleUtil.addBundle(engFac, bc, f, null));
 	    }
 
@@ -174,11 +184,13 @@ public class BundleLoader {
 
     private static Map<String, File> loadAvailableBundles(final File jarDirectory) {
 	final Map<String, File> rtn = new HashMap<String, File>();
+
 	final File[] jars = jarDirectory.listFiles();
 	if (jars != null) for (int i = 0; i < jars.length; i++) {
 	    if (!jars[i].isFile() || !jars[i].getName().endsWith(".jar")) continue;
 	    try {
-		rtn.put(loadBundleInfo(jars[i]), jars[i]);
+			rtn.put(loadBundleInfo(jars[i]), jars[i]);
+			engine.log(Logger.LOG_DEBUG, "Available bundle:" +jars[i].getAbsolutePath());
 	    }
 	    catch (final IOException ioe) {
 		ioe.printStackTrace();

@@ -241,7 +241,8 @@ public final class TagHelper {
 		// TagUtil.setAttributeCollection(Tag, Struct)
 		adapter.loadArg(0);
 		adapter.loadLocal(currLocal);
-		if (currType != TAG) adapter.cast(currType, TAG);
+		// This wasn't necessary and breaks with v1_8 asm
+//		if (currType != TAG) adapter.cast(currType, TAG);
 
 		///
 		TagLibTagAttr[] missings = tag.getMissingAttributes();

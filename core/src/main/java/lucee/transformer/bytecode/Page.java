@@ -314,7 +314,7 @@ public final class Page extends BodyBase implements Root {
 	else if (isInterface(comp)) parent = InterfacePageImpl.class.getName();// "lucee/runtime/InterfacePage";
 	parent = parent.replace('.', '/');
 
-	cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL, className, null, parent, null);
+	cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL, className, null, parent, null);
 	if (optionalPS != null) {
 	    // we use full path when FD is enabled
 	    String path = config.allowRequestTimeout() ? optionalPS.getRealpathWithVirtual() : optionalPS.getPhyscalFile().getAbsolutePath();
@@ -335,6 +335,7 @@ public final class Page extends BodyBase implements Root {
 
 	// constructor
 	GeneratorAdapter constrAdapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC, CONSTRUCTOR_PS, null, null, cw);
+	// this is an object to help build the rest of the constructor afterwards
 	ConstrBytecodeContext constr = new ConstrBytecodeContext(optionalPS, this, keys, cw, className, constrAdapter, CONSTRUCTOR_PS, writeLog(), suppressWSbeforeArg, output,
 		returnValue);
 	constrAdapter.loadThis();
@@ -361,6 +362,8 @@ public final class Page extends BodyBase implements Root {
 
 	// call _init()
 	constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
+
+	// BECOMES: this.initKeys();
 	constrAdapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, constr.getClassName(), "initKeys", "()V");
 
 	// private static ImportDefintion[] test=new ImportDefintion[]{...};
@@ -630,10 +633,15 @@ public final class Page extends BodyBase implements Root {
 
 	// INIT KEYS
 	{
+		// create a new method call initKeys in the class
 	    GeneratorAdapter aInit = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, INIT_KEYS, null, null, cw);
+	    // adds this.initKeys() to constructor
 	    BytecodeContext bcInit = new BytecodeContext(optionalPS, constr, this, keys, cw, className, aInit, INIT_KEYS, writeLog(), suppressWSbeforeArg, output, returnValue);
+	    // body of initKeys
 	    registerFields(bcInit, keys);
+	    // return nothing
 	    aInit.returnValue();
+	    // end method
 	    aInit.endMethod();
 	}
 
@@ -1372,7 +1380,8 @@ public final class Page extends BodyBase implements Root {
 	GeneratorAdapter adapter = bc.getAdapter();
 	if ((attrs == null || attrs.size() == 0) && (meta == null || meta.size() == 0)) {
 	    ASMConstants.NULL(bc.getAdapter());
-	    bc.getAdapter().cast(Types.OBJECT, Types.STRUCT_IMPL);
+		// This wasn't necessary and breaks with v1_8 asm
+	    //bc.getAdapter().cast(Types.OBJECT, Types.STRUCT_IMPL);
 	    return;
 	}
 

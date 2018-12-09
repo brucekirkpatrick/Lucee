@@ -112,7 +112,7 @@ public final class ASMUtil {
      * Gibt zurueck ob das direkt uebergeordnete Tag mit dem uebergebenen Full-Name (Namespace und Name)
      * existiert.
      * 
-     * @param el Startelement, von wo aus gesucht werden soll.
+     * @param stat Startelement, von wo aus gesucht werden soll.
      * @param fullName Name des gesuchten Tags.
      * @return Existiert ein solches Tag oder nicht.
      */
@@ -124,7 +124,7 @@ public final class ASMUtil {
      * Gibt das uebergeordnete CFXD Tag Element zurueck, falls dies nicht existiert wird null
      * zurueckgegeben.
      * 
-     * @param el Element von dem das parent Element zurueckgegeben werden soll.
+     * @param tag Element von dem das parent Element zurueckgegeben werden soll.
      * @return uebergeordnete CFXD Tag Element
      */
     public static Tag getParentTag(Tag tag) {
@@ -289,7 +289,7 @@ public final class ASMUtil {
      * Gibt ein uebergeordnetes Tag mit dem uebergebenen Full-Name (Namespace und Name) zurueck, falls
      * ein solches existiert, andernfalls wird null zurueckgegeben.
      * 
-     * @param el Startelement, von wo aus gesucht werden soll.
+     * @param stat Startelement, von wo aus gesucht werden soll.
      * @param fullName Name des gesuchten Tags.
      * @return uebergeornetes Element oder null.
      */
@@ -309,7 +309,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -323,7 +323,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -337,7 +337,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -349,7 +349,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -363,7 +363,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -377,7 +377,7 @@ public final class ASMUtil {
     /**
      * extract the content of a attribut
      * 
-     * @param cfxdTag
+     * @param tag
      * @param attrName
      * @return attribute value
      * @throws EvaluatorException
@@ -533,7 +533,7 @@ public final class ASMUtil {
 	}
 	// CREATE CLASS
 	ClassWriter cw = ASMUtil.getClassWriter();
-	cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, className, null, parent.getName().replace('.', '/'), inter);
+	cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, parent.getName().replace('.', '/'), inter);
 	String md5;
 	try {
 	    md5 = createMD5(properties);
@@ -650,7 +650,7 @@ public final class ASMUtil {
     /**
      * translate a string cfml type definition to a Type Object
      * 
-     * @param cfType
+     * @param type
      * @param axistype
      * @return
      * @throws PageException
@@ -734,7 +734,8 @@ public final class ASMUtil {
     }
 
     public static ClassWriter getClassWriter() {
-	return new ClassWriter(ClassWriter.COMPUTE_MAXS);// |ClassWriter.COMPUTE_FRAMES);
+		//	return new ClassWriter(ClassWriter.COMPUTE_MAXS);// |ClassWriter.COMPUTE_FRAMES);
+		return new ClassWriter(ClassWriter.COMPUTE_FRAMES);
     }
 
     public static String createOverfowMethod(String prefix, int id) { // pattern is used in function callstackget

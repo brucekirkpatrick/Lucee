@@ -200,11 +200,18 @@
         var name=attrs.getValue("Bundle-SymbolicName");
         var version=attrs.getValue("Bundle-Version");
 
+        //print("bundle in m2 name:"+name+" version:"+version+" | req: "+reqBundle+"\n");
+
         var exist=reqBundle.indexOf(name+";bundle-version="+version)!=-1 ||
           (reqBundleFrag!=null && reqBundleFrag.indexOf(name+";bundle-version="+version)!=-1);
 
         // not a bundle lucee defines in the manifest
-        if(!exist) continue;
+        if(!exist){
+            if(name != null && version != null){
+                print("SAFE TO IGNORE: bundle in maven cache: "+name+";bundle-version="+version+" is not in Require-Bundle in core MANIFEST.MF\n");
+            }
+            continue;
+        }
 
 
 
@@ -1385,12 +1392,12 @@
       pack200="${pack200}"/>
 
 
-    <!-- first we copy the jars in place otherwise, Lucee downloads them
+    <!-- first we copy the jars in place otherwise, Lucee downloads them -->
     <copy todir="${goal}/bundles" flatten="true">
       <path>
         <pathelement path="${dependencies}"/>
       </path>
-    </copy>  -->
+    </copy>
   </target>
 
   <target name="setMvnEnv" description="set the variable right for ant">

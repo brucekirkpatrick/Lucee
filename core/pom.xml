@@ -340,10 +340,34 @@
     </dependency>
     <dependency>
 	    <groupId>org.ow2.asm</groupId>
-	    <artifactId>asm-all</artifactId>
-	    <version>4.2</version>
+	    <artifactId>asm</artifactId>
+	    <version>7.0</version>
       <scope>provided</scope>
     </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-analysis</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-tree</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
     <dependency>
     	<groupId>org.lucee</groupId>
     	<artifactId>xml-resolver</artifactId>
