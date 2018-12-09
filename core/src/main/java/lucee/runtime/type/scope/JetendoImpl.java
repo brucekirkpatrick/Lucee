@@ -37,11 +37,17 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     TODO: many cfcs and java static instances cached here
      */
     public static int memberInt=1;
-    public static boolean memberBool=true;
+    public static Boolean memberBool=true;
+    public String memberString2="test";
+    public Boolean memberBool2=true;
+    public boolean memberBool3=true;
     public static ConcurrentHashMap<String, Object> memberMap=new ConcurrentHashMap<>();
     public static String memberString="jetendo scope works";
 
-    public boolean memberBoolFunc(){
+    public Boolean memberBoolFunc(){
+        memberBool2=false;
+        memberString2="stuff";
+        memberBool3=false;
         return memberBool;
     }
     public double memberArgFunc(double v){

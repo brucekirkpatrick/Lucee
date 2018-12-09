@@ -27,6 +27,7 @@ import java.util.List;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.scope.Jetendo;
 import lucee.runtime.type.scope.JetendoImpl;
+import lucee.transformer.bytecode.reflection.ASMProxyFactory;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -64,9 +65,7 @@ import lucee.transformer.expression.var.Variable;
 import lucee.transformer.library.function.FunctionLibFunction;
 import lucee.transformer.library.function.FunctionLibFunctionArg;
 
-import static org.objectweb.asm.Opcodes.H_GETFIELD;
-import static org.objectweb.asm.Opcodes.H_GETSTATIC;
-import static org.objectweb.asm.Opcodes.H_INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.*;
 
 public class VariableImpl extends ExpressionBase implements Variable {
 
@@ -588,6 +587,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 	return _writeOutUDF(bc, udf);
     }
 
+
     private static Type _writeOutUDF(BytecodeContext bc, UDF udf) throws TransformerException {
 	bc.getFactory().registerKey(bc, udf.getName(), false);
 	Argument[] args = udf.getArguments();
@@ -685,11 +685,39 @@ public class VariableImpl extends ExpressionBase implements Variable {
 //		final static Method METHOD_SCOPE_GET_COLLECTION_KEY = new Method("getCollection", Types.OBJECT, new Type[] { Types.COLLECTION_KEY });
 //		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { Types.BOOLEAN_VALUE });
 		//adapter.checkCast( Type.getType(Jetendo.class));
-		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { });
 
-		// do we need to use visitFrame  like this guy: https://github.com/ItzSomebody/Radon/commit/e7f4ebe8bc30f73b8dfa544facc3ace952e10fc0
-		adapter.invokeInterface(TypeScope.SCOPES[scope], method);
-		return Types.BOOLEAN_VALUE;
+		// member.getName().raw is the original case sensitive key
+		// getField working as string type
+//		adapter.checkCast( Type.getType(JetendoImpl.class));
+//		adapter.getField(Type.getType(JetendoImpl.class), "memberString2", Types.STRING);
+//		return Types.OBJECT;
+
+		// getField working as boolean type - boolean is not object, it has to be cast to Boolean to avoid internal/verify error stuff
+//		adapter.checkCast( Type.getType(JetendoImpl.class));
+//		adapter.getField(Type.getType(JetendoImpl.class), "memberBool2", Types.BOOLEAN);
+//		return Types.OBJECT;
+
+		// getField with primitive boxing working
+		adapter.checkCast( Type.getType(JetendoImpl.class));
+		adapter.getField(Type.getType(JetendoImpl.class), "memberBool3", Types.BOOLEAN_VALUE);
+		ASMProxyFactory.boxPrimitive(adapter, boolean.class);
+		return Types.OBJECT;
+
+		// working invokeInterface - i.e. method call on an interface
+//		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { });
+//		adapter.invokeInterface(TypeScope.SCOPES[scope], method);
+//		return Types.BOOLEAN_VALUE;
+
+
+		// working invokeVirtual - i.e. method call on a class
+
+//		adapter.checkCast( Type.getType(JetendoImpl.class));
+//		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { });
+//		adapter.invokeVirtual( Type.getType(JetendoImpl.class), method);
+//		return Types.BOOLEAN_VALUE;
+
+
+
 		//adapter.invokeInterface(TypeScope.SCOPES[scope], _last ? METHOD_SCOPE_GET_COLLECTION_KEY : METHOD_SCOPE_GET_KEY);
 
 // good examples: https://www.programcreek.com/java-api-examples/?class=org.objectweb.asm.MethodVisitor&method=visitInvokeDynamicInsn

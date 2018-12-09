@@ -332,6 +332,16 @@ public class ASMProxyFactory {
 	}
 	return cw.toByteArray();
     }
+	public static void boxPrimitive(GeneratorAdapter adapter, Class<?> rtn) {
+		if (rtn == boolean.class) adapter.invokeStatic(Types.BOOLEAN, BOOL_VALUE_OF);
+		else if (rtn == short.class) adapter.invokeStatic(Types.SHORT, SHORT_VALUE_OF);
+		else if (rtn == int.class) adapter.invokeStatic(Types.INTEGER, INT_VALUE_OF);
+		else if (rtn == long.class) adapter.invokeStatic(Types.LONG, LONG_VALUE_OF);
+		else if (rtn == float.class) adapter.invokeStatic(Types.FLOAT, FLT_VALUE_OF);
+		else if (rtn == double.class) adapter.invokeStatic(Types.DOUBLE, DBL_VALUE_OF);
+		else if (rtn == char.class) adapter.invokeStatic(Types.CHARACTER, CHR_VALUE_OF);
+		else if (rtn == byte.class) adapter.invokeStatic(Types.BYTE, BYT_VALUE_OF);
+	}
 
     private static Type toReferenceType(Class<?> clazz, Type defaultValue) {
 	if (int.class == clazz) return Types.INTEGER;
