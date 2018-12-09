@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lucee.runtime.exp.PageException;
+import lucee.runtime.type.scope.Jetendo;
 import lucee.runtime.type.scope.JetendoImpl;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
@@ -668,7 +669,8 @@ public class VariableImpl extends ExpressionBase implements Variable {
 	}else if (scope == Scope.SCOPE_JETENDO){
 		adapter.loadArg(0);
         rtn=TypeScope.invokeScope(adapter, scope);
-        String memberName=member.getName().toString();
+//		getFactory().registerKey(bc, member.getName(), false);
+//        String memberName=member.getName().toString();
 //		Field field = JetendoImpl.getField(memberName);
 //		if(field==null){
 //			throw new RuntimeException("There is no field named: "+memberName+" in JetendoImpl");
@@ -678,8 +680,16 @@ public class VariableImpl extends ExpressionBase implements Variable {
 //		mv.visitInsn(Opcodes.POP);
 //		mv.visitFieldInsn(Opcodes.GETSTATIC, "Adder", "memberBool", "Z");
 //		adapter.visitVarInsn(Opcodes.ALOAD, 5);
-//		adapter.visitInsn(Opcodes.POP);
-		adapter.getStatic(rtn, "memberName", Types.BOOLEAN);
+		//adapter.visitInsn(Opcodes.POP);
+//		adapter.getStatic(TypeScope.SCOPES[scope], "memberBool", Types.BOOLEAN_VALUE);
+//		final static Method METHOD_SCOPE_GET_COLLECTION_KEY = new Method("getCollection", Types.OBJECT, new Type[] { Types.COLLECTION_KEY });
+//		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { Types.BOOLEAN_VALUE });
+		//adapter.checkCast( Type.getType(Jetendo.class));
+		Method method = new Method("memberBoolFunc", Types.BOOLEAN_VALUE, new Type[] { });
+
+		// do we need to use visitFrame  like this guy: https://github.com/ItzSomebody/Radon/commit/e7f4ebe8bc30f73b8dfa544facc3ace952e10fc0
+		adapter.invokeInterface(TypeScope.SCOPES[scope], method);
+		return Types.BOOLEAN_VALUE;
 		//adapter.invokeInterface(TypeScope.SCOPES[scope], _last ? METHOD_SCOPE_GET_COLLECTION_KEY : METHOD_SCOPE_GET_KEY);
 
 // good examples: https://www.programcreek.com/java-api-examples/?class=org.objectweb.asm.MethodVisitor&method=visitInvokeDynamicInsn
@@ -709,7 +719,6 @@ L fully-qualified-class ;    fully-qualified-class
 //		Handle handle=new Handle(H_GETSTATIC, Type.getInternalName(JetendoImpl.class), memberName, "Z");
 		//Llucee/runtime/type/scope/JetendoImpl;
 //		adapter.invokeDynamic(memberName, "Z", bootstrap, handle);
-		return Types.OBJECT;
 	}
 	else { // all other scopes
 	    adapter.loadArg(0);
@@ -721,6 +730,7 @@ L fully-qualified-class ;    fully-qualified-class
 
 	boolean _last = !last && scope == Scope.SCOPE_UNDEFINED;
 	if (!member.getSafeNavigated()) {
+		// checks for last key.  left is get.get.current and right is get.current.last where current is the current key
 	    adapter.invokeInterface(TypeScope.SCOPES[scope], _last ? METHOD_SCOPE_GET_COLLECTION_KEY : METHOD_SCOPE_GET_KEY);
 	}
 	else {
