@@ -3,17 +3,17 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 package lucee.loader.osgi;
 
@@ -48,7 +48,7 @@ public class BundleLoader {
 
     /**
      * build (if necessary) a bundle and load it
-     * 
+     *
      * @param engFac
      * @param cacheRootDir
      * @param jarDirectory
@@ -132,35 +132,31 @@ public class BundleLoader {
 	    final List<Bundle> bundles = new ArrayList<Bundle>();
 	    Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
 	    while (it.hasNext()) {
-		e = it.next();
-		id = e.getKey() + "|" + e.getValue();
-		f = availableBundles.get(id);
-		// StringBuilder sb=new StringBuilder();
-		if (f == null) {
-		    /*
-		     * sb.append(id+"\n"); Iterator<String> _it = availableBundles.keySet().iterator();
-		     * while(_it.hasNext()){ sb.append("- "+_it.next()+"\n"); } throw new
-		     * RuntimeException(sb.toString());
-		     */
-		}
-		if(f==null){
-			//System.out.println("Bundle missing:"+e.getKey()+" : "+e.getValue());
-			throw new IOException("lucee core [" + rc + "] is missing required bundle in available jars:"+e.getKey()+" : "+e.getValue());
-		}
-//		if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
-		bundles.add(BundleUtil.addBundle(engFac, bc, f, null));
+			e = it.next();
+			id = e.getKey() + "|" + e.getValue();
+			f = availableBundles.get(id);
+			// StringBuilder sb=new StringBuilder();
+			if (f == null) {
+				/*
+				 * sb.append(id+"\n"); Iterator<String> _it = availableBundles.keySet().iterator();
+				 * while(_it.hasNext()){ sb.append("- "+_it.next()+"\n"); } throw new
+				 * RuntimeException(sb.toString());
+				 */
+			}
+			if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+			bundles.add(BundleUtil.addBundle(engFac, bc, f, null));
 	    }
 
 	    // Add Required Bundle Fragments
 	    final List<Bundle> fragments = new ArrayList<Bundle>();
 	    it = requiredBundleFragments.entrySet().iterator();
 	    while (it.hasNext()) {
-		e = it.next();
-		id = e.getKey() + "|" + e.getValue();
-		f = availableBundles.get(id);
+			e = it.next();
+			id = e.getKey() + "|" + e.getValue();
+			f = availableBundles.get(id);
 
-		if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
-		fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
+			if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
+			fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
 	    }
 
 	    // Add Lucee core Bundle
