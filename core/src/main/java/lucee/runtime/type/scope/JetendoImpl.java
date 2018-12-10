@@ -45,15 +45,18 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public static String memberString="jetendo scope works";
 
     public Boolean memberBoolFunc(){
-        memberBool2=false;
-        memberString2="stuff";
-        memberBool3=false;
+        return memberBool2;
+    }
+    public static Boolean memberBoolFuncStatic(){
         return memberBool;
     }
     public double memberArgFunc(double v){
         return memberInt+v;
     }
     private static Field[] fields;
+    public JetendoImpl(){
+        super("jetendo", SCOPE_JETENDO, Struct.TYPE_LINKED);
+    }
     /**
      * constructor of the server scope
      *
