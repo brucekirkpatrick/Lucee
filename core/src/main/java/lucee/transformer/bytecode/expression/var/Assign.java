@@ -18,6 +18,9 @@
  */
 package lucee.transformer.bytecode.expression.var;
 
+import lucee.runtime.type.scope.JetendoImpl;
+import lucee.transformer.bytecode.reflection.ASMProxyFactory;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -35,6 +38,9 @@ import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.var.DataMember;
 import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class Assign extends ExpressionBase {
 
@@ -160,6 +166,71 @@ public class Assign extends ExpressionBase {
 	    return VariableImpl._writeOutFirstBIF(bc, (BIF) member, mode, last, getStart());
 	}
     }
+	private Field getField(Class<?> clazz, String memberName) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			if (field.getName().equalsIgnoreCase(memberName)) {
+				return field;
+			}
+		}
+		return null;
+	}
+	private Type writeOutPutScopeField(GeneratorAdapter adapter, Class<?> clazz, int scope, String memberName) {
+		Type clazzType = Type.getType(clazz);
+		// force casting to the implementation type if necessary
+		// use reflection to get the Field
+		Field field = getField(clazz, memberName);
+		if (field == null) {
+			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
+		}
+		// verify field is accessible
+		int modifiers = field.getModifiers();
+		if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
+			throw new IllegalAccessError(memberName + " is not an accessible field in " + clazz.getCanonicalName());
+		}
+		String fieldName = field.getName();
+		Class fieldClazz = field.getType();
+		Type fieldType = Type.getType(fieldClazz);
+		if (Modifier.isStatic(modifiers)) {
+			// need to load the variable that will be assigned to top of stack
+//			adapter.loadArg(0);
+			// need to make sure it is int 1 or 0 for boolean, try without first
+			//adapter.visitInsn(b ? Opcodes.ICONST_1 : Opcodes.ICONST_0);
+			//adapter.pop(); // stack was pagecontext and integer, we only need the second, but possibly discard that too since we are loading our own below
+//			adapter.loadArg(0);
+//			adapter.pop();
+//			adapter.loadArg(1);
+//			adapter.loadArg(2);
+//			adapter.loadLocal(0);
+//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), fieldName, fieldType.getDescriptor());
+//			adapter.checkCast(fieldType);
+//			adapter.visitInsn(Opcodes.ICONST_1);
+//			adapter.box(fieldType);
+//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
+//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), "memberBool", "Ljava/lang/Boolean;");
+//			adapter.checkCast(fieldType);
+//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "toString", "(D)Ljava/lang/String;", false);
+//			adapter.checkCast(Types.STRING);
+//			adapter.dup();
+
+//			adapter.visitLdcInsn(new Double("3.0"));
+//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
+			adapter.putStatic(clazzType, fieldName, fieldType);
+//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), "memberDouble", "Ljava/lang/Double;");
+//			adapter.visitFieldInsn(Opcodes.GETSTATIC, clazz.getTypeName(), "memberDouble", "Ljava/lang/Double;");
+		} else {
+			adapter.loadArg(0);
+			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
+			adapter.checkCast(clazzType);
+			adapter.loadArg(1);
+			adapter.checkCast(fieldType);
+			adapter.putField(clazzType, fieldName, fieldType);
+		}
+		// convert primitives like boolean to Boolean so we can always return Object.
+//		ASMProxyFactory.boxPrimitive(adapter, fieldClazz);
+		return fieldType;
+	}
 
     private Type _writeOutOneDataMember(BytecodeContext bc, DataMember member, boolean last, boolean doOnlyScope) throws TransformerException {
 	GeneratorAdapter adapter = bc.getAdapter();
@@ -173,9 +244,15 @@ public class Assign extends ExpressionBase {
 	}
 
 	// pc.get
-	adapter.loadArg(0);
 	if (last) {
-	    TypeScope.invokeScope(adapter, variable.getScope());
+//	    if(variable.getScope() == Scope.SCOPE_JETENDO){
+////		    adapter.loadArg(0);
+//		    String memberName = member.getName().toString();
+////		    value.writeOut(bc, MODE_REF);
+//		    return writeOutPutScopeField(adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, memberName);
+//	    }
+		adapter.loadArg(0);
+		TypeScope.invokeScope(adapter, variable.getScope());
 	    getFactory().registerKey(bc, member.getName(), false);
 	    writeValue(bc);
 	    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
