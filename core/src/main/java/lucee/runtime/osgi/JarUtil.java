@@ -108,7 +108,7 @@ public class JarUtil {
 	final Remapper remapper = new Collector(imports, ignores);
 	final ClassVisitor inner = new EmptyVisitor();
 	final RemappingClassAdapter visitor = new RemappingClassAdapter(inner, remapper);
-	reader.accept(visitor, 0);
+	reader.accept(visitor, ClassReader.EXPAND_FRAMES);
     }
 
     public static class Collector extends Remapper {

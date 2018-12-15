@@ -115,7 +115,7 @@ public class ClassRenamer extends ClassVisitor implements Opcodes {
 	ClassReader cr = new ClassReader(src);
 	ClassWriter cw = ASMUtil.getClassWriter();
 	ClassVisitor ca = new ClassRenamer(cw, newName);
-	cr.accept(ca, 0);
+	cr.accept(ca, ClassReader.EXPAND_FRAMES);
 	return cw.toByteArray();
     }
 }

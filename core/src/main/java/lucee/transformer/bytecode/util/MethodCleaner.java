@@ -127,7 +127,7 @@ public class MethodCleaner extends ClassVisitor implements Opcodes {
 	ClassReader cr = new ClassReader(src);
 	ClassWriter cw = ASMUtil.getClassWriter();
 	ClassVisitor ca = new MethodCleaner(cw, methodName, args, rtn, msg);
-	cr.accept(ca, 0);
+	cr.accept(ca, ClassReader.EXPAND_FRAMES);
 	return cw.toByteArray();
     }
 

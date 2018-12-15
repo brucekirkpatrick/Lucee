@@ -358,10 +358,13 @@ public class VariableImpl extends ExpressionBase implements Variable {
 	private Type _writeOutFirst(BytecodeContext bc, Member member, int mode, boolean last, boolean doOnlyScope, Expression defaultValue, RefInteger startIndex)
 			throws TransformerException {
 
-		if (member instanceof DataMember)
+		if (member instanceof DataMember) {
 			return _writeOutFirstDataMember(bc, (DataMember) member, scope, last, doOnlyScope, defaultValue, startIndex);
-		else if (member instanceof UDF) return _writeOutFirstUDF(bc, (UDF) member, scope, doOnlyScope);
-		else return _writeOutFirstBIF(bc, (BIF) member, mode, last, getStart());
+		} else if (member instanceof UDF){
+			return _writeOutFirstUDF(bc, (UDF) member, scope, doOnlyScope);
+		}else{
+			return _writeOutFirstBIF(bc, (BIF) member, mode, last, getStart());
+		}
 	}
 
 	static Type _writeOutFirstBIF(BytecodeContext bc, BIF bif, int mode, boolean last, Position line) throws TransformerException {
@@ -766,7 +769,9 @@ L fully-qualified-class ;    fully-qualified-class
 	Type _writeOutFirstDataMember(BytecodeContext bc, DataMember member, int scope, boolean last, boolean doOnlyScope, Expression defaultValue, RefInteger startIndex)
 			throws TransformerException {
 		GeneratorAdapter adapter = bc.getAdapter();
-		if (startIndex != null) startIndex.setValue(doOnlyScope ? 0 : 1);
+		if (startIndex != null){
+			startIndex.setValue(doOnlyScope ? 0 : 1);
+		}
 
 		// this/static
 		if (scope == Scope.SCOPE_UNDEFINED) {

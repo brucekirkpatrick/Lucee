@@ -1606,7 +1606,7 @@ public final class Page extends BodyBase implements Root {
 	ClassReader cr = new ClassReader(barr);
 	ClassWriter cw = ASMUtil.getClassWriter();
 	ClassVisitor ca = new SourceLastModifiedClassAdapter(cw, lastModified);
-	cr.accept(ca, 0);
+	cr.accept(ca, ClassReader.EXPAND_FRAMES);
 	return cw.toByteArray();
     }
 

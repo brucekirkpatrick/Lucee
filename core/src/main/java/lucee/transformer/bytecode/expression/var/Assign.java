@@ -243,28 +243,129 @@ public class Assign extends ExpressionBase {
 	    return TypeScope.invokeScope(adapter, variable.getScope());
 	}
 
-	// pc.get
-	if (last) {
-//	    if(variable.getScope() == Scope.SCOPE_JETENDO){
-////		    adapter.loadArg(0);
+	    // pc.get
+	    if (last) {
+		    if(variable.getScope() == Scope.SCOPE_JETENDO){
 //		    String memberName = member.getName().toString();
-////		    value.writeOut(bc, MODE_REF);
-//		    return writeOutPutScopeField(adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, memberName);
-//	    }
-		adapter.loadArg(0);
-		TypeScope.invokeScope(adapter, variable.getScope());
-	    getFactory().registerKey(bc, member.getName(), false);
-	    writeValue(bc);
-	    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
 
-	}
-	else {
-	    adapter.loadArg(0);
-	    TypeScope.invokeScope(adapter, variable.getScope());
-	    getFactory().registerKey(bc, member.getName(), false);
-	    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
-	}
-	return Types.OBJECT;
+		    /*
+		    ASM says they fixed negative size errors in newer version.  perhaps try using the newer one again, but leave it on V1_6 opcodes
+
+
+		    i think one of the data stypes i'm working with has wrong superClass, and needs a function like this:
+		        @Override
+				protected String getCommonSuperClass(String type1, String type2) {
+				    if(type1.matches("IntefaceImpl[AB]") && type2.matches("IntefaceImpl[AB]"))
+				        return "IntefaceA";
+				    return super.getCommonSuperClass(type1, type2);
+				}
+
+
+		    Expecting a stackmap frame at branch target 29
+Exception Details:
+Location:
+jetendofunc13_cfc$cf.staticConstructor(Llucee/runtime/PageContext;Llucee/runtime/ComponentImpl;)V @20: aload_2
+Reason:
+Expected stackmap frame at this location.
+Bytecode:
+0x0000000: 014e 2bb6 002f 3a04 2bb6 0033 03b9 0039
+0x0000010: 0200 3605 2c2b b600 3f4e a700 2b3a 062b
+0x0000020: 1904 b800 4719 06b8 004d bfa7 001a 3a07
+0x0000030: 2bb6 0033 1505 b900 3902 0057 2c2b 2db6
+0x0000040: 0051 1907 bf2b b600 3315 05b9 0039 0200
+0x0000050: 572c 2b2d b600 512b 1904 b800 47b1
+Exception Handler Table:
+bci [20, 26] => handler: 29
+bci [20, 43] => handler: 46
+
+This one showed actual type in stack:
+Bad type on operand stack
+Exception Details:
+Location:
+jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @132: invokestatic
+Reason:
+Type 'java/lang/Double' (current frame, stack[1]) is not assignable to double_2nd
+Current Frame:
+bci: @132
+flags: { }
+locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
+stack: { 'lucee/runtime/PageContext', 'java/lang/Double' }
+
+
+NegativeArraySizeException because we consume too many stack, but pop and dup don't help!
+	it seems like asm is broken instead.
+
+	this bug might fix it: https://gitlab.ow2.org/asm/asm/commit/8043b043f239e0a162c9d82978815392d8ede991?view=parallel
+		requires ASM 6.0 or newer
+
+		Operand stack underflow
+Exception Details:
+Location:
+jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @100: pop
+Reason:
+Attempt to pop empty stack.
+Current Frame:
+bci: @100
+flags: { }
+locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
+stack: { }
+Bytecode:
+0x0000000: 2b12 8fb6 0086 2bc0 0091 1293 1295 0312
+0x0000010: 97b6 009b c000 9d3a 0419 0403 b600 a119
+0x0000020: 0412 a3b6 00a6 1904 b600 a957 1904 b600
+0x0000030: ac08 a000 0803 b800 b1bf a700 113a 052b
+0x0000040: c000 9119 04b6 00b5 1905 bf2b c000 9119
+0x0000050: 04b6 00b5 2b12 b7b6 0086 0499 000a b200
+0x0000060: bdb3 00c2 572b 12c4 b600 8601 b0
+Exception Handler Table:
+bci [25, 61] => handler: 61
+Stackmap Table:
+append_frame(@58,Object[#157])
+same_locals_1_stack_item_frame(@61,Object[#65])
+same_frame(@75)
+same_frame(@101)
+		     */
+
+
+//		    adapter.visitLdcInsn(new Double("3.0"));
+//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+			    // JetendoImpl.class.getTypeName()
+//		    adapter.loadArg(1);
+			    adapter.loadArg(0);
+//			    adapter.loadArg(1);
+//			    adapter.dup2();
+			    adapter.pop();
+//		    adapter.visitLdcInsn(new Double("5.0"));
+//			System.out.println("test 1");
+			value.writeOut(bc, MODE_VALUE);
+
+//			adapter.checkCast(Types.DOUBLE);
+//		    writeValue(bc);
+//		    adapter.dup();
+			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+			    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+		    adapter.visitFieldInsn(Opcodes.GETSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+//		    adapter.pop();
+//		    adapter.visitFrame(Opcodes.F_NEW, 0, null, 0, null);
+//		    value.writeOut(bc, MODE_REF);
+			    //writeOutPutScopeField(adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, memberName);
+		    }else {
+			    adapter.loadArg(0);
+			    TypeScope.invokeScope(adapter, variable.getScope());
+			    getFactory().registerKey(bc, member.getName(), false);
+			    writeValue(bc);
+			    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+		    }
+
+	    }
+	    else {
+		    adapter.loadArg(0);
+		    adapter.loadArg(0);
+		    TypeScope.invokeScope(adapter, variable.getScope());
+		    getFactory().registerKey(bc, member.getName(), false);
+		    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
+	    }
+	    return Types.OBJECT;
 
     }
 

@@ -93,7 +93,7 @@ public class SourceNameClassVisitor extends ClassVisitor {
 	InputStream in = clazz.getResourceAsStream(name);
 	ClassReader classReader = new ClassReader(in);
 	SourceNameClassVisitor visitor = new SourceNameClassVisitor(config, 4, onlyCFC);
-	classReader.accept(visitor, 0);
+	classReader.accept(visitor, ClassReader.EXPAND_FRAMES);
 	if (visitor.source == null || visitor.source.name == null) return null;
 	return visitor.source;
 
