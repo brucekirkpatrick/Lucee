@@ -19,8 +19,6 @@
 package lucee.transformer.bytecode.expression.var;
 
 import lucee.runtime.type.scope.JetendoImpl;
-import lucee.transformer.bytecode.reflection.ASMProxyFactory;
-import lucee.transformer.expression.ExprBoolean;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -39,10 +37,6 @@ import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.var.DataMember;
 import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -170,6 +164,44 @@ public class Assign extends ExpressionBase {
 	    return VariableImpl._writeOutFirstBIF(bc, (BIF) member, mode, last, getStart());
 	}
     }
+//	private Field getValueOf(GeneratorAdapter adapter, Type fieldType) {
+//    	if(fieldType==Types.BOOLEAN){
+//    		adapter.invokeStatic("java/lang/Boolean", BOOL_VALUE_OF);
+//    		adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+//	    }
+    	/*
+
+
+    private static final org.objectweb.asm.commons.Method BOOL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BOOLEAN, new Type[] { Types.BOOLEAN_VALUE });
+    private static final org.objectweb.asm.commons.Method SHORT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.SHORT, new Type[] { Types.SHORT_VALUE });
+    private static final org.objectweb.asm.commons.Method INT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.INTEGER, new Type[] { Types.INT_VALUE });
+    private static final org.objectweb.asm.commons.Method LONG_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.LONG, new Type[] { Types.LONG_VALUE });
+    private static final org.objectweb.asm.commons.Method FLT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.FLOAT, new Type[] { Types.FLOAT_VALUE });
+    private static final org.objectweb.asm.commons.Method DBL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.DOUBLE, new Type[] { Types.DOUBLE_VALUE });
+    private static final org.objectweb.asm.commons.Method CHR_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.CHARACTER, new Type[] { Types.CHARACTER });
+    private static final org.objectweb.asm.commons.Method BYT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BYTE, new Type[] { Types.BYTE_VALUE });
+
+    	 */
+//	}
+// primitive to reference type
+private static final org.objectweb.asm.commons.Method BOOL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BOOLEAN, new Type[] { Types.BOOLEAN_VALUE });
+	private static final org.objectweb.asm.commons.Method SHORT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.SHORT, new Type[] { Types.SHORT_VALUE });
+	private static final org.objectweb.asm.commons.Method INT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.INTEGER, new Type[] { Types.INT_VALUE });
+	private static final org.objectweb.asm.commons.Method LONG_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.LONG, new Type[] { Types.LONG_VALUE });
+	private static final org.objectweb.asm.commons.Method FLT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.FLOAT, new Type[] { Types.FLOAT_VALUE });
+	private static final org.objectweb.asm.commons.Method DBL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.DOUBLE, new Type[] { Types.DOUBLE_VALUE });
+	private static final org.objectweb.asm.commons.Method CHR_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.CHARACTER, new Type[] { Types.CHARACTER });
+	private static final org.objectweb.asm.commons.Method BYT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BYTE, new Type[] { Types.BYTE_VALUE });
+public static void boxPrimitive(GeneratorAdapter adapter, Class<?> rtn) {
+	if (rtn == boolean.class || rtn==Boolean.class) adapter.invokeStatic(Types.BOOLEAN, BOOL_VALUE_OF);
+	else if (rtn == short.class || rtn == Short.class) adapter.invokeStatic(Types.SHORT, SHORT_VALUE_OF);
+	else if (rtn == int.class || rtn == Integer.class) adapter.invokeStatic(Types.INTEGER, INT_VALUE_OF);
+	else if (rtn == long.class || rtn == Long.class) adapter.invokeStatic(Types.LONG, LONG_VALUE_OF);
+	else if (rtn == float.class || rtn == Float.class) adapter.invokeStatic(Types.FLOAT, FLT_VALUE_OF);
+	else if (rtn == double.class || rtn == Double.class) adapter.invokeStatic(Types.DOUBLE, DBL_VALUE_OF);
+	else if (rtn == char.class || rtn == Character.class) adapter.invokeStatic(Types.CHARACTER, CHR_VALUE_OF);
+	else if (rtn == byte.class || rtn == Byte.class) adapter.invokeStatic(Types.BYTE, BYT_VALUE_OF);
+}
 	private Field getField(Class<?> clazz, String memberName) {
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
@@ -193,6 +225,7 @@ public class Assign extends ExpressionBase {
 		if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
 			throw new IllegalAccessError(memberName + " is not an accessible field in " + clazz.getCanonicalName());
 		}
+		String scopeClassName=JetendoImpl.class.getCanonicalName().replace(".", "/");
 		String fieldName = field.getName();
 		Class fieldClazz = field.getType();
 		Type fieldType = Type.getType(fieldClazz);
@@ -202,7 +235,7 @@ public class Assign extends ExpressionBase {
 				// this code runs when it is a CFML function or variable
 
 				// create a new variable to be able store the variable value
-				int doubleValue= adapter.newLocal(Types.DOUBLE);
+				int tempValue= adapter.newLocal(fieldType);
 				// load the pageContext
 				adapter.loadArg(0);
 				// invoke the value's scope
@@ -211,30 +244,44 @@ public class Assign extends ExpressionBase {
 				getFactory().registerKey(bc, member.getName(), false);
 				// get the value out of the key
 				writeValue(bc);
+				// TODO: might need to use Lucee's Caster here later to be more flexible
 				// cast the value to the right type for the Jetendo scope, if possible
-				adapter.checkCast(Types.DOUBLE);
+				adapter.checkCast(fieldType);
 				// we have to store the result in a local variable to be able to call PUTSTATIC
-				adapter.storeLocal(doubleValue);
+				adapter.storeLocal(tempValue);
 				// we have to remove the Key and Double from the stack
 				adapter.pop2();
 				// reload the result
-				adapter.loadLocal(doubleValue);
+				adapter.loadLocal(tempValue);
 
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
 				// assign the variable to the static field of the JetendoImpl class
-				adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
+				adapter.visitFieldInsn(Opcodes.PUTSTATIC, scopeClassName, fieldName, fieldType.getDescriptor());
 			}else {
 				// A plain Java type was found, put it's value on the stack
 				value.writeOut(bc, MODE_VALUE);
-				// adapter.valueOf(); // this might be better for all types
+				boxPrimitive(adapter, fieldClazz);
+				//getValueOf(fieldType); // this might be better for all types
 				// get the Double value onto the stack
-				adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+				/*
+
+    private static final org.objectweb.asm.commons.Method BOOL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BOOLEAN, new Type[] { Types.BOOLEAN_VALUE });
+    private static final org.objectweb.asm.commons.Method SHORT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.SHORT, new Type[] { Types.SHORT_VALUE });
+    private static final org.objectweb.asm.commons.Method INT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.INTEGER, new Type[] { Types.INT_VALUE });
+    private static final org.objectweb.asm.commons.Method LONG_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.LONG, new Type[] { Types.LONG_VALUE });
+    private static final org.objectweb.asm.commons.Method FLT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.FLOAT, new Type[] { Types.FLOAT_VALUE });
+    private static final org.objectweb.asm.commons.Method DBL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.DOUBLE, new Type[] { Types.DOUBLE_VALUE });
+    private static final org.objectweb.asm.commons.Method CHR_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.CHARACTER, new Type[] { Types.CHARACTER });
+    private static final org.objectweb.asm.commons.Method BYT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BYTE, new Type[] { Types.BYTE_VALUE });
+				 */
+//				adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
 
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
+
 				// assign the variable to the static field of the JetendoImpl class
-				adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
+				adapter.visitFieldInsn(Opcodes.PUTSTATIC, scopeClassName, fieldName, fieldType.getDescriptor());
 			}
 			// need to load the variable that will be assigned to top of stack
 //			adapter.loadArg(0);
