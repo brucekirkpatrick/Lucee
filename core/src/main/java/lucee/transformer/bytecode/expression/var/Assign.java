@@ -20,6 +20,7 @@ package lucee.transformer.bytecode.expression.var;
 
 import lucee.runtime.type.scope.JetendoImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
+import lucee.transformer.expression.ExprBoolean;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -39,6 +40,9 @@ import lucee.transformer.expression.var.DataMember;
 import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -337,14 +341,133 @@ same_frame(@101)
 			    adapter.pop();
 //		    adapter.visitLdcInsn(new Double("5.0"));
 //			System.out.println("test 1");
-			value.writeOut(bc, MODE_VALUE);
+//
+			// this works for jetendo.memberBool=3.2, but not localVar=3; jetendo.memberBool=localVar;
+//			Class valueClass=value.writeOut(bc, MODE_VALUE);
+//			//if(valueClass==Double.class.toString()) {
+//		    String str = valueClass.toString();
+//		    if(valueClass==double.class) {
+//			    str += " is a double";
+//		    }
+//		    if(valueClass==Variable.class){
+//		    	str+=" is a Variable";
+//		    }
+//		    if(valueClass==VariableImpl.class){
+//			    str+=" is a VariableImpl";
+//		    }
+//		    if(valueClass==Double.class){
+//			    str+=" is a Double";
+//		    }
+//		    if(valueClass==DataMember.class){
+//			    str+=" is a DataMember";
+//		    }
+//		    if(valueClass==Member.class){
+//			    str+=" is a Member";
+//		    }
+//		    Class[] classes = valueClass.getDeclaredClasses();
+//		    str+="\nDeclared Classes:\n";
+//		    for (int i = 0; i < classes.length; i++) {
+//			    str+="Class = " + classes[i].getName()+"\n";
+//		    }
+//			    if(value instanceof Variable) {
+//				    str += "value is a Variable\n";
+//			    }
+//			    if(value instanceof ExprBoolean){
+//				    str += "value is a ExprBoolean\n";
+//			    }
+//		    String str="";
+//		    String fileName="C:\\lucee\\luceedebug.txt";
+//		    try {
+//		        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+//			    writer.write(str);
+//		        writer.close();
+//		    } catch (IOException e) {
+//			    e.printStackTrace();
+//		    }
 
 //			adapter.checkCast(Types.DOUBLE);
 //		    writeValue(bc);
-//		    adapter.dup();
-			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-			    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
-		    adapter.visitFieldInsn(Opcodes.GETSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+			    if(value instanceof Variable) {
+				    int doubleValue= adapter.newLocal(Types.DOUBLE);
+				    adapter.loadArg(0);
+				    TypeScope.invokeScope(adapter, variable.getScope());
+				    getFactory().registerKey(bc, member.getName(), false);
+				    writeValue(bc);
+				    adapter.checkCast(Types.DOUBLE);
+				    adapter.storeLocal(doubleValue);
+				    adapter.pop2();
+				    adapter.loadLocal(doubleValue);
+//				    String str="yea";//valueClass.getName();
+//				    String fileName="C:\\lucee\\luceedebug.txt";
+//					adapter.pop2();
+//				    try {
+//					    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+//					    writer.write(str);
+//					    writer.close();
+//				    } catch (IOException e) {
+//					    e.printStackTrace();
+//				    }
+//				    adapter.dup();
+//				    adapter.storeLocal(doubleValue);
+//				    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+//				    adapter.swap();
+//				    adapter.dup();
+//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+
+				    // this is good, since it converts object to Double
+
+//				    adapter.loadLocal(doubleValue);
+//				    adapter.checkCast(Types.DOUBLE);
+//				    adapter.loadLocal(5);
+//				    adapter.visitVarInsn(Opcodes.ALOAD, 5);
+
+//		            adapter.visitLdcInsn(new Double("5.0"));
+//				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+
+				    adapter.dup();
+				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+//				    adapter.loadLocal(doubleValue);
+//					adapter.pop2();
+//					adapter.swap();
+//					adapter.pop();
+//				    adapter.pop();
+//				    adapter.dup();
+//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+
+				    // then refer to that value on the next line
+//				    Member valueMember=variableValue.members.get(0);
+//				    if(valueMember instanceof DataMember){
+//					    DataMember valueDataMember=(DataMember)valueMember;
+//
+//					    valueDataMember.getName()
+//				    }
+//				    Member member2=variable.getMembers().get(0);
+//				    if(member instanceof DataMember) {
+//				    }
+//				    adapter.dup();
+//				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+//
+//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+
+
+			    }else {
+				    Class valueClass=value.writeOut(bc, MODE_VALUE);
+				    // adapter.valueOf(); // this might be better for all types
+				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+
+				    // we have to duplicate the value so that we can both put and return it
+				    adapter.dup();
+				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+			    }
+
+				// this works for debugging bytecode objects that execute, but not if the bytecode fails, thats why we did file instead.
+//			    String valueClassName=valueClass.toString();
+//			    adapter.visitLdcInsn(valueClassName);
+//			    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberString", "Ljava/lang/String;");
+//			}else{
+				// do something else?
+//			}
+//		    adapter.visitFieldInsn(Opcodes.GETSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
 //		    adapter.pop();
 //		    adapter.visitFrame(Opcodes.F_NEW, 0, null, 0, null);
 //		    value.writeOut(bc, MODE_REF);
