@@ -250,228 +250,45 @@ public class Assign extends ExpressionBase {
 	    // pc.get
 	    if (last) {
 		    if(variable.getScope() == Scope.SCOPE_JETENDO){
-//		    String memberName = member.getName().toString();
-
-		    /*
-		    ASM says they fixed negative size errors in newer version.  perhaps try using the newer one again, but leave it on V1_6 opcodes
-
-
-		    i think one of the data stypes i'm working with has wrong superClass, and needs a function like this:
-		        @Override
-				protected String getCommonSuperClass(String type1, String type2) {
-				    if(type1.matches("IntefaceImpl[AB]") && type2.matches("IntefaceImpl[AB]"))
-				        return "IntefaceA";
-				    return super.getCommonSuperClass(type1, type2);
-				}
-
-
-		    Expecting a stackmap frame at branch target 29
-Exception Details:
-Location:
-jetendofunc13_cfc$cf.staticConstructor(Llucee/runtime/PageContext;Llucee/runtime/ComponentImpl;)V @20: aload_2
-Reason:
-Expected stackmap frame at this location.
-Bytecode:
-0x0000000: 014e 2bb6 002f 3a04 2bb6 0033 03b9 0039
-0x0000010: 0200 3605 2c2b b600 3f4e a700 2b3a 062b
-0x0000020: 1904 b800 4719 06b8 004d bfa7 001a 3a07
-0x0000030: 2bb6 0033 1505 b900 3902 0057 2c2b 2db6
-0x0000040: 0051 1907 bf2b b600 3315 05b9 0039 0200
-0x0000050: 572c 2b2d b600 512b 1904 b800 47b1
-Exception Handler Table:
-bci [20, 26] => handler: 29
-bci [20, 43] => handler: 46
-
-This one showed actual type in stack:
-Bad type on operand stack
-Exception Details:
-Location:
-jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @132: invokestatic
-Reason:
-Type 'java/lang/Double' (current frame, stack[1]) is not assignable to double_2nd
-Current Frame:
-bci: @132
-flags: { }
-locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
-stack: { 'lucee/runtime/PageContext', 'java/lang/Double' }
-
-
-NegativeArraySizeException because we consume too many stack, but pop and dup don't help!
-	it seems like asm is broken instead.
-
-	this bug might fix it: https://gitlab.ow2.org/asm/asm/commit/8043b043f239e0a162c9d82978815392d8ede991?view=parallel
-		requires ASM 6.0 or newer
-
-		Operand stack underflow
-Exception Details:
-Location:
-jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @100: pop
-Reason:
-Attempt to pop empty stack.
-Current Frame:
-bci: @100
-flags: { }
-locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
-stack: { }
-Bytecode:
-0x0000000: 2b12 8fb6 0086 2bc0 0091 1293 1295 0312
-0x0000010: 97b6 009b c000 9d3a 0419 0403 b600 a119
-0x0000020: 0412 a3b6 00a6 1904 b600 a957 1904 b600
-0x0000030: ac08 a000 0803 b800 b1bf a700 113a 052b
-0x0000040: c000 9119 04b6 00b5 1905 bf2b c000 9119
-0x0000050: 04b6 00b5 2b12 b7b6 0086 0499 000a b200
-0x0000060: bdb3 00c2 572b 12c4 b600 8601 b0
-Exception Handler Table:
-bci [25, 61] => handler: 61
-Stackmap Table:
-append_frame(@58,Object[#157])
-same_locals_1_stack_item_frame(@61,Object[#65])
-same_frame(@75)
-same_frame(@101)
-		     */
-
-
-//		    adapter.visitLdcInsn(new Double("3.0"));
-//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-			    // JetendoImpl.class.getTypeName()
-//		    adapter.loadArg(1);
-			    adapter.loadArg(0);
-//			    adapter.loadArg(1);
-//			    adapter.dup2();
-			    adapter.pop();
-//		    adapter.visitLdcInsn(new Double("5.0"));
-//			System.out.println("test 1");
-//
-			// this works for jetendo.memberBool=3.2, but not localVar=3; jetendo.memberBool=localVar;
-//			Class valueClass=value.writeOut(bc, MODE_VALUE);
-//			//if(valueClass==Double.class.toString()) {
-//		    String str = valueClass.toString();
-//		    if(valueClass==double.class) {
-//			    str += " is a double";
-//		    }
-//		    if(valueClass==Variable.class){
-//		    	str+=" is a Variable";
-//		    }
-//		    if(valueClass==VariableImpl.class){
-//			    str+=" is a VariableImpl";
-//		    }
-//		    if(valueClass==Double.class){
-//			    str+=" is a Double";
-//		    }
-//		    if(valueClass==DataMember.class){
-//			    str+=" is a DataMember";
-//		    }
-//		    if(valueClass==Member.class){
-//			    str+=" is a Member";
-//		    }
-//		    Class[] classes = valueClass.getDeclaredClasses();
-//		    str+="\nDeclared Classes:\n";
-//		    for (int i = 0; i < classes.length; i++) {
-//			    str+="Class = " + classes[i].getName()+"\n";
-//		    }
-//			    if(value instanceof Variable) {
-//				    str += "value is a Variable\n";
-//			    }
-//			    if(value instanceof ExprBoolean){
-//				    str += "value is a ExprBoolean\n";
-//			    }
-//		    String str="";
-//		    String fileName="C:\\lucee\\luceedebug.txt";
-//		    try {
-//		        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-//			    writer.write(str);
-//		        writer.close();
-//		    } catch (IOException e) {
-//			    e.printStackTrace();
-//		    }
-
-//			adapter.checkCast(Types.DOUBLE);
-//		    writeValue(bc);
+		    	// the value is not always a CFML Variable or Function
 			    if(value instanceof Variable) {
+			    	// this code runs when it is a CFML function or variable
+
+				    // create a new variable to be able store the variable value
 				    int doubleValue= adapter.newLocal(Types.DOUBLE);
+				    // load the pageContext
 				    adapter.loadArg(0);
+				    // invoke the value's scope
 				    TypeScope.invokeScope(adapter, variable.getScope());
+				    // invoke the last key of the value
 				    getFactory().registerKey(bc, member.getName(), false);
+				    // get the value out of the key
 				    writeValue(bc);
+				    // cast the value to the right type for the Jetendo scope, if possible
 				    adapter.checkCast(Types.DOUBLE);
+				    // we have to store the result in a local variable to be able to call PUTSTATIC
 				    adapter.storeLocal(doubleValue);
+				    // we have to remove the Key and Double from the stack
 				    adapter.pop2();
+				    // reload the result
 				    adapter.loadLocal(doubleValue);
-//				    String str="yea";//valueClass.getName();
-//				    String fileName="C:\\lucee\\luceedebug.txt";
-//					adapter.pop2();
-//				    try {
-//					    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-//					    writer.write(str);
-//					    writer.close();
-//				    } catch (IOException e) {
-//					    e.printStackTrace();
-//				    }
-//				    adapter.dup();
-//				    adapter.storeLocal(doubleValue);
-//				    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
-//				    adapter.swap();
-//				    adapter.dup();
-//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
 
-				    // this is good, since it converts object to Double
-
-//				    adapter.loadLocal(doubleValue);
-//				    adapter.checkCast(Types.DOUBLE);
-//				    adapter.loadLocal(5);
-//				    adapter.visitVarInsn(Opcodes.ALOAD, 5);
-
-//		            adapter.visitLdcInsn(new Double("5.0"));
-//				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-
+				    // we have to duplicate the value so that we can both put and return it
 				    adapter.dup();
-				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
-//				    adapter.loadLocal(doubleValue);
-//					adapter.pop2();
-//					adapter.swap();
-//					adapter.pop();
-//				    adapter.pop();
-//				    adapter.dup();
-//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
-
-				    // then refer to that value on the next line
-//				    Member valueMember=variableValue.members.get(0);
-//				    if(valueMember instanceof DataMember){
-//					    DataMember valueDataMember=(DataMember)valueMember;
-//
-//					    valueDataMember.getName()
-//				    }
-//				    Member member2=variable.getMembers().get(0);
-//				    if(member instanceof DataMember) {
-//				    }
-//				    adapter.dup();
-//				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-//
-//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
-
-
+				    // assign the variable to the static field of the JetendoImpl class
+				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
 			    }else {
-				    Class valueClass=value.writeOut(bc, MODE_VALUE);
+			    	// A plain Java type was found, put it's value on the stack
+				    value.writeOut(bc, MODE_VALUE);
 				    // adapter.valueOf(); // this might be better for all types
+				    // get the Double value onto the stack
 				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
 
 				    // we have to duplicate the value so that we can both put and return it
 				    adapter.dup();
-				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
+				    // assign the variable to the static field of the JetendoImpl class
+				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
 			    }
-
-				// this works for debugging bytecode objects that execute, but not if the bytecode fails, thats why we did file instead.
-//			    String valueClassName=valueClass.toString();
-//			    adapter.visitLdcInsn(valueClassName);
-//			    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberString", "Ljava/lang/String;");
-//			}else{
-				// do something else?
-//			}
-//		    adapter.visitFieldInsn(Opcodes.GETSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDouble", "Ljava/lang/Double;");
-//		    adapter.pop();
-//		    adapter.visitFrame(Opcodes.F_NEW, 0, null, 0, null);
-//		    value.writeOut(bc, MODE_REF);
-			    //writeOutPutScopeField(adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, memberName);
 		    }else {
 			    adapter.loadArg(0);
 			    TypeScope.invokeScope(adapter, variable.getScope());

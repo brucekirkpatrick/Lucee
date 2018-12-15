@@ -37,7 +37,8 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     TODO: many cfcs and java static instances cached here
      */
     public static int memberInt=1;
-    public static Double memberDouble=1.0;
+    public static Double memberDoubleStatic=1.0;
+    public Double memberDouble=1.0;
     public static Boolean memberBool=true;
     public String memberString2="test";
     public Boolean memberBool2=true;
