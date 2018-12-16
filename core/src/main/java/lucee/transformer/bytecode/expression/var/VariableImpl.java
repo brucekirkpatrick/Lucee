@@ -573,7 +573,8 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		}
 		return null;
 	}
-	private static Type writeOutGetScopeMethod(GeneratorAdapter adapter, Class<?> clazz, int scope, String memberName) {
+	private static Type writeOutGetScopeMethod(BytecodeContext bc, GeneratorAdapter adapter, Class<?> clazz, int scope, UDF udf) throws TransformerException {
+		String memberName=udf.getName().toString();
 		Type clazzType = Type.getType(clazz);
 		// force casting to the implementation type if necessary
 		// use reflection to get the Field
@@ -590,7 +591,24 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		String methodName = reflectMethod.getName();
 		Class methodClazz = reflectMethod.getReturnType();
 		Type methodType = Type.getType(methodClazz);
-		Method method=new Method(methodName, methodType, new Type[]{}); // Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY
+
+		// TODO: need to figure out how to pass arguments at compile time, instead of runtime lookup
+		Argument[] args=udf.getArguments();
+//		mv.visitVarInsn(Opcodes.ILOAD, 0);
+//		mv.visitInsn(Opcodes.ICONST_1);
+//		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "Adder", "addAmount", "(II)I");
+//
+//		ExpressionUtil.writeOutExpressionArray(bc, Types.OBJECT, udf.getArguments());
+//
+//		array[i].writeOut(bc, Expression.MODE_REF);
+//		adapter.visitInsn(Opcodes.AASTORE);
+		List<Type> types=new ArrayList<>();
+		for(Argument arg:args){
+			types.add(arg._writeOut(bc, MODE_REF));
+		}
+		Type[] typeArray=types.toArray(new Type[types.size()]);
+
+		Method method=new Method(methodName, methodType, typeArray); // Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY
 		if (Modifier.isStatic(modifiers)) {
 			// INVOKESTATIC requires pop first, but INVOKEVIRTUAL DOESN'T
 //			adapter.pop();
@@ -616,7 +634,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		// pc.getFunctionWithNamedValues (Object,String,Object[])
 		if(scope == Scope.SCOPE_JETENDO){
 			// reflect on JetendoImpl for static or interface function
-			return writeOutGetScopeMethod(adapter, JetendoImpl.class, scope, udf.getName().toString());
+			return writeOutGetScopeMethod(bc, adapter, JetendoImpl.class, scope, udf);
 		}
 		adapter.loadArg(0);
 		if (udf.getSafeNavigated())
@@ -678,13 +696,13 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		// use reflection to get the Field
 		Field field = getField(clazz, memberName);
 		if (field == null) {
-			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
+			throw new RuntimeException("There is no field that is named: " + memberName + " in " + clazz.getCanonicalName());
 		}
 		// verify field is accessible
 		int modifiers = field.getModifiers();
 //	    if(!field.isAccessible()){
 		if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
-			throw new IllegalAccessError(memberName + " is not an accessible field in " + clazz.getCanonicalName());
+			throw new IllegalAccessError(memberName + " is not an accessible field in this class: " + clazz.getCanonicalName());
 		}
 		String fieldName = field.getName();
 		Class fieldClazz = field.getType();

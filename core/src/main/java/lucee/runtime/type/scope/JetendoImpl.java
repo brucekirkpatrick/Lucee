@@ -73,6 +73,9 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         reload(pc, jsr223);
         fields=this.getClass().getDeclaredFields();
     }
+    public static String concatThree(String s1, String s2, String s3){
+        return s1+s2+s3;
+    }
     public static Integer intValue(Double value){
         return value.intValue();
     }
