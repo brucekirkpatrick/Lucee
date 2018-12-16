@@ -19,6 +19,7 @@
 package lucee.transformer.bytecode.expression.var;
 
 import lucee.runtime.type.scope.JetendoImpl;
+import lucee.transformer.bytecode.reflection.ASMProxyFactory;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -192,7 +193,7 @@ private static final org.objectweb.asm.commons.Method BOOL_VALUE_OF = new org.ob
 	private static final org.objectweb.asm.commons.Method DBL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.DOUBLE, new Type[] { Types.DOUBLE_VALUE });
 	private static final org.objectweb.asm.commons.Method CHR_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.CHARACTER, new Type[] { Types.CHARACTER });
 	private static final org.objectweb.asm.commons.Method BYT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BYTE, new Type[] { Types.BYTE_VALUE });
-public static void boxPrimitive(GeneratorAdapter adapter, Class<?> rtn) {
+public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 	if (rtn == boolean.class || rtn==Boolean.class) adapter.invokeStatic(Types.BOOLEAN, BOOL_VALUE_OF);
 	else if (rtn == short.class || rtn == Short.class) adapter.invokeStatic(Types.SHORT, SHORT_VALUE_OF);
 	else if (rtn == int.class || rtn == Integer.class) adapter.invokeStatic(Types.INTEGER, INT_VALUE_OF);
@@ -249,7 +250,7 @@ public static void boxPrimitive(GeneratorAdapter adapter, Class<?> rtn) {
 				adapter.checkCast(fieldType);
 				// we have to store the result in a local variable to be able to call PUTSTATIC
 				adapter.storeLocal(tempValue);
-				// we have to remove the Key and Double from the stack
+				// we have to remove the Key and Object from the stack
 				adapter.pop2();
 				// reload the result
 				adapter.loadLocal(tempValue);
@@ -261,62 +262,179 @@ public static void boxPrimitive(GeneratorAdapter adapter, Class<?> rtn) {
 			}else {
 				// A plain Java type was found, put it's value on the stack
 				value.writeOut(bc, MODE_VALUE);
-				boxPrimitive(adapter, fieldClazz);
-				//getValueOf(fieldType); // this might be better for all types
-				// get the Double value onto the stack
-				/*
-
-    private static final org.objectweb.asm.commons.Method BOOL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BOOLEAN, new Type[] { Types.BOOLEAN_VALUE });
-    private static final org.objectweb.asm.commons.Method SHORT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.SHORT, new Type[] { Types.SHORT_VALUE });
-    private static final org.objectweb.asm.commons.Method INT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.INTEGER, new Type[] { Types.INT_VALUE });
-    private static final org.objectweb.asm.commons.Method LONG_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.LONG, new Type[] { Types.LONG_VALUE });
-    private static final org.objectweb.asm.commons.Method FLT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.FLOAT, new Type[] { Types.FLOAT_VALUE });
-    private static final org.objectweb.asm.commons.Method DBL_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.DOUBLE, new Type[] { Types.DOUBLE_VALUE });
-    private static final org.objectweb.asm.commons.Method CHR_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.CHARACTER, new Type[] { Types.CHARACTER });
-    private static final org.objectweb.asm.commons.Method BYT_VALUE_OF = new org.objectweb.asm.commons.Method("valueOf", Types.BYTE, new Type[] { Types.BYTE_VALUE });
-				 */
-//				adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-
+				getValueOf(adapter, fieldClazz);
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
 
 				// assign the variable to the static field of the JetendoImpl class
 				adapter.visitFieldInsn(Opcodes.PUTSTATIC, scopeClassName, fieldName, fieldType.getDescriptor());
 			}
-			// need to load the variable that will be assigned to top of stack
-//			adapter.loadArg(0);
-			// need to make sure it is int 1 or 0 for boolean, try without first
-			//adapter.visitInsn(b ? Opcodes.ICONST_1 : Opcodes.ICONST_0);
-			//adapter.pop(); // stack was pagecontext and integer, we only need the second, but possibly discard that too since we are loading our own below
-//			adapter.loadArg(0);
-//			adapter.pop();
-//			adapter.loadArg(1);
-//			adapter.loadArg(2);
-//			adapter.loadLocal(0);
-//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), fieldName, fieldType.getDescriptor());
-//			adapter.checkCast(fieldType);
-//			adapter.visitInsn(Opcodes.ICONST_1);
-//			adapter.box(fieldType);
-//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
-//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), "memberBool", "Ljava/lang/Boolean;");
-//			adapter.checkCast(fieldType);
-//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "toString", "(D)Ljava/lang/String;", false);
-//			adapter.checkCast(Types.STRING);
-//			adapter.dup();
-
-//			adapter.visitLdcInsn(new Double("3.0"));
-//			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
-//			adapter.putStatic(clazzType, fieldName, fieldType);
-//			adapter.visitFieldInsn(Opcodes.PUTSTATIC, clazz.getTypeName(), "memberDouble", "Ljava/lang/Double;");
-//			adapter.visitFieldInsn(Opcodes.GETSTATIC, clazz.getTypeName(), "memberDouble", "Ljava/lang/Double;");
 		} else {
-			adapter.loadArg(0);
-			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
-			adapter.checkCast(clazzType);
-			adapter.loadArg(1);
-			adapter.checkCast(fieldType);
-			adapter.putField(clazzType, fieldName, fieldType);
+			if(value instanceof Variable) {
+				// this code runs when it is a CFML function or variable
+
+				// create a new variable to be able store the variable value
+//				int tempValue= adapter.newLocal(fieldType);
+
+				adapter.loadArg(0);
+				adapter.loadArg(0);
+				adapter.checkCast(Types.PAGE_CONTEXT);
+				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
+				adapter.checkCast(clazzType);
+
+//				TypeScope.invokeScope(adapter, variable.getScope());
+//				getFactory().registerKey(bc, member.getName(), false);
+				writeValue(bc);
+				// TODO: might need to use Lucee's Caster here later to be more flexible
+				// cast the value to the right type for the Jetendo scope, if possible
+				adapter.checkCast(fieldType);
+
+				// string works, but double doesn't.  do i need to put the dup or pop inside this instead?
+//				getValueOf(adapter, fieldClazz);
+				// we have to store the result in a local variable to be able to call PUTSTATIC
+//				adapter.storeLocal(tempValue);
+				// remove PageContext or Key from stack to make it empty
+//				adapter.pop();
+//				// we have to remove the Key and Object from the stack
+//				adapter.pop2();
+////				// reload the result
+
+//				adapter.loadLocal(tempValue);
+////
+////				// we have to duplicate the value so that we can both put and return it
+//				adapter.dup();
+//				// assign the variable to the static field of the JetendoImpl class
+				adapter.putField(clazzType, fieldName, fieldType);
+//				adapter.pop();
+//				adapter.loadLocal(tempValue);
+//				adapter.dup();
+//				getValueOf(adapter, fieldClazz);
+////				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
+////				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+//
+//	            adapter.visitLdcInsn(new Double("5.0"));
+//			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+
+//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
+//				adapter.checkCast(clazzType);
+////				adapter.loadArg(0);
+////				TypeScope.invokeScope(adapter, variable.getScope());
+////				getFactory().registerKey(bc, member.getName(), false);
+////				adapter.loadLocal(tempValue);
+//				value.writeOut(bc, MODE_VALUE);
+//				getValueOf(adapter, fieldClazz);
+//
+////	            adapter.visitLdcInsn(new Double("5.0"));
+////			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+////				adapter.dup();
+//				adapter.putField(clazzType, fieldName, fieldType);
+				// create a new variable to be able store the variable value
+//				int tempValue= adapter.newLocal(fieldType);
+//				// load the pageContext
+//				adapter.loadArg(0);
+//				// invoke the value's scope
+//				TypeScope.invokeScope(adapter, variable.getScope());
+//				// invoke the last key of the value
+//				getFactory().registerKey(bc, member.getName(), false);
+//				// get the value out of the key
+//				writeValue(bc);
+//				// TODO: might need to use Lucee's Caster here later to be more flexible
+//				// cast the value to the right type for the Jetendo scope, if possible
+//				adapter.checkCast(fieldType);
+//				// we have to store the result in a local variable to be able to call PUTSTATIC
+//				adapter.storeLocal(tempValue);
+//				// we have to remove the Key and Object from the stack
+//				adapter.pop2();
+//				// reload the result
+//				adapter.loadLocal(tempValue);
+//
+//				// we have to duplicate the value so that we can both put and return it
+//				adapter.dup();
+//				// assign the variable to the static field of the JetendoImpl class
+//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
+
+			}else {
+//				int tempValue= adapter.newLocal(fieldType);
+//				value.writeOut(bc, MODE_VALUE);
+//				getValueOf(adapter, fieldClazz);
+//				adapter.storeLocal(tempValue);
+//
+//				adapter.pop();
+
+				adapter.loadArg(0);
+				adapter.loadArg(0);
+//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
+				adapter.checkCast(clazzType);
+//				adapter.loadArg(0);
+//				TypeScope.invokeScope(adapter, variable.getScope());
+//				getFactory().registerKey(bc, member.getName(), false);
+//				adapter.loadLocal(tempValue);
+				    value.writeOut(bc, MODE_VALUE);
+				getValueOf(adapter, fieldClazz);
+
+//	            adapter.visitLdcInsn(new Double("5.0"));
+//			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+//				adapter.dup();
+				adapter.putField(clazzType, fieldName, fieldType);
+
+//				adapter.dup();
+				// assign the variable to the static field of the JetendoImpl class
+//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
+//				writeValue(bc);
+//				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+//				adapter.loadArg(0);
+//				adapter.loadArg(0);
+//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//				adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
+//				adapter.checkCast(clazzType);
+//				adapter.loadLocal(tempValue);
+////				adapter.putField(clazzType, fieldName, fieldType);
+//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
+//				adapter.getField(clazzType, fieldName, fieldType);
+
+				// this was able to show stack in error:
+//				Bad type on operand stack in putfield
+//				Exception Details:
+//				Location:
+//				jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @192: putfield
+//				Reason:
+//				Type 'java/lang/Double' (current frame, stack[1]) is not assignable to 'lucee/runtime/type/scope/JetendoImpl' (constant pool 208)
+//				Current Frame:
+//				bci: @192
+//				flags: { }
+//				locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
+//				stack: { 'lucee/runtime/type/scope/JetendoImpl', 'java/lang/Double', 'java/lang/Double' }
+//				Bytecode:
+
+//				adapter.loadArg(0);
+//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//				adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
+//				adapter.checkCast(clazzType);
+//				value.writeOut(bc, MODE_VALUE);
+//				getValueOf(adapter, fieldClazz);
+//				adapter.dup();
+//				adapter.putField(clazzType, fieldName, fieldType);
+
+	// original set is like this:
+//				adapter.loadArg(0);
+//				TypeScope.invokeScope(adapter, variable.getScope());
+//				getFactory().registerKey(bc, member.getName(), false);
+//				writeValue(bc);
+//				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+
+
+//				adapter.getField(clazzType, fieldName, fieldType);
+				// convert primitives like boolean to Boolean so we can always return Object.
+//				ASMProxyFactory.boxPrimitive(adapter, fieldClazz);
+//				getValueOf(adapter, fieldClazz);
+				// we have to duplicate the value so that we can both put and return it
+//				adapter.dup();
+//				adapter.putField(clazzType, fieldName, fieldType);
+//				adapter.pop();
+//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
+			}
 		}
 		// convert primitives like boolean to Boolean so we can always return Object.
 //		ASMProxyFactory.boxPrimitive(adapter, fieldClazz);
