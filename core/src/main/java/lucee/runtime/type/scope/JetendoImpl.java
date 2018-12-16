@@ -43,6 +43,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public String memberString2="test";
     public Boolean memberBool2=true;
     public boolean memberBool3=true;
+    public static Double loopIndex=1.0D;
     public static ConcurrentHashMap<String, Object> memberMap=new ConcurrentHashMap<>();
     public static String memberString="jetendo scope works";
 
@@ -51,6 +52,9 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     }
     public static Boolean memberBoolFuncStatic(){
         return memberBool;
+    }
+    public static Double addOne(){
+        return loopIndex++;
     }
     public double memberArgFunc(double v){
         return memberInt+v;

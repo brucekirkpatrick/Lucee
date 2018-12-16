@@ -233,28 +233,10 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		if (Modifier.isStatic(modifiers)) {
 			// the value is not always a CFML Variable or Function
 			if(value instanceof Variable) {
-				// this code runs when it is a CFML function or variable
-
-				// create a new variable to be able store the variable value
-				int tempValue= adapter.newLocal(fieldType);
-				// load the pageContext
-				adapter.loadArg(0);
-				// invoke the value's scope
-				TypeScope.invokeScope(adapter, variable.getScope());
-				// invoke the last key of the value
-				getFactory().registerKey(bc, member.getName(), false);
-				// get the value out of the key
 				writeValue(bc);
 				// TODO: might need to use Lucee's Caster here later to be more flexible
 				// cast the value to the right type for the Jetendo scope, if possible
 				adapter.checkCast(fieldType);
-				// we have to store the result in a local variable to be able to call PUTSTATIC
-				adapter.storeLocal(tempValue);
-				// we have to remove the Key and Object from the stack
-				adapter.pop2();
-				// reload the result
-				adapter.loadLocal(tempValue);
-
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
 				// assign the variable to the static field of the JetendoImpl class
@@ -273,171 +255,33 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 			if(value instanceof Variable) {
 				// this code runs when it is a CFML function or variable
 
-				// create a new variable to be able store the variable value
-//				int tempValue= adapter.newLocal(fieldType);
-
+				// load PageContext twice
 				adapter.loadArg(0);
 				adapter.loadArg(0);
 				adapter.checkCast(Types.PAGE_CONTEXT);
+				// invoke the value's scope
 				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
+				// cast the scope to JetendoImpl
 				adapter.checkCast(clazzType);
-
-//				TypeScope.invokeScope(adapter, variable.getScope());
-//				getFactory().registerKey(bc, member.getName(), false);
+				// get the value
 				writeValue(bc);
 				// TODO: might need to use Lucee's Caster here later to be more flexible
 				// cast the value to the right type for the Jetendo scope, if possible
 				adapter.checkCast(fieldType);
 
-				// string works, but double doesn't.  do i need to put the dup or pop inside this instead?
-//				getValueOf(adapter, fieldClazz);
-				// we have to store the result in a local variable to be able to call PUTSTATIC
-//				adapter.storeLocal(tempValue);
-				// remove PageContext or Key from stack to make it empty
-//				adapter.pop();
-//				// we have to remove the Key and Object from the stack
-//				adapter.pop2();
-////				// reload the result
-
-//				adapter.loadLocal(tempValue);
-////
-////				// we have to duplicate the value so that we can both put and return it
-//				adapter.dup();
-//				// assign the variable to the static field of the JetendoImpl class
+//				// assign the variable to the public field of the JetendoImpl class
 				adapter.putField(clazzType, fieldName, fieldType);
-//				adapter.pop();
-//				adapter.loadLocal(tempValue);
-//				adapter.dup();
-//				getValueOf(adapter, fieldClazz);
-////				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
-////				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
-//
-//	            adapter.visitLdcInsn(new Double("5.0"));
-//			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-
-//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-//				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
-//				adapter.checkCast(clazzType);
-////				adapter.loadArg(0);
-////				TypeScope.invokeScope(adapter, variable.getScope());
-////				getFactory().registerKey(bc, member.getName(), false);
-////				adapter.loadLocal(tempValue);
-//				value.writeOut(bc, MODE_VALUE);
-//				getValueOf(adapter, fieldClazz);
-//
-////	            adapter.visitLdcInsn(new Double("5.0"));
-////			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-////				adapter.dup();
-//				adapter.putField(clazzType, fieldName, fieldType);
-				// create a new variable to be able store the variable value
-//				int tempValue= adapter.newLocal(fieldType);
-//				// load the pageContext
-//				adapter.loadArg(0);
-//				// invoke the value's scope
-//				TypeScope.invokeScope(adapter, variable.getScope());
-//				// invoke the last key of the value
-//				getFactory().registerKey(bc, member.getName(), false);
-//				// get the value out of the key
-//				writeValue(bc);
-//				// TODO: might need to use Lucee's Caster here later to be more flexible
-//				// cast the value to the right type for the Jetendo scope, if possible
-//				adapter.checkCast(fieldType);
-//				// we have to store the result in a local variable to be able to call PUTSTATIC
-//				adapter.storeLocal(tempValue);
-//				// we have to remove the Key and Object from the stack
-//				adapter.pop2();
-//				// reload the result
-//				adapter.loadLocal(tempValue);
-//
-//				// we have to duplicate the value so that we can both put and return it
-//				adapter.dup();
-//				// assign the variable to the static field of the JetendoImpl class
-//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
-
 			}else {
-//				int tempValue= adapter.newLocal(fieldType);
-//				value.writeOut(bc, MODE_VALUE);
-//				getValueOf(adapter, fieldClazz);
-//				adapter.storeLocal(tempValue);
-//
-//				adapter.pop();
-
 				adapter.loadArg(0);
 				adapter.loadArg(0);
-//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 				adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
 				adapter.checkCast(clazzType);
-//				adapter.loadArg(0);
-//				TypeScope.invokeScope(adapter, variable.getScope());
-//				getFactory().registerKey(bc, member.getName(), false);
-//				adapter.loadLocal(tempValue);
-				    value.writeOut(bc, MODE_VALUE);
+				value.writeOut(bc, MODE_VALUE);
 				getValueOf(adapter, fieldClazz);
 
-//	            adapter.visitLdcInsn(new Double("5.0"));
-//			    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-//				adapter.dup();
 				adapter.putField(clazzType, fieldName, fieldType);
-
-//				adapter.dup();
-				// assign the variable to the static field of the JetendoImpl class
-//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
-//				writeValue(bc);
-//				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
-//				adapter.loadArg(0);
-//				adapter.loadArg(0);
-//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-//				adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
-//				adapter.checkCast(clazzType);
-//				adapter.loadLocal(tempValue);
-////				adapter.putField(clazzType, fieldName, fieldType);
-//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
-//				adapter.getField(clazzType, fieldName, fieldType);
-
-				// this was able to show stack in error:
-//				Bad type on operand stack in putfield
-//				Exception Details:
-//				Location:
-//				jetendofunc13_cfc$cf.udfCall(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object; @192: putfield
-//				Reason:
-//				Type 'java/lang/Double' (current frame, stack[1]) is not assignable to 'lucee/runtime/type/scope/JetendoImpl' (constant pool 208)
-//				Current Frame:
-//				bci: @192
-//				flags: { }
-//				locals: { 'jetendofunc13_cfc$cf', 'lucee/runtime/PageContext', 'lucee/runtime/type/UDF', integer, 'lucee/runtime/tag/Content' }
-//				stack: { 'lucee/runtime/type/scope/JetendoImpl', 'java/lang/Double', 'java/lang/Double' }
-//				Bytecode:
-
-//				adapter.loadArg(0);
-//				adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-//				adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
-//				adapter.checkCast(clazzType);
-//				value.writeOut(bc, MODE_VALUE);
-//				getValueOf(adapter, fieldClazz);
-//				adapter.dup();
-//				adapter.putField(clazzType, fieldName, fieldType);
-
-	// original set is like this:
-//				adapter.loadArg(0);
-//				TypeScope.invokeScope(adapter, variable.getScope());
-//				getFactory().registerKey(bc, member.getName(), false);
-//				writeValue(bc);
-//				adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
-
-
-//				adapter.getField(clazzType, fieldName, fieldType);
-				// convert primitives like boolean to Boolean so we can always return Object.
-//				ASMProxyFactory.boxPrimitive(adapter, fieldClazz);
-//				getValueOf(adapter, fieldClazz);
-				// we have to duplicate the value so that we can both put and return it
-//				adapter.dup();
-//				adapter.putField(clazzType, fieldName, fieldType);
-//				adapter.pop();
-//				adapter.visitFieldInsn(Opcodes.PUTFIELD, scopeClassName, fieldName, fieldType.getDescriptor());
 			}
 		}
-		// convert primitives like boolean to Boolean so we can always return Object.
-//		ASMProxyFactory.boxPrimitive(adapter, fieldClazz);
 		return fieldType;
 	}
 
