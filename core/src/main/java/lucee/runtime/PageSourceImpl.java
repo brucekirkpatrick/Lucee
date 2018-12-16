@@ -368,7 +368,7 @@ public final class PageSourceImpl implements PageSource {
 	}
 	catch (RuntimeException re) {
 	    String msg = StringUtil.emptyIfNull(re.getMessage());
-	    if (StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
+	    if (StringUtil.indexOfIgnoreCase(msg, "Method too large") != -1 || StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
 		throw new TemplateException("There is too much code inside the template [" + getDisplayPath() + "], " + Constants.NAME
 			+ " was not able to break it into pieces, move parts of your code to an include or a external component/function", msg);
 	    }

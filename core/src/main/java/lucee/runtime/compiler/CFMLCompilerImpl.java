@@ -48,6 +48,7 @@ import lucee.transformer.library.tag.TagLib;
 import lucee.transformer.util.AlreadyClassException;
 import lucee.transformer.util.PageSourceCode;
 import lucee.transformer.util.SourceCode;
+import org.objectweb.asm.MethodTooLargeException;
 
 /**
  * CFML Compiler compiles CFML source templates
@@ -116,10 +117,9 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 	    page.setSplitIfNecessary(false);
 	    try {
 		result = new Result(page, page.execute(className));
-	    }
-	    catch (RuntimeException re) {
+	    }catch (RuntimeException re) {
 		String msg = StringUtil.emptyIfNull(re.getMessage());
-		if (StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
+		if (StringUtil.indexOfIgnoreCase(msg, "Method too large") != -1 || StringUtil.indexOfIgnoreCase(msg, "Method code too large!") != -1) {
 		    page = sc == null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
 			    : cfmlTransformer.transform(factory, config, sc, tld, fld, System.currentTimeMillis(),
 				    sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase(), returnValue, ignoreScopes);
@@ -128,8 +128,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		    result = new Result(page, page.execute(className));
 		}
 		else throw re;
-	    }
-	    catch (ClassFormatError cfe) {
+	    }catch (ClassFormatError cfe) {
 		String msg = StringUtil.emptyIfNull(cfe.getMessage());
 		if (StringUtil.indexOfIgnoreCase(msg, "Invalid method Code length") != -1) {
 		    page = ps != null ? cfmlTransformer.transform(factory, config, ps, tld, fld, returnValue, ignoreScopes)
