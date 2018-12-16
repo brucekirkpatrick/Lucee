@@ -36,7 +36,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     /*
     TODO: many cfcs and java static instances cached here
      */
-    public static int memberInt=1;
+    public static Integer memberInt=1;
     public static Double memberDoubleStatic=1.0;
     public Double memberDouble=1.0;
     public static Boolean memberBool=true;
@@ -73,7 +73,9 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         reload(pc, jsr223);
         fields=this.getClass().getDeclaredFields();
     }
-
+    public static Integer intValue(Double value){
+        return value.intValue();
+    }
     public static Field getField(String name){
         for(Field f:fields){
             if(f.getName().equalsIgnoreCase(name)){

@@ -237,6 +237,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 				// TODO: might need to use Lucee's Caster here later to be more flexible
 				// cast the value to the right type for the Jetendo scope, if possible
 				adapter.checkCast(fieldType);
+				adapter.box(fieldType);
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
 				// assign the variable to the static field of the JetendoImpl class
@@ -245,6 +246,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 				// A plain Java type was found, put it's value on the stack
 				value.writeOut(bc, MODE_VALUE);
 				getValueOf(adapter, fieldClazz);
+				adapter.box(fieldType);
 				// we have to duplicate the value so that we can both put and return it
 				adapter.dup();
 
@@ -268,6 +270,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 				// TODO: might need to use Lucee's Caster here later to be more flexible
 				// cast the value to the right type for the Jetendo scope, if possible
 				adapter.checkCast(fieldType);
+				adapter.box(fieldType);
 
 //				// assign the variable to the public field of the JetendoImpl class
 				adapter.putField(clazzType, fieldName, fieldType);
@@ -278,6 +281,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 				adapter.checkCast(clazzType);
 				value.writeOut(bc, MODE_VALUE);
 				getValueOf(adapter, fieldClazz);
+				adapter.box(fieldType);
 
 				adapter.putField(clazzType, fieldName, fieldType);
 			}
