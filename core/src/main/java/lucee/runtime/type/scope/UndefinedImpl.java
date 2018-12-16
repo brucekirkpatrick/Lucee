@@ -258,7 +258,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     @Override
     public Struct getScope(Collection.Key key) {
 	Object rtn = null;
-	Struct sct = new StructImpl(Struct.TYPE_LINKED);
+	Struct sct = new StructImpl(Struct.TYPE_REGULAR);
 	Object _null = CollectionUtil.NULL;
 
 	if (checkArguments) {

@@ -501,6 +501,6 @@ public class XMLNodeStruct extends StructSupport implements XMLStruct {
 
     @Override
     public int getType() {
-	return Struct.TYPE_LINKED;
+	return Struct.TYPE_REGULAR;
     }
 }

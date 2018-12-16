@@ -43,7 +43,7 @@ public final class ClusterWrap extends ScopeSupport implements Cluster {
     }
 
     private ClusterWrap(ConfigServer configServer, ClusterRemote core, boolean duplicate) {
-	super("cluster", Scope.SCOPE_CLUSTER, Struct.TYPE_LINKED);
+	super("cluster", Scope.SCOPE_CLUSTER, Struct.TYPE_REGULAR);
 	this.configServer = configServer;
 	if (duplicate) this.core = core.duplicate();
 	else this.core = core;

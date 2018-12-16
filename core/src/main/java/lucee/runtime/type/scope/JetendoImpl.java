@@ -61,7 +61,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     }
     private static Field[] fields;
     public JetendoImpl(){
-        super("jetendo", SCOPE_JETENDO, Struct.TYPE_LINKED);
+        super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
     }
     /**
      * constructor of the server scope
@@ -69,7 +69,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
      * @param pc
      */
     public JetendoImpl(PageContext pc, boolean jsr223) {
-        super("jetendo", SCOPE_JETENDO, Struct.TYPE_LINKED);
+        super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
         reload(pc, jsr223);
         fields=this.getClass().getDeclaredFields();
     }

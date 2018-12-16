@@ -67,7 +67,7 @@ public abstract class PageExceptionImpl extends PageException {
     private static final long serialVersionUID = -5816929795661373219L;
 
     private Array tagContext = new ArrayImpl();
-    private Struct additional = new StructImpl(Struct.TYPE_LINKED);
+    private Struct additional = new StructImpl(Struct.TYPE_REGULAR);
     /**
      * Field <code>detail</code>
      */

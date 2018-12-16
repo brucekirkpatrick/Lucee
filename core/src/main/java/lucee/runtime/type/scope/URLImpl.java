@@ -44,7 +44,7 @@ public final class URLImpl extends ScopeSupport implements URL, ScriptProtected 
      * Standart Constructor
      */
     public URLImpl() {
-	super("url", SCOPE_URL, Struct.TYPE_LINKED);
+	super("url", SCOPE_URL, Struct.TYPE_REGULAR);
     }
 
     @Override

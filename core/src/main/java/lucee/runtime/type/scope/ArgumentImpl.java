@@ -67,7 +67,7 @@ public final class ArgumentImpl extends ScopeSupport implements Argument, ArrayP
      * constructor of the class
      */
     public ArgumentImpl() {
-	super("arguments", SCOPE_ARGUMENTS, Struct.TYPE_LINKED);
+	super("arguments", SCOPE_ARGUMENTS, Struct.TYPE_REGULAR);
 	// this(true);
     }
 

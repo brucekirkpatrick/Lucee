@@ -364,6 +364,6 @@ public final class XMLAttributes extends StructSupport implements Struct, NamedN
 
     @Override
     public int getType() {
-	return Struct.TYPE_LINKED;
+	return Struct.TYPE_REGULAR;
     }
 }

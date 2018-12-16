@@ -93,7 +93,7 @@ public final class ServerImpl extends ScopeSupport implements Server, SharedScop
      * @param pc
      */
     public ServerImpl(PageContext pc, boolean jsr223) {
-	super("server", SCOPE_SERVER, Struct.TYPE_LINKED);
+	super("server", SCOPE_SERVER, Struct.TYPE_REGULAR);
 	reload(pc, jsr223);
 
     }

@@ -76,7 +76,7 @@ public final class CookieImpl extends ScopeSupport implements Cookie, ScriptProt
      * constructor for the Cookie Scope
      */
     public CookieImpl() {
-	super("cookie", SCOPE_COOKIE, Struct.TYPE_LINKED);
+	super("cookie", SCOPE_COOKIE, Struct.TYPE_REGULAR);
     }
 
     @Override

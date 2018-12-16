@@ -793,8 +793,8 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
     }
 
     private static Struct createArgStruct(QueryBean data, String strSQL, TemplateLine tl) throws PageException {
-	Struct rtn = new StructImpl(Struct.TYPE_LINKED);
-	Struct args = new StructImpl(Struct.TYPE_LINKED);
+	Struct rtn = new StructImpl(Struct.TYPE_REGULAR);
+	Struct args = new StructImpl(Struct.TYPE_REGULAR);
 
 	// TODO add missing attrs
 	/*

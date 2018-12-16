@@ -228,7 +228,7 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 	callerScope.initialize(pageContext);
 
 	// thistag
-	if (thistagScope == null) thistagScope = new StructImpl(Struct.TYPE_LINKED);
+	if (thistagScope == null) thistagScope = new StructImpl(Struct.TYPE_REGULAR);
 	thistagScope.set(GENERATED_CONTENT, "");
 	thistagScope.set(EXECUTION_MODE, "start");
 	thistagScope.set(EXECUTE_BODY, Boolean.TRUE);
@@ -366,7 +366,7 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 		while (parent != null && !(parent instanceof CFTag && ((CFTag) parent).isCFCBasedCustomTag())) {
 		    parent = parent.getParent();
 		}
-		Struct args = new StructImpl(Struct.TYPE_LINKED);
+		Struct args = new StructImpl(Struct.TYPE_REGULAR);
 		args.set(KeyConstants._HASENDTAG, Caster.toBoolean(hasBody));
 		if (parent instanceof CFTag) {
 		    args.set(PARENT, ((CFTag) parent).getComponent());
@@ -535,7 +535,7 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 		    // rtn=cfc.call(pageContext, ON_END_TAG, new
 		    // Object[]{attributesScope,pageContext.variablesScope(),output});
 
-		    Struct args = new StructImpl(Struct.TYPE_LINKED);
+		    Struct args = new StructImpl(Struct.TYPE_REGULAR);
 		    args.set(KeyConstants._ATTRIBUTES, attributesScope);
 		    setCaller(pageContext, args);
 		    args.set(GENERATED_CONTENT, output);
@@ -589,7 +589,7 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 		PageException pe = Caster.toPageException(t);
 		// Object rtn=cfc.call(pageContext, ON_ERROR, new Object[]{pe.getCatchBlock(pageContext),source});
 
-		Struct args = new StructImpl(Struct.TYPE_LINKED);
+		Struct args = new StructImpl(Struct.TYPE_REGULAR);
 		args.set(CFCATCH, pe.getCatchBlock(ThreadLocalPageContext.getConfig(pageContext)));
 		args.set(SOURCE, source);
 		Object rtn = cfc.callWithNamedValues(pageContext, ON_ERROR, args);
