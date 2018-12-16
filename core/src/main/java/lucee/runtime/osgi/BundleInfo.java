@@ -46,6 +46,7 @@ import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
+import sun.security.action.GetPropertyAction;
 
 public class BundleInfo implements Serializable {
 
@@ -70,7 +71,13 @@ public class BundleInfo implements Serializable {
 	BundleInfo bi = bundles.get(id);
 	if (bi != null) return bi;
 
-	File tmp = File.createTempFile("temp-extension", "lex");
+	File tmp;
+	try {
+		tmp = File.createTempFile("temp-extension", ".lex");
+	}catch(IOException e){
+		String s=System.getProperty("java.io.tmpdir");
+		throw new RuntimeException("Couldn't run File.createTempFile in java.io.tmpdir directory:"+s);
+	}
 
 	try {
 	    FileOutputStream os = new FileOutputStream(tmp);
