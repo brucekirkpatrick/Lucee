@@ -66,7 +66,7 @@ public abstract class ScopeSupport extends StructImpl implements Scope {
      * @param type scope type (SCOPE_APPLICATION,SCOPE_COOKIE use)
      */
     private ScopeSupport(String name, int type) {
-	this(name, type, Struct.TYPE_LINKED);
+	this(name, type, Struct.TYPE_REGULAR);
     }
 
     /**

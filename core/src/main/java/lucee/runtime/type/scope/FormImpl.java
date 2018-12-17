@@ -91,7 +91,7 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
      * standart class Constructor
      */
     public FormImpl() {
-	super("form", SCOPE_FORM, Struct.TYPE_LINKED);
+	super("form", SCOPE_FORM, Struct.TYPE_REGULAR);
     }
 
     @Override
