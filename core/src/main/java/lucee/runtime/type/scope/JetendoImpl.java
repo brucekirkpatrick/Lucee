@@ -18,27 +18,41 @@
  */
 package lucee.runtime.type.scope;
 
+import lucee.runtime.Component;
 import lucee.runtime.PageContext;
+import lucee.runtime.PageContextImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.Struct;
+import lucee.runtime.functions.other.CreateObject;
+import lucee.runtime.type.*;
 
 import java.lang.invoke.*;
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static lucee.runtime.Component.ACCESS_PRIVATE;
 
 /**
  * Server Scope
  */
 public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedScope {
+
+    private static final long serialVersionUID = -6965340514668753444L;
+    /* real jetendo fields */
+    public static Component template=null;
+    public static UDFPlus templateSetTag=null;
+    public static UDFImpl templateGetOutput=null;
+
+
     /*
     TODO: many cfcs and java static instances cached here
      */
     public static Integer memberInt=1;
     public static Double memberDoubleStatic=1.0;
     public Double memberDouble=1.0;
+    public Double memberDoubleCount=1.0;
     public static Boolean memberBool=true;
     public String memberString2="test";
     public Boolean memberBool2=true;
@@ -46,6 +60,8 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public static Double loopIndex=1.0D;
     public static ConcurrentHashMap<String, Object> memberMap=new ConcurrentHashMap<>();
     public static String memberString="jetendo scope works";
+
+    public PageContextImpl pageContext;
 
     public Boolean memberBoolFunc(){
         return memberBool2;
@@ -71,7 +87,71 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public JetendoImpl(PageContext pc, boolean jsr223) {
         super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
         reload(pc, jsr223);
+        pageContext=(PageContextImpl) pc;
         fields=this.getClass().getDeclaredFields();
+    }
+    public Object reloadComponents(){
+        try {
+            template=pageContext.loadComponent("zcorerootmapping.com.zos.template");
+            templateSetTag=(UDFPlus) template.getMember(ACCESS_PRIVATE, new KeyImpl("setTag"), false, false);
+            templateGetOutput=(UDFImpl) template.getMember(ACCESS_PRIVATE, new KeyImpl("getOutput"), false, false);
+            //(Component) CreateObject.call(pageContext, "component", "zcorerootmapping.com.zos.template", null, null);
+        } catch (PageException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public Object getJavaOutput() throws PageException {
+        return "";
+    }
+    public Object getOutput() throws PageException {
+//        return tag+value;
+        return templateGetOutput._callSimple(pageContext, new KeyImpl("getOutput"), new Object[]{}, null, false);
+//        return templateGetOutput.call(pageContext, new Object[]{}, false);
+    }
+    public Object setTag(String tag, String value) throws PageException {
+//        return tag+value;
+        templateSetTag.call(pageContext, new Object[]{ tag, value}, false);
+        return true;
+    }
+    public static Object getObject(ConcurrentHashMap<String, Object> obj, Double key){
+        return obj.get(key.toString());
+    }
+    public static Object getObject(ConcurrentHashMap<String, Object> obj, String key){
+        return obj.get(key);
+    }
+    public static Object getObject(Object obj, String key){
+        if(obj instanceof Map){
+            return ((Map)obj).get(key);
+        }
+        return null;
+    }
+    public static Object getObject(Object obj, Key key){
+        if(obj instanceof Map){
+            return ((Map)obj).get(key.toString());
+        }
+        return null;
+    }
+    public static Object putObject(ConcurrentHashMap<String, Object> obj, String key, Object value){
+        return obj.put(key, value);
+    }
+    public static Object putObject(ConcurrentHashMap<String, Object> obj, Double key, Object value){
+        return obj.put(key.toString(), value);
+    }
+    public static Object putObject(ConcurrentHashMap<String, Object> obj, Double key, Double value){
+        return obj.put(key.toString(), value);
+    }
+    public static Object putObject(Object obj, String key, Object value){
+        if(obj instanceof Map){
+            return ((Map)obj).put(key, value);
+        }
+        return null;
+    }
+    public static Object putObject(Object obj, Key key, Object value){
+        if(obj instanceof Map){
+            return ((Map)obj).put(key.toString(), value);
+        }
+        return null;
     }
     public static String concatThree(String s1, String s2, String s3){
         return new StringBuilder(s1).append(s2).append(s3).toString();

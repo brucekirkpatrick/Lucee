@@ -99,7 +99,6 @@ public final class ScopeContext {
 
     private static Cluster cluster;
     private static Server server = null;
-    private static Jetendo jetendo=null;
 
     private StorageScopeEngine client;
     private StorageScopeEngine session;
@@ -176,12 +175,6 @@ public final class ScopeContext {
 	return server;
     }
 
-	public static Jetendo getJetendoScope(PageContext pc, boolean jsr223) {
-		if (jetendo == null) {
-			jetendo = new JetendoImpl(pc, jsr223);
-		}
-		return jetendo;
-	}
 
 
     /*

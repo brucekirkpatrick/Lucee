@@ -349,7 +349,7 @@ public final class PageContextImpl extends PageContext {
 	this.scopeContext = scopeContext;
 	undefined = new UndefinedImpl(this, getScopeCascadingType());
 	server = ScopeContext.getServerScope(this, jsr223);
-	jetendo = ScopeContext.getJetendoScope(this, jsr223);
+	jetendo= new JetendoImpl(this, jsr223);
 	defaultApplicationContext = new ClassicApplicationContext(config, "", true, null);
 
 	this.id = id;
@@ -440,7 +440,7 @@ public final class PageContextImpl extends PageContext {
 
 	// Scopes
 	server = ScopeContext.getServerScope(this, ignoreScopes);
-	jetendo= ScopeContext.getJetendoScope(this, ignoreScopes);
+	jetendo= new JetendoImpl(this, ignoreScopes);
 	if (hasFamily) {
 	    variablesRoot = new VariablesImpl();
 	    variables = variablesRoot;

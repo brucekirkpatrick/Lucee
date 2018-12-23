@@ -30,10 +30,13 @@
 
   </target> 
 
-  <target name="fastdev" depends="setEnv,buildLoaderAnt" description="build only Lucee itself">
+  <target name="fastdevrestart" depends="setEnv,buildLoaderAnt,restartLuceeEngine" description="build Lucee core lco and restart local lucee">
 
   </target>
-  
+
+<target name="fastdev" depends="setEnv,buildLoaderAnt" description="build Lucee core lco only">
+
+</target>
   <target name="fastdevjar" depends="setEnv,buildLoaderAnt,buildFullLuceeJar" description="build only Lucee itself">
 
   </target>

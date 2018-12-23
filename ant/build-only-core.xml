@@ -523,9 +523,6 @@
     <copy 
         file="${temp}/loader/core/core.lco" 
         tofile="C:/lucee/tomcat/lucee-server/patches/${version}.lco"/>
-		
-    <echots message="restarting lucee engine"/>
-    <get src="http://localhost:9988/restart-lucee.cfc?method=index" dest="C:/lucee/tomcat/webapps/ROOT/restarted.txt" />
 
 
 
@@ -533,7 +530,13 @@
     <echots message="done"/>
     
   </target>
-  <target name="buildFullLuceeJar">
+
+    <target name="restartLuceeEngine" depends="_core,setAntEnv,addFelix" description="generate the loader jar" >
+    <echots message="restarting lucee engine"/>
+    <get src="http://localhost:9988/restart-lucee.cfc?method=index" dest="C:/lucee/tomcat/webapps/ROOT/restarted.txt" />
+    </target>
+
+    <target name="buildFullLuceeJar">
     <echots message="build loader"/>
   
     <!-- genrates the jar from the loader -->

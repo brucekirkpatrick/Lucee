@@ -602,14 +602,14 @@ public class VariableImpl extends ExpressionBase implements Variable {
 //
 //		array[i].writeOut(bc, Expression.MODE_REF);
 //		adapter.visitInsn(Opcodes.AASTORE);
-		List<Type> types=new ArrayList<>();
-		for(Argument arg:args){
-			types.add(arg._writeOut(bc, MODE_REF));
-		}
-		Type[] typeArray=types.toArray(new Type[types.size()]);
-
-		Method method=new Method(methodName, methodType, typeArray); // Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY
 		if (Modifier.isStatic(modifiers)) {
+			List<Type> types=new ArrayList<>();
+			for(Argument arg:args){
+				types.add(arg._writeOut(bc, MODE_REF));
+			}
+			Type[] typeArray=types.toArray(new Type[types.size()]);
+
+			Method method=new Method(methodName, methodType, typeArray); // Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY
 			// INVOKESTATIC requires pop first, but INVOKEVIRTUAL DOESN'T
 //			adapter.pop();
 			adapter.invokeStatic(clazzType, method);
@@ -620,6 +620,13 @@ public class VariableImpl extends ExpressionBase implements Variable {
 			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
 			adapter.checkCast(clazzType);
+			List<Type> types=new ArrayList<>();
+			for(Argument arg:args){
+				types.add(arg._writeOut(bc, MODE_REF));
+			}
+			Type[] typeArray=types.toArray(new Type[types.size()]);
+
+			Method method=new Method(methodName, methodType, typeArray); // Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY
 //			adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, clazzType.getClassName(), methodName, "()Ljava/lang/Boolean;", false);
 			adapter.invokeVirtual(clazzType, method);
 		}
