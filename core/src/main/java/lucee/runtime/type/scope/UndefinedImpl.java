@@ -72,7 +72,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 //    private boolean localAlways=true;
     private short type;
     private boolean isInit;
-    private Local local;
+    public Local local;
     private PageContextImpl pc;
 //    private boolean debug;
 

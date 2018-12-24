@@ -32,5 +32,5 @@ public interface Local extends Scope, BindScope {
 	 * @return returns if scope is bound to a other variable for using outside of a udf
 	 */
 	public abstract boolean isBind();
-	public void setFunctionArgumentNames(Set functionArgumentNames);
+//	public void setFunctionArgumentNames(Set functionArgumentNames);
 }

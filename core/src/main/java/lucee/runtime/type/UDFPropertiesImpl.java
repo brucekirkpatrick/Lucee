@@ -51,9 +51,9 @@ public final class UDFPropertiesImpl extends UDFPropertiesBase {
     private static final long serialVersionUID = 8679484452640746605L; // do not change
 
     public String functionName;
-    public int returnType;
-    public String strReturnType;
-    public boolean output;
+    public int returnType=0;
+    public String strReturnType="ANY";
+    public boolean output=true;
     public Boolean bufferOutput;
     public String hint;
     public String displayName;

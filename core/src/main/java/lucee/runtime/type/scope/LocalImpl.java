@@ -25,7 +25,7 @@ import java.util.Set;
 public final class LocalImpl extends ScopeSupport implements Scope, Local {
 
     private boolean bind;
-	private Set functionArgumentNames;
+//	public Set functionArgumentNames;
 
     public LocalImpl() {
 	super("local", Scope.SCOPE_LOCAL, Struct.TYPE_SYNC);
@@ -41,9 +41,9 @@ public final class LocalImpl extends ScopeSupport implements Scope, Local {
 	this.bind = bind;
     }
 
-	@Override
-	public void setFunctionArgumentNames(Set functionArgumentNames) {// future add to interface
-		this.functionArgumentNames = functionArgumentNames;
-	}
+//	@Override
+//	public void setFunctionArgumentNames(Set functionArgumentNames) {// future add to interface
+//		this.functionArgumentNames = functionArgumentNames;
+//	}
 
 }

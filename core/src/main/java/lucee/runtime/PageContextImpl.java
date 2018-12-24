@@ -200,9 +200,9 @@ public final class PageContextImpl extends PageContext {
     /**
      * Field <code>pathList</code>
      */
-    private LinkedList<UDF> udfs = new LinkedList<UDF>();
-    private LinkedList<PageSource> pathList = new LinkedList<PageSource>();
-    private LinkedList<PageSource> includePathList = new LinkedList<PageSource>();
+    public LinkedList<UDF> udfs = new LinkedList<UDF>();
+    public LinkedList<PageSource> pathList = new LinkedList<PageSource>();
+    public LinkedList<PageSource> includePathList = new LinkedList<PageSource>();
     private Set<PageSource> includeOnce = new HashSet<PageSource>();
 
     /**
@@ -227,7 +227,7 @@ public final class PageContextImpl extends PageContext {
     private ScopeContext scopeContext;
     private Variables variablesRoot = new VariablesImpl();// ScopeSupport(false,"variables",Scope.SCOPE_VARIABLES);
     private Variables variables = variablesRoot;// new ScopeSupport("variables",Scope.SCOPE_VARIABLES);
-    private Undefined undefined;
+    public Undefined undefined;
 
     private URLImpl _url = new URLImpl();
     private FormImpl _form = new FormImpl();
@@ -241,7 +241,7 @@ public final class PageContextImpl extends PageContext {
     private CGIImplReadOnly cgiR = new CGIImplReadOnly();
     private CGIImpl cgiRW = new CGIImpl();
 //    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
-    private Local local;
+    public Local local;
     private Session session;
     private Server server;
     private Jetendo jetendo;
@@ -270,8 +270,8 @@ public final class PageContextImpl extends PageContext {
     private FTPPoolImpl ftpPool = new FTPPoolImpl();
 
     private Component activeComponent;
-    private UDF activeUDF;
-    private Collection.Key activeUDFCalledName;
+    public UDF activeUDF;
+    public Collection.Key activeUDFCalledName;
     // private ComponentScope componentScope=new ComponentScope(this);
 
     private Credential remoteUser;
@@ -2970,11 +2970,13 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public void removeLastPageSource(boolean alsoInclude) {
-	if (!pathList.isEmpty()) pathList.removeLast();
-	if (!pathList.isEmpty()) {
-	    currentTemplateDialect = pathList.getLast().getDialect();
-	    setFullNullSupport();
+	if (!pathList.isEmpty()){
+		pathList.removeLast();
 	}
+//	if (!pathList.isEmpty()) {
+//	    currentTemplateDialect = pathList.getLast().getDialect();
+//	    setFullNullSupport();
+//	}
 	if (alsoInclude && !includePathList.isEmpty()) includePathList.removeLast();
     }
 

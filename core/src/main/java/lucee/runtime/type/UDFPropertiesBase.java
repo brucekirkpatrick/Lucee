@@ -15,7 +15,7 @@ public abstract class UDFPropertiesBase implements UDFProperties {
 
     private Page page;
     private String id;
-    protected PageSource ps;
+    public PageSource ps;
     protected PageSource psOrg;
     protected int startLine;
     protected int endLine;

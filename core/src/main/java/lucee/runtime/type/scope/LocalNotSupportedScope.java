@@ -217,10 +217,6 @@ public final class LocalNotSupportedScope extends StructSupport implements Scope
 	return bind;
     }
 
-	@Override
-	public void setFunctionArgumentNames(Set functionArgumentNames) {
-
-	}
 
 	@Override
     public void setBind(boolean bind) {
