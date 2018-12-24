@@ -103,11 +103,7 @@ import lucee.runtime.type.comparator.ArrayOfStructComparator;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.it.ComponentIterator;
 import lucee.runtime.type.it.StringIterator;
-import lucee.runtime.type.scope.Argument;
-import lucee.runtime.type.scope.ArgumentImpl;
-import lucee.runtime.type.scope.ArgumentIntKey;
-import lucee.runtime.type.scope.Scope;
-import lucee.runtime.type.scope.Variables;
+import lucee.runtime.type.scope.*;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ComponentUtil;
 import lucee.runtime.type.util.KeyConstants;
@@ -583,7 +579,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
     public Object onMissingMethod(PageContext pc, int access, Member member, String name, Object _args[], Struct _namedArgs, boolean superAccess) throws PageException {
 	Member ommm = access == -1 ? getMember(pc, KeyConstants._onmissingmethod, false, superAccess) : getMember(access, KeyConstants._onmissingmethod, false, superAccess);
 	if (ommm instanceof UDF) {
-	    Argument args = new ArgumentImpl();
+	    Local args = new LocalImpl();// ((PageContextImpl) pc).getScopeFactory().getLocalInstance();
 	    if (_args != null) {
 		for (int i = 0; i < _args.length; i++) {
 		    args.setEL(ArgumentIntKey.init(i + 1), _args[i]);

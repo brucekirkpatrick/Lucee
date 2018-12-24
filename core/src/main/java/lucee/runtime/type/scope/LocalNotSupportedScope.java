@@ -19,6 +19,7 @@
 package lucee.runtime.type.scope;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
@@ -216,7 +217,12 @@ public final class LocalNotSupportedScope extends StructSupport implements Scope
 	return bind;
     }
 
-    @Override
+	@Override
+	public void setFunctionArgumentNames(Set functionArgumentNames) {
+
+	}
+
+	@Override
     public void setBind(boolean bind) {
 	this.bind = bind;
     }

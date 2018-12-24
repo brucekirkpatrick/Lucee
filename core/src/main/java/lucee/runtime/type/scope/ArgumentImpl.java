@@ -87,20 +87,20 @@ public final class ArgumentImpl extends ScopeSupport implements Argument, ArrayP
 	return this.bind;
     }
 
-    @Override
-    public Object getFunctionArgument(String key, Object defaultValue) {
-	return getFunctionArgument(KeyImpl.getInstance(key), defaultValue);
-    }
+//    @Override
+//    public Object getFunctionArgument(String key, Object defaultValue) {
+//	return getFunctionArgument(KeyImpl.getInstance(key), defaultValue);
+//    }
+//
+//    @Override
+//    public Object getFunctionArgument(Collection.Key key, Object defaultValue) {
+//	return super.get(key, defaultValue);
+//    }
 
-    @Override
-    public Object getFunctionArgument(Collection.Key key, Object defaultValue) {
-	return super.get(key, defaultValue);
-    }
-
-    @Override
-    public boolean containsFunctionArgumentKey(Key key) {
-	return super.containsKey(key);// functionArgumentNames!=null && functionArgumentNames.contains(key);
-    }
+//    @Override
+//    public boolean containsFunctionArgumentKey(Key key) {
+//	return super.containsKey(key);// functionArgumentNames!=null && functionArgumentNames.contains(key);
+//    }
 
     @Override
     public Object get(Collection.Key key, Object defaultValue) {

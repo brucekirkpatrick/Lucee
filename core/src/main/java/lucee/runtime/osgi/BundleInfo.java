@@ -46,7 +46,6 @@ import lucee.runtime.osgi.OSGiUtil.BundleDefinition;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
-import sun.security.action.GetPropertyAction;
 
 public class BundleInfo implements Serializable {
 

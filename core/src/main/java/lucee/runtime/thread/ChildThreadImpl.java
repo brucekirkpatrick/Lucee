@@ -183,23 +183,22 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 
 	    Undefined undefined = pc.us();
 
-	    Argument newArgs = new ArgumentThreadImpl((Struct) Duplicator.duplicate(attrs, false));
-	    LocalImpl newLocal = pc.getScopeFactory().getLocalInstance();
+	    LocalImpl newLocal = new LocalImpl();//pc.getScopeFactory().getLocalInstance();
 	    // Key[] keys = attrs.keys();
 	    Iterator<Entry<Key, Object>> it = attrs.entryIterator();
 	    Entry<Key, Object> e;
 	    while (it.hasNext()) {
-		e = it.next();
-		newArgs.setEL(e.getKey(), e.getValue());
+			e = it.next();
+		    newLocal.setEL(e.getKey(), e.getValue());
 	    }
 
-	    newLocal.setEL(KEY_ATTRIBUTES, newArgs);
+	    // this is for legacy to support attributes scope in a cfthread
+		newLocal.setEL(KEY_ATTRIBUTES, newLocal);
 
-	    Argument oldArgs = pc.argumentsScope();
 	    Local oldLocal = pc.localScope();
 
-	    int oldMode = undefined.setMode(Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
-	    pc.setFunctionScopes(newLocal, newArgs);
+//	    int oldMode = undefined.setMode(Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
+	    pc.setFunctionScopes(newLocal);
 
 	    try {
 		p.threadCall(pc, threadIndex);
@@ -220,10 +219,9 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 	    }
 	    finally {
 		completed = true;
-		pc.setFunctionScopes(oldLocal, oldArgs);
-		undefined.setMode(oldMode);
-		// pc.getScopeFactory().recycle(newArgs);
-		pc.getScopeFactory().recycle(pc, newLocal);
+		pc.setFunctionScopes(oldLocal);
+//		undefined.setMode(oldMode);
+//		pc.getScopeFactory().recycle(pc, newLocal);
 
 		if (pc.getHttpServletResponse() instanceof HttpServletResponseDummy) {
 		    HttpServletResponseDummy rsp = (HttpServletResponseDummy) pc.getHttpServletResponse();

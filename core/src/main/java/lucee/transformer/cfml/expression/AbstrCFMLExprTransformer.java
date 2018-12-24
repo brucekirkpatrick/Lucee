@@ -1629,7 +1629,7 @@ public abstract class AbstrCFMLExprTransformer {
     private Variable scope(Data data, Identifier id, Position line) throws TemplateException {
 	String idStr = id.getUpper();
 
-	if (idStr.equals("ARGUMENTS")) return data.factory.createVariable(Scope.SCOPE_ARGUMENTS, line, data.srcCode.getPosition());
+	if (idStr.equals("ARGUMENTS")) return data.factory.createVariable(Scope.SCOPE_LOCAL, line, data.srcCode.getPosition());
 	else if (idStr.equals("LOCAL")) return data.factory.createVariable(Scope.SCOPE_LOCAL, line, data.srcCode.getPosition());
 	else if (idStr.equals("VAR")) {
 	    Identifier _id = identifier(data, false, true);

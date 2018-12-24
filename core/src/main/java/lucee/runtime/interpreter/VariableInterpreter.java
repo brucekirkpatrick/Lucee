@@ -69,7 +69,7 @@ public final class VariableInterpreter {
 	case Scope.SCOPE_APPLICATION:
 	    return "application";
 	case Scope.SCOPE_ARGUMENTS:
-	    return "arguments";
+	    return "local";
 	case Scope.SCOPE_CGI:
 	    return "cgi";
 	case Scope.SCOPE_COOKIE:
@@ -190,20 +190,18 @@ public final class VariableInterpreter {
 		PageContextImpl pci = (PageContextImpl) pc;
 		Undefined undefined = (Undefined) scope;
 
-		boolean check = undefined.getCheckArguments();
 		Variables orgVar = pc.variablesScope();
-		Argument orgArgs = pc.argumentsScope();
 		Local orgLocal = pc.localScope();
 
 		pci.setVariablesScope(undefined.variablesScope());
-		if (check) pci.setFunctionScopes(undefined.localScope(), undefined.argumentsScope());
+		pci.setFunctionScopes(undefined.localScope());
 		try {
 		    if (value != CollectionUtil.NULL) return setVariable(pc, str, value);
 		    return getVariable(pc, str);
 		}
 		finally {
 		    pc.setVariablesScope(orgVar);
-		    if (check) pci.setFunctionScopes(orgLocal, orgArgs);
+		    pci.setFunctionScopes(orgLocal);
 		}
 	    }
 	}
@@ -213,7 +211,7 @@ public final class VariableInterpreter {
 
     /**
      * get a variable from page context
-     * 
+     *
      * @param pc Page Context
      * @param var variable string to get value to
      * @param defaultValue value returnded if variable was not found
@@ -282,7 +280,7 @@ public final class VariableInterpreter {
     /**
      * return a variable reference by string syntax ("scopename.key.key" -> "url.name") a variable
      * reference, references to variable, to modifed it, with global effect.
-     * 
+     *
      * @param pc
      * @param var variable name to get
      * @return variable as Reference
@@ -351,7 +349,7 @@ public final class VariableInterpreter {
 
     /**
      * sets a variable to page Context
-     * 
+     *
      * @param pc pagecontext of the new variable
      * @param var String of variable definition
      * @param value value to set to variable
@@ -385,7 +383,7 @@ public final class VariableInterpreter {
 
     /**
      * removes a variable eith matching name from page context
-     * 
+     *
      * @param pc
      * @param var
      * @return has removed or not
@@ -419,7 +417,7 @@ public final class VariableInterpreter {
 
     /**
      * check if a variable is defined in Page Context
-     * 
+     *
      * @param pc PageContext to check
      * @param var variable String
      * @return exists or not
@@ -472,33 +470,31 @@ public final class VariableInterpreter {
      * @return Variable Definition in a String List
      */
     private static StringList parse(PageContext pc, ParserString ps, boolean doLowerCase) {
-	String id = readIdentifier(ps, doLowerCase);
-	if (id == null) return null;
-	StringList list = new StringList(id);
-	CFMLExpressionInterpreter interpreter = null;
+	    String id = readIdentifier(ps, doLowerCase);
+	    if (id == null) return null;
+	    StringList list = new StringList(id);
+	    CFMLExpressionInterpreter interpreter = null;
 
-	while (true) {
-	    if (ps.forwardIfCurrent('.')) {
-		id = readIdentifier(ps, doLowerCase);
-		if (id == null) return null;
-		list.add(id);
+	    while (true) {
+		    if (ps.forwardIfCurrent('.')) {
+			    id = readIdentifier(ps, doLowerCase);
+			    if (id == null) return null;
+			    list.add(id);
+		    } else if (ps.forwardIfCurrent('[')) {
+			    if (interpreter == null) interpreter = new CFMLExpressionInterpreter(false);
+			    try {
+				    String part = Caster.toString(interpreter.interpretPart(pc, ps));
+				    list.add(part);
+			    } catch (PageException e) {
+				    return null;
+			    }
+			    if (!ps.forwardIfCurrent(']')) return null;
+			    ps.removeSpace();
+		    } else break;
 	    }
-	    else if (ps.forwardIfCurrent('[')) {
-		if (interpreter == null) interpreter = new CFMLExpressionInterpreter(false);
-		try {
-		    list.add(Caster.toString(interpreter.interpretPart(pc, ps)));
-		}
-		catch (PageException e) {
-		    return null;
-		}
-		if (!ps.forwardIfCurrent(']')) return null;
-		ps.removeSpace();
-	    }
-	    else break;
-	}
-	if (ps.isValidIndex()) return null;
-	list.reset();
-	return list;
+	    if (ps.isValidIndex()) return null;
+	    list.reset();
+	    return list;
     }
 
     public static StringList parse(String var, boolean doLowerCase) {
@@ -533,7 +529,7 @@ public final class VariableInterpreter {
 	// ignore scope only handles only reconize local,arguments as scope, the rest is ignored
 	if (ignoreScope) {
 	    if ('a' == c) {
-		if ("arguments".equals(type)) return Scope.SCOPE_ARGUMENTS;
+		if ("arguments".equals(type)) return Scope.SCOPE_LOCAL;
 	    }
 	    else if ('l' == c) {
 		if ("local".equals(type)) return Scope.SCOPE_LOCAL;// LLL
@@ -551,12 +547,12 @@ public final class VariableInterpreter {
 	    else if ('s' == c) {
 		if ("server".equals(type)) return Scope.SCOPE_SERVER;
 	    }
-	    return Scope.SCOPE_UNDEFINED;
+	    return Scope.SCOPE_LOCAL;
 	}
 
 	if ('a' == c) {
 	    if ("application".equals(type)) return Scope.SCOPE_APPLICATION;
-	    else if ("arguments".equals(type)) return Scope.SCOPE_ARGUMENTS;
+	    else if ("arguments".equals(type)) return Scope.SCOPE_LOCAL;
 	}
 	else if ('c' == c) {
 	    if ("cgi".equals(type)) return Scope.SCOPE_CGI;
@@ -587,13 +583,14 @@ public final class VariableInterpreter {
 	    if ("variables".equals(type)) return Scope.SCOPE_VARIABLES;
 	}
 	return Scope.SCOPE_UNDEFINED;
+
     }
 
     public static int scopeKey2Int(Collection.Key type) {
 	char c = type.lowerCharAt(0);
 	if ('a' == c) {
 	    if (KeyConstants._application.equalsIgnoreCase(type)) return Scope.SCOPE_APPLICATION;
-	    else if (KeyConstants._arguments.equalsIgnoreCase(type)) return Scope.SCOPE_ARGUMENTS;
+	    else if (KeyConstants._arguments.equalsIgnoreCase(type)) return Scope.SCOPE_LOCAL;
 	}
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(type)) return Scope.SCOPE_CGI;
@@ -666,7 +663,7 @@ public final class VariableInterpreter {
 	case Scope.SCOPE_APPLICATION:
 	    return pc.applicationScope();
 	case Scope.SCOPE_ARGUMENTS:
-	    return pc.argumentsScope();
+	    return pc.localScope();
 	case Scope.SCOPE_SESSION:
 	    return pc.sessionScope();
 	case Scope.SCOPE_SERVER:

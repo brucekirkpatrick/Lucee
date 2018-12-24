@@ -482,7 +482,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    scopes.setEL(KeyConstants._variables, pc.variablesScope());
 	    if (!(pc.localScope() instanceof LocalNotSupportedScope)) {
 		scopes.setEL(KeyConstants._local, pc.localScope());
-		scopes.setEL(KeyConstants._arguments, pc.argumentsScope());
+//		scopes.setEL(KeyConstants._arguments, pc.argumentsScope());
 	    }
 	    scopes.setEL(KeyConstants._cgi, pc.cgiScope());
 	    scopes.setEL(KeyConstants._form, pc.formScope());

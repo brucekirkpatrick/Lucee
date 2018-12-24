@@ -43,7 +43,6 @@ public final class CallerImpl extends StructSupport implements Caller {
     private PageContext pc;
     private Variables variablesScope;
     private Local localScope;
-    private Argument argumentsScope;
     private boolean checkArgs;
 
     @Override
@@ -52,7 +51,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 	char c = key.lowerCharAt(0);
 	if ('a' == c) {
 	    if (KeyConstants._application.equalsIgnoreCase(key)) return pc.applicationScope();
-	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return argumentsScope;// pc.argumentsScope();
+	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return localScope;// pc.argumentsScope();
 	}
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
@@ -87,15 +86,13 @@ public final class CallerImpl extends StructSupport implements Caller {
 	if (checkArgs) {
 	    o = localScope.get(key, _null);
 	    if (o != _null) return o;
-	    o = argumentsScope.get(key, _null);
-	    if (o != _null) return o;
 	}
 	o = variablesScope.get(key, _null);
 	if (o != _null) return o;
 
 	// get from cascaded scopes
-	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
-	if (o != _null) return o;
+//	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
+//	if (o != _null) return o;
 
 	/*
 	 * // get scopes if(key.equalsIgnoreCase(VARIABLES)) { return variablesScope;//new
@@ -118,7 +115,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 		}
 		catch (PageException e) {}
 	    }
-	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return argumentsScope;// pc.argumentsScope();
+	    else if (checkArgs && KeyConstants._arguments.equalsIgnoreCase(key)) return localScope;// pc.argumentsScope();
 	}
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
@@ -174,15 +171,13 @@ public final class CallerImpl extends StructSupport implements Caller {
 	if (checkArgs) {
 	    o = localScope.get(key, _null);
 	    if (o != _null) return o;
-	    o = argumentsScope.get(key, _null);
-	    if (o != _null) return o;
 	}
 	o = variablesScope.get(key, _null);
 	if (o != _null) return o;
 
 	// get from cascaded scopes
-	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
-	if (o != _null) return o;
+//	o = ((UndefinedImpl) pc.undefinedScope()).getCascading(key, _null);
+//	if (o != _null) return o;
 
 	return defaultValue;
     }
@@ -193,10 +188,9 @@ public final class CallerImpl extends StructSupport implements Caller {
     }
 
     @Override
-    public void setScope(Variables variablesScope, Local localScope, Argument argumentsScope, boolean checkArgs) {
+    public void setScope(Variables variablesScope, Local localScope, boolean checkArgs) {
 	this.variablesScope = variablesScope;
 	this.localScope = localScope;
-	this.argumentsScope = argumentsScope;
 	this.checkArgs = checkArgs;
     }
 
@@ -241,7 +235,6 @@ public final class CallerImpl extends StructSupport implements Caller {
     public Object set(Key key, Object value) throws PageException {
 	if (checkArgs) {
 	    if (localScope.containsKey(key)) return localScope.set(key, value);
-	    if (argumentsScope.containsKey(key)) return argumentsScope.set(key, value);
 	}
 	return variablesScope.set(key, value);
     }
@@ -250,7 +243,6 @@ public final class CallerImpl extends StructSupport implements Caller {
     public Object setEL(Key key, Object value) {
 	if (checkArgs) {
 	    if (localScope.containsKey(key)) return localScope.setEL(key, value);
-	    if (argumentsScope.containsKey(key)) return argumentsScope.setEL(key, value);
 	}
 	return variablesScope.setEL(key, value);
     }
@@ -381,7 +373,7 @@ public final class CallerImpl extends StructSupport implements Caller {
     }
 
     @Override
-    public Argument getArgumentsScope() {
-	return argumentsScope;
+    public Local getArgumentsScope() {
+	return localScope;
     }
 }

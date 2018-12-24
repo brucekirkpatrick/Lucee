@@ -31,7 +31,7 @@ public final class TypeScope {
     public final static Type[] SCOPES = new Type[ScopeSupport.SCOPE_COUNT];
     static {
 	SCOPES[Scope.SCOPE_APPLICATION] = Type.getType(Application.class);
-	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(lucee.runtime.type.scope.Argument.class);
+	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(lucee.runtime.type.scope.Local.class);
 	SCOPES[Scope.SCOPE_CGI] = Type.getType(CGI.class);
 	SCOPES[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
 	SCOPES[Scope.SCOPE_COOKIE] = Type.getType(Cookie.class);
@@ -52,7 +52,7 @@ public final class TypeScope {
     public final static Method[] METHODS = new Method[ScopeSupport.SCOPE_COUNT + 1];
     static {
 	METHODS[Scope.SCOPE_APPLICATION] = new Method("applicationScope", SCOPES[Scope.SCOPE_APPLICATION], new Type[] {});
-	METHODS[Scope.SCOPE_ARGUMENTS] = new Method("argumentsScope", SCOPES[Scope.SCOPE_ARGUMENTS], new Type[] {});
+	METHODS[Scope.SCOPE_ARGUMENTS] = new Method("argumentsScope", SCOPES[Scope.SCOPE_LOCAL], new Type[] {});
 	METHODS[Scope.SCOPE_CGI] = new Method("cgiScope", SCOPES[Scope.SCOPE_CGI], new Type[] {});
 	METHODS[Scope.SCOPE_CLIENT] = new Method("clientScope", SCOPES[Scope.SCOPE_CLIENT], new Type[] {});
 	METHODS[Scope.SCOPE_COOKIE] = new Method("cookieScope", SCOPES[Scope.SCOPE_COOKIE], new Type[] {});
@@ -70,7 +70,7 @@ public final class TypeScope {
 	METHODS[SCOPE_UNDEFINED_LOCAL] = new Method("usl", SCOPE, new Type[] {});
     }
     // Argument argumentsScope (boolean)
-    public final static Method METHOD_ARGUMENT_BIND = new Method("argumentsScope", SCOPES[Scope.SCOPE_ARGUMENTS], new Type[] { Types.BOOLEAN_VALUE });
+    public final static Method METHOD_ARGUMENT_BIND = new Method("argumentsScope", SCOPES[Scope.SCOPE_LOCAL], new Type[] { Types.BOOLEAN_VALUE });
     public final static Method METHOD_VAR_BIND = new Method("localScope", SCOPES[ScopeSupport.SCOPE_VAR], new Type[] { Types.BOOLEAN_VALUE });
 
     public final static Method METHOD_LOCAL_EL = new Method("localGet", Types.OBJECT, new Type[] { Types.BOOLEAN_VALUE, Types.OBJECT });
@@ -81,7 +81,7 @@ public final class TypeScope {
     // Type[]{Types.BOOLEAN_VALUE});
     // public final static Method METHOD_THIS_TOUCHX=new Method("thisTouch", Types.OBJECT,new Type[]{});
 
-    public final static Type SCOPE_ARGUMENT = Type.getType(Argument.class);
+    public final static Type SCOPE_ARGUMENT = Type.getType(Local.class);
 
     public static Type invokeScope(GeneratorAdapter adapter, int scope) {
 	if (scope == SCOPE_UNDEFINED_LOCAL) {

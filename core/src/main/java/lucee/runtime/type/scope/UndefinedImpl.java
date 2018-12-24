@@ -63,24 +63,23 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     private static final long serialVersionUID = -5626787508494702023L;
 
-    private Scope[] scopes;
+//    private Scope[] scopes;
     private QueryStackImpl qryStack = new QueryStackImpl();
-    private Variables variable;
-    private boolean allowImplicidQueryCall;
-    private boolean checkArguments;
+    private Variables variable=null;
+//    private boolean allowImplicidQueryCall;
+//    private boolean checkArguments=true;
 
-    private boolean localAlways;
+//    private boolean localAlways=true;
     private short type;
     private boolean isInit;
     private Local local;
-    private Argument argument;
     private PageContextImpl pc;
-    private boolean debug;
+//    private boolean debug;
 
     /**
      * constructor of the class
      * 
-     * @param pageContextImpl
+     * @param pc
      * @param type type of the undefined scope
      *            (ServletConfigImpl.SCOPE_STRICT;ServletConfigImpl.SCOPE_SMALL;ServletConfigImpl.SCOPE_STANDART)
      */
@@ -95,8 +94,8 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     }
 
     @Override
-    public Argument argumentsScope() {
-	return argument;
+    public Local argumentsScope() {
+	return local;
     }
 
     @Override
@@ -106,26 +105,22 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     @Override
     public int setMode(int mode) {
-	int m = Undefined.MODE_NO_LOCAL_AND_ARGUMENTS;
-	if (checkArguments) {
-	    if (localAlways) m = Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS;
-	    else m = Undefined.MODE_LOCAL_OR_ARGUMENTS_ONLY_WHEN_EXISTS;
-	}
-
-	checkArguments = mode != Undefined.MODE_NO_LOCAL_AND_ARGUMENTS;
-	localAlways = mode == Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS;
-	return m;
+    	return Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS;
+//	int m = Undefined.MODE_NO_LOCAL_AND_ARGUMENTS;
+//	if (checkArguments) {
+//	    if (localAlways) m = Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS;
+//	    else m = Undefined.MODE_LOCAL_OR_ARGUMENTS_ONLY_WHEN_EXISTS;
+//	}
+//
+//	checkArguments = mode != Undefined.MODE_NO_LOCAL_AND_ARGUMENTS;
+//	localAlways = mode == Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS;
+//	return m;
     }
 
-    @Override
-    public boolean getLocalAlways() {
-	return localAlways;
-    }
 
     @Override
-    public void setFunctionScopes(Local local, Argument argument) {
+    public void setFunctionScopes(Local local) {
 	this.local = local;
-	this.argument = argument;
     }
 
     @Override
@@ -152,60 +147,58 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     @Override
     public int size() {
-	return variable.size();
+	return local.size();
     }
 
     @Override
     public Collection.Key[] keys() {
-	return CollectionUtil.keys(variable);
+	return CollectionUtil.keys(local);
     }
 
     @Override
     public Object remove(Collection.Key key) throws PageException {
-	if (checkArguments && local.containsKey(key)) return local.remove(key);
-	return variable.remove(key);
+		return local.remove(key);
     }
 
     @Override
     public Object removeEL(Collection.Key key) {
-	if (checkArguments && local.containsKey(key)) return local.removeEL(key);
-	return variable.removeEL(key);
+		return local.removeEL(key);
     }
 
     @Override
     public void clear() {
-	variable.clear();
+	local.clear();
     }
 
     @Override
     public Object get(Collection.Key key) throws PageException {
 	Object _null = CollectionUtil.NULL;
 	Object rtn;
-	if (checkArguments) {
+//	if (checkArguments) {
 	    rtn = local.get(key, _null);
 	    if (rtn != _null) return rtn;
 
-	    rtn = argument.getFunctionArgument(key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return rtn;
-	    }
-	}
+//	    rtn = argument.getFunctionArgument(key, _null);
+//	    if (rtn != _null) {
+//		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
+//		return rtn;
+//	    }
+//	}
 
 	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getDataFromACollection(pc, key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
-		if (rtn == null && !NullSupportHelper.full(pc)) return "";
-		return rtn;
-	    }
-	}
+//	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
+//	    rtn = qryStack.getDataFromACollection(pc, key, _null);
+//	    if (rtn != _null) {
+//		if (debug) debugCascadedAccess(pc, "query", key);
+//		if (rtn == null && !NullSupportHelper.full(pc)) return "";
+//		return rtn;
+//	    }
+//	}
 
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
-	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
+//	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
 	    return rtn;
 	}
 
@@ -220,30 +213,19 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	}
 
 	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
+//		    return rtn;
+//		}
+//	    }
+//	}
 
 	if (pc.getConfig().debug()) throw new ExpressionException(ExceptionUtil.similarKeyMessage(this, key.getString(), "key", "keys", null, false));
 
 	throw new ExpressionException("variable [" + key.getString() + "] doesn't exist");
-    }
-
-    public static void debugCascadedAccess(PageContext pc, Variables var, Object value, Collection.Key key) {
-	if (var instanceof ComponentScope) {
-	    if (key.equals(KeyConstants._THIS) || key.equals(KeyConstants._SUPER) || key.equals(KeyConstants._STATIC)) return;
-	    if (value instanceof UDF) {
-		return;
-	    }
-	}
-
-	debugCascadedAccess(pc, "variables", key);
     }
 
     public static void debugCascadedAccess(PageContext pc, String name, Collection.Key key) {
@@ -261,18 +243,18 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	Struct sct = new StructImpl(Struct.TYPE_REGULAR);
 	Object _null = CollectionUtil.NULL;
 
-	if (checkArguments) {
+//	if (checkArguments) {
 	    rtn = local.get(key, _null);
 	    if (rtn != _null) sct.setEL(KeyConstants._local, rtn);
-	    rtn = argument.getFunctionArgument(key, _null);
-	    if (rtn != _null) sct.setEL(KeyConstants._arguments, rtn);
-	}
+//	    rtn = argument.getFunctionArgument(key, _null);
+//	    if (rtn != _null) sct.setEL(KeyConstants._arguments, rtn);
+//	}
 
 	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getColumnFromACollection(key);
-	    if (rtn != null) sct.setEL(KeyConstants._query, rtn);
-	}
+//	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
+//	    rtn = qryStack.getColumnFromACollection(key);
+//	    if (rtn != null) sct.setEL(KeyConstants._query, rtn);
+//	}
 
 	// variable
 	rtn = variable.get(key, _null);
@@ -287,14 +269,14 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	}
 
 	// get a scope value (only cfml is searching addional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    sct.setEL(KeyImpl.init(scopes[i].getTypeAsString()), rtn);
-		}
-	    }
-	}
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    sct.setEL(KeyImpl.init(scopes[i].getTypeAsString()), rtn);
+//		}
+//	    }
+//	}
 	return sct;
     }
 
@@ -308,18 +290,18 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	Object rtn = null;
 	Object _null = CollectionUtil.NULL;
 
-	if (checkArguments) {
+//	if (checkArguments) {
 	    rtn = local.get(key, _null);
 	    if (rtn != _null) return local;
-	    rtn = argument.getFunctionArgument(key, _null);
-	    if (rtn != _null) return argument;
-	}
+//	    rtn = argument.getFunctionArgument(key, _null);
+//	    if (rtn != _null) return argument;
+//	}
 
 	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    QueryColumn qc = qryStack.getColumnFromACollection(key);
-	    if (qc != null) return (Query) qc.getParent();
-	}
+//	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
+//	    QueryColumn qc = qryStack.getColumnFromACollection(key);
+//	    if (qc != null) return (Query) qc.getParent();
+//	}
 
 	// variable
 	rtn = variable.get(key, _null);
@@ -334,32 +316,31 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	}
 
 	// get a scope value (only cfml is searcing additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    return scopes[i];
-		}
-	    }
-	}
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    return scopes[i];
+//		}
+//	    }
+//	}
 	return defaultValue;
     }
 
     /**
      * return a list of String with the scope names
-     * 
-     * @param key
+     *
      * @return
      */
     @Override
     public List<String> getScopeNames() {
 	List<String> scopeNames = new ArrayList<String>();
 
-	if (checkArguments) {
+//	if (checkArguments) {
 	    scopeNames.add("local");
-	    scopeNames.add("arguments");
-	}
-	scopeNames.add("variables");
+//	    scopeNames.add("arguments");
+//	}
+//	scopeNames.add("variables");
 
 	// thread scopes
 	if (pc.hasFamily()) {
@@ -368,9 +349,9 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 		scopeNames.add(i, names[i]);
 	}
 
-	for (int i = 0; i < scopes.length; i++) {
-	    scopeNames.add((scopes[i]).getTypeAsString());
-	}
+//	for (int i = 0; i < scopes.length; i++) {
+//	    scopeNames.add((scopes[i]).getTypeAsString());
+//	}
 	return scopeNames;
     }
 
@@ -379,29 +360,29 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	Object rtn = null;
 	Object _null = CollectionUtil.NULL;
 
-	if (checkArguments) {
+//	if (checkArguments) {
 	    rtn = local.get(key, _null);
 	    if (rtn != _null) return rtn;
-	    rtn = argument.getFunctionArgument(key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return rtn;
-	    }
-	}
+//	    rtn = argument.getFunctionArgument(key, _null);
+//	    if (rtn != _null) {
+//		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
+//		return rtn;
+//	    }
+//	}
 
 	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getColumnFromACollection(key);
-	    if (rtn != null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
-		return rtn;
-	    }
-	}
+//	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
+//	    rtn = qryStack.getColumnFromACollection(key);
+//	    if (rtn != null) {
+//		if (debug) debugCascadedAccess(pc, "query", key);
+//		return rtn;
+//	    }
+//	}
 
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
-	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
+//	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
 	    return rtn;
 	}
 
@@ -415,15 +396,15 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	}
 
 	// get a scope value (only CFML is searching addioanl scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
+//		    return rtn;
+//		}
+//	    }
+//	}
 	throw new ExpressionException("variable [" + key.getString() + "] doesn't exist");
     }
 
@@ -432,30 +413,30 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	Object rtn = null;
 	Object _null = CollectionUtil.NULL;
 
-	if (checkArguments) {
+//	if (checkArguments) {
 	    rtn = local.get(key, _null);
 	    if (rtn != _null) return rtn;
 
-	    rtn = argument.getFunctionArgument(key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return rtn;
-	    }
-	}
+//	    rtn = argument.getFunctionArgument(key, _null);
+//	    if (rtn != _null) {
+//		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
+//		return rtn;
+//	    }
+//	}
 
 	// get data from queries
-	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
-	    rtn = qryStack.getDataFromACollection(pc, key, _null);
-	    if (rtn != _null) {
-		if (debug) debugCascadedAccess(pc, "query", key);
-		return rtn;
-	    }
-	}
+//	if (allowImplicidQueryCall && pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !qryStack.isEmpty()) {
+//	    rtn = qryStack.getDataFromACollection(pc, key, _null);
+//	    if (rtn != _null) {
+//		if (debug) debugCascadedAccess(pc, "query", key);
+//		return rtn;
+//	    }
+//	}
 
 	// variable
 	rtn = variable.get(key, _null);
 	if (rtn != _null) {
-	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
+//	    if (debug && checkArguments) debugCascadedAccess(pc, variable, rtn, key);
 	    return rtn;
 	}
 
@@ -469,67 +450,69 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 	}
 
 	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
-		    return rtn;
-		}
-	    }
-	}
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    if (debug) debugCascadedAccess(pc, scopes[i].getTypeAsString(), key);
+//		    return rtn;
+//		}
+//	    }
+//	}
 
 	return defaultValue;
     }
 
-    @Override
-    public Object getCascading(Collection.Key key) {
-	throw new RuntimeException("this method is no longer supported, use getCascading(Collection.Key key, Object defaultValue) instead");
-    }
-
-    @Override
-    public Object getCascading(Collection.Key key, Object defaultValue) {
-	Object rtn;
+//    @Override
+//    public Object getCascading(Collection.Key key) {
+//	throw new RuntimeException("this method is no longer supported, use getCascading(Collection.Key key, Object defaultValue) instead");
+//    }
+//
+//    @Override
+//    public Object getCascading(Collection.Key key, Object defaultValue) {
+//	Object rtn;
 
 	// get a scope value (only CFML is searching additional scopes)
-	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
-	    Object _null = CollectionUtil.NULL;
-	    for (int i = 0; i < scopes.length; i++) {
-		rtn = scopes[i].get(key, _null);
-		if (rtn != _null) {
-		    return rtn;
-		}
-	    }
-	}
-	return defaultValue;
-    }
+//	if (pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML) {
+//	    Object _null = CollectionUtil.NULL;
+//	    for (int i = 0; i < scopes.length; i++) {
+//		rtn = scopes[i].get(key, _null);
+//		if (rtn != _null) {
+//		    return rtn;
+//		}
+//	    }
+//	}
+//	return defaultValue;
+//    }
 
     @Override
     public Object setEL(Collection.Key key, Object value) {
-	if (checkArguments) {
-	    if (localAlways || local.containsKey(key)) return local.setEL(key, value);
-	    if (argument.containsFunctionArgumentKey(key)) {
-		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return argument.setEL(key, value);
-	    }
-	}
-
-	if (debug && checkArguments) debugCascadedAccess(pc, variable.getTypeAsString(), key);
-	return variable.setEL(key, value);
+	    return local.setEL(key, value);
+//	if (checkArguments) {
+//	    if (localAlways || local.containsKey(key)) return local.setEL(key, value);
+//	    if (argument.containsFunctionArgumentKey(key)) {
+//		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
+//		return argument.setEL(key, value);
+//	    }
+//	}
+//
+//	if (debug && checkArguments) debugCascadedAccess(pc, variable.getTypeAsString(), key);
+//	return variable.setEL(key, value);
     }
 
     @Override
     public Object set(Collection.Key key, Object value) throws PageException {
-	if (checkArguments) {
-	    if (localAlways || local.containsKey(key)) return local.set(key, value);
-	    if (argument.containsFunctionArgumentKey(key)) {
-		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
-		return argument.set(key, value);
-	    }
-
-	}
-	if (debug && checkArguments) debugCascadedAccess(pc, variable.getTypeAsString(), key);
-	return variable.set(key, value);
+	    return local.set(key, value);
+//	if (checkArguments) {
+//	    if (localAlways || local.containsKey(key)) return local.set(key, value);
+//	    if (argument.containsFunctionArgumentKey(key)) {
+//		if (debug) debugCascadedAccess(pc, argument.getTypeAsString(), key);
+//		return argument.set(key, value);
+//	    }
+//
+//	}
+//	if (debug && checkArguments) debugCascadedAccess(pc, variable.getTypeAsString(), key);
+//	return variable.set(key, value);
     }
 
     @Override
@@ -566,92 +549,92 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     public void initialize(PageContext pc) {
 	// if(isInitalized()) return;
 	isInit = true;
-	variable = pc.variablesScope();
-	argument = pc.argumentsScope();
+//	variable = pc.variablesScope();
+//	argument = pc.argumentsScope();
 	local = pc.localScope();
-	allowImplicidQueryCall = pc.getConfig().allowImplicidQueryCall();
-	type = ((PageContextImpl) pc).getScopeCascadingType();
-	debug = pc.getConfig().debug() && ((ConfigImpl) pc.getConfig()).hasDebugOptions(ConfigImpl.DEBUG_IMPLICIT_ACCESS);
+//	allowImplicidQueryCall = pc.getConfig().allowImplicidQueryCall();
+	type = Config.SCOPE_STRICT;//((PageContextImpl) pc).getScopeCascadingType();
+//	debug = pc.getConfig().debug() && ((ConfigImpl) pc.getConfig()).hasDebugOptions(ConfigImpl.DEBUG_IMPLICIT_ACCESS);
 
 	// Strict
-	if (type == Config.SCOPE_STRICT) {
+//	if (type == Config.SCOPE_STRICT) {
 	    // print.ln("strict");
-	    scopes = new Scope[] {};
-	}
+//	    scopes = new Scope[] {};
+//	}
 	// small
-	else if (type == Config.SCOPE_SMALL) {
-	    // print.ln("small");
-	    if (pc.getConfig().mergeFormAndURL()) {
-		scopes = new Scope[] { pc.formScope() };
-	    }
-	    else {
-		scopes = new Scope[] { pc.urlScope(), pc.formScope() };
-	    }
-	}
-	// standard
-	else {
-	    reinitialize(pc);
-	}
+//	else if (type == Config.SCOPE_SMALL) {
+//	    // print.ln("small");
+//	    if (pc.getConfig().mergeFormAndURL()) {
+//		scopes = new Scope[] { pc.formScope() };
+//	    }
+//	    else {
+//		scopes = new Scope[] { pc.urlScope(), pc.formScope() };
+//	    }
+//	}
+//	// standard
+//	else {
+//	    reinitialize(pc);
+//	}
 
     }
 
     @Override
     public void reinitialize(PageContext pc) {
-	if (type != Config.SCOPE_STANDARD) return;
-	Client cs = pc.clientScopeEL();
-	// print.ln("standard");
-	if (pc.getConfig().mergeFormAndURL()) {
-	    scopes = new Scope[cs == null ? 3 : 4];
-	    scopes[0] = pc.cgiScope();
-	    scopes[1] = pc.formScope();
-	    scopes[2] = pc.cookieScope();
-	    if (cs != null) scopes[3] = cs;
-	}
-	else {
-	    scopes = new Scope[cs == null ? 4 : 5];
-	    scopes[0] = pc.cgiScope();
-	    scopes[1] = pc.urlScope();
-	    scopes[2] = pc.formScope();
-	    scopes[3] = pc.cookieScope();
-	    if (cs != null) scopes[4] = cs;
-	}
+//	if (type != Config.SCOPE_STANDARD) return;
+//	Client cs = pc.clientScopeEL();
+//	// print.ln("standard");
+//	if (pc.getConfig().mergeFormAndURL()) {
+//	    scopes = new Scope[cs == null ? 3 : 4];
+//	    scopes[0] = pc.cgiScope();
+//	    scopes[1] = pc.formScope();
+//	    scopes[2] = pc.cookieScope();
+//	    if (cs != null) scopes[3] = cs;
+//	}
+//	else {
+//	    scopes = new Scope[cs == null ? 4 : 5];
+//	    scopes[0] = pc.cgiScope();
+//	    scopes[1] = pc.urlScope();
+//	    scopes[2] = pc.formScope();
+//	    scopes[3] = pc.cookieScope();
+//	    if (cs != null) scopes[4] = cs;
+//	}
     }
 
     @Override
     public final void release(PageContext pc) {
 	isInit = false;
-	argument = null;
+//	argument = null;
 	local = null;
-	variable = null;
-	scopes = null;
-	checkArguments = false;
-	localAlways = false;
-	if (allowImplicidQueryCall) qryStack.clear();
+//	variable = null;
+//	scopes = null;
+//	checkArguments = false;
+//	localAlways = false;
+//	if (allowImplicidQueryCall) qryStack.clear();
     }
 
     @Override
     public Collection duplicate(boolean deepCopy) {
 	UndefinedImpl dupl = new UndefinedImpl(pc, type);
-	dupl.allowImplicidQueryCall = allowImplicidQueryCall;
-	dupl.checkArguments = checkArguments;
-	dupl.argument = deepCopy ? (Argument) Duplicator.duplicate(argument, deepCopy) : argument;
+//	dupl.allowImplicidQueryCall = allowImplicidQueryCall;
+//	dupl.checkArguments = checkArguments;
+//	dupl.argument = deepCopy ? (Argument) Duplicator.duplicate(argument, deepCopy) : argument;
 	dupl.isInit = isInit;
 	dupl.local = deepCopy ? (Local) Duplicator.duplicate(local, deepCopy) : local;
-	dupl.localAlways = localAlways;
+//	dupl.localAlways = localAlways;
 	dupl.qryStack = (deepCopy ? (QueryStackImpl) Duplicator.duplicate(qryStack, deepCopy) : qryStack);
 
-	dupl.variable = deepCopy ? (Variables) Duplicator.duplicate(variable, deepCopy) : variable;
+//	dupl.variable = deepCopy ? (Variables) Duplicator.duplicate(variable, deepCopy) : variable;
 	dupl.pc = pc;
-	dupl.debug = debug;
+//	dupl.debug = debug;
 
 	// scopes
-	if (deepCopy) {
-	    dupl.scopes = new Scope[scopes.length];
-	    for (int i = 0; i < scopes.length; i++) {
-		dupl.scopes[i] = (Scope) Duplicator.duplicate(scopes[i], deepCopy);
-	    }
-	}
-	else dupl.scopes = scopes;
+//	if (deepCopy) {
+//	    dupl.scopes = new Scope[scopes.length];
+//	    for (int i = 0; i < scopes.length; i++) {
+//		dupl.scopes[i] = (Scope) Duplicator.duplicate(scopes[i], deepCopy);
+//	    }
+//	}
+//	else dupl.scopes = scopes;
 
 	return dupl;
     }
@@ -740,7 +723,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
      * @return the allowImplicidQueryCall
      */
     public boolean isAllowImplicidQueryCall() {
-	return allowImplicidQueryCall;
+	return false;
     }
 
     /**
@@ -748,9 +731,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
      */
     @Override
     public boolean setAllowImplicidQueryCall(boolean allowImplicidQueryCall) {
-	boolean old = this.allowImplicidQueryCall;
-	this.allowImplicidQueryCall = allowImplicidQueryCall;
-	return old;
+	return false;
     }
 
     /**
@@ -758,7 +739,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
      */
     @Override
     public boolean getCheckArguments() {
-	return checkArguments;
+	return true;
     }
 
     @Override

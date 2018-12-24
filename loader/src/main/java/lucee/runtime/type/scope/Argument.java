@@ -58,12 +58,12 @@ public interface Argument extends Scope, Array, BindScope {
 
     public static final Object NULL = null;
 
-    public Object getFunctionArgument(String key, Object defaultValue);
-
-    public Object getFunctionArgument(Collection.Key key, Object defaultValue);
+//    public Object getFunctionArgument(String key, Object defaultValue);
+//
+//    public Object getFunctionArgument(Collection.Key key, Object defaultValue);
 
     public void setFunctionArgumentNames(Set<Collection.Key> functionArgumentNames);
 
-    public boolean containsFunctionArgumentKey(Key key);
+//    public boolean containsFunctionArgumentKey(Key key);
 
 }

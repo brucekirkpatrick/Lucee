@@ -18,6 +18,19 @@
  **/
 package lucee.runtime.type.scope;
 
-public interface Local extends Scope, BindScope {
+import java.util.Set;
 
+public interface Local extends Scope, BindScope {
+	/**
+	 * sets if scope is bound to a other variable for using outside of a udf
+	 *
+	 * @param bind
+	 */
+	public abstract void setBind(boolean bind);
+
+	/**
+	 * @return returns if scope is bound to a other variable for using outside of a udf
+	 */
+	public abstract boolean isBind();
+	public void setFunctionArgumentNames(Set functionArgumentNames);
 }

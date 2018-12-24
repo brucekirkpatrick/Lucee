@@ -240,9 +240,8 @@ public final class PageContextImpl extends PageContext {
     private RequestImpl request = new RequestImpl();
     private CGIImplReadOnly cgiR = new CGIImplReadOnly();
     private CGIImpl cgiRW = new CGIImpl();
-    private Argument argument = new ArgumentImpl();
-    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
-    private Local local = localUnsupportedScope;
+//    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
+    private Local local;
     private Session session;
     private Server server;
     private Jetendo jetendo;
@@ -457,7 +456,7 @@ public final class PageContextImpl extends PageContext {
 	    variables = variablesRoot;
 	}
 	request.initialize(this);
-
+	local=new LocalImpl();//getScopeFactory().getLocalInstance();
 
 	if (config.mergeFormAndURL()) {
 	    url = urlForm;
@@ -565,8 +564,7 @@ public final class PageContextImpl extends PageContext {
 	}
 	cgiR.release(this);
 	cgiRW.release(this);
-	argument.release(this);
-	local = localUnsupportedScope;
+	local = null;
 
 	cookie.release(this);
 	application = null;// not needed at the moment -> application.releaseAfterRequest();
@@ -1125,7 +1123,7 @@ public final class PageContextImpl extends PageContext {
 	case Scope.SCOPE_APPLICATION:
 	    return applicationScope();
 	case Scope.SCOPE_ARGUMENTS:
-	    return argumentsScope();
+	    return localScope();
 	case Scope.SCOPE_SESSION:
 	    return sessionScope();
 	case Scope.SCOPE_SERVER:
@@ -1148,7 +1146,7 @@ public final class PageContextImpl extends PageContext {
     public Scope scope(String strScope, Scope defaultValue) throws PageException {
 	if (strScope == null) return defaultValue;
 	if (ignoreScopes()) {
-	    if ("arguments".equals(strScope)) return argumentsScope();
+	    if ("arguments".equals(strScope)) return localScope();
 	    if ("local".equals(strScope)) return localScope();
 	    if ("request".equals(strScope)) return requestScope();
 	    if ("variables".equals(strScope)) return variablesScope();
@@ -1164,7 +1162,7 @@ public final class PageContextImpl extends PageContext {
 	if ("request".equals(strScope)) return requestScope();
 	if ("cgi".equals(strScope)) return cgiScope();
 	if ("application".equals(strScope)) return applicationScope();
-	if ("arguments".equals(strScope)) return argumentsScope();
+	if ("arguments".equals(strScope)) return localScope();
 	if ("session".equals(strScope)) return sessionScope();
 	if ("server".equals(strScope)) return serverScope();
 	if ("jetendo".equals(strScope)) return jetendoScope();
@@ -1193,8 +1191,9 @@ public final class PageContextImpl extends PageContext {
 
     public Scope usl() {
 	if (!undefined.isInitalized()) undefined.initialize(this);
-	if (undefined.getCheckArguments()) return undefined.localScope();
-	return undefined;
+	return undefined.localScope();
+//	if (undefined.getCheckArguments()) return undefined.localScope();
+//	return undefined;
     }
 
     @Override
@@ -1250,15 +1249,15 @@ public final class PageContextImpl extends PageContext {
     }
 
     @Override
-    public Argument argumentsScope() {
-	return argument;
+    public Local argumentsScope() {
+	return local;
     }
 
     @Override
-    public Argument argumentsScope(boolean bind) {
+    public Local argumentsScope(boolean bind) {
 	// Argument a=argumentsScope();
-	if (bind) argument.setBind(true);
-	return argument;
+	if (bind) local.setBind(true);
+	return local;
     }
 
     @Override
@@ -1282,10 +1281,10 @@ public final class PageContextImpl extends PageContext {
     }
 
     public Object localGet(boolean bind, Object defaultValue) {
-	if (undefined.getCheckArguments()) {
+//	if (undefined.getCheckArguments()) {
 	    return localScope(bind);
-	}
-	return undefinedScope().get(KeyConstants._local, defaultValue);
+//	}
+//	return undefinedScope().get(KeyConstants._local, defaultValue);
     }
 
     @Override
@@ -1366,13 +1365,11 @@ public final class PageContextImpl extends PageContext {
 
     /**
      * @param local sets the current local scope
-     * @param argument sets the current argument scope
      */
     @Override
-    public void setFunctionScopes(Local local, Argument argument) {
-	this.argument = argument;
+    public void setFunctionScopes(Local local) {
 	this.local = local;
-	undefined.setFunctionScopes(local, argument);
+	undefined.setFunctionScopes(local);
     }
 
     @Override

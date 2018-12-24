@@ -305,8 +305,8 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
 	QueryStack cs = null;
 	Undefined undefined = pageContext.undefinedScope();
 	int oldMode = undefined.setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
-	if (oldMode != Undefined.MODE_NO_LOCAL_AND_ARGUMENTS) callerScope.setScope(var, pageContext.localScope(), pageContext.argumentsScope(), true);
-	else callerScope.setScope(var, null, null, false);
+	if (oldMode != Undefined.MODE_NO_LOCAL_AND_ARGUMENTS) callerScope.setScope(var, pageContext.localScope(), true);
+	else callerScope.setScope(var, null, false);
 
 	if (pageContext.getConfig().allowImplicidQueryCall()) {
 	    cs = undefined.getQueryStack();
@@ -393,8 +393,8 @@ public class CFTag extends BodyTagTryCatchFinallyImpl implements DynamicAttribut
     private void setCaller(PageContext pageContext, Struct args) throws PageException {
 	callerScope.initialize(pageContext);
 	boolean checkAgs = pageContext.undefinedScope().getCheckArguments();
-	if (checkAgs) callerScope.setScope(pageContext.variablesScope(), pageContext.localScope(), pageContext.argumentsScope(), true);
-	else callerScope.setScope(pageContext.variablesScope(), null, null, false);
+	if (checkAgs) callerScope.setScope(pageContext.variablesScope(), pageContext.localScope(), true);
+	else callerScope.setScope(pageContext.variablesScope(), null, false);
 
 	args.set(KeyConstants._CALLER, callerScope);
 

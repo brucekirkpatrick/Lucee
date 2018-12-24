@@ -110,7 +110,7 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
     /**
      * @return arguments scope
      */
-    public abstract Argument argumentsScope();
+    public abstract Local argumentsScope();
 
     /**
      * return the argument scope
@@ -118,7 +118,7 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      * @param bind indicate that the Argument Scope is bound for use outside of the udf
      * @return Argument Scope
      */
-    public abstract Argument argumentsScope(boolean bind);
+    public abstract Local argumentsScope(boolean bind);
 
     /**
      * @return arguments scope
@@ -141,7 +141,7 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract Session sessionScope() throws PageException;
 
-    public abstract void setFunctionScopes(Local local, Argument argument);
+    public abstract void setFunctionScopes(Local local);
 
     public abstract Jetendo jetendoScope();
     /**

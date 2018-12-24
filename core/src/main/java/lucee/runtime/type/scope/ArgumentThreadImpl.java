@@ -42,35 +42,31 @@ import lucee.runtime.type.util.MemberUtil;
 public final class ArgumentThreadImpl implements Argument {
 
     private final Struct sct;
+	private Set functionArgumentNames;
 
     public ArgumentThreadImpl(Struct sct) {
 	this.sct = sct;
     }
 
-    @Override
-    public Object getFunctionArgument(String key, Object defaultValue) {
-	return sct.get(key, defaultValue);
-    }
+//    @Override
+//    public Object getFunctionArgument(String key, Object defaultValue) {
+//	return sct.get(key, defaultValue);
+//    }
+//
+//    @Override
+//    public Object getFunctionArgument(Key key, Object defaultValue) {
+//	return sct.get(key, defaultValue);
+//    }
 
-    @Override
-    public Object getFunctionArgument(Key key, Object defaultValue) {
-	return sct.get(key, defaultValue);
-    }
-
-    @Override
-    public boolean containsFunctionArgumentKey(Key key) {
-	return sct.containsKey(key);
-    }
+//    @Override
+//    public boolean containsFunctionArgumentKey(Key key) {
+//	return sct.containsKey(key);
+//    }
 
     @Override
     public Object setArgument(Object obj) throws PageException {
 	// TODO Auto-generated method stub
 	return null;
-    }
-
-    @Override
-    public void setFunctionArgumentNames(Set functionArgumentNames) {
-
     }
 
     @Override
@@ -476,4 +472,8 @@ public final class ArgumentThreadImpl implements Argument {
 	return keysAsStringIterator();
     }
 
+	@Override
+	public void setFunctionArgumentNames(Set functionArgumentNames) {// future add to interface
+		this.functionArgumentNames = functionArgumentNames;
+	}
 }

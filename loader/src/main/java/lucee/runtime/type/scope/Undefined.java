@@ -41,7 +41,7 @@ public interface Undefined extends Scope {
      */
     public abstract Local localScope();
 
-    public Argument argumentsScope();
+    public Local argumentsScope();
 
     public Variables variablesScope();
 
@@ -53,15 +53,13 @@ public interface Undefined extends Scope {
      */
     public abstract int setMode(int mode);
 
-    public boolean getLocalAlways();
 
     /**
      * sets the functions scopes
      * 
      * @param local local scope
-     * @param argument argument scope
      */
-    public abstract void setFunctionScopes(Local local, Argument argument);
+    public abstract void setFunctionScopes(Local local);
 
     /**
      * @return returns current collection stack
@@ -117,8 +115,8 @@ public interface Undefined extends Scope {
      * @deprecated use instead
      * @see #getCascading(lucee.runtime.type.Collection.Key, Object)
      */
-    @Deprecated
-    public abstract Object getCascading(Collection.Key key);
+//    @Deprecated
+//    public abstract Object getCascading(Collection.Key key);
 
     /**
      * gets a key from all cascaded scopes, but not from variables scope
@@ -126,7 +124,7 @@ public interface Undefined extends Scope {
      * @param key key to get
      * @return matching value or null
      */
-    public Object getCascading(Collection.Key key, Object defaultValue);
+//    public Object getCascading(Collection.Key key, Object defaultValue);
 
     /**
      * change the variable scope

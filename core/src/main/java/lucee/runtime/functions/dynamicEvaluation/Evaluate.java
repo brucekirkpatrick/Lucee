@@ -58,7 +58,6 @@ public final class Evaluate implements Function {
 		CallerImpl ci = ((CallerImpl) objs[objs.length - 1]);
 		var = ci.getVariablesScope();
 		lcl = ci.getLocalScope();
-		arg = ci.getArgumentsScope();
 	    }
 
 	    if (var != null) {
@@ -66,15 +65,14 @@ public final class Evaluate implements Function {
 		pc.setVariablesScope(var);
 		if (lcl != null && !(lcl instanceof LocalNotSupportedScope)) {
 		    cLcl = pc.localScope();
-		    cArg = pc.argumentsScope();
-		    pc.setFunctionScopes(lcl, arg);
+		    pc.setFunctionScopes(lcl);
 		}
 		try {
 		    return _call(pc, objs, objs.length - 1, preciseMath);
 		}
 		finally {
 		    pc.setVariablesScope(cVar);
-		    if (cLcl != null) pc.setFunctionScopes(cLcl, cArg);
+		    if (cLcl != null) pc.setFunctionScopes(cLcl);
 		}
 	    }
 
@@ -85,17 +83,16 @@ public final class Evaluate implements Function {
 
 		boolean check = undefined.getCheckArguments();
 		Variables orgVar = pc.variablesScope();
-		Argument orgArgs = pc.argumentsScope();
 		Local orgLocal = pc.localScope();
 
 		pci.setVariablesScope(undefined.variablesScope());
-		if (check) pci.setFunctionScopes(undefined.localScope(), undefined.argumentsScope());
+		if (check) pci.setFunctionScopes(undefined.localScope());
 		try {
 		    return _call(pc, objs, objs.length - 1, preciseMath);
 		}
 		finally {
 		    pc.setVariablesScope(orgVar);
-		    if (check) pci.setFunctionScopes(orgLocal, orgArgs);
+		    if (check) pci.setFunctionScopes(orgLocal);
 		}
 
 	    }

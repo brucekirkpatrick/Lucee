@@ -141,11 +141,11 @@ public class UDFUtil {
 		    i++;
 		    k = it.next();
 		    if (funcArgs.length > i && k instanceof ArgumentIntKey) {
-			if (!values.containsKey(funcArgs[i].getName())) values.setEL(funcArgs[i].getName(), argColl.get(k, Argument.NULL));
-			else values.setEL(k, argColl.get(k, Argument.NULL));
+			if (!values.containsKey(funcArgs[i].getName())) values.setEL(funcArgs[i].getName(), argColl.get(k, null));
+			else values.setEL(k, argColl.get(k, null));
 		    }
 		    else if (!values.containsKey(k)) {
-			values.setEL(k, argColl.get(k, Argument.NULL));
+			values.setEL(k, argColl.get(k, null));
 		    }
 		}
 	    }
@@ -157,7 +157,7 @@ public class UDFUtil {
 		while (it.hasNext()) {
 		    k = it.next();
 		    if (!values.containsKey(k)) {
-			values.setEL(k, argColl.get(k, Argument.NULL));
+			values.setEL(k, argColl.get(k, null));
 		    }
 		}
 	    }

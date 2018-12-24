@@ -77,7 +77,6 @@ public class CFFunction {
 	    cs = new StructImpl();
 	    if (pc.undefinedScope().getCheckArguments()) {
 		cs.set(KeyConstants._local, pc.localScope().duplicate(false));
-		cs.set(KeyConstants._arguments, pc.argumentsScope().duplicate(false));
 	    }
 	}
 

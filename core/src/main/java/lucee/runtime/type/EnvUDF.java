@@ -45,7 +45,7 @@ public abstract class EnvUDF extends UDFImpl {
 	super(properties);
 	PageContext pc = ThreadLocalPageContext.get();
 	if (pc.undefinedScope().getCheckArguments()) {
-	    this.variables = new ClosureScope(pc, pc.argumentsScope(), pc.localScope(), pc.variablesScope());
+	    this.variables = new ClosureScope(pc, pc.localScope(), pc.variablesScope());
 	}
 	else {
 	    this.variables = pc.variablesScope();

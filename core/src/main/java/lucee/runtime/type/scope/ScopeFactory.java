@@ -26,24 +26,24 @@ import lucee.runtime.PageContext;
 public final class ScopeFactory {
 
     int argumentCounter = 0;
-    final Argument[] arguments = new Argument[] { new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(),
-	    new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(),
-	    new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl() };
+    //final Argument[] arguments = new Argument[] { new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(),
+//	    new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(),
+//	    new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl(), new ArgumentImpl() };
 
     int localCounter = 0;
-    LocalImpl[] locals = new LocalImpl[] { new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(),
-	    new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(),
-	    new LocalImpl() };
+    LocalImpl[] locals = new LocalImpl[] {};// new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(),
+//	    new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(), new LocalImpl(),
+//	    new LocalImpl() };
 
     /**
      * @return returns a Argument scope
      */
-    public Argument getArgumentInstance() {
-	if (argumentCounter < arguments.length) {
-	    return arguments[argumentCounter++];
-	}
-	return new ArgumentImpl();
-    }
+//    public Argument getArgumentInstance() {
+//	if (argumentCounter < arguments.length) {
+//	    return arguments[argumentCounter++];
+//	}
+//	return new ArgumentImpl();
+//    }
 
     /**
      * @return retruns a Local Instance
@@ -55,14 +55,6 @@ public final class ScopeFactory {
 	return new LocalImpl();
     }
 
-    /**
-     * @param argument recycle a Argument scope for reuse
-     */
-    public void recycle(PageContext pc, Argument argument) {
-	if (argumentCounter <= 0 || argument.isBind()) return;
-	argument.release(pc);
-	arguments[--argumentCounter] = argument;
-    }
 
     /**
      * @param local recycle a Local scope for reuse
@@ -84,7 +76,7 @@ public final class ScopeFactory {
 	case Scope.SCOPE_APPLICATION:
 	    return "application";
 	case Scope.SCOPE_ARGUMENTS:
-	    return "arguments";
+	    return "local";
 	case Scope.SCOPE_CALLER:
 	    return "caller";
 	case Scope.SCOPE_CGI:

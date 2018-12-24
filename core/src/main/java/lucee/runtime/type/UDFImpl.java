@@ -117,7 +117,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	throw new UDFCasterException(this, arg, value, index);
     }
 
-    private void defineArguments(PageContext pc, FunctionArgument[] funcArgs, Object[] args, Argument newArgs) throws PageException {
+    private void defineArguments(PageContext pc, FunctionArgument[] funcArgs, Object[] args, Local newArgs) throws PageException {
 	// define argument scope
 	boolean fns = NullSupportHelper.full(pc);
 	Object _null = NullSupportHelper.NULL(fns);
@@ -134,7 +134,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		    if (funcArgs[i].isRequired()) {
 			throw new ExpressionException("The parameter " + funcArgs[i].getName() + " to function " + getFunctionName() + " is required but was not passed in.");
 		    }
-		    if (!fns) newArgs.setEL(funcArgs[i].getName(), Argument.NULL);
+		    if (!fns) newArgs.setEL(funcArgs[i].getName(), null);
 		}
 		else {
 		    newArgs.setEL(funcArgs[i].getName(), castTo(pc, funcArgs[i], d, i + 1));
@@ -146,7 +146,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	}
     }
 
-    private void defineArguments(PageContext pageContext, FunctionArgument[] funcArgs, Struct values, Argument newArgs) throws PageException {
+    private void defineArguments(PageContext pageContext, FunctionArgument[] funcArgs, Struct values, Local newArgs) throws PageException {
 	// argumentCollection
 	UDFUtil.argumentCollection(values, funcArgs);
 	// print.out(values.size());
@@ -174,7 +174,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		if (funcArgs[i].isRequired()) {
 		    throw new ExpressionException("The parameter " + funcArgs[i].getName() + " to function " + getFunctionName() + " is required but was not passed in.");
 		}
-		if (pageContext.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !pageContext.getConfig().getFullNullSupport()) newArgs.set(name, Argument.NULL);
+		if (pageContext.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !pageContext.getConfig().getFullNullSupport()) newArgs.set(name, null);
 	    }
 	    else newArgs.set(name, castTo(pageContext, funcArgs[i], defaultValue, i + 1));
 	}
@@ -288,16 +288,14 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
 	// print.out(count++);
 	PageContextImpl pci = (PageContextImpl) pc;
-	Argument newArgs = pci.getScopeFactory().getArgumentInstance();
-	newArgs.setFunctionArgumentNames(properties.getArgumentsSet());
-	LocalImpl newLocal = pci.getScopeFactory().getLocalInstance();
+	LocalImpl newLocal = new LocalImpl();//pci.getScopeFactory().getLocalInstance();
+	newLocal.setFunctionArgumentNames(properties.getArgumentsSet());
 
 	Undefined undefined = pc.undefinedScope();
-	Argument oldArgs = pc.argumentsScope();
 	Local oldLocal = pc.localScope();
 	Collection.Key oldCalledName = pci.getActiveUDFCalledName();
 
-	pc.setFunctionScopes(newLocal, newArgs);
+	pc.setFunctionScopes(newLocal);
 	pci.setActiveUDFCalledName(calledName);
 
 	int oldCheckArgs = undefined.setMode(pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML
@@ -336,8 +334,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
 	    try {
 
-		if (args != null) defineArguments(pc, getFunctionArguments(), args, newArgs);
-		else defineArguments(pc, getFunctionArguments(), values, newArgs);
+		if (args != null) defineArguments(pc, getFunctionArguments(), args, newLocal);
+		else defineArguments(pc, getFunctionArguments(), values, newLocal);
 
 		returnValue = implementation(pci);
 		if (ownerComponent != null) pci.setActiveUDF(parent);
@@ -370,13 +368,104 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	finally {
 	    if (ps != null) pc.removeLastPageSource(psInc != null);
 	    pci.removeUDF();
-	    pci.setFunctionScopes(oldLocal, oldArgs);
+	    pci.setFunctionScopes(oldLocal);
 	    pci.setActiveUDFCalledName(oldCalledName);
 	    undefined.setMode(oldCheckArgs);
-	    pci.getScopeFactory().recycle(pci, newArgs);
-	    pci.getScopeFactory().recycle(pci, newLocal);
+//	    pci.getScopeFactory().recycle(pci, newLocal);
 	}
     }
+	public Object _callSimple(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
+
+		PageContextImpl pci = (PageContextImpl) pc;
+		LocalImpl newLocal =new LocalImpl();// pci.getScopeFactory().getLocalInstance();
+		if(args.length>0) {
+			newLocal.setFunctionArgumentNames(properties.getArgumentsSet());
+		}
+
+//		Undefined undefined = pc.undefinedScope();
+		Local oldLocal = pc.localScope();
+		Collection.Key oldCalledName = pci.getActiveUDFCalledName();
+
+		pc.setFunctionScopes(newLocal);
+		pci.setActiveUDFCalledName(calledName);
+
+//		int oldCheckArgs = undefined.setMode(pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML
+//				? (properties.getLocalMode() == null ? pc.getApplicationContext().getLocalMode() : properties.getLocalMode().intValue())
+//				: Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
+
+		PageSource ps = null;
+		PageSource psInc = null;
+		try {
+			ps = properties.getPageSource();
+//			if (doIncludePath) psInc = ps;
+//			if (doIncludePath && getOwnerComponent() != null) {
+//				psInc = ComponentUtil.getPageSource(getOwnerComponent());
+//				if (psInc == pci.getCurrentTemplatePageSource()) {
+//					psInc = null;
+//				}
+//			}
+
+			if (ps != null) pci.addPageSource(ps, psInc);
+			pci.addUDF(this);
+
+//			BodyContent bc = null;
+//			Boolean wasSilent = null;
+//			boolean bufferOutput = getBufferOutput(pci);
+//			if (!getOutput()) {
+//				if (bufferOutput) bc = pci.pushBody();
+//				else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
+//			}
+
+			UDF parent = null;
+//			if (ownerComponent != null) {
+//				parent = pci.getActiveUDF();
+//				pci.setActiveUDF(this);
+//			}
+			Object returnValue = null;
+
+			try {
+
+				if(args.length>0) {
+					if (args != null) defineArguments(pc, getFunctionArguments(), args, newLocal);
+					else defineArguments(pc, getFunctionArguments(), values, newLocal);
+				}
+
+//				returnValue = implementation(pci);
+				return properties.getPage(pc).udfCall(pc, this, properties.getIndex());
+//				if (ownerComponent != null) pci.setActiveUDF(parent);
+			}
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
+//				if (ownerComponent != null) pci.setActiveUDF(parent);
+//				if (!getOutput()) {
+//					if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
+//					else if (!wasSilent) pc.unsetSilent();
+//				}
+				throw Caster.toPageException(t);
+			}
+//			if (!getOutput()) {
+//				if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
+//				else if (!wasSilent) pc.unsetSilent();
+//			}
+//			return returnValue;
+//			if (returnValue == null) return returnValue;
+//			if (properties.getReturnType() == CFTypes.TYPE_ANY || !((PageContextImpl) pc).getTypeChecking()) return returnValue;
+//			if (Decision.isCastableTo(properties.getReturnTypeAsString(), returnValue, false, false, -1)) return returnValue;
+//			throw new UDFCasterException(this, properties.getReturnTypeAsString(), returnValue);
+
+			// REALCAST return Caster.castTo(pageContext,returnType,returnValue,false);
+			//////////////////////////////////////////
+
+		}
+		finally {
+			if (ps != null) pc.removeLastPageSource(psInc != null);
+			pci.removeUDF();
+			pc.setFunctionScopes(oldLocal);
+			pci.setActiveUDFCalledName(oldCalledName);
+//			undefined.setMode(oldCheckArgs);
+//			pci.getScopeFactory().recycle(pci, newLocal);
+		}
+	}
 
     @Override
     public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
