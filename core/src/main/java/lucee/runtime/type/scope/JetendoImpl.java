@@ -101,12 +101,12 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         }
         return true;
     }
-    public Object getJavaOutput() throws PageException {
-        return "";
+    public Object getJavaString() throws PageException {
+        return "1";
     }
-    public Object getOutput() throws PageException {
+    public Object getString() throws PageException {
 //        return tag+value;
-        return templateGetOutput._callSimple(pageContext, new KeyImpl("getOutput"), new Object[]{}, null, false);
+        return templateGetOutput._callSimple(pageContext, new KeyImpl("getString"), new Object[]{}, null, false);
 //        return templateGetOutput.call(pageContext, new Object[]{}, false);
     }
     public Object setTag(String tag, String value) throws PageException {

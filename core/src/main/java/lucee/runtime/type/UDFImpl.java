@@ -276,6 +276,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    BodyContentUtil.flushAndPop(pc, bc);
 	}
     }
+	PageSource componentPageSource=null;
+	Page pageCache=null;
 
     private Object _call(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
@@ -290,30 +292,16 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
 	    undefinedImpl.local=newLocal;
 	    pci.activeUDFCalledName=calledName;
-//	// print.out(count++);
-//	PageContextImpl pci = (PageContextImpl) pc;
-//	LocalImpl newLocal = new LocalImpl();//pci.getScopeFactory().getLocalInstance();
-////	newLocal.setFunctionArgumentNames(properties.getArgumentsSet());
-//
-//	Undefined undefined = pc.undefinedScope();
-//	Local oldLocal = pc.localScope();
-//	Collection.Key oldCalledName = pci.getActiveUDFCalledName();
-//
-//	pc.setFunctionScopes(newLocal);
-//	pci.setActiveUDFCalledName(calledName);
-//
-//	int oldCheckArgs = undefined.setMode(pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML
-//		? (properties.getLocalMode() == null ? pc.getApplicationContext().getLocalMode() : properties.getLocalMode().intValue())
-//		: Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS);
-
 	PageSource ps = null;
 	PageSource psInc = null;
 	try {
-//	    ps = properties.getPageSource();
 		ps = properties.ps;
 	    if (doIncludePath) {
 		    if (ownerComponent != null) {
-			    psInc = ComponentUtil.getPageSource(ownerComponent);
+		    	if(componentPageSource==null) {
+				    componentPageSource= ComponentUtil.getPageSource(ownerComponent);
+			    }
+		    	psInc=componentPageSource;
 			    if (psInc == pci.getCurrentTemplatePageSource()) {
 				    psInc = null;
 			    }
@@ -323,14 +311,10 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    }
 		if (ps != null) pci.pathList.add(ps);
 		pci.udfs.add(this);
-//	    if (ps != null) pci.addPageSource(ps, psInc);
-//	    pci.addUDF(this);
 
-	    //////////////////////////////////////////
 	    BodyContent bc = null;
 	    Boolean wasSilent = null;
-	    boolean bufferOutput = (propertiesImpl.bufferOutput != null) ? propertiesImpl.bufferOutput:false;// getBufferOutput(pci);
-//		boolean bufferOutput = getBufferOutput(pci);
+	    boolean bufferOutput = (propertiesImpl.bufferOutput != null) ? propertiesImpl.bufferOutput:false;
 	    if (!propertiesImpl.output) {
 			if (bufferOutput) bc = pci.pushBody();
 			else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
@@ -338,42 +322,40 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
 	    UDF parent = null;
 	    if (ownerComponent != null) {
-			parent = pci.activeUDF;//getActiveUDF();
-			pci.activeUDF=this;//setActiveUDF(this);
+			parent = pci.activeUDF;
+			pci.activeUDF=this;
 	    }
 	    Object returnValue = null;
 
 	    try {
-
-		    if (args != null) defineArguments(pc, getFunctionArguments(), args, newLocal);
-		    else defineArguments(pc, getFunctionArguments(), values, newLocal);
-		    returnValue = properties.getPage(pc).udfCall(pc, this, propertiesImpl.index);
-		    //		returnValue = implementation(pci);
-		    if (ownerComponent != null) pci.activeUDF = parent;//setActiveUDF(parent);
+		    if(pageCache==null){
+			    pageCache=properties.getPage(pc);
+		    }
+		    if(propertiesImpl.arguments.length>0) {
+			    if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
+			    else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
+		    }
+		    returnValue=pageCache.udfCall(pc, this, propertiesImpl.index);
+		    if (ownerComponent != null) pci.activeUDF = parent;
 	    }catch (Throwable t) {
 			ExceptionUtil.rethrowIfNecessary(t);
-			if (ownerComponent != null) pci.activeUDF=parent;//setActiveUDF(parent);
+			if (ownerComponent != null) pci.activeUDF=parent;
 			if (!propertiesImpl.output) {
 			    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
 			    else if (!wasSilent) pc.unsetSilent();
 			}
-			// BodyContentUtil.flushAndPop(pc,bc);
 			throw Caster.toPageException(t);
 	    }
 	    if (!propertiesImpl.output) {
 			if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
 			else if (!wasSilent) pc.unsetSilent();
 	    }
-	    // BodyContentUtil.clearAndPop(pc,bc);
 
-		if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null){ // .getReturnType()
+		if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null){
 			return returnValue;
 		}
-	    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue; // getReturnTypeAsString()
+	    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue;
 	    throw new UDFCasterException(this, propertiesImpl.strReturnType, returnValue);
-
-	    // REALCAST return Caster.castTo(pageContext,returnType,returnValue,false);
-	    //////////////////////////////////////////
 
 	}
 	finally {
@@ -385,16 +367,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		undefinedImpl.local=oldLocal;
 		pci.activeUDFCalledName=oldCalledName;
 		pci.activeUDF=currentUDF;
-//		if (ps != null) pc.removeLastPageSource(psInc != null);
-//		pci.removeUDF();
-//		pci.setFunctionScopes(oldLocal);
-//		pci.setActiveUDFCalledName(oldCalledName);
-//		undefined.setMode(oldCheckArgs);
-//	    pci.getScopeFactory().recycle(pci, newLocal);
-
 	}
     }
-	Page pageCache=null;
 	public Object _callSimple(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
 		PageContextImpl pci = (PageContextImpl) pc;
@@ -418,8 +392,10 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 				if(pageCache==null){
 					pageCache=properties.getPage(pc);
 				}
-				if (args != null) defineArguments(pc, getFunctionArguments(), args, newLocal);
-				else defineArguments(pc, getFunctionArguments(), values, newLocal);
+				if(propertiesImpl.arguments.length>0) {
+					if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
+					else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
+				}
 				return pageCache.udfCall(pc, this, propertiesImpl.index);
 			}
 			catch (Throwable t) {
