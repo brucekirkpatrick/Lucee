@@ -43,7 +43,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     /* real jetendo fields */
     public static Component template=null;
     public static UDFPlus templateSetTag=null;
-    public static UDFImpl templateGetOutput=null;
+    public static UDFImpl templateGetString=null;
 
 
     /*
@@ -94,7 +94,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         try {
             template=pageContext.loadComponent("zcorerootmapping.com.zos.template");
             templateSetTag=(UDFPlus) template.getMember(ACCESS_PRIVATE, new KeyImpl("setTag"), false, false);
-            templateGetOutput=(UDFImpl) template.getMember(ACCESS_PRIVATE, new KeyImpl("getOutput"), false, false);
+            templateGetString=(UDFImpl) template.getMember(ACCESS_PRIVATE, new KeyImpl("getString"), false, false);
             //(Component) CreateObject.call(pageContext, "component", "zcorerootmapping.com.zos.template", null, null);
         } catch (PageException e) {
             throw new RuntimeException(e);
@@ -106,8 +106,8 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     }
     public Object getString() throws PageException {
 //        return tag+value;
-        return templateGetOutput._callSimple(pageContext, new KeyImpl("getString"), new Object[]{}, null, false);
-//        return templateGetOutput.call(pageContext, new Object[]{}, false);
+        return templateGetString._callSimple(pageContext, new KeyImpl("getString"), new Object[]{}, null, false);
+//        return templateGetString.call(pageContext, new Object[]{}, false);
     }
     public Object setTag(String tag, String value) throws PageException {
 //        return tag+value;

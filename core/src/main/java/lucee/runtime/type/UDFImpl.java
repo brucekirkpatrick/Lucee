@@ -190,22 +190,26 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
     @Override
     public Object callWithNamedValues(PageContext pc, Struct values, boolean doIncludePath) throws PageException {
-	return hasCachedWithin(pc) ? _callCachedWithin(pc, null, null, values, doIncludePath) : _call(pc, null, null, values, doIncludePath);
+		//return hasCachedWithin(pc) ? _callCachedWithin(pc, null, null, values, doIncludePath) :
+			return _call(pc, null, null, values, doIncludePath);
     }
 
     @Override
     public Object callWithNamedValues(PageContext pc, Collection.Key calledName, Struct values, boolean doIncludePath) throws PageException {
-	return hasCachedWithin(pc) ? _callCachedWithin(pc, calledName, null, values, doIncludePath) : _call(pc, calledName, null, values, doIncludePath);
+		//return hasCachedWithin(pc) ? _callCachedWithin(pc, calledName, null, values, doIncludePath) :
+		return _call(pc, calledName, null, values, doIncludePath);
     }
 
     @Override
     public Object call(PageContext pc, Object[] args, boolean doIncludePath) throws PageException {
-	return hasCachedWithin(pc) ? _callCachedWithin(pc, null, args, null, doIncludePath) : _call(pc, null, args, null, doIncludePath);
+		//return hasCachedWithin(pc) ? _callCachedWithin(pc, null, args, null, doIncludePath) :
+		return _call(pc, null, args, null, doIncludePath);
     }
 
     @Override
     public Object call(PageContext pc, Collection.Key calledName, Object[] args, boolean doIncludePath) throws PageException {
-	return hasCachedWithin(pc) ? _callCachedWithin(pc, calledName, args, null, doIncludePath) : _call(pc, calledName, args, null, doIncludePath);
+		//return hasCachedWithin(pc) ? _callCachedWithin(pc, calledName, args, null, doIncludePath) :
+	    return _call(pc, calledName, args, null, doIncludePath);
     }
 
     private boolean hasCachedWithin(PageContext pc) {
@@ -215,67 +219,68 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
     }
 
     private Object getCachedWithin(PageContext pc) {
-	if (this.properties.getCachedWithin() != null) return this.properties.getCachedWithin();
-	return pc.getCachedWithin(Config.CACHEDWITHIN_FUNCTION);
+    	return null;
+//	if (this.properties.getCachedWithin() != null) return this.properties.getCachedWithin();
+//	return pc.getCachedWithin(Config.CACHEDWITHIN_FUNCTION);
     }
 
-    private Object _callCachedWithin(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
-
-	PageContextImpl pci = (PageContextImpl) pc;
-
-	Object cachedWithin = getCachedWithin(pc);
-	String cacheId = CacheHandlerCollectionImpl.createId(this, args, values);
-	CacheHandler cacheHandler = pc.getConfig().getCacheHandlerCollection(Config.CACHE_TYPE_FUNCTION, null).getInstanceMatchingObject(getCachedWithin(pc), null);
-
-	if (cacheHandler instanceof CacheHandlerPro) {
-	    CacheItem cacheItem = ((CacheHandlerPro) cacheHandler).get(pc, cacheId, cachedWithin);
-	    if (cacheItem instanceof UDFCacheItem) {
-		UDFCacheItem entry = (UDFCacheItem) cacheItem;
-		try {
-		    pc.write(entry.output);
-		}
-		catch (IOException e) {
-		    throw Caster.toPageException(e);
-		}
-		return entry.returnValue;
-	    }
-	}
-	else if (cacheHandler != null) { // TODO this else block can be removed when all cache handlers implement CacheHandlerPro
-	    CacheItem cacheItem = cacheHandler.get(pc, cacheId);
-	    if (cacheItem instanceof UDFCacheItem) {
-		UDFCacheItem entry = (UDFCacheItem) cacheItem;
-		// if(entry.creationdate+properties.cachedWithin>=System.currentTimeMillis()) {
-		try {
-		    pc.write(entry.output);
-		}
-		catch (IOException e) {
-		    throw Caster.toPageException(e);
-		}
-		return entry.returnValue;
-		// }
-		// cache.remove(id);
-	    }
-	}
-
-	// cached item not found, process and cache result if needed
-	long start = System.nanoTime();
-
-	// execute the function
-	BodyContent bc = pci.pushBody();
-
-	try {
-	    Object rtn = _call(pci, calledName, args, values, doIncludePath);
-
-	    if (cacheHandler != null) {
-		String out = bc.getString();
-		cacheHandler.set(pc, cacheId, cachedWithin, new UDFCacheItem(out, rtn, getFunctionName(), getSource(), System.nanoTime() - start));
-	    }
-	    return rtn;
-	}
-	finally {
-	    BodyContentUtil.flushAndPop(pc, bc);
-	}
-    }
+//    private Object _callCachedWithin(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
+//
+//	PageContextImpl pci = (PageContextImpl) pc;
+//
+//	Object cachedWithin = getCachedWithin(pc);
+//	String cacheId = CacheHandlerCollectionImpl.createId(this, args, values);
+//	CacheHandler cacheHandler = pc.getConfig().getCacheHandlerCollection(Config.CACHE_TYPE_FUNCTION, null).getInstanceMatchingObject(getCachedWithin(pc), null);
+//
+//	if (cacheHandler instanceof CacheHandlerPro) {
+//	    CacheItem cacheItem = ((CacheHandlerPro) cacheHandler).get(pc, cacheId, cachedWithin);
+//	    if (cacheItem instanceof UDFCacheItem) {
+//		UDFCacheItem entry = (UDFCacheItem) cacheItem;
+//		try {
+//		    pc.write(entry.output);
+//		}
+//		catch (IOException e) {
+//		    throw Caster.toPageException(e);
+//		}
+//		return entry.returnValue;
+//	    }
+//	}
+//	else if (cacheHandler != null) { // TODO this else block can be removed when all cache handlers implement CacheHandlerPro
+//	    CacheItem cacheItem = cacheHandler.get(pc, cacheId);
+//	    if (cacheItem instanceof UDFCacheItem) {
+//		UDFCacheItem entry = (UDFCacheItem) cacheItem;
+//		// if(entry.creationdate+properties.cachedWithin>=System.currentTimeMillis()) {
+//		try {
+//		    pc.write(entry.output);
+//		}
+//		catch (IOException e) {
+//		    throw Caster.toPageException(e);
+//		}
+//		return entry.returnValue;
+//		// }
+//		// cache.remove(id);
+//	    }
+//	}
+//
+//	// cached item not found, process and cache result if needed
+//	long start = System.nanoTime();
+//
+//	// execute the function
+//	BodyContent bc = pci.pushBody();
+//
+//	try {
+//	    Object rtn = _call(pci, calledName, args, values, doIncludePath);
+//
+//	    if (cacheHandler != null) {
+//		String out = bc.getString();
+//		cacheHandler.set(pc, cacheId, cachedWithin, new UDFCacheItem(out, rtn, getFunctionName(), getSource(), System.nanoTime() - start));
+//	    }
+//	    return rtn;
+//	}
+//	finally {
+//	    BodyContentUtil.flushAndPop(pc, bc);
+//	}
+//    }
 	PageSource componentPageSource=null;
 	Page pageCache=null;
 
@@ -291,6 +296,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    pci.local=newLocal;
 	    UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
 	    undefinedImpl.local=newLocal;
+	    Variables oldVariables=undefinedImpl.variable;
+	    undefinedImpl.variable=pci.variables;
 	    pci.activeUDFCalledName=calledName;
 	PageSource ps = null;
 	PageSource psInc = null;
@@ -365,6 +372,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
 		pci.local=oldLocal;
 		undefinedImpl.local=oldLocal;
+		undefinedImpl.variable=oldVariables;
 		pci.activeUDFCalledName=oldCalledName;
 		pci.activeUDF=currentUDF;
 	}
@@ -376,6 +384,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		Local oldLocal = pci.local;
 		UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
 		undefinedImpl.local=newLocal;
+		Variables oldVariables=undefinedImpl.variable;
+		undefinedImpl.variable=pci.variables;
 		Collection.Key oldCalledName = pci.activeUDFCalledName;
 		UDFPropertiesImpl propertiesImpl=(UDFPropertiesImpl) properties;
 
@@ -410,6 +420,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 			if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
 			pci.local=oldLocal;
 			undefinedImpl.local=oldLocal;
+			undefinedImpl.variable=oldVariables;
 			pci.activeUDF=currentUDF;
 			pci.activeUDFCalledName=oldCalledName;
 		}

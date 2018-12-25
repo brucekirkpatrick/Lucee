@@ -65,7 +65,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
 //    private Scope[] scopes;
     private QueryStackImpl qryStack = new QueryStackImpl();
-    private Variables variable=null;
+    public Variables variable=null;
 //    private boolean allowImplicidQueryCall;
 //    private boolean checkArguments=true;
 
@@ -86,6 +86,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     public UndefinedImpl(PageContextImpl pc, short type) {
 	this.type = type;
 	this.pc = pc;
+	this.variable=pc.variablesScope();
     }
 
     @Override
