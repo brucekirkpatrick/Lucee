@@ -321,7 +321,12 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
 	    BodyContent bc = null;
 	    Boolean wasSilent = null;
-	    boolean bufferOutput = (propertiesImpl.bufferOutput != null) ? propertiesImpl.bufferOutput:false;
+
+		boolean bufferOutput = getBufferOutput(pci);
+//		if (!getOutput()) {
+//			if (bufferOutput) bc = pci.pushBody();
+//			else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
+//		}
 	    if (!propertiesImpl.output) {
 			if (bufferOutput) bc = pci.pushBody();
 			else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
@@ -347,13 +352,22 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    }catch (Throwable t) {
 			ExceptionUtil.rethrowIfNecessary(t);
 			if (ownerComponent != null) pci.activeUDF=parent;
-			if (!propertiesImpl.output) {
+//		    if (!getOutput()) {
+//			    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
+//			    else if (!wasSilent) pc.unsetSilent();
+//		    }
+
+		    if (!propertiesImpl.output) {
 			    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
 			    else if (!wasSilent) pc.unsetSilent();
 			}
 			throw Caster.toPageException(t);
 	    }
-	    if (!propertiesImpl.output) {
+//		if (!getOutput()) {
+//			if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
+//			else if (!wasSilent) pc.unsetSilent();
+//		}
+		if (!propertiesImpl.output) {
 			if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
 			else if (!wasSilent) pc.unsetSilent();
 	    }
