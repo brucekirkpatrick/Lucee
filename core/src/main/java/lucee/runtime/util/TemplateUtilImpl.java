@@ -18,11 +18,7 @@
 package lucee.runtime.util;
 
 import lucee.commons.lang.types.RefBoolean;
-import lucee.runtime.Component;
-import lucee.runtime.Interface;
-import lucee.runtime.Page;
-import lucee.runtime.PageContext;
-import lucee.runtime.PageSource;
+import lucee.runtime.*;
 import lucee.runtime.component.ComponentLoader;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.util.ComponentUtil;
@@ -76,8 +72,8 @@ public class TemplateUtilImpl implements TemplateUtil {
 	return ComponentLoader.loadPage(pc, ps, forceReload);
     }
 
-    @Override
-    public Interface loadInterface(PageContext pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException {
+//    @Override
+    public Interface loadInterface(PageContextImpl pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException {
 	return ComponentLoader.loadInterface(pc, page, ps, callPath, isRealPath);
     }
 

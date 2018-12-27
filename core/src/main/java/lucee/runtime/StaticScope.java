@@ -295,6 +295,7 @@ public class StaticScope extends StructSupport implements Variables, Objects {
 
 	Object rtn = null;
 	Variables parent = null;
+	PageContextImpl pci=(PageContextImpl) pc;
 
 	// INFO duplicate code is for faster execution -> less contions
 
@@ -303,17 +304,16 @@ public class StaticScope extends StructSupport implements Variables, Objects {
 	    DebugEntryTemplate debugEntry = pc.getDebugger().getEntry(pc, cp.getPageSource(), udf.getFunctionName());// new DebugEntry(src,udf.getFunctionName());
 	    long currTime = pc.getExecutionTime();
 	    long time = System.nanoTime();
-
-	    // sync yes
+		// sync yes
 	    if (c.top.properties._synchronized) {
 		synchronized (this) {
 		    try {
-			parent = c.beforeStaticConstructor(pc);
+			parent = c.beforeStaticConstructor(pci);
 			if (args != null) rtn = udf.call(pc, calledName, args, true);
 			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		    }
 		    finally {
-			c.afterStaticConstructor(pc, parent);
+			c.afterStaticConstructor(pci, parent);
 			long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
 			pc.setExecutionTime(pc.getExecutionTime() + diff);
 			debugEntry.updateExeTime(diff);
@@ -324,12 +324,12 @@ public class StaticScope extends StructSupport implements Variables, Objects {
 	    // sync no
 	    else {
 		try {
-		    parent = c.beforeStaticConstructor(pc);
+		    parent = c.beforeStaticConstructor(pci);
 		    if (args != null) rtn = udf.call(pc, calledName, args, true);
 		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		}
 		finally {
-		    c.afterStaticConstructor(pc, parent);
+		    c.afterStaticConstructor(pci, parent);
 		    long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
 		    pc.setExecutionTime(pc.getExecutionTime() + diff);
 		    debugEntry.updateExeTime(diff);
@@ -345,24 +345,24 @@ public class StaticScope extends StructSupport implements Variables, Objects {
 	    if (c.top.properties._synchronized) {
 		synchronized (this) {
 		    try {
-			parent = c.beforeStaticConstructor(pc);
+			parent = c.beforeStaticConstructor(pci);
 			if (args != null) rtn = udf.call(pc, calledName, args, true);
 			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		    }
 		    finally {
-			c.afterStaticConstructor(pc, parent);
+			c.afterStaticConstructor(pci, parent);
 		    }
 		}
 	    }
 
 	    else {
 		try {
-		    parent = c.beforeStaticConstructor(pc);
+		    parent = c.beforeStaticConstructor(pci);
 		    if (args != null) rtn = udf.call(pc, calledName, args, true);
 		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		}
 		finally {
-		    c.afterStaticConstructor(pc, parent);
+		    c.afterStaticConstructor(pci, parent);
 		}
 	    }
 	}

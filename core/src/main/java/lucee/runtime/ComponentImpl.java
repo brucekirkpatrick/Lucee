@@ -365,7 +365,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      * @param componentPage
      * @throws PageException
      */
-    public void init(PageContext pageContext, ComponentPageImpl componentPage, boolean executeConstr) throws PageException {
+    public void init(PageContextImpl pageContext, ComponentPageImpl componentPage, boolean executeConstr) throws PageException {
 	this.pageSource = componentPage.getPageSource();
 
 	// extends
@@ -612,6 +612,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	Object rtn = null;
 	Variables parent = null;
 
+	PageContextImpl pci=(PageContextImpl) pc;
 	// INFO duplicate code is for faster execution -> less contions
 
 	// debug yes
@@ -624,7 +625,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    if (top.properties._synchronized) {
 		synchronized (this) {
 		    try {
-			parent = beforeCall(pc);
+			parent = beforeCall(pci);
 			if (args != null) rtn = udf.call(pc, calledName, args, true);
 			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		    }
@@ -640,7 +641,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    // sync no
 	    else {
 		try {
-		    parent = beforeCall(pc);
+		    parent = beforeCall(pci);
 		    if (args != null) rtn = udf.call(pc, calledName, args, true);
 		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		}
@@ -661,7 +662,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    if (top.properties._synchronized) {
 		synchronized (this) {
 		    try {
-			parent = beforeCall(pc);
+			parent = beforeCall(pci);
 			if (args != null) rtn = udf.call(pc, calledName, args, true);
 			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		    }
@@ -674,7 +675,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	    // sync no 385|263
 	    else {
 		try {
-		    parent = beforeCall(pc);
+		    parent = beforeCall(pci);
 		    if (args != null) rtn = udf.call(pc, calledName, args, true);
 		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 		}
@@ -686,16 +687,16 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	return rtn;
     }
 
-    @Override
-    public Variables beforeStaticConstructor(PageContext pc) {
+//    @Override
+    public Variables beforeStaticConstructor(PageContextImpl pc) {
 	insideStaticConstr = true;
 	Variables parent = pc.variablesScope();
 	pc.setVariablesScope(_static);
 	return parent;
     }
 
-    @Override
-    public void afterStaticConstructor(PageContext pc, Variables parent) {
+//    @Override
+    public void afterStaticConstructor(PageContextImpl pc, Variables parent) {
 	insideStaticConstr = false;
 	pc.setVariablesScope(parent);
     }
@@ -706,7 +707,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      * @param pc
      * @return the old scope map
      */
-    public Variables beforeCall(PageContext pc) {
+    public Variables beforeCall(PageContextImpl pc) {
 	Variables parent = pc.variablesScope();
 	pc.setVariablesScope(scope);
 	return parent;
@@ -719,7 +720,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      * @param parent
      * @throws ApplicationException
      */
-    public void afterConstructor(PageContext pc, Variables parent) throws ApplicationException {
+    public void afterConstructor(PageContextImpl pc, Variables parent) throws ApplicationException {
 	pc.setVariablesScope(parent);
 	this.afterConstructor = true;
 
@@ -741,7 +742,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      * @throws ApplicationException
      */
     @Deprecated
-    public void afterCall(PageContext pc, Variables parent) throws ApplicationException {
+    public void afterCall(PageContextImpl pc, Variables parent) throws ApplicationException {
 	afterConstructor(pc, parent);
     }
 

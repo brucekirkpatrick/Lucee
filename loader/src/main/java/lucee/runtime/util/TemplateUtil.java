@@ -67,6 +67,6 @@ public interface TemplateUtil {
 
     public Page loadPage(PageContext pc, PageSource ps, boolean forceReload) throws PageException;
 
-    public Interface loadInterface(PageContext pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException;
+//    public Interface loadInterface(PageContext pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException;
 
 }

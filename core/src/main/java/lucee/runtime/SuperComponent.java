@@ -592,13 +592,13 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	return comp.staticScope();
     }
 
-    @Override
-    public Variables beforeStaticConstructor(PageContext pc) {
+//    @Override
+    public Variables beforeStaticConstructor(PageContextImpl pc) {
 	return comp.beforeStaticConstructor(pc);
     }
 
-    @Override
-    public void afterStaticConstructor(PageContext pc, Variables var) {
+//    @Override
+    public void afterStaticConstructor(PageContextImpl pc, Variables var) {
 	comp.afterStaticConstructor(pc, var);
     }
 

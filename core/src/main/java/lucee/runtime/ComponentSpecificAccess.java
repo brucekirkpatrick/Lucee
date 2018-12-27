@@ -42,7 +42,7 @@ import lucee.runtime.type.util.StructSupport;
 public final class ComponentSpecificAccess extends StructSupport implements Component, Objects {
 
     private int access;
-    private Component component;
+    private ComponentImpl component;
 
     /**
      * constructor of the class
@@ -53,7 +53,7 @@ public final class ComponentSpecificAccess extends StructSupport implements Comp
      */
     public ComponentSpecificAccess(int access, Component component) {
 	this.access = access;
-	this.component = component;
+	this.component = (ComponentImpl) component;
     }
 
     public static ComponentSpecificAccess toComponentSpecificAccess(int access, Component component) {
@@ -520,13 +520,13 @@ public final class ComponentSpecificAccess extends StructSupport implements Comp
 	return component.staticScope();
     }
 
-    @Override
-    public Variables beforeStaticConstructor(PageContext pc) {
+//    @Override
+    public Variables beforeStaticConstructor(PageContextImpl pc) {
 	return component.beforeStaticConstructor(pc);
     }
 
-    @Override
-    public void afterStaticConstructor(PageContext pc, Variables var) {
+//    @Override
+    public void afterStaticConstructor(PageContextImpl pc, Variables var) {
 	component.afterStaticConstructor(pc, var);
     }
 

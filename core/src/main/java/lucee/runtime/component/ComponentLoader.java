@@ -416,7 +416,7 @@ public class ComponentLoader {
 
 	if (returnType != RETURN_TYPE_INTERFACE) throw new ApplicationException("the interface [" + cip.getPageSource().getComponentName() + "] cannot be used as a component.");
 
-	return loadInterface(pc, cip, cip.getPageSource(), callPath, isRealPath);
+	return loadInterface((PageContextImpl) pc, cip, cip.getPageSource(), callPath, isRealPath);
     }
 
     private static CIPage loadSub(CIPage page, String sub) throws ApplicationException {
@@ -474,7 +474,7 @@ public class ComponentLoader {
 	    try {
 		debugEntry.updateFileLoadTime((int) (System.nanoTime() - time));
 		exeTime = System.nanoTime();
-		rtn = initComponent(pc, page, callPath, isRealPath, isExtendedComponent, executeConstr);
+		rtn = initComponent((PageContextImpl) pc, page, callPath, isRealPath, isExtendedComponent, executeConstr);
 
 	    }
 	    finally {
@@ -489,7 +489,7 @@ public class ComponentLoader {
 	else {
 	    pc.addPageSource(page.getPageSource(), true);
 	    try {
-		rtn = initComponent(pc, page, callPath, isRealPath, isExtendedComponent, executeConstr);
+		rtn = initComponent((PageContextImpl) pc, page, callPath, isRealPath, isExtendedComponent, executeConstr);
 	    }
 	    finally {
 		if (rtn != null) rtn.setLoaded(true);
@@ -500,7 +500,7 @@ public class ComponentLoader {
 	return rtn;
     }
 
-    public static InterfaceImpl loadInterface(PageContext pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException {
+    public static InterfaceImpl loadInterface(PageContextImpl pc, Page page, PageSource ps, String callPath, boolean isRealPath) throws PageException {
 	InterfaceImpl rtn = null;
 	if (pc.getConfig().debug()) {
 	    DebugEntryTemplate debugEntry = pc.getDebugger().getEntry(pc, ps);
@@ -536,7 +536,7 @@ public class ComponentLoader {
 	return rtn;
     }
 
-    private static InterfaceImpl initInterface(PageContext pc, Page page, String callPath, boolean isRealPath) throws PageException {
+    private static InterfaceImpl initInterface(PageContextImpl pc, Page page, String callPath, boolean isRealPath) throws PageException {
 	if (!(page instanceof InterfacePageImpl)) throw new ApplicationException("invalid interface definition [" + callPath + "]");
 	InterfacePageImpl ip = (InterfacePageImpl) page;
 	InterfaceImpl i = ip.newInstance(pc, callPath, isRealPath);
@@ -569,7 +569,7 @@ public class ComponentLoader {
 		ComponentImpl rtn=component;
 		pc.addPageSource(page.getPageSource(), true);
 		try {
-			rtn = initComponent(pc, page, pathWithCFC, true, isExtendedComponent, true);
+			rtn = initComponent((PageContextImpl) pc, page, pathWithCFC, true, isExtendedComponent, true);
 		}
 		finally {
 			if (rtn != null) rtn.setLoaded(true);
@@ -580,7 +580,7 @@ public class ComponentLoader {
 //		return _loadComponent(pc, toCIPage(ps.loadPage(pc, forceReload), pathWithCFC), pathWithCFC, true, isExtendedComponent, true);
 	}
 
-    private static ComponentImpl initComponent(PageContext pc, CIPage page, String callPath, boolean isRealPath, final boolean isExtendedComponent, boolean executeConstr)
+    private static ComponentImpl initComponent(PageContextImpl pc, CIPage page, String callPath, boolean isRealPath, final boolean isExtendedComponent, boolean executeConstr)
 	    throws PageException {
 	// is not a component, then it has to be a interface
 	if (!(page instanceof ComponentPageImpl)) throw new ApplicationException("you cannot instantiate the interface [" + page.getPageSource().getDisplayPath()

@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -231,6 +233,31 @@ public abstract class Function extends StatementBaseNoFinal implements Opcodes, 
 	ga.push(arrayIndex);
 	ga.visitInsn(AALOAD);
     }
+	public final void storeUDFField(ClassWriter cw, BytecodeContext bc, int index, int type) throws TransformerException {
+
+		GeneratorAdapter adapter = bc.getAdapter();
+//		adapter.newInstance(Types.UDF_PROPERTIES_IMPL);
+//		adapter.dup();
+
+		// Page
+//		adapter.loadThis();
+//
+//		// PageSource
+//		if (type != TYPE_UDF) {
+//			adapter.loadThis();
+//			adapter.invokeVirtual(Types.PAGE, GET_PAGESOURCE);
+//		}
+
+		// need to load reference to the udf somehow?  the last reference in array needs to be on top of stack
+		// AALOAD i think
+		adapter.visitVarInsn(ALOAD, 1);
+		adapter.visitVarInsn(ILOAD, index);
+		adapter.visitInsn(AALOAD);
+		adapter.putField(Types.PAGE, name.toString(), Types.CI_PAGE);
+
+		FieldVisitor fv = cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL, name.toString(), "Llucee/runtime/CIPage;", null, null);
+		fv.visitEnd();
+	}
 
     public final void createUDFProperties(BytecodeContext bc, int index, int type) throws TransformerException {
 

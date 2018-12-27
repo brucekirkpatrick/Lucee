@@ -223,7 +223,9 @@ public class TagGroupUtil {
 
 		// pc.us().removeQuery();
 		adapter.loadArg(0);
-		adapter.invokeVirtual(Types.PAGE_CONTEXT, US);
+		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+		adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//		adapter.invokeVirtual(Types.PAGE_CONTEXT, US);
 		adapter.invokeInterface(UNDEFINED, REMOVE_QUERY);
 
 		// NumberIterator.release(ni);

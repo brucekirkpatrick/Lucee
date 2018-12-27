@@ -85,7 +85,7 @@ import lucee.runtime.type.util.UDFUtil;
 /**
  * A Page that can produce Components
  */
-public abstract class ComponentPageImpl extends ComponentPage implements PagePro {
+public abstract class ComponentPageImpl extends ComponentPage implements PagePro, ImplementationUdfCall {
 
     public static final Collection.Key ACCEPT_ARG_COLL_FORMATS = KeyImpl.getInstance("acceptedArgumentCollectionFormats");
 
@@ -98,7 +98,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     // static scope
     public final StaticStruct _static = new StaticStruct();
 
-    public abstract ComponentImpl newInstance(PageContext pc, String callPath, boolean isRealPath, boolean isExtendedComponent, boolean executeConstr)
+    public abstract ComponentImpl newInstance(PageContextImpl pc, String callPath, boolean isRealPath, boolean isExtendedComponent, boolean executeConstr)
 	    throws lucee.runtime.exp.PageException;
 
     public int getHash() {
@@ -108,6 +108,10 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     public long getSourceLength() {
 	return 0;
     }
+
+	public Object udfCall(final PageContextImpl pageContext, final UDF udf, final int functionIndex) throws Throwable {
+		return null;
+	}
 
     @Override
     public Object call(PageContext pc) throws PageException {
@@ -137,7 +141,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 		    component = engine.getPersistentRemoteCFC(strRemotePersisId);
 
 		    if (component == null) {
-			component = newInstance(pc, getComponentName(), false, false, true);
+			component = newInstance((PageContextImpl) pc, getComponentName(), false, false, true);
 			if (!internalCall) component = ComponentSpecificAccess.toComponentSpecificAccess(Component.ACCESS_REMOTE, component);
 
 			engine.setPersistentRemoteCFC(strRemotePersisId, component);
@@ -145,7 +149,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 
 		}
 		else {
-		    component = newInstance(pc, getComponentName(), false, false, true);
+		    component = newInstance((PageContextImpl) pc, getComponentName(), false, false, true);
 		    if (!internalCall) component = ComponentSpecificAccess.toComponentSpecificAccess(Component.ACCESS_REMOTE, component);
 		}
 	    }
@@ -985,11 +989,11 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     /**
      * default implementation of the static constructor, that does nothing
      */
-    public void staticConstructor(PageContext pagecontext, ComponentImpl cfc) {
+    public void staticConstructor(PageContextImpl pagecontext, ComponentImpl cfc) {
 	// do nothing
     }
 
-    public abstract void initComponent(PageContext pc, ComponentImpl c, boolean executeDefaultConstructor) throws PageException;
+    public abstract void initComponent(PageContextImpl pc, ComponentImpl c, boolean executeDefaultConstructor) throws PageException;
 
     public void ckecked() {
 	lastCheck = System.currentTimeMillis();

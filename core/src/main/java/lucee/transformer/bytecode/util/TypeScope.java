@@ -83,13 +83,37 @@ public final class TypeScope {
 
     public final static Type SCOPE_ARGUMENT = Type.getType(Local.class);
 
-    public static Type invokeScope(GeneratorAdapter adapter, int scope) {
-	if (scope == SCOPE_UNDEFINED_LOCAL) {
-	    adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-	    return invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT_IMPL);
+	public static Type invokeScope(GeneratorAdapter adapter, int scope) {
+		if(scope==Scope.SCOPE_APPLICATION || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_REQUEST || scope==Scope.SCOPE_COOKIE) {
+			invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
+		}else {
+			if(scope == SCOPE_UNDEFINED_LOCAL){
+				scope=Scope.SCOPE_UNDEFINED;
+			}
+			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
+		}
+		return SCOPES[scope];
 	}
-	else return invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
-    }
+
+	public static Type scopeField(GeneratorAdapter adapter, int scope) {
+		if(scope==Scope.SCOPE_APPLICATION || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_REQUEST || scope==Scope.SCOPE_COOKIE) {
+			invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
+		}else {
+			if(scope == SCOPE_UNDEFINED_LOCAL){
+				scope=Scope.SCOPE_UNDEFINED;
+			}
+			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
+		}
+		return SCOPES[scope];
+	}
+//    public static Type invokeScope(GeneratorAdapter adapter, int scope) {
+//	if (scope == SCOPE_UNDEFINED_LOCAL) {
+//	    adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//	    return invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT_IMPL);
+//	}
+//	else return invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
+//    }
 
     public static Type invokeScope(GeneratorAdapter adapter, Method m, Type type) {
 	if (type == null) type = Types.PAGE_CONTEXT;

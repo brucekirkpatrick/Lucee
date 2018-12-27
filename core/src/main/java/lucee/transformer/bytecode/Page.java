@@ -123,7 +123,7 @@ public final class Page extends BodyBase implements Root {
     public static final Method INIT_STRUCT_IMPL = new Method("<init>", Types.VOID, new Type[] {});
 
     // void call (lucee.runtime.PageContext)
-    private final static Method CALL1 = new Method("call", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT });
+    private final static Method CALL1 = new Method("call", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL });
 
     /*
      * / void _try () private final static Method TRY = new Method( "_try", Types.VOID, new Type[]{} );
@@ -151,21 +151,21 @@ public final class Page extends BodyBase implements Root {
     private final static Method LENGTH = new Method("getSourceLength", Types.LONG_VALUE, new Type[] {});
 
     private static final Type USER_DEFINED_FUNCTION = Type.getType(UDF.class);
-    private static final Method UDF_CALL = new Method("udfCall", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT, USER_DEFINED_FUNCTION, Types.INT_VALUE });
+    private static final Method UDF_CALL = new Method("udfCall", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL, USER_DEFINED_FUNCTION, Types.INT_VALUE });
 
     private static final Method THREAD_CALL = new Method("threadCall", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.INT_VALUE });
 
     private static final Method UDF_DEFAULT_VALUE = new Method("udfDefaultValue", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT, Types.INT_VALUE, Types.INT_VALUE, Types.OBJECT });
 
     private static final Method NEW_COMPONENT_IMPL_INSTANCE = new Method("newInstance", Types.COMPONENT_IMPL,
-	    new Type[] { Types.PAGE_CONTEXT, Types.STRING, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE });
+	    new Type[] { Types.PAGE_CONTEXT_IMPL, Types.STRING, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE });
 
-    private static final Method NEW_INTERFACE_IMPL_INSTANCE = new Method("newInstance", Types.INTERFACE_IMPL, new Type[] { Types.PAGE_CONTEXT, Types.STRING, Types.BOOLEAN_VALUE });
+    private static final Method NEW_INTERFACE_IMPL_INSTANCE = new Method("newInstance", Types.INTERFACE_IMPL, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.STRING, Types.BOOLEAN_VALUE });
 
-    private static final Method STATIC_COMPONENT_CONSTR = new Method("staticConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.COMPONENT_IMPL });
+    private static final Method STATIC_COMPONENT_CONSTR = new Method("staticConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.COMPONENT_IMPL });
 
     // void init(PageContext pc,Component Impl c) throws PageException
-    private static final Method INIT_COMPONENT3 = new Method("initComponent", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.COMPONENT_IMPL, Types.BOOLEAN_VALUE });
+    private static final Method INIT_COMPONENT3 = new Method("initComponent", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.COMPONENT_IMPL, Types.BOOLEAN_VALUE });
     private static final Method INIT_INTERFACE = new Method("initInterface", Types.VOID, new Type[] { Types.INTERFACE_IMPL });
 
     // public boolean setMode(int mode) {
@@ -180,7 +180,7 @@ public final class Page extends BodyBase implements Root {
     });
 
     // void init(PageContext pageContext,ComponentPage componentPage)
-    private static final Method INIT_COMPONENT = new Method("init", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.COMPONENT_PAGE_IMPL, Types.BOOLEAN_VALUE });
+    private static final Method INIT_COMPONENT = new Method("init", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.COMPONENT_PAGE_IMPL, Types.BOOLEAN_VALUE });
 
     private static final Method CHECK_INTERFACE = new Method("checkInterface", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.COMPONENT_PAGE_IMPL });
 
@@ -194,15 +194,15 @@ public final class Page extends BodyBase implements Root {
      * Types.BOOLEAN_VALUE, new Type[]{} );
      */
     // Scope beforeCall(PageContext pc)
-    private static final Method BEFORE_CALL = new Method("beforeCall", Types.VARIABLES, new Type[] { Types.PAGE_CONTEXT });
+    private static final Method BEFORE_CALL = new Method("beforeCall", Types.VARIABLES, new Type[] { Types.PAGE_CONTEXT_IMPL });
 
     private static final Method TO_PAGE_EXCEPTION = new Method("toPageException", Types.PAGE_EXCEPTION, new Type[] { Types.THROWABLE });
 
     // void afterCall(PageContext pc, Scope parent)
-    private static final Method AFTER_CALL = new Method("afterConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.VARIABLES });
+    private static final Method AFTER_CALL = new Method("afterConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.VARIABLES });
 
-    private static final Method AFTER_STATIC_CONSTR = new Method("afterStaticConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.VARIABLES });
-    private static final Method BEFORE_STATIC_CONSTR = new Method("beforeStaticConstructor", Types.VARIABLES, new Type[] { Types.PAGE_CONTEXT });
+    private static final Method AFTER_STATIC_CONSTR = new Method("afterStaticConstructor", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.VARIABLES });
+    private static final Method BEFORE_STATIC_CONSTR = new Method("beforeStaticConstructor", Types.VARIABLES, new Type[] { Types.PAGE_CONTEXT_IMPL });
 
     private static final org.objectweb.asm.commons.Method CONSTRUCTOR_EMPTY = new org.objectweb.asm.commons.Method("<init>", Types.VOID, new Type[] {});
 
@@ -498,7 +498,7 @@ public final class Page extends BodyBase implements Root {
 		adapter.visitVarInsn(Opcodes.ALOAD, 1);
 		adapter.visitVarInsn(Opcodes.ALOAD, 2);
 		adapter.visitVarInsn(Opcodes.ILOAD, 3);
-		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, createFunctionName(++count), "(Llucee/runtime/PageContext;Llucee/runtime/type/UDF;I)Ljava/lang/Object;");
+		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, createFunctionName(++count), "(Llucee/runtime/PageContextImpl;Llucee/runtime/type/UDF;I)Ljava/lang/Object;");
 		adapter.visitInsn(Opcodes.ARETURN);// adapter.returnValue();
 		cv.visitWhenAfterBody(bc);
 	    }
@@ -511,7 +511,7 @@ public final class Page extends BodyBase implements Root {
 	    count = 0;
 	    Method innerCall;
 	    for (int i = 0; i < functions.length; i += 10) {
-		innerCall = new Method(createFunctionName(++count), Types.OBJECT, new Type[] { Types.PAGE_CONTEXT, USER_DEFINED_FUNCTION, Types.INT_VALUE });
+		innerCall = new Method(createFunctionName(++count), Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL, USER_DEFINED_FUNCTION, Types.INT_VALUE });
 
 		adapter = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, innerCall, null, new Type[] { Types.THROWABLE }, cw);
 		writeOutUdfCallInner(new BytecodeContext(optionalPS, constr, this, keys, cw, className, adapter, innerCall, writeLog(), suppressWSbeforeArg, output, returnValue),
@@ -614,6 +614,7 @@ public final class Page extends BodyBase implements Root {
 
 	// set item
 	Data data;
+	int udfIndex=0;
 	while (it.hasNext()) {
 	    data = it.next();
 	    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
@@ -621,6 +622,16 @@ public final class Page extends BodyBase implements Root {
 	    constrAdapter.push(data.arrayIndex);
 	    data.function.createUDFProperties(constr, data.valueIndex, data.type);
 	    constrAdapter.visitInsn(Opcodes.AASTORE);
+
+	    // TODO: finish making a way to store UDF as class fields.
+	    //data.function.storeUDFField(cw, constr, data.valueIndex, data.type);
+
+
+		// set the field in constructor..
+		// constrAdapter
+
+
+		udfIndex++;
 	}
 
 	// setPageSource(pageSource);
@@ -894,7 +905,9 @@ public final class Page extends BodyBase implements Root {
 	// int oldCheckArgs= pc.undefinedScope().setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	final int oldCheckArgs = adapter.newLocal(Types.INT_VALUE);
 	adapter.loadArg(0);
-	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+	adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
 	adapter.push(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
 	adapter.storeLocal(oldCheckArgs);
@@ -905,7 +918,9 @@ public final class Page extends BodyBase implements Root {
 
 		// undefined.setMode(oldMode);
 		adapter.loadArg(0);
-		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+		adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
 		adapter.loadLocal(oldCheckArgs, Types.INT_VALUE);
 		adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
 		adapter.pop();
@@ -1003,6 +1018,7 @@ public final class Page extends BodyBase implements Root {
 	// c.init(pc,this);
 	adapter.loadArg(1);
 	adapter.loadArg(0);
+	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 	adapter.loadThis();
 	adapter.loadArg(2);
 	// adapter.visitVarInsn(Opcodes.ALOAD, 0);
@@ -1023,7 +1039,9 @@ public final class Page extends BodyBase implements Root {
 	// int oldCheckArgs= pc.undefinedScope().setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	final int oldCheckArgs = adapter.newLocal(Types.INT_VALUE);
 	adapter.loadArg(0);
-	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+	adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
 	adapter.push(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
 	adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
 	adapter.storeLocal(oldCheckArgs);
@@ -1034,7 +1052,9 @@ public final class Page extends BodyBase implements Root {
 
 		// undefined.setMode(oldMode);
 		adapter.loadArg(0);
-		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+		adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
 		adapter.loadLocal(oldCheckArgs, Types.INT_VALUE);
 		adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
 		adapter.pop();
@@ -1042,6 +1062,7 @@ public final class Page extends BodyBase implements Root {
 		// c.afterCall(pc,_oldData);
 		adapter.loadArg(1);
 		adapter.loadArg(0);
+		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 		adapter.loadLocal(oldData);
 		adapter.invokeVirtual(Types.COMPONENT_IMPL, AFTER_CALL);
 
@@ -1282,6 +1303,7 @@ public final class Page extends BodyBase implements Root {
 	// initComponent(pc,c);
 	adapter.visitVarInsn(Opcodes.ALOAD, 0);
 	adapter.loadArg(0);
+	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 	adapter.loadLocal(comp);
 	adapter.loadArg(4);
 	adapter.invokeVirtual(Types.COMPONENT_PAGE_IMPL, INIT_COMPONENT3);

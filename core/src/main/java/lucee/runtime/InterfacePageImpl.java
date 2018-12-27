@@ -24,12 +24,13 @@ import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
+import lucee.runtime.type.UDF;
 import lucee.runtime.type.util.KeyConstants;
 
 /**
  * A Page that can produce Components
  */
-public abstract class InterfacePageImpl extends InterfacePage implements PagePro {
+public abstract class InterfacePageImpl extends InterfacePage implements PagePro, ImplementationUdfCall {
 
     public int getHash() {
 	return 0;
@@ -38,6 +39,9 @@ public abstract class InterfacePageImpl extends InterfacePage implements PagePro
     public long getSourceLength() {
 	return 0;
     }
+	public Object udfCall(final PageContextImpl pageContext, final UDF udf, final int functionIndex) throws Throwable {
+		return null;
+	}
 
     @Override
     public Object call(PageContext pc) throws PageException {
@@ -45,7 +49,7 @@ public abstract class InterfacePageImpl extends InterfacePage implements PagePro
 	    pc.setSilent();
 	    InterfaceImpl interf = null;
 	    try {
-		interf = newInstance(pc, getPageSource().getComponentName(), false);// TODO was only getComponentName before, is that change ok?
+		interf = newInstance((PageContextImpl) pc, getPageSource().getComponentName(), false);// TODO was only getComponentName before, is that change ok?
 	    }
 	    finally {
 		pc.unsetSilent();
@@ -93,12 +97,12 @@ public abstract class InterfacePageImpl extends InterfacePage implements PagePro
     /**
      * default implementation of the static constructor, that does nothing
      */
-    public void staticConstructor(PageContext pagecontext, ComponentImpl cfc) {
+    public void staticConstructor(PageContextImpl pagecontext, ComponentImpl cfc) {
 	// do nothing
     }
 
     public abstract void initInterface(InterfaceImpl i) throws PageException;
 
-    public abstract InterfaceImpl newInstance(PageContext pc, String callPath, boolean isRealPath) throws lucee.runtime.exp.PageException;
+    public abstract InterfaceImpl newInstance(PageContextImpl pc, String callPath, boolean isRealPath) throws lucee.runtime.exp.PageException;
 
 }

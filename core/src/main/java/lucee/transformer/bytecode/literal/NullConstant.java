@@ -59,7 +59,9 @@ public class NullConstant extends ExpressionBase {
 	a.visitJumpInsn(Opcodes.IFNE, beforeNull);
 	a.visitLabel(beforeGet);
 	a.loadArg(0);
-	a.invokeVirtual(Types.PAGE_CONTEXT, Page.UNDEFINED_SCOPE);
+//	a.checkCast(Types.PAGE_CONTEXT_IMPL);
+	a.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+//	a.invokeVirtual(Types.PAGE_CONTEXT, Page.UNDEFINED_SCOPE);
 	a.getStatic(Types.KEY_CONSTANTS, "_NULL", Types.COLLECTION_KEY);
 	a.invokeInterface(Types.UNDEFINED, GET);
 	a.visitJumpInsn(Opcodes.GOTO, end);

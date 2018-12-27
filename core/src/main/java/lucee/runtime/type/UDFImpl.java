@@ -96,7 +96,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
     @Override
     public Object implementation(PageContext pageContext) throws Throwable {
-	return properties.getPage(pageContext).udfCall(pageContext, this, properties.getIndex());
+	return properties.getPage(pageContext).udfCall((PageContextImpl) pageContext, this, properties.getIndex());
     }
 
     private final Object castToAndClone(PageContext pc, FunctionArgument arg, Object value, int index) throws PageException {
@@ -283,6 +283,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 //    }
 	PageSource componentPageSource=null;
 	Page pageCache=null;
+	ImplementationUdfCall implementationUdfCall=null;
 
     private Object _call(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
@@ -299,97 +300,86 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	    Variables oldVariables=undefinedImpl.variable;
 	    undefinedImpl.variable=pci.variables;
 	    pci.activeUDFCalledName=calledName;
-	PageSource ps = null;
-	PageSource psInc = null;
-	try {
-		ps = properties.ps;
-	    if (doIncludePath) {
-		    if (ownerComponent != null) {
-		    	if(componentPageSource==null) {
-				    componentPageSource= ComponentUtil.getPageSource(ownerComponent);
-			    }
-		    	psInc=componentPageSource;
-			    if (psInc == pci.getCurrentTemplatePageSource()) {
-				    psInc = null;
-			    }
-		    }else{
-		    	psInc=ps;
-		    }
-	    }
-		if (ps != null) pci.pathList.add(ps);
-		pci.udfs.add(this);
-
-	    BodyContent bc = null;
-	    Boolean wasSilent = null;
-
-		boolean bufferOutput = getBufferOutput(pci);
-//		if (!getOutput()) {
-//			if (bufferOutput) bc = pci.pushBody();
-//			else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
-//		}
-	    if (!propertiesImpl.output) {
-			if (bufferOutput) bc = pci.pushBody();
-			else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
-	    }
-
-	    UDF parent = null;
-	    if (ownerComponent != null) {
-			parent = pci.activeUDF;
-			pci.activeUDF=this;
-	    }
-	    Object returnValue = null;
-
+		PageSource ps;
+	    PageSource psInc;
 	    try {
-		    if(pageCache==null){
-			    pageCache=properties.getPage(pc);
+		    ps = properties.ps;
+		    if (doIncludePath) {
+			    if (ownerComponent != null) {
+				    if (componentPageSource == null) {
+					    componentPageSource = ComponentUtil.getPageSource(ownerComponent);
+				    }
+				    psInc = componentPageSource;
+				    if (psInc == pci.getCurrentTemplatePageSource()) {
+					    psInc = null;
+				    }
+			    } else {
+				    psInc = ps;
+			    }
 		    }
-		    if(propertiesImpl.arguments.length>0) {
-			    if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
-			    else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
-		    }
-		    returnValue=pageCache.udfCall(pc, this, propertiesImpl.index);
-		    if (ownerComponent != null) pci.activeUDF = parent;
-	    }catch (Throwable t) {
-			ExceptionUtil.rethrowIfNecessary(t);
-			if (ownerComponent != null) pci.activeUDF=parent;
-//		    if (!getOutput()) {
-//			    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
-//			    else if (!wasSilent) pc.unsetSilent();
-//		    }
+		    if (ps != null) pci.pathList.add(ps);
+		    pci.udfs.add(this);
 
+		    BodyContent bc = null;
+		    Boolean wasSilent = null;
+
+		    boolean bufferOutput = getBufferOutput(pci);
 		    if (!propertiesImpl.output) {
-			    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
+			    if (bufferOutput) bc = pci.pushBody();
+			    else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
+		    }
+
+		    UDF parent = null;
+		    Object returnValue = null;
+
+		    try {
+			    if (pageCache == null) {
+				    pageCache = properties.getPage(pc);
+				    implementationUdfCall=(ImplementationUdfCall) pageCache;
+			    }
+			    if (propertiesImpl.arguments.length > 0) {
+				    if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
+				    else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
+			    }
+			    if (ownerComponent != null) {
+				    parent = pci.activeUDF;
+				    pci.activeUDF = this;
+				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
+				    pci.activeUDF = parent;
+			    } else {
+				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
+			    }
+		    } catch (Throwable t) {
+			    ExceptionUtil.rethrowIfNecessary(t);
+			    if (ownerComponent != null) pci.activeUDF = parent;
+			    if (!propertiesImpl.output) {
+				    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
+				    else if (!wasSilent) pc.unsetSilent();
+			    }
+			    throw Caster.toPageException(t);
+		    }
+		    if (!propertiesImpl.output) {
+			    if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
 			    else if (!wasSilent) pc.unsetSilent();
+		    }
+
+		    if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null) {
+			    return returnValue;
+		    }
+		    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue;
+		    throw new UDFCasterException(this, propertiesImpl.strReturnType, returnValue);
+
+		}finally {
+			if (!pci.pathList.isEmpty()){
+				pci.pathList.removeLast();
 			}
-			throw Caster.toPageException(t);
-	    }
-//		if (!getOutput()) {
-//			if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
-//			else if (!wasSilent) pc.unsetSilent();
-//		}
-		if (!propertiesImpl.output) {
-			if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
-			else if (!wasSilent) pc.unsetSilent();
-	    }
-
-		if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null){
-			return returnValue;
+			if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
+			pci.local=oldLocal;
+			undefinedImpl.local=oldLocal;
+			undefinedImpl.variable=oldVariables;
+			pci.activeUDFCalledName=oldCalledName;
+			pci.activeUDF=currentUDF;
 		}
-	    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue;
-	    throw new UDFCasterException(this, propertiesImpl.strReturnType, returnValue);
-
-	}
-	finally {
-		if (!pci.pathList.isEmpty()){
-			pci.pathList.removeLast();
-		}
-		if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
-		pci.local=oldLocal;
-		undefinedImpl.local=oldLocal;
-		undefinedImpl.variable=oldVariables;
-		pci.activeUDFCalledName=oldCalledName;
-		pci.activeUDF=currentUDF;
-	}
     }
 	public Object _callSimple(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
@@ -407,7 +397,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		pci.local=newLocal;
 		pci.activeUDFCalledName=calledName;
 
-		PageSource ps = null;
+		PageSource ps;
 		try {
 			ps = properties.ps;
 			if (ps != null) pci.pathList.add(ps);
@@ -415,12 +405,13 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 			try {
 				if(pageCache==null){
 					pageCache=properties.getPage(pc);
+					implementationUdfCall=(ImplementationUdfCall) pageCache;
 				}
 				if(propertiesImpl.arguments.length>0) {
 					if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
 					else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
 				}
-				return pageCache.udfCall(pc, this, propertiesImpl.index);
+				return implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
 			}
 			catch (Throwable t) {
 				ExceptionUtil.rethrowIfNecessary(t);

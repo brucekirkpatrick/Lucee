@@ -20,10 +20,7 @@ package lucee.runtime.functions.system;
 
 import lucee.commons.io.res.Resource;
 import lucee.commons.lang.ExceptionUtil;
-import lucee.runtime.Mapping;
-import lucee.runtime.Page;
-import lucee.runtime.PageContext;
-import lucee.runtime.PageSource;
+import lucee.runtime.*;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
@@ -127,14 +124,14 @@ public class CFFunction {
 	UDF udf = cache ? config.getFromFunctionCache(key) : null;
 	if (udf != null) return udf;
 
-	Page p = ps.loadPage(pc, false);
+	PageImpl p = (PageImpl) ps.loadPage(pc, false);
 
 	// execute page
 	Variables old = pc.variablesScope();
 	pc.setVariablesScope(VAR);
 	boolean wasSilent = pc.setSilent();
 	try {
-	    p.call(pc);
+	    p.call((PageContextImpl) pc);
 	    Object o = pc.variablesScope().get(name, null);
 	    if (o instanceof UDF) {
 		udf = (UDF) o;

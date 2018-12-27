@@ -248,13 +248,13 @@ public class InterfaceImpl implements Interface {
 	return sct;
     }
 
-    @Override
-    public Variables beforeStaticConstructor(PageContext pc) {
+//    @Override
+    public Variables beforeStaticConstructor(PageContextImpl pc) {
 	return null;
     }
 
-    @Override
-    public void afterStaticConstructor(PageContext pc, Variables var) {
+//    @Override
+    public void afterStaticConstructor(PageContextImpl pc, Variables var) {
 
     }
 

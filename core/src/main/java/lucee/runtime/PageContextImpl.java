@@ -20,9 +20,6 @@ package lucee.runtime;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.invoke.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -233,22 +230,22 @@ public final class PageContextImpl extends PageContext {
     private FormImpl _form = new FormImpl();
 
     private URLForm urlForm = new UrlFormImpl(_form, _url);
-    private URL url;
-    private Form form;
+	public URL url;
+	public Form form;
 	public static final lucee.runtime.type.Collection.Key _lucee_debug = KeyImpl._const("luceedebug");
 
-    private RequestImpl request = new RequestImpl();
-    private CGIImplReadOnly cgiR = new CGIImplReadOnly();
+	public RequestImpl request = new RequestImpl();
+    public CGIImplReadOnly cgi = new CGIImplReadOnly();
     private CGIImpl cgiRW = new CGIImpl();
 //    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
     public Local local;
-    private Session session;
-    private Server server;
-    private Jetendo jetendo;
-    private Cluster cluster;
-    private CookieImpl cookie = new CookieImpl();
-    private Client client;
-    private Application application;
+	public Session session;
+	public Server server;
+	public Jetendo jetendo;
+	public Cluster cluster;
+	public CookieImpl cookie = new CookieImpl();
+	public Client client;
+	public Application application;
 
     private DebuggerImpl debugger = new DebuggerImpl();
     private long requestTimeout = -1;
@@ -455,7 +452,7 @@ public final class PageContextImpl extends PageContext {
 	    variablesRoot = new VariablesImpl();
 	    variables = variablesRoot;
 	}
-	request.initialize(this);
+//	request.initialize(this);
 	local=new LocalImpl();//getScopeFactory().getLocalInstance();
 
 	if (config.mergeFormAndURL()) {
@@ -478,7 +475,30 @@ public final class PageContextImpl extends PageContext {
 	if (debugger != null) debugger.init(config);
 
 	undefined.initialize(this);
-	timeoutStacktrace = null;
+
+//	    try {
+//		    applicationScope();
+//	    } catch (PageException e) {
+//		    throw new RuntimeException("Application wasn't defined yet.", e);
+//	    }
+//	    argumentsScope();
+	    cgi.initialize(this);
+//	    clientScope();
+    cookieScope();
+    formScope();
+//	    localGet();
+//    requestScope();
+//    serverScope();
+//	    sessionScope();
+    us();
+//    urlScope();
+//    variablesScope();
+//	    clusterScope();
+    localScope();
+//    jetendoScope();
+
+
+	    timeoutStacktrace = null;
 	return this;
     }
 
@@ -562,7 +582,7 @@ public final class PageContextImpl extends PageContext {
 	    urlForm.release(this);
 	    request.release(this);
 	}
-	cgiR.release(this);
+	cgi.release(this);
 	cgiRW.release(this);
 	local = null;
 
@@ -912,7 +932,7 @@ public final class PageContextImpl extends PageContext {
 		addPageSource(currentPage.getPageSource(), true);
 		debugEntry.updateFileLoadTime((System.nanoTime() - time));
 		exeTime = System.nanoTime();
-		currentPage.call(this);
+		    ((PageImpl) currentPage).call(this);
 	    }
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
@@ -943,7 +963,7 @@ public final class PageContextImpl extends PageContext {
 	    if (runOnce && includeOnce.contains(currentPage.getPageSource())) return;
 	    try {
 		addPageSource(currentPage.getPageSource(), true);
-		currentPage.call(this);
+		    ((PageImpl) currentPage).call(this);
 	    }
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
@@ -1226,8 +1246,8 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public CGI cgiScope() {
-	CGI cgi = applicationContext.getCGIScopeReadonly() ? cgiR : cgiRW;
-	if (!cgi.isInitalized()) cgi.initialize(this);
+//	CGI cgi = applicationContext.getCGIScopeReadonly() ? this.cgi : cgiRW;
+//	if (!cgi.isInitalized()) cgi.initialize(this);
 	return cgi;
     }
 
@@ -3028,7 +3048,7 @@ public final class PageContextImpl extends PageContext {
 	}
 	cookie.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_COOKIE) > 0);
 	// CGI
-	cgiR.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
+	cgi.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
 	cgiRW.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
 	undefined.reinitialize(this);
     }
@@ -3725,7 +3745,7 @@ public final class PageContextImpl extends PageContext {
 		other._form = _form;
 		other.variables = variables;
 		other.application=application;
-		other.cgiR=cgiR;
+		other.cgi = cgi;
 		other.cgiRW=cgiRW;
 		other.session=session;
 		other.server=server;
