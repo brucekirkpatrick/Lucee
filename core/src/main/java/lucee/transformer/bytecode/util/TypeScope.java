@@ -96,17 +96,17 @@ public final class TypeScope {
 		return SCOPES[scope];
 	}
 
-	public static Type scopeField(GeneratorAdapter adapter, int scope) {
-		if(scope==Scope.SCOPE_APPLICATION || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_REQUEST || scope==Scope.SCOPE_COOKIE) {
-			invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
-		}else {
-			if(scope == SCOPE_UNDEFINED_LOCAL){
-				scope=Scope.SCOPE_UNDEFINED;
-			}
-			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
-		}
-		return SCOPES[scope];
-	}
+//	public static Type scopeField(GeneratorAdapter adapter, int scope) {
+//		if(scope==Scope.SCOPE_APPLICATION || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_REQUEST || scope==Scope.SCOPE_COOKIE) {
+//			invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
+//		}else {
+//			if(scope == SCOPE_UNDEFINED_LOCAL){
+//				scope=Scope.SCOPE_UNDEFINED;
+//			}
+//			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
+//		}
+//		return SCOPES[scope];
+//	}
 //    public static Type invokeScope(GeneratorAdapter adapter, int scope) {
 //	if (scope == SCOPE_UNDEFINED_LOCAL) {
 //	    adapter.checkCast(Types.PAGE_CONTEXT_IMPL);

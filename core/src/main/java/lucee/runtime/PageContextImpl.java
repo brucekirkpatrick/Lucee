@@ -236,7 +236,7 @@ public final class PageContextImpl extends PageContext {
 
 	public RequestImpl request = new RequestImpl();
     public CGIImplReadOnly cgi = new CGIImplReadOnly();
-    private CGIImpl cgiRW = new CGIImpl();
+//    private CGIImpl cgiRW = new CGIImpl();
 //    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
     public Local local;
 	public Session session;
@@ -418,6 +418,7 @@ public final class PageContextImpl extends PageContext {
 	this.req = new HTTPServletRequestWrap(req);
 	this.rsp = rsp;
 	this.servlet = servlet;
+	cgi.initialize(this);
 
 	// Writers
 	if (config.debugLogOutput()) {
@@ -482,7 +483,7 @@ public final class PageContextImpl extends PageContext {
 //		    throw new RuntimeException("Application wasn't defined yet.", e);
 //	    }
 //	    argumentsScope();
-	    cgi.initialize(this);
+//	    cgi.initialize(this);
 //	    clientScope();
     cookieScope();
     formScope();
@@ -583,7 +584,7 @@ public final class PageContextImpl extends PageContext {
 	    request.release(this);
 	}
 	cgi.release(this);
-	cgiRW.release(this);
+//	cgiRW.release(this);
 	local = null;
 
 	cookie.release(this);
@@ -3035,22 +3036,22 @@ public final class PageContextImpl extends PageContext {
 	client = null;
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
 	setFullNullSupport();
-	int scriptProtect = applicationContext.getScriptProtect();
-
-	// ScriptProtecting
-	if (config.mergeFormAndURL()) {
-	    form.setScriptProtecting(applicationContext,
-		    (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0 || (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
-	}
-	else {
-	    form.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0);
-	    url.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
-	}
-	cookie.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_COOKIE) > 0);
-	// CGI
-	cgi.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
-	cgiRW.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
-	undefined.reinitialize(this);
+//	int scriptProtect = applicationContext.getScriptProtect();
+//
+//	// ScriptProtecting
+//	if (config.mergeFormAndURL()) {
+//	    form.setScriptProtecting(applicationContext,
+//		    (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0 || (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
+//	}
+//	else {
+//	    form.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_FORM) > 0);
+//	    url.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_URL) > 0);
+//	}
+//	cookie.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_COOKIE) > 0);
+//	// CGI
+//	cgi.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
+//	cgiRW.setScriptProtecting(applicationContext, (scriptProtect & ApplicationContext.SCRIPT_PROTECT_CGI) > 0);
+//	undefined.reinitialize(this);
     }
 
     /**
@@ -3746,7 +3747,7 @@ public final class PageContextImpl extends PageContext {
 		other.variables = variables;
 		other.application=application;
 		other.cgi = cgi;
-		other.cgiRW=cgiRW;
+//		other.cgiRW=cgiRW;
 		other.session=session;
 		other.server=server;
 		other.cluster=cluster;
