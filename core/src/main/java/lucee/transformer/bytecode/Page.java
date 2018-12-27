@@ -153,9 +153,9 @@ public final class Page extends BodyBase implements Root {
     private static final Type USER_DEFINED_FUNCTION = Type.getType(UDF.class);
     private static final Method UDF_CALL = new Method("udfCall", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL, USER_DEFINED_FUNCTION, Types.INT_VALUE });
 
-    private static final Method THREAD_CALL = new Method("threadCall", Types.VOID, new Type[] { Types.PAGE_CONTEXT, Types.INT_VALUE });
+    private static final Method THREAD_CALL = new Method("threadCall", Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.INT_VALUE });
 
-    private static final Method UDF_DEFAULT_VALUE = new Method("udfDefaultValue", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT, Types.INT_VALUE, Types.INT_VALUE, Types.OBJECT });
+    private static final Method UDF_DEFAULT_VALUE = new Method("udfDefaultValue", Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.INT_VALUE, Types.INT_VALUE, Types.OBJECT });
 
     private static final Method NEW_COMPONENT_IMPL_INSTANCE = new Method("newInstance", Types.COMPONENT_IMPL,
 	    new Type[] { Types.PAGE_CONTEXT_IMPL, Types.STRING, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE, Types.BOOLEAN_VALUE });
@@ -571,7 +571,7 @@ public final class Page extends BodyBase implements Root {
 		adapter.visitVarInsn(Opcodes.ILOAD, 3);
 		adapter.visitVarInsn(Opcodes.ALOAD, 4);
 
-		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, "udfDefaultValue" + (++count), "(Llucee/runtime/PageContext;IILjava/lang/Object;)Ljava/lang/Object;");
+		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, "udfDefaultValue" + (++count), "(Llucee/runtime/PageContextImpl;IILjava/lang/Object;)Ljava/lang/Object;");
 		adapter.visitInsn(Opcodes.ARETURN);// adapter.returnValue();
 
 		cv.visitWhenAfterBody(bc);
@@ -585,7 +585,7 @@ public final class Page extends BodyBase implements Root {
 	    count = 0;
 	    Method innerDefaultValue;
 	    for (int i = 0; i < functions.length; i += 10) {
-		innerDefaultValue = new Method("udfDefaultValue" + (++count), Types.OBJECT, new Type[] { Types.PAGE_CONTEXT, Types.INT_VALUE, Types.INT_VALUE, Types.OBJECT });
+		innerDefaultValue = new Method("udfDefaultValue" + (++count), Types.OBJECT, new Type[] { Types.PAGE_CONTEXT_IMPL, Types.INT_VALUE, Types.INT_VALUE, Types.OBJECT });
 		adapter = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, innerDefaultValue, null, new Type[] { Types.PAGE_EXCEPTION }, cw);
 		writeUdfDefaultValueInner(
 			new BytecodeContext(optionalPS, constr, this, keys, cw, className, adapter, innerDefaultValue, writeLog(), suppressWSbeforeArg, output, returnValue),

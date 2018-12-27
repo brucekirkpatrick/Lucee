@@ -18,4 +18,6 @@ public abstract class PageImpl extends Page implements PagePro, ImplementationUd
 	public Object call(PageContextImpl pc) throws Throwable{
     	return null;
 	}
+	public void threadCall(final PageContextImpl pageContext, final int threadIndex) throws Throwable{
+	}
 }

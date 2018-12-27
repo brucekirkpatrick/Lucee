@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lucee.runtime.*;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -44,14 +45,6 @@ import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.PhysicalClassLoader;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.types.RefBoolean;
-import lucee.runtime.Component;
-import lucee.runtime.ComponentSpecificAccess;
-import lucee.runtime.Mapping;
-import lucee.runtime.Page;
-import lucee.runtime.PageContext;
-import lucee.runtime.PageContextImpl;
-import lucee.runtime.PageSource;
-import lucee.runtime.PageSourceImpl;
 import lucee.runtime.component.AbstractFinal.UDFB;
 import lucee.runtime.component.ImportDefintion;
 import lucee.runtime.component.Property;
@@ -825,8 +818,8 @@ public final class ComponentUtil {
 		param.set(KeyConstants._default, "[runtime expression]");
 	    }
 	    else if (defType == FunctionArgument.DEFAULT_TYPE_LITERAL) {
-		Page p = udf.getPage(pc);
-		param.set(KeyConstants._default, p.udfDefaultValue(pc, udf.getIndex(), y, null));
+	    	ImplementationUdfCall p = (ImplementationUdfCall) udf.getPage(pc);
+			param.set(KeyConstants._default, p.udfDefaultValue((PageContextImpl) pc, udf.getIndex(), y, null));
 	    }
 
 	    hint = args[y].getHint();

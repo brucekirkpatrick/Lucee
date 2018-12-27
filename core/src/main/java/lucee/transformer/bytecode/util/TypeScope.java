@@ -90,7 +90,7 @@ public final class TypeScope {
 			if(scope == SCOPE_UNDEFINED_LOCAL){
 				scope=Scope.SCOPE_UNDEFINED;
 			}
-			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
 		}
 		return SCOPES[scope];

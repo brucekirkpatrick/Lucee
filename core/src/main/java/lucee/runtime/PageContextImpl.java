@@ -932,7 +932,7 @@ public final class PageContextImpl extends PageContext {
 		addPageSource(currentPage.getPageSource(), true);
 		debugEntry.updateFileLoadTime((System.nanoTime() - time));
 		exeTime = System.nanoTime();
-		    ((PageImpl) currentPage).call(this);
+		    ((ImplementationUdfCall) currentPage).call(this);
 	    }
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
@@ -963,7 +963,7 @@ public final class PageContextImpl extends PageContext {
 	    if (runOnce && includeOnce.contains(currentPage.getPageSource())) return;
 	    try {
 		addPageSource(currentPage.getPageSource(), true);
-		    ((PageImpl) currentPage).call(this);
+		    ((ImplementationUdfCall) currentPage).call(this);
 	    }
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);

@@ -106,7 +106,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
     }
 
     private final Object castTo(PageContext pc, FunctionArgument arg, Object value, int index) throws PageException {
-	if (Decision.isCastableTo(pc, arg.getType(), arg.getTypeAsString(), value)) return value;
+	if (value==null || Decision.isCastableTo(pc, arg.getType(), arg.getTypeAsString(), value)) return value;
 	throw new UDFCasterException(this, arg, value, index);
     }
 
@@ -533,7 +533,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 
     @Override
     public Object getDefaultValue(PageContext pc, int index, Object defaultValue) throws PageException {
-	return properties.getPage(pc).udfDefaultValue(pc, properties.getIndex(), index, defaultValue);
+	return ((ImplementationUdfCall) properties.getPage(pc)).udfDefaultValue((PageContextImpl) pc, properties.getIndex(), index, defaultValue);
     }
 
     // public abstract Object getDefaultValue(PageContext pc,int index) throws PageException;

@@ -169,7 +169,7 @@ public class BodyBase extends StatementBaseNoFinal implements Body {
 		String method = ASMUtil.createOverfowMethod(bc.getMethod().getName(), bc.getPage().getMethodCount());
 		ExpressionUtil.visitLine(bc, s.getStart());
 		// ExpressionUtil.lastLine(bc);
-		m = new Method(method, Types.VOID, new Type[] { Types.PAGE_CONTEXT });
+		m = new Method(method, Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL });
 		a = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, m, null, new Type[] { Types.THROWABLE }, bc.getClassWriter());
 
 		_bc = new BytecodeContext(bc.getConstructor(), bc.getKeys(), bc, a, m);
@@ -178,7 +178,7 @@ public class BodyBase extends StatementBaseNoFinal implements Body {
 
 		adapter.visitVarInsn(Opcodes.ALOAD, 0);
 		adapter.visitVarInsn(Opcodes.ALOAD, 1);
-		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, bc.getClassName(), method, "(Llucee/runtime/PageContext;)V");
+		adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, bc.getClassName(), method, "(Llucee/runtime/PageContextImpl;)V");
 	    }
 	    if (_bc != bc && s.hasFlowController()) {
 		if (a != null) {
@@ -259,7 +259,7 @@ public class BodyBase extends StatementBaseNoFinal implements Body {
 	}
 
 	// ExpressionUtil.lastLine(bc);
-	Method m = new Method(method, Types.VOID, new Type[] { Types.PAGE_CONTEXT });
+	Method m = new Method(method, Types.VOID, new Type[] { Types.PAGE_CONTEXT_IMPL });
 	GeneratorAdapter a = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, m, null, new Type[] { Types.THROWABLE }, bc.getClassWriter());
 
 	BytecodeContext _bc = new BytecodeContext(bc.getConstructor(), bc.getKeys(), bc, a, m);
@@ -268,7 +268,7 @@ public class BodyBase extends StatementBaseNoFinal implements Body {
 
 	adapter.visitVarInsn(Opcodes.ALOAD, 0);
 	adapter.visitVarInsn(Opcodes.ALOAD, 1);
-	adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, bc.getClassName(), method, "(Llucee/runtime/PageContext;)V");
+	adapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, bc.getClassName(), method, "(Llucee/runtime/PageContextImpl;)V");
 
 	for (int i = 0; i < statements.length; i++) {
 	    ExpressionUtil.writeOut(statements[i], _bc);

@@ -124,7 +124,7 @@ public class CFFunction {
 	UDF udf = cache ? config.getFromFunctionCache(key) : null;
 	if (udf != null) return udf;
 
-	PageImpl p = (PageImpl) ps.loadPage(pc, false);
+	ImplementationUdfCall p = (ImplementationUdfCall) ps.loadPage(pc, false);
 
 	// execute page
 	Variables old = pc.variablesScope();

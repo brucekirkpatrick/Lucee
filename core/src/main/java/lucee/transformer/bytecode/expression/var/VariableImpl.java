@@ -617,8 +617,9 @@ public class VariableImpl extends ExpressionBase implements Variable {
 //			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, clazzType.getClassName(), methodName, "()Ljava/lang/Boolean;", false);
 		} else {
 			adapter.loadArg(0);
-			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
+			TypeScope.invokeScope(adapter, scope);
+//			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
 			adapter.checkCast(clazzType);
 			List<Type> types=new ArrayList<>();
 			for(Argument arg:args){
@@ -718,8 +719,9 @@ public class VariableImpl extends ExpressionBase implements Variable {
 			adapter.getStatic(clazzType, fieldName, fieldType);
 		} else {
 			adapter.loadArg(0);
-			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
+			TypeScope.invokeScope(adapter, scope);
+//			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
 			adapter.checkCast(clazzType);
 			adapter.getField(clazzType, fieldName, fieldType);
 		}

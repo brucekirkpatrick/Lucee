@@ -30,10 +30,7 @@ import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.log.Log;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.Pair;
-import lucee.runtime.Page;
-import lucee.runtime.PageContext;
-import lucee.runtime.PageContextImpl;
-import lucee.runtime.PageSourceImpl;
+import lucee.runtime.*;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
@@ -149,7 +146,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 
     public PageException execute(Config config) {
 	PageContext oldPc = ThreadLocalPageContext.get();
-	Page p = page;
+	Page p =page;
 	PageContextImpl pc = null;
 	try {
 	    // daemon
@@ -166,7 +163,8 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 		    pc = ThreadUtil.createPageContext(cwi, os, serverName, requestURI, queryString, SerializableCookie.toCookies(cookies), headers, null, parameters, attributes,
 			    true, -1);
 		    pc.setRequestTimeout(requestTimeout);
-		    p = PageSourceImpl.loadPage(pc, cwi.getPageSources(oldPc == null ? pc : oldPc, null, template, false, false, true));
+		    p =PageSourceImpl.loadPage(pc, cwi.getPageSources(oldPc == null ? pc : oldPc, null, template, false, false, true));
+
 		    // p=cwi.getPageSources(oldPc,null, template, false,false,true).loadPage(cwi);
 		}
 		catch (PageException e) {
@@ -174,7 +172,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 		}
 		pc.addPageSource(p.getPageSource(), true);
 	    }
-
+		ImplementationUdfCall pImpl=(ImplementationUdfCall) p;
 	    threadScope = pc.getThreadScope(KeyConstants._cfthread, null);
 	    pc.setCurrentThreadScope(new ThreadsImpl(this));
 	    pc.setThread(Thread.currentThread());
@@ -201,7 +199,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 	    pc.setFunctionScopes(newLocal);
 
 	    try {
-		p.threadCall(pc, threadIndex);
+		    pImpl.threadCall(pc, threadIndex);
 	    }
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
