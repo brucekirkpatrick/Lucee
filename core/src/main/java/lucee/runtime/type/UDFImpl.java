@@ -415,8 +415,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		Local oldLocal = pci.local;
 		UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
 		undefinedImpl.local=newLocal;
-		Variables oldVariables=undefinedImpl.variable;
-		undefinedImpl.variable=pci.variables;
+//		Variables oldVariables=undefinedImpl.variable;
+//		undefinedImpl.variable=pci.variables;
 		Collection.Key oldCalledName = pci.activeUDFCalledName;
 		UDFPropertiesImpl propertiesImpl=(UDFPropertiesImpl) properties;
 
@@ -452,7 +452,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 			if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
 			pci.local=oldLocal;
 			undefinedImpl.local=oldLocal;
-			undefinedImpl.variable=oldVariables;
+//			undefinedImpl.variable=oldVariables;
 			pci.activeUDF=currentUDF;
 			pci.activeUDFCalledName=oldCalledName;
 		}
