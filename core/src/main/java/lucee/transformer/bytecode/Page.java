@@ -903,27 +903,27 @@ public final class Page extends BodyBase implements Root {
 	adapter.storeLocal(localBC);
 
 	// int oldCheckArgs= pc.undefinedScope().setMode(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
-	final int oldCheckArgs = adapter.newLocal(Types.INT_VALUE);
-	adapter.loadArg(0);
-	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-	adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
-//	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
-	adapter.push(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
-	adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
-	adapter.storeLocal(oldCheckArgs);
+//	final int oldCheckArgs = adapter.newLocal(Types.INT_VALUE);
+//	adapter.loadArg(0);
+//	adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//	adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+////	adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+//	adapter.push(Undefined.MODE_NO_LOCAL_AND_ARGUMENTS);
+//	adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
+//	adapter.storeLocal(oldCheckArgs);
 
 	TryCatchFinallyVisitor tcf = new TryCatchFinallyVisitor(new OnFinally() {
 
 	    public void _writeOut(BytecodeContext bc) {
 
 		// undefined.setMode(oldMode);
-		adapter.loadArg(0);
-		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
-		adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
-//		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
-		adapter.loadLocal(oldCheckArgs, Types.INT_VALUE);
-		adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
-		adapter.pop();
+//		adapter.loadArg(0);
+//		adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
+//		adapter.getField(Types.PAGE_CONTEXT_IMPL, "undefined", Types.UNDEFINED);
+////		adapter.invokeVirtual(Types.PAGE_CONTEXT, UNDEFINED_SCOPE);
+//		adapter.loadLocal(oldCheckArgs, Types.INT_VALUE);
+//		adapter.invokeInterface(Types.UNDEFINED, SET_MODE);
+//		adapter.pop();
 
 		// c.afterCall(pc,_oldData);
 		// adapter.loadThis();

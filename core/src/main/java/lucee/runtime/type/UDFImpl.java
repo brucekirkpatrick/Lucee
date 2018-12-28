@@ -286,102 +286,129 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	ImplementationUdfCall implementationUdfCall=null;
 
     private Object _call(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
+		return _callSimple2(pc, calledName, args, values, doIncludePath);
 
-	    PageContextImpl pci = (PageContextImpl) pc;
-	    LocalImpl newLocal =new LocalImpl();
-	    Local oldLocal = pci.local;
-	    Collection.Key oldCalledName = pci.activeUDFCalledName;
-	    UDFPropertiesImpl propertiesImpl=(UDFPropertiesImpl) properties;
-
-	    UDF currentUDF=pci.activeUDF;
-	    pci.local=newLocal;
-	    UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
-	    undefinedImpl.local=newLocal;
-	    Variables oldVariables=undefinedImpl.variable;
-	    undefinedImpl.variable=pci.variables;
-	    pci.activeUDFCalledName=calledName;
-		PageSource ps;
-	    PageSource psInc;
-	    try {
-		    ps = properties.ps;
-		    if (doIncludePath) {
-			    if (ownerComponent != null) {
-				    if (componentPageSource == null) {
-					    componentPageSource = ComponentUtil.getPageSource(ownerComponent);
-				    }
-				    psInc = componentPageSource;
-				    if (psInc == pci.getCurrentTemplatePageSource()) {
-					    psInc = null;
-				    }
-			    } else {
-				    psInc = ps;
-			    }
-		    }
-		    if (ps != null) pci.pathList.add(ps);
-		    pci.udfs.add(this);
-
-		    BodyContent bc = null;
-		    Boolean wasSilent = null;
-
-		    boolean bufferOutput = getBufferOutput(pci);
-		    if (!propertiesImpl.output) {
-			    if (bufferOutput) bc = pci.pushBody();
-			    else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
-		    }
-
-		    UDF parent = null;
-		    Object returnValue = null;
-
-		    try {
-			    if (pageCache == null) {
-				    pageCache = properties.getPage(pc);
-				    implementationUdfCall=(ImplementationUdfCall) pageCache;
-			    }
-			    if (propertiesImpl.arguments.length > 0) {
-				    if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
-				    else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
-			    }
-			    if (ownerComponent != null) {
-				    parent = pci.activeUDF;
-				    pci.activeUDF = this;
-				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
-				    pci.activeUDF = parent;
-			    } else {
-				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
-			    }
-		    } catch (Throwable t) {
-			    ExceptionUtil.rethrowIfNecessary(t);
-			    if (ownerComponent != null) pci.activeUDF = parent;
-			    if (!propertiesImpl.output) {
-				    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
-				    else if (!wasSilent) pc.unsetSilent();
-			    }
-			    throw Caster.toPageException(t);
-		    }
-		    if (!propertiesImpl.output) {
-			    if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
-			    else if (!wasSilent) pc.unsetSilent();
-		    }
-
-		    if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null) {
-			    return returnValue;
-		    }
-		    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue;
-		    throw new UDFCasterException(this, propertiesImpl.strReturnType, returnValue);
-
-		}finally {
-			if (!pci.pathList.isEmpty()){
-				pci.pathList.removeLast();
-			}
-			if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
-			pci.local=oldLocal;
-			undefinedImpl.local=oldLocal;
-			undefinedImpl.variable=oldVariables;
-			pci.activeUDFCalledName=oldCalledName;
-			pci.activeUDF=currentUDF;
-		}
+//	    PageContextImpl pci = (PageContextImpl) pc;
+//	    LocalImpl newLocal =new LocalImpl();
+//	    Local oldLocal = pci.local;
+//	    Collection.Key oldCalledName = pci.activeUDFCalledName;
+//	    UDFPropertiesImpl propertiesImpl=(UDFPropertiesImpl) properties;
+//
+//	    UDF currentUDF=pci.activeUDF;
+//	    pci.local=newLocal;
+//	    UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
+//	    undefinedImpl.local=newLocal;
+//	    Variables oldVariables=undefinedImpl.variable;
+//	    undefinedImpl.variable=pci.variables;
+//	    pci.activeUDFCalledName=calledName;
+//		PageSource ps;
+//	    PageSource psInc;
+//	    try {
+//		    ps = properties.ps;
+//		    if (doIncludePath) {
+//			    if (ownerComponent != null) {
+//				    if (componentPageSource == null) {
+//					    componentPageSource = ComponentUtil.getPageSource(ownerComponent);
+//				    }
+//				    psInc = componentPageSource;
+//				    if (psInc == pci.getCurrentTemplatePageSource()) {
+//					    psInc = null;
+//				    }
+//			    } else {
+//				    psInc = ps;
+//			    }
+//		    }
+//		    if (ps != null) pci.pathList.add(ps);
+//		    pci.udfs.add(this);
+//
+//		    BodyContent bc = null;
+//		    Boolean wasSilent = null;
+//
+//		    boolean bufferOutput = getBufferOutput(pci);
+//		    if (!propertiesImpl.output) {
+//			    if (bufferOutput) bc = pci.pushBody();
+//			    else wasSilent = pc.setSilent() ? Boolean.TRUE : Boolean.FALSE;
+//		    }
+//
+//		    UDF parent = null;
+//		    Object returnValue = null;
+//
+//		    try {
+//			    if (pageCache == null) {
+//				    pageCache = properties.getPage(pc);
+//				    implementationUdfCall=(ImplementationUdfCall) pageCache;
+//			    }
+//			    if (propertiesImpl.arguments.length > 0) {
+//				    if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
+//				    else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
+//			    }
+//			    if (ownerComponent != null) {
+//				    parent = pci.activeUDF;
+//				    pci.activeUDF = this;
+//				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
+//				    pci.activeUDF = parent;
+//			    } else {
+//				    returnValue = implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
+//			    }
+//		    } catch (Throwable t) {
+//			    ExceptionUtil.rethrowIfNecessary(t);
+//			    if (ownerComponent != null) pci.activeUDF = parent;
+//			    if (!propertiesImpl.output) {
+//				    if (bufferOutput) BodyContentUtil.flushAndPop(pc, bc);
+//				    else if (!wasSilent) pc.unsetSilent();
+//			    }
+//			    throw Caster.toPageException(t);
+//		    }
+//		    if (!propertiesImpl.output) {
+//			    if (bufferOutput) BodyContentUtil.clearAndPop(pc, bc);
+//			    else if (!wasSilent) pc.unsetSilent();
+//		    }
+//
+//		    if (propertiesImpl.returnType == CFTypes.TYPE_ANY || returnValue == null) {
+//			    return returnValue;
+//		    }
+//		    if (Decision.isCastableTo(propertiesImpl.strReturnType, returnValue, false, false, -1)) return returnValue;
+//		    throw new UDFCasterException(this, propertiesImpl.strReturnType, returnValue);
+//
+//		}finally {
+//			if (!pci.pathList.isEmpty()){
+//				pci.pathList.removeLast();
+//			}
+//			if (!pci.udfs.isEmpty()) pci.udfs.removeLast();
+//			pci.local=oldLocal;
+//			undefinedImpl.local=oldLocal;
+//			undefinedImpl.variable=oldVariables;
+//			pci.activeUDFCalledName=oldCalledName;
+//			pci.activeUDF=currentUDF;
+//		}
     }
-	public Object _callSimple(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
+	public Object _callSimple(PageContext pc, Collection.Key calledName, Object[] args, Struct values) throws PageException {
+
+		PageContextImpl pci = (PageContextImpl) pc;
+		UDFPropertiesImpl propertiesImpl=(UDFPropertiesImpl) properties;
+		try {
+			try {
+				if(pageCache==null){
+					pageCache=properties.getPage(pc);
+					implementationUdfCall=(ImplementationUdfCall) pageCache;
+				}
+				if(propertiesImpl.arguments.length>0) {
+					if (args != null) defineArguments(pc, propertiesImpl.arguments, args, pci.local);
+					else defineArguments(pc, propertiesImpl.arguments, values, pci.local);
+				}
+				return implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
+			}
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
+				throw Caster.toPageException(t);
+			}
+		}
+		finally {
+		}
+	}
+
+	// this is more correct version, but twice as slow
+	public Object _callSimple2(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
 		PageContextImpl pci = (PageContextImpl) pc;
 		LocalImpl newLocal =new LocalImpl();

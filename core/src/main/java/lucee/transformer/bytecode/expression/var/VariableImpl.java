@@ -683,8 +683,14 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		} else {
 			type = TWO;
 		}
-		bc.getAdapter().invokeVirtual(udf.getSafeNavigated() ? Types.PAGE_CONTEXT_IMPL : Types.PAGE_CONTEXT,
-				udf.hasNamedArgs() ? GET_FUNCTION_WITH_NAMED_ARGS[type] : GET_FUNCTION[type]);
+//		if(udf.getName().toString().equalsIgnoreCase("getString2")) {
+			// directly call it?
+			// the scopeField,  keyInScope, argumentsObjectArray
+			// new Type[]{Types.OBJECT, Types.COLLECTION_KEY, Types.OBJECT_ARRAY, Types.OBJECT})
+//		}else{
+			bc.getAdapter().invokeVirtual(udf.getSafeNavigated() ? Types.PAGE_CONTEXT_IMPL : Types.PAGE_CONTEXT,
+					udf.hasNamedArgs() ? GET_FUNCTION_WITH_NAMED_ARGS[type] : GET_FUNCTION[type]);
+//		}
 		return Types.OBJECT;
 	}
 

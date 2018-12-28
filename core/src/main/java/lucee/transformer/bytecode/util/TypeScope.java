@@ -48,8 +48,29 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_JETENDO] = Type.getType(Jetendo.class);
 	// SCOPES[SCOPE_UNDEFINED_LOCAL]= SCOPES[Scope.SCOPE_LOCAL];
     }
+	public final static Type[] SCOPES_IMPL = new Type[ScopeSupport.SCOPE_COUNT];
+	static {
+		SCOPES_IMPL[Scope.SCOPE_APPLICATION] = Type.getType(ApplicationImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_ARGUMENTS] = Type.getType(LocalImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_CGI] = Type.getType(CGIImplReadOnly.class);
+		SCOPES_IMPL[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
+		SCOPES_IMPL[Scope.SCOPE_COOKIE] = Type.getType(CookieImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_FORM] = Type.getType(UrlFormImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_LOCAL] = Type.getType(LocalImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_REQUEST] = Type.getType(RequestImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_SERVER] = Type.getType(ServerImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_SESSION] = Type.getType(Session.class);
+		SCOPES_IMPL[Scope.SCOPE_UNDEFINED] = Type.getType(UndefinedImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_URL] = Type.getType(UrlFormImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_VARIABLES] = Type.getType(VariablesImpl.class);
+		SCOPES_IMPL[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
+		SCOPES_IMPL[Scope.SCOPE_VAR] = SCOPES_IMPL[Scope.SCOPE_LOCAL];
+		SCOPES_IMPL[Scope.SCOPE_JETENDO] = Type.getType(JetendoImpl.class);
+		// SCOPES_IMPL[SCOPE_UNDEFINED_LOCAL]= SCOPES_IMPL[Scope.SCOPE_LOCAL];
+	}
 
-    public final static Method[] METHODS = new Method[ScopeSupport.SCOPE_COUNT + 1];
+
+	public final static Method[] METHODS = new Method[ScopeSupport.SCOPE_COUNT + 1];
     static {
 	METHODS[Scope.SCOPE_APPLICATION] = new Method("applicationScope", SCOPES[Scope.SCOPE_APPLICATION], new Type[] {});
 	METHODS[Scope.SCOPE_ARGUMENTS] = new Method("argumentsScope", SCOPES[Scope.SCOPE_LOCAL], new Type[] {});

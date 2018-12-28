@@ -266,7 +266,7 @@ public final class PageContextImpl extends PageContext {
     private TagHandlerPool tagHandlerPool;
     private FTPPoolImpl ftpPool = new FTPPoolImpl();
 
-    private Component activeComponent;
+    public Component activeComponent;
     public UDF activeUDF;
     public Collection.Key activeUDFCalledName;
     // private ComponentScope componentScope=new ComponentScope(this);

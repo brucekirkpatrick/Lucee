@@ -607,8 +607,36 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	if (member == null) throw ComponentUtil.notFunction(this, KeyImpl.init(name), null, access);
 	throw ComponentUtil.notFunction(this, KeyImpl.init(name), member.getValue(), access);
     }
+	Object _call(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
+//		Object rtn = null;
+		Variables parent = null;
+//
+		PageContextImpl pci=(PageContextImpl) pc;
+		try {
+//			parent = beforeCall(pci);
+//			if (args != null) rtn = udf.call(pc, calledName, args, true);
+//			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
 
-    Object _call(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
+			parent=pci.variables;
+			pci.variables=scope;
+			((UndefinedImpl) pci.undefined).variable=scope;
+			pci.activeComponent = scope.getComponent();
+			if (args != null) {
+				return ((UDFImpl) udf)._callSimple2(pc, calledName, args, null, true);
+			}else{
+				return ((UDFImpl) udf)._callSimple2(pc, calledName, null, namedArgs, true);
+			}
+
+		}
+		finally {
+			pci.variables=parent;
+			((UndefinedImpl) pci.undefined).variable=parent;
+//			pc.setVariablesScope(parent);
+		}
+//		return rtn;
+	}
+
+    Object _callOriginal(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
 	Object rtn = null;
 	Variables parent = null;
 

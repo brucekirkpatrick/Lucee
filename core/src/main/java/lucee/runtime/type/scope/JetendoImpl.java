@@ -104,9 +104,16 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public Object getJavaString() throws PageException {
         return "1";
     }
+
+    Key getStringKey=new KeyImpl("getString");
     public Object getString() throws PageException {
 //        return tag+value;
-        return templateGetString._callSimple(pageContext, new KeyImpl("getString"), new Object[]{}, null, false);
+        return templateGetString._callSimple(pageContext, getStringKey, null, null);
+//        return templateGetString.call(pageContext, new Object[]{}, false);
+    }
+    public Object getString2() throws PageException {
+//        return tag+value;
+        return templateGetString._callSimple2(pageContext, getStringKey, null, null, false);
 //        return templateGetString.call(pageContext, new Object[]{}, false);
     }
     public Object setTag(String tag, String value) throws PageException {
