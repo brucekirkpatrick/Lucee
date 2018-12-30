@@ -35,11 +35,12 @@ public final class TagScript extends TagBaseNoFinal {
      */
     @Override
     public void _writeOut(BytecodeContext bc) throws TransformerException {
-	IfVisitor ifv = new IfVisitor();
-	ifv.visitBeforeExpression();
-	bc.getAdapter().push(true);
-	ifv.visitAfterExpressionBeforeBody(bc);
+    	// this if statement prevented the java locals feature from working
+//	IfVisitor ifv = new IfVisitor();
+//	ifv.visitBeforeExpression();
+//	bc.getAdapter().push(true);
+//	ifv.visitAfterExpressionBeforeBody(bc);
 	getBody().writeOut(bc);
-	ifv.visitAfterBody(bc);
+//	ifv.visitAfterBody(bc);
     }
 }

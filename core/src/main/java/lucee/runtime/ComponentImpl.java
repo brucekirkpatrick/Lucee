@@ -608,15 +608,10 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	throw ComponentUtil.notFunction(this, KeyImpl.init(name), member.getValue(), access);
     }
 	Object _call(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
-//		Object rtn = null;
 		Variables parent = null;
 //
 		PageContextImpl pci=(PageContextImpl) pc;
 		try {
-//			parent = beforeCall(pci);
-//			if (args != null) rtn = udf.call(pc, calledName, args, true);
-//			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
-
 			parent=pci.variables;
 			pci.variables=scope;
 			((UndefinedImpl) pci.undefined).variable=scope;
@@ -631,89 +626,87 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 		finally {
 			pci.variables=parent;
 			((UndefinedImpl) pci.undefined).variable=parent;
+		}
+	}
+
+//    Object _call(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
+//	Object rtn = null;
+//	Variables parent = null;
+//
+//	PageContextImpl pci=(PageContextImpl) pc;
+//	// INFO duplicate code is for faster execution -> less contions
+//
+//	// debug yes
+//	if (pc.getConfig().debug()) {
+//	    DebugEntryTemplate debugEntry = pc.getDebugger().getEntry(pc, pageSource, udf.getFunctionName());// new DebugEntry(src,udf.getFunctionName());
+//	    long currTime = pc.getExecutionTime();
+//	    long time = System.nanoTime();
+//
+//	    // sync yes
+//	    if (top.properties._synchronized) {
+//		synchronized (this) {
+//		    try {
+//			parent = beforeCall(pci);
+//			if (args != null) rtn = udf.call(pc, calledName, args, true);
+//			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
+//		    }
+//		    finally {
 //			pc.setVariablesScope(parent);
-		}
-//		return rtn;
-	}
-
-    Object _callOriginal(PageContext pc, Collection.Key calledName, UDFPlus udf, Struct namedArgs, Object[] args) throws PageException {
-	Object rtn = null;
-	Variables parent = null;
-
-	PageContextImpl pci=(PageContextImpl) pc;
-	// INFO duplicate code is for faster execution -> less contions
-
-	// debug yes
-	if (pc.getConfig().debug()) {
-	    DebugEntryTemplate debugEntry = pc.getDebugger().getEntry(pc, pageSource, udf.getFunctionName());// new DebugEntry(src,udf.getFunctionName());
-	    long currTime = pc.getExecutionTime();
-	    long time = System.nanoTime();
-
-	    // sync yes
-	    if (top.properties._synchronized) {
-		synchronized (this) {
-		    try {
-			parent = beforeCall(pci);
-			if (args != null) rtn = udf.call(pc, calledName, args, true);
-			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
-		    }
-		    finally {
-			pc.setVariablesScope(parent);
-			long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
-			pc.setExecutionTime(pc.getExecutionTime() + diff);
-			debugEntry.updateExeTime(diff);
-		    }
-		}
-	    }
-
-	    // sync no
-	    else {
-		try {
-		    parent = beforeCall(pci);
-		    if (args != null) rtn = udf.call(pc, calledName, args, true);
-		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
-		}
-		finally {
-		    pc.setVariablesScope(parent);
-		    long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
-		    pc.setExecutionTime(pc.getExecutionTime() + diff);
-		    debugEntry.updateExeTime(diff);
-		}
-	    }
-
-	}
-
-	// debug no
-	else {
-
-	    // sync yes
-	    if (top.properties._synchronized) {
-		synchronized (this) {
-		    try {
-			parent = beforeCall(pci);
-			if (args != null) rtn = udf.call(pc, calledName, args, true);
-			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
-		    }
-		    finally {
-			pc.setVariablesScope(parent);
-		    }
-		}
-	    }
-
-	    // sync no 385|263
-	    else {
-		try {
-		    parent = beforeCall(pci);
-		    if (args != null) rtn = udf.call(pc, calledName, args, true);
-		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
-		}
-		finally {
-		    pc.setVariablesScope(parent);
-		}
-	    }
-	}
-	return rtn;
-    }
+//			long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
+//			pc.setExecutionTime(pc.getExecutionTime() + diff);
+//			debugEntry.updateExeTime(diff);
+//		    }
+//		}
+//	    }
+//
+//	    // sync no
+//	    else {
+//		try {
+//		    parent = beforeCall(pci);
+//		    if (args != null) rtn = udf.call(pc, calledName, args, true);
+//		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
+//		}
+//		finally {
+//		    pc.setVariablesScope(parent);
+//		    long diff = ((System.nanoTime() - time) - (pc.getExecutionTime() - currTime));
+//		    pc.setExecutionTime(pc.getExecutionTime() + diff);
+//		    debugEntry.updateExeTime(diff);
+//		}
+//	    }
+//
+//	}
+//
+//	// debug no
+//	else {
+//
+//	    // sync yes
+//	    if (top.properties._synchronized) {
+//		synchronized (this) {
+//		    try {
+//			parent = beforeCall(pci);
+//			if (args != null) rtn = udf.call(pc, calledName, args, true);
+//			else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
+//		    }
+//		    finally {
+//			pc.setVariablesScope(parent);
+//		    }
+//		}
+//	    }
+//
+//	    // sync no 385|263
+//	    else {
+//		try {
+//		    parent = beforeCall(pci);
+//		    if (args != null) rtn = udf.call(pc, calledName, args, true);
+//		    else rtn = udf.callWithNamedValues(pc, calledName, namedArgs, true);
+//		}
+//		finally {
+//		    pc.setVariablesScope(parent);
+//		}
+//	    }
+//	}
+//	return rtn;
+//    }
 
 //    @Override
     public Variables beforeStaticConstructor(PageContextImpl pc) {

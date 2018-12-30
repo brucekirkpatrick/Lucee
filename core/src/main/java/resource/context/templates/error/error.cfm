@@ -42,7 +42,7 @@
 	}
 </script>
 
-
+<cftry>
 <cfoutput>
 <table id="-lucee-err" cellpadding="4" cellspacing="1">
 	<tr>
@@ -124,3 +124,9 @@
 </table>
 <br>
 </cfoutput>
+
+<cfcatch type="any">
+
+	<cfdump var="#catch#">
+</cfcatch>
+</cftry>

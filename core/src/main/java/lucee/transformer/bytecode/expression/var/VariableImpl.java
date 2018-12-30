@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lucee.runtime.exp.PageException;
+import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.scope.Jetendo;
 import lucee.runtime.type.scope.JetendoImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
@@ -704,13 +705,19 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		return null;
 	}
 
-	private Type writeOutGetScopeField(GeneratorAdapter adapter, Class<?> clazz, int scope, String memberName) {
+	private Type writeOutGetScopeField(BytecodeContext bc, GeneratorAdapter adapter, Class<?> clazz, int scope, String memberName) {
 		Type clazzType = Type.getType(clazz);
 		// force casting to the implementation type if necessary
 		// use reflection to get the Field
 		Field field = getField(clazz, memberName);
 		if (field == null) {
-			throw new RuntimeException("There is no field that is named: " + memberName + " in " + clazz.getCanonicalName());
+			// gets the value from a local variable if the scope didn't have the field
+			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
+			if(localIndex==-1){
+				throw new RuntimeException("There is no field or local that is named: " + memberName + " in " + clazz.getCanonicalName());
+			}
+			adapter.loadLocal(localIndex);
+			return Types.OBJECT;
 		}
 		// verify field is accessible
 		int modifiers = field.getModifiers();
@@ -843,6 +850,16 @@ L fully-qualified-class ;    fully-qualified-class
 
 		// collection
 		Type rtn;
+//		if (scope == Scope.SCOPE_VAR || scope == Scope.SCOPE_LOCAL || scope == Scope.SCOPE_UNDEFINED) {
+//			String memberName = member.getName().toString();
+//			// gets the value from a local variable if the scope didn't have the field
+//			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
+//			if(localIndex!=-1){
+//				adapter.loadLocal(localIndex);
+//				return Types.OBJECT;
+//			}
+//		}
+
 		if (scope == Scope.SCOPE_LOCAL && defaultValue != null) { // local
 			adapter.loadArg(0);
 			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
@@ -860,7 +877,7 @@ L fully-qualified-class ;    fully-qualified-class
 //		adapter.loadArg(0);
 //		TypeScope.invokeScope(adapter, scope);
 			String memberName = member.getName().toString();
-			return writeOutGetScopeField(adapter, JetendoImpl.class, scope, memberName);
+			return writeOutGetScopeField(bc, adapter, JetendoImpl.class, scope, memberName);
 		} else { // all other scopes
 			adapter.loadArg(0);
 			rtn = TypeScope.invokeScope(adapter, scope);

@@ -18,11 +18,15 @@
  */
 package lucee.transformer.bytecode;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import lucee.runtime.type.Collection;
+import lucee.transformer.bytecode.util.Types;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
@@ -58,6 +62,16 @@ public class BytecodeContext implements Context {
     private final boolean returnValue;
 
     private static long _id = 0;
+
+    private HashMap<Collection.Key, Integer> localMap=new HashMap<>();
+    public int getLocalIndex(Collection.Key key, Type type, boolean createIfMissing){
+    	int localInteger=localMap.getOrDefault(key, -1);
+    	if(localInteger==-1 && createIfMissing){
+    		localInteger=adapter.newLocal(type);
+    		localMap.put(key, localInteger);
+	    }
+    	return localInteger;
+    }
 
     private synchronized static String id() {
 	if (_id < 0) _id = 0;
@@ -122,9 +136,6 @@ public class BytecodeContext implements Context {
 	return count;
     }
 
-    /**
-     * @param count the count to set
-     */
     public int incCount() {
 	return ++this.count;
     }
@@ -141,7 +152,7 @@ public class BytecodeContext implements Context {
     }
 
     /**
-     * @param adapter the adapter to set
+     * @param bc the adapter to set
      */
     public void setAdapter(BytecodeContext bc) {
 	this.adapter = bc.getAdapter();

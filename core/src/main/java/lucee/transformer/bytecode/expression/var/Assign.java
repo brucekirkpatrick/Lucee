@@ -18,6 +18,7 @@
  */
 package lucee.transformer.bytecode.expression.var;
 
+import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.scope.JetendoImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
 import org.objectweb.asm.Opcodes;
@@ -219,7 +220,14 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		// use reflection to get the Field
 		Field field = getField(clazz, memberName);
 		if (field == null) {
-			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
+			// creates a local variable if the scope didn't have the field
+			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
+//			value.writeOut(bc, MODE_VALUE);
+			value.writeOut(bc, MODE_REF);
+			adapter.dup();
+			adapter.storeLocal(localIndex);
+//			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
+			return Types.OBJECT;
 		}
 		// verify field is accessible
 		int modifiers = field.getModifiers();
@@ -290,19 +298,33 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 	}
 
     private Type _writeOutOneDataMember(BytecodeContext bc, DataMember member, boolean last, boolean doOnlyScope) throws TransformerException {
-	GeneratorAdapter adapter = bc.getAdapter();
-
-	if (doOnlyScope) {
-	    adapter.loadArg(0);
-	    if (variable.getScope() == Scope.SCOPE_LOCAL) {
-		return TypeScope.invokeScope(adapter, TypeScope.METHOD_LOCAL_TOUCH, Types.PAGE_CONTEXT);
-	    }
-	    return TypeScope.invokeScope(adapter, variable.getScope());
-	}
+		GeneratorAdapter adapter = bc.getAdapter();
+		int scope=variable.getScope();
+		if (doOnlyScope) {
+		    adapter.loadArg(0);
+		    if (scope == Scope.SCOPE_LOCAL) {
+			return TypeScope.invokeScope(adapter, TypeScope.METHOD_LOCAL_TOUCH, Types.PAGE_CONTEXT);
+		    }
+		    return TypeScope.invokeScope(adapter, variable.getScope());
+		}
 
 	    // pc.get
 	    if (last) {
-		    if(variable.getScope() == Scope.SCOPE_JETENDO){
+
+//		    if (scope == Scope.SCOPE_VAR || scope == Scope.SCOPE_LOCAL || scope == Scope.SCOPE_UNDEFINED) {
+//			    // creates a local variable if the scope didn't have the field
+//			    String memberName=member.getName().toString();
+//			    int localIndex = bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
+////			    adapter.loadArg(0);
+////			    TypeScope.invokeScope(adapter, scope);
+////			    writeValue(bc);
+//			    value.writeOut(bc, MODE_REF);
+////			    adapter.checkCast(Types.OBJECT);
+//			    adapter.dup();
+//			    adapter.storeLocal(localIndex);
+//			    return Types.OBJECT;
+//		    }else
+		    if(scope == Scope.SCOPE_JETENDO){
 		    	return writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
 //
 //		    	// the value is not always a CFML Variable or Function
@@ -346,17 +368,17 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 //			    }
 		    }else {
 			    adapter.loadArg(0);
-			    TypeScope.invokeScope(adapter, variable.getScope());
+			    TypeScope.invokeScope(adapter, scope);
 			    getFactory().registerKey(bc, member.getName(), false);
 			    writeValue(bc);
-			    adapter.invokeInterface(TypeScope.SCOPES[variable.getScope()], METHOD_SCOPE_SET_KEY);
+			    adapter.invokeInterface(TypeScope.SCOPES[scope], METHOD_SCOPE_SET_KEY);
 		    }
 
 	    }
 	    else {
 		    adapter.loadArg(0);
 		    adapter.loadArg(0);
-		    TypeScope.invokeScope(adapter, variable.getScope());
+		    TypeScope.invokeScope(adapter, scope);
 		    getFactory().registerKey(bc, member.getName(), false);
 		    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
 	    }

@@ -194,7 +194,7 @@ public final class ComponentUtil {
     /**
      * check if one of the children is changed
      * 
-     * @param component
+     * @param last
      * @param clazz
      * @return return true if children has changed
      */
@@ -205,7 +205,7 @@ public final class ComponentUtil {
     /**
      * check if one of the children is changed
      * 
-     * @param component
+     * @param last
      * @param pc
      * @param clazz
      * @return return true if children has changed
@@ -552,6 +552,7 @@ public final class ComponentUtil {
 		adapter.loadArg(y);
 		av.visitEndItem(bc.getAdapter());
 	    }
+
 	    av.visitEnd();
 	    adapter.invokeStatic(SERVER_WSUTIL, INVOKE);
 	    adapter.checkCast(rtnType);
@@ -564,8 +565,8 @@ public final class ComponentUtil {
 	    for (int y = 0; y < types.length; y++) {
 		adapter.visitLocalVariable(args[y].getName().getString(), types[y].getDescriptor(), null, start, end, y + 1);
 	    }
-	    adapter.endMethod();
 
+	    adapter.endMethod();
 	    if (hasOptionalArgs) {
 		if (max == -1) max = args.length - 1;
 		else max--;
