@@ -233,9 +233,10 @@ public final class PageContextImpl extends PageContext {
 	public URL url;
 	public Form form;
 	public static final lucee.runtime.type.Collection.Key _lucee_debug = KeyImpl._const("luceedebug");
+	public Request request = new RequestImpl();
 
-	public RequestImpl request = new RequestImpl();
-    public CGIImplReadOnly cgi = new CGIImplReadOnly();
+	public CGI cgi=new CGIImplReadOnly();
+
 //    private CGIImpl cgiRW = new CGIImpl();
 //    private static LocalNotSupportedScope localUnsupportedScope = LocalNotSupportedScope.getInstance();
     public Local local;
@@ -243,7 +244,7 @@ public final class PageContextImpl extends PageContext {
 	public Server server;
 	public Jetendo jetendo;
 	public Cluster cluster;
-	public CookieImpl cookie = new CookieImpl();
+	public Cookie cookie = new CookieImpl();
 	public Client client;
 	public Application application;
 
@@ -1737,6 +1738,18 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public Object getFunction(Object coll, Key key, Object[] args) throws PageException {
+//		activeComponent.getMember()
+    	/*
+    	we could call the function directly from here since we have activeComponent
+
+    	Object obj= variable.get(methodName, null);
+//	Object obj = get(methodName, null); // every none UDF value is fine as default argument
+     if (obj instanceof UDFImpl) {
+//		    return ((UDFPlus) obj).call(pc, methodName, args, false);
+        return ((UDFImpl) obj)._callSimple2(pc, methodName, args, null, false);
+    }
+
+    	 */
 	return variableUtil.callFunctionWithoutNamedValues(this, coll, key, args);
     }
 

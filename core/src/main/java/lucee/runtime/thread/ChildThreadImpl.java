@@ -199,6 +199,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 	    pc.setFunctionScopes(newLocal);
 
 	    try {
+		    pc.applicationScope();
 		    pImpl.threadCall(pc, threadIndex);
 	    }
 	    catch (Throwable t) {

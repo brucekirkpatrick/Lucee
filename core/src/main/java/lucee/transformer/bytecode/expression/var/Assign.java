@@ -325,47 +325,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 //			    return Types.OBJECT;
 //		    }else
 		    if(scope == Scope.SCOPE_JETENDO){
-		    	return writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
-//
-//		    	// the value is not always a CFML Variable or Function
-//			    if(value instanceof Variable) {
-//			    	// this code runs when it is a CFML function or variable
-//
-//				    // create a new variable to be able store the variable value
-//				    int doubleValue= adapter.newLocal(Types.DOUBLE);
-//				    // load the pageContext
-//				    adapter.loadArg(0);
-//				    // invoke the value's scope
-//				    TypeScope.invokeScope(adapter, variable.getScope());
-//				    // invoke the last key of the value
-//				    getFactory().registerKey(bc, member.getName(), false);
-//				    // get the value out of the key
-//				    writeValue(bc);
-//				    // cast the value to the right type for the Jetendo scope, if possible
-//				    adapter.checkCast(Types.DOUBLE);
-//				    // we have to store the result in a local variable to be able to call PUTSTATIC
-//				    adapter.storeLocal(doubleValue);
-//				    // we have to remove the Key and Double from the stack
-//				    adapter.pop2();
-//				    // reload the result
-//				    adapter.loadLocal(doubleValue);
-//
-//				    // we have to duplicate the value so that we can both put and return it
-//				    adapter.dup();
-//				    // assign the variable to the static field of the JetendoImpl class
-//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
-//			    }else {
-//			    	// A plain Java type was found, put it's value on the stack
-//				    value.writeOut(bc, MODE_VALUE);
-//				    // adapter.valueOf(); // this might be better for all types
-//				    // get the Double value onto the stack
-//				    adapter.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-//
-//				    // we have to duplicate the value so that we can both put and return it
-//				    adapter.dup();
-//				    // assign the variable to the static field of the JetendoImpl class
-//				    adapter.visitFieldInsn(Opcodes.PUTSTATIC, "lucee/runtime/type/scope/JetendoImpl", "memberDoubleStatic", "Ljava/lang/Double;");
-//			    }
+		    	writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
 		    }else {
 			    adapter.loadArg(0);
 			    TypeScope.invokeScope(adapter, scope);
@@ -373,14 +333,18 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 			    writeValue(bc);
 			    adapter.invokeInterface(TypeScope.SCOPES[scope], METHOD_SCOPE_SET_KEY);
 		    }
-
 	    }
 	    else {
-		    adapter.loadArg(0);
-		    adapter.loadArg(0);
-		    TypeScope.invokeScope(adapter, scope);
-		    getFactory().registerKey(bc, member.getName(), false);
-		    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
+		    if(scope == Scope.SCOPE_JETENDO) {
+			    ((VariableImpl) variable)._writeOutFirstDataMember(bc, member, scope, false, false, null, null);
+//			    return writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
+		    }else {
+			    adapter.loadArg(0);
+			    adapter.loadArg(0);
+			    TypeScope.invokeScope(adapter, scope);
+			    getFactory().registerKey(bc, member.getName(), false);
+			    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
+		    }
 	    }
 	    return Types.OBJECT;
 

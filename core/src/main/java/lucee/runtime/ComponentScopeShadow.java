@@ -55,7 +55,7 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
 
     private static final long serialVersionUID = 4930100230796574243L;
 
-    private final ComponentImpl component;
+    public final ComponentImpl component;
     private static final int access = Component.ACCESS_PRIVATE;
     private final MapPro<Key, Object> shadow;
 

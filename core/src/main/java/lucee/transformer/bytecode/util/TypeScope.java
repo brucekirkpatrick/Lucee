@@ -31,7 +31,7 @@ public final class TypeScope {
     public final static Type[] SCOPES = new Type[ScopeSupport.SCOPE_COUNT];
     static {
 	SCOPES[Scope.SCOPE_APPLICATION] = Type.getType(Application.class);
-	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(lucee.runtime.type.scope.Local.class);
+	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(Local.class);
 	SCOPES[Scope.SCOPE_CGI] = Type.getType(CGI.class);
 	SCOPES[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
 	SCOPES[Scope.SCOPE_COOKIE] = Type.getType(Cookie.class);
@@ -105,15 +105,15 @@ public final class TypeScope {
     public final static Type SCOPE_ARGUMENT = Type.getType(Local.class);
 
 	public static Type invokeScope(GeneratorAdapter adapter, int scope) {
-		if(scope==Scope.SCOPE_APPLICATION || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_REQUEST || scope==Scope.SCOPE_COOKIE) {
-			invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
-		}else {
+//		if(scope==Scope.SCOPE_APPLICATION){// || scope==Scope.SCOPE_REQUEST){// || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_COOKIE) {//
+//			adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
+//		}else {
 			if(scope == SCOPE_UNDEFINED_LOCAL){
 				scope=Scope.SCOPE_UNDEFINED;
 			}
 //			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 			adapter.getField(Types.PAGE_CONTEXT_IMPL, ScopeFactory.toStringScope(scope, "undefined"), SCOPES[scope]);
-		}
+//		}
 		return SCOPES[scope];
 	}
 

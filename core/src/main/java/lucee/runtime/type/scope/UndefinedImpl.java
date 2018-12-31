@@ -41,14 +41,7 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.functions.system.CFFunction;
 import lucee.runtime.listener.ApplicationContextSupport;
 import lucee.runtime.op.Duplicator;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Query;
-import lucee.runtime.type.QueryColumn;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.UDF;
-import lucee.runtime.type.UDFPlus;
+import lucee.runtime.type.*;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
@@ -86,7 +79,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
     public UndefinedImpl(PageContextImpl pc, short type) {
 	this.type = type;
 	this.pc = pc;
-	this.variable=pc.variablesScope();
+	this.variable=pc.variables;//pc.variablesScope();
     }
 
     @Override
@@ -745,10 +738,15 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 
     @Override
     public Object call(PageContext pc, final Key methodName, Object[] args) throws PageException {
-	Object obj = get(methodName, null); // every none UDF value is fine as default argument
-	if (obj instanceof UDFPlus) {
-	    return ((UDFPlus) obj).call(pc, methodName, args, false);
-	}
+	    Object obj= variable.get(methodName, null);
+//	Object obj = get(methodName, null); // every none UDF value is fine as default argument
+     if (obj instanceof UDFImpl) {
+//		    return ((UDFPlus) obj).call(pc, methodName, args, false);
+        return ((UDFImpl) obj)._callSimple2(pc, methodName, args, null, false);
+    }
+//	if (obj instanceof UDFPlus) {
+//	    return ((UDFPlus) obj).call(pc, methodName, args, false);
+//	}
 	UDF udf = getUDF(pc, methodName);
 	if (udf instanceof UDFPlus) {
 	    return ((UDFPlus) udf).call(pc, methodName, args, false);

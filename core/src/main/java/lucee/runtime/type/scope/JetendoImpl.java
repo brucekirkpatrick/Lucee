@@ -96,13 +96,43 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
             templateSetTag=(UDFPlus) template.getMember(ACCESS_PRIVATE, new KeyImpl("setTag"), false, false);
             templateGetString=(UDFImpl) template.getMember(ACCESS_PRIVATE, new KeyImpl("getString"), false, false);
             //(Component) CreateObject.call(pageContext, "component", "zcorerootmapping.com.zos.template", null, null);
+
+
+            // method type of _callSimple2?
+            // PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath
+            // first arg is return type
+//            MethodType mt = MethodType.methodType(Object.class, PageContext.class, Collection.Key.class, Object[].class, Struct.class, boolean.class);
+//            getSlowMethodCallSite(UDFImpl.class, "_callSimple2", mt, 1);
         } catch (PageException e) {
             throw new RuntimeException(e);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
         }
         return true;
     }
     public Object getJavaString() throws PageException {
         return "1";
+    }
+
+//    public static CallSite bootstrap(MethodHandles.Lookup lookup, String name, MethodType type)
+//            throws Throwable{
+//        return new MutableCallSite(mh);
+//    }
+//		adapter.invokeDynamic(memberName, "Z", bootstrap, handle);
+
+    private static MethodHandles.Lookup lookup = MethodHandles.lookup();
+    // implement UDFImpl lookup for specific memberName
+
+
+    public static CallSite getSlowMethodCallSite(Class c, String methodName, MethodType mt, int n) throws Throwable {
+        MethodHandle mh=getMethod(c, methodName, mt);
+
+        return new MutableCallSite(mh);
+    }
+
+    public static MethodHandle getMethod(Class c, String methodName, MethodType mt) throws Throwable {
+        MethodHandle mh = lookup.findVirtual(c, methodName, mt);
+        return mh;
     }
 
     Key getStringKey=new KeyImpl("getString");

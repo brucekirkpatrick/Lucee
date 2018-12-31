@@ -98,7 +98,7 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     private Statement stat;
     private ResultSetMetaData meta;
     private Collection.Key[] columnNames;
-    private Map<String, SimpleQueryColumn> columns = new LinkedHashMap<String, SimpleQueryColumn>();
+    private Map<Key, SimpleQueryColumn> columns = new HashMap<>();
     private int[] _types;
 
     private String name;
@@ -200,13 +200,13 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
 		throw toRuntimeExc(e);
 	    }
 	    if (StringUtil.isEmpty(columnName)) columnName = "column_" + i;
-	    key = KeyImpl.init(columnName);
+	    key = KeyImpl.init(columnName.toLowerCase());
 	    int index = tmpKeys.indexOf(key);
 	    if (index == -1) {
 		// mappings.put(key.getLowerString(), Caster.toInteger(i+1));
 		tmpKeys.add(key);
 		// tmpTypes.add(type);
-		columns.put(key.getLowerString(), new SimpleQueryColumn(this, res, key, type, i + 1));
+		columns.put(key, new SimpleQueryColumn(this, res, key, type, i + 1));
 
 		// count++;
 	    }
@@ -295,24 +295,20 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     }
 
     public Object getAt(Key key, int row, int pid, Object defaultValue) {
-	char c = key.lowerCharAt(0);
-	if (c == 'r') {
-	    if (key.equals(KeyConstants._RECORDCOUNT)) return new Double(getRecordcount());
-	}
-	else if (c == 'c') {
-	    if (key.equals(KeyConstants._CURRENTROW)) return new Double(getCurrentrow(pid));
-	    else if (key.equals(KeyConstants._COLUMNLIST)) return getColumnlist();
-	}
-
-	SimpleQueryColumn column = columns.get(key.getLowerString());
-	if (column == null) return null;
-	try {
-	    return column.get(row, defaultValue);
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	    return defaultValue;
-	}
+	    SimpleQueryColumn col = columns.getOrDefault(key, null);
+	    if(col==null) {
+		    if (key.getString().length() > 0) {
+			    char c = key.lowerCharAt(0);
+			    if (c == 'r') {
+				    if (key.equals(KeyConstants._RECORDCOUNT)) return new QueryColumnRef(this, key, Types.INTEGER);
+			    } else if (c == 'c') {
+				    if (key.equals(KeyConstants._CURRENTROW)) return new QueryColumnRef(this, key, Types.INTEGER);
+				    else if (key.equals(KeyConstants._COLUMNLIST)) return new QueryColumnRef(this, key, Types.INTEGER);
+			    }
+		    }
+		    return null;
+	    }
+	    return col.get(key, defaultValue);
     }
 
     public Object getAt(Key key, int row, int pid) throws PageException {
@@ -481,7 +477,7 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
 
     public String getColumnlist(boolean upperCase) {
 	Key[] columnNames = keys();
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	for (int i = 0; i < columnNames.length; i++) {
 	    if (i > 0) sb.append(',');
 	    sb.append(upperCase ? columnNames[i].getUpperString() : columnNames[i].getString());
@@ -605,7 +601,7 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
 	if (_types == null) {
 	    _types = new int[columns.size()];
 	    int i = 0;
-	    Iterator<Entry<String, SimpleQueryColumn>> it = columns.entrySet().iterator();
+	    Iterator<Entry<Key, SimpleQueryColumn>> it = columns.entrySet().iterator();
 	    while (it.hasNext()) {
 		_types[i++] = it.next().getValue().getType();
 	    }
@@ -629,15 +625,27 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     @Override
 
     public QueryColumn getColumn(String key) throws DatabaseException {
-	return getColumn(KeyImpl.init(key));
+	return getColumn(KeyImpl.init(key.toLowerCase()));
     }
 
     @Override
 
     public QueryColumn getColumn(Key key) throws DatabaseException {
-	QueryColumn rtn = getColumn(key, null);
-	if (rtn != null) return rtn;
-	throw new DatabaseException("key [" + key.getString() + "] not found in query, columns are [" + getColumnlist(false) + "]", null, null, null);
+		SimpleQueryColumn col = columns.getOrDefault(key, null);
+		if(col==null) {
+			if (key.getString().length() > 0) {
+				char c = key.lowerCharAt(0);
+				if (c == 'r') {
+					if (key.equals(KeyConstants._RECORDCOUNT)) return new QueryColumnRef(this, key, Types.INTEGER);
+				} else if (c == 'c') {
+					if (key.equals(KeyConstants._CURRENTROW)) return new QueryColumnRef(this, key, Types.INTEGER);
+					else if (key.equals(KeyConstants._COLUMNLIST)) return new QueryColumnRef(this, key, Types.INTEGER);
+				}
+			}
+		}else{
+			return col;
+		}
+		throw new DatabaseException("key [" + key.getString() + "] not found in query, columns are [" + getColumnlist(false) + "]", null, null, null);
     }
 
     @Override
@@ -648,24 +656,24 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     @Override
 
     public QueryColumn getColumn(Key key, QueryColumn defaultValue) {
-	if (key.getString().length() > 0) {
-	    char c = key.lowerCharAt(0);
-	    if (c == 'r') {
-		if (key.equals(KeyConstants._RECORDCOUNT)) return new QueryColumnRef(this, key, Types.INTEGER);
+	    SimpleQueryColumn col = columns.getOrDefault(key, null);
+	    if(col==null) {
+		    if (key.getString().length() > 0) {
+			    char c = key.lowerCharAt(0);
+			    if (c == 'r') {
+				    if (key.equals(KeyConstants._RECORDCOUNT)) return new QueryColumnRef(this, key, Types.INTEGER);
+			    } else if (c == 'c') {
+				    if (key.equals(KeyConstants._CURRENTROW)) return new QueryColumnRef(this, key, Types.INTEGER);
+				    else if (key.equals(KeyConstants._COLUMNLIST)) return new QueryColumnRef(this, key, Types.INTEGER);
+			    }
+		    }
+	    }else{
+		    return col;
 	    }
-	    else if (c == 'c') {
-		if (key.equals(KeyConstants._CURRENTROW)) return new QueryColumnRef(this, key, Types.INTEGER);
-		else if (key.equals(KeyConstants._COLUMNLIST)) return new QueryColumnRef(this, key, Types.INTEGER);
-	    }
-	    SimpleQueryColumn col = columns.get(key.getLowerString());
-	    if (col != null) return col;
-
-	}
-	return defaultValue;
+		return defaultValue;
     }
 
     @Override
-
     public synchronized void rename(Key columnName, Key newColumnName) throws ExpressionException {
 	throw notSupported();
 	// Integer index=mappings.get(columnName);
@@ -929,9 +937,44 @@ public class SimpleQuery implements Query, ResultSet, Objects, QueryResult {
     }
 
     @Override
-
     public Object call(PageContext pc, Key methodName, Object[] arguments) throws PageException {
-	throw notSupported();
+    	switch(methodName.getLowerString()){
+		    case "columnindex":
+		    case "ci":
+			    try {
+				    return res.getString(((Double) arguments[0]).intValue());
+			    } catch (SQLException e) {
+				    throw new RuntimeException(e);
+			    }
+		    case "column":
+		    case "c":
+			    try{
+				    return res.getString((String) arguments[0]);
+			    } catch (SQLException e) {
+				    throw new RuntimeException(e);
+			    }
+		    case "next":
+			    try{
+				    return res.next();
+			    } catch (SQLException e) {
+				    throw new RuntimeException(e);
+			    }
+		    case "reset":
+			    try{
+				    res.beforeFirst();
+				    return true;
+			    } catch (SQLException e) {
+				    throw new RuntimeException(e);
+			    }
+		    case "close":
+			    try{
+				    res.close();
+				    return true;
+			    } catch (SQLException e) {
+				    throw new RuntimeException(e);
+			    }
+	    }
+	    throw new RuntimeException("Method name is not supported: "+methodName.getLowerString());
     }
 
     @Override
