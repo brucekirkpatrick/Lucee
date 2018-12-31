@@ -18,8 +18,13 @@
  */
 package lucee.transformer.bytecode.op;
 
+import lucee.transformer.bytecode.expression.var.VariableImpl;
+import lucee.transformer.bytecode.expression.var.VariableString;
 import lucee.transformer.bytecode.literal.LitStringImpl;
 import lucee.transformer.bytecode.cast.CastString;
+import lucee.transformer.bytecode.util.Methods;
+import lucee.transformer.expression.ExprBoolean;
+import lucee.transformer.expression.ExprDouble;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -87,10 +92,35 @@ public final class OpString extends ExpressionBase implements ExprString {
     	// we append all the expressions based on their type
 		// stringbuilder is able to convert to string from other types when you pass object, so Lucee doesn't need to do that anymore
 		if(exprString instanceof CastString) {
-			CastString exprStringCastString = ((CastString) exprString);
-//			exprStringCastString._writeOutRef(bc, MODE_REF);
-			exprStringCastString._writeOut(bc, MODE_REF);
-			adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+			// working version
+//			CastString exprStringCastString = ((CastString) exprString);
+//			exprStringCastString._writeOut(bc, MODE_REF);
+//			adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+
+
+            CastString castString = ((CastString) exprString);
+            Expression expr=castString.getExpr();
+            if (expr instanceof ExprBoolean) {
+                expr.writeOut(bc, MODE_VALUE);
+                adapter.invokeStatic(Types.CASTER, Methods.METHOD_TO_STRING_FROM_BOOLEAN);
+                adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+            }else if (expr instanceof ExprDouble) {
+                expr.writeOut(bc, MODE_VALUE);
+                adapter.invokeStatic(Types.CASTER, Methods.METHOD_TO_STRING_FROM_DOUBLE);
+                adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+            }else if (expr instanceof ExprString || expr instanceof VariableString) {
+                expr.writeOut(bc, MODE_VALUE);
+//                adapter.invokeStatic(Types.CASTER, Methods.METHOD_TO_STRING);
+                adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+            }else{
+                Type rtn = ((ExpressionBase) expr).writeOutAsType(bc, MODE_REF);
+                if (rtn.equals(Types.STRING)) {
+                    adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+                }else {
+                    adapter.invokeStatic(Types.CASTER, Methods.METHOD_TO_STRING);
+                    adapter.invokeVirtual(Types.STRING_BUILDER, APPEND_STRING);
+                }
+            }
 		}else if(exprString instanceof LitStringImpl) {
 			LitStringImpl exprStringLit = ((LitStringImpl) exprString);
 			exprStringLit._writeOut(bc, MODE_REF);
