@@ -742,7 +742,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
 //	Object obj = get(methodName, null); // every none UDF value is fine as default argument
      if (obj instanceof UDFImpl) {
 //		    return ((UDFPlus) obj).call(pc, methodName, args, false);
-        return ((UDFImpl) obj)._callSimple2(pc, methodName, args, null, false);
+        return ((UDFImpl) obj)._callSimple2((PageContextImpl) pc, methodName, args, null, false);
     }
 //	if (obj instanceof UDFPlus) {
 //	    return ((UDFPlus) obj).call(pc, methodName, args, false);

@@ -47,7 +47,7 @@ public class LitStringImpl extends ExpressionBase implements LitString, ExprStri
     public static final int TYPE_UPPER = 1;
     public static final int TYPE_LOWER = 2;
 
-    private String str;
+    public String str;
     private boolean fromBracket;
 
     /*

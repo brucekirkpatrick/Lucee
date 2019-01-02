@@ -286,7 +286,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	ImplementationUdfCall implementationUdfCall=null;
 
     private Object _call(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
-		return _callSimple2(pc, calledName, args, values, doIncludePath);
+		return _callSimple2((PageContextImpl) pc, calledName, args, values, doIncludePath);
 
 //	    PageContextImpl pci = (PageContextImpl) pc;
 //	    LocalImpl newLocal =new LocalImpl();
@@ -408,9 +408,8 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 	}
 
 	// this is more correct version, but twice as slow
-	public Object _callSimple2(PageContext pc, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
+	public Object _callSimple2(PageContextImpl pci, Collection.Key calledName, Object[] args, Struct values, boolean doIncludePath) throws PageException {
 
-		PageContextImpl pci = (PageContextImpl) pc;
 		LocalImpl newLocal =new LocalImpl();
 		Local oldLocal = pci.local;
 		UndefinedImpl undefinedImpl=((UndefinedImpl) pci.undefined);
@@ -431,12 +430,12 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 			pci.udfs.add(this);
 			try {
 				if(pageCache==null){
-					pageCache=properties.getPage(pc);
+					pageCache=properties.getPage(pci);
 					implementationUdfCall=(ImplementationUdfCall) pageCache;
 				}
 				if(propertiesImpl.arguments.length>0) {
-					if (args != null) defineArguments(pc, propertiesImpl.arguments, args, newLocal);
-					else defineArguments(pc, propertiesImpl.arguments, values, newLocal);
+					if (args != null) defineArguments(pci, propertiesImpl.arguments, args, newLocal);
+					else defineArguments(pci, propertiesImpl.arguments, values, newLocal);
 				}
 				return implementationUdfCall.udfCall(pci, this, propertiesImpl.index);
 			}

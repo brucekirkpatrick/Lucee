@@ -611,7 +611,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	if (member == null) throw ComponentUtil.notFunction(this, KeyImpl.init(name), null, access);
 	throw ComponentUtil.notFunction(this, KeyImpl.init(name), member.getValue(), access);
     }
-	Object _call(PageContext pc, Collection.Key calledName, UDFImpl udf, Struct namedArgs, Object[] args) throws PageException {
+	public Object _call(PageContext pc, Collection.Key calledName, UDFImpl udf, Struct namedArgs, Object[] args) throws PageException {
 		Variables parent = null;
 //
 		PageContextImpl pci=(PageContextImpl) pc;
@@ -622,9 +622,9 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 
 			pci.activeComponent = ((ComponentScopeShadow) scope).component;
 			if (args != null) {
-				return ((UDFImpl) udf)._callSimple2(pc, calledName, args, null, true);
+				return ((UDFImpl) udf)._callSimple2(pci, calledName, args, null, true);
 			}else{
-				return ((UDFImpl) udf)._callSimple2(pc, calledName, null, namedArgs, true);
+				return ((UDFImpl) udf)._callSimple2(pci, calledName, null, namedArgs, true);
 			}
 
 		}
@@ -913,7 +913,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
      * @param superAccess do check also base component
      * @return matching entry if exists otherwise null
      */
-    protected Member getMember(PageContext pc, Collection.Key key, boolean dataMember, boolean superAccess) {
+    public Member getMember(PageContext pc, Collection.Key key, boolean dataMember, boolean superAccess) {
 	// check super
 	if (dataMember && isSuperKey(key) && isPrivate(pc)) {
 	    Component ac = ComponentUtil.getActiveComponent(pc, this);

@@ -19,8 +19,10 @@
 package lucee.runtime.type.scope;
 
 import lucee.runtime.Component;
+import lucee.runtime.ComponentImpl;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
+import lucee.runtime.component.Member;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
@@ -112,6 +114,66 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     }
     public Object getJavaString() throws PageException {
         return "1";
+    }
+    class CFCFunction{
+        public UDFImpl udfImpl;
+        public ComponentImpl componentImpl;
+        public Collection.Key calledName;
+        public CFCFunction(ComponentImpl componentImpl, UDFImpl udfImpl, Collection.Key calledName){
+            this.udfImpl=udfImpl;
+            this.componentImpl=componentImpl;
+            this.calledName=calledName;
+        }
+    }
+
+    public CFCFunction getFunction(Object component, Object udfObj) {
+        ComponentImpl componentImpl;
+        if(component instanceof ComponentImpl) {
+            componentImpl = (ComponentImpl) component;
+        }else{
+            throw new RuntimeException("Unknown type for 1st argument: component");
+        }
+        UDFImpl udfImpl;
+        if(udfObj instanceof UDFImpl) {
+            udfImpl=(UDFImpl) udfObj;
+        }else{
+            throw new RuntimeException("Unknown type for 2nd argument: udfObj");
+        }
+        return new CFCFunction(componentImpl, udfImpl, KeyImpl.init(udfImpl.getFunctionName()));
+    }
+
+    public CFCFunction getFunction(Object component, UDFImpl udfImpl) {
+        ComponentImpl componentImpl;
+        if(component instanceof ComponentImpl) {
+            componentImpl = (ComponentImpl) component;
+        }else{
+            throw new RuntimeException("Unknown type for 1st argument: component");
+        }
+        return new CFCFunction(componentImpl, udfImpl, KeyImpl.init(udfImpl.getFunctionName()));
+    }
+    public CFCFunction getFunction(Object component, String functionName) {
+        return getFunction(component, KeyImpl.init(functionName));
+    }
+    public CFCFunction getFunction(Object component, Key calledName){
+        ComponentImpl componentImpl;
+        if(component instanceof ComponentImpl) {
+             componentImpl = (ComponentImpl) component;
+        }else{
+            throw new RuntimeException("Unknown type for 1st argument: component");
+        }
+        Member member = componentImpl.getMember(pageContext, calledName, false, false);
+        if (member instanceof UDFImpl) {
+            return new CFCFunction(componentImpl, (UDFImpl) member, calledName);
+        }
+        throw new RuntimeException("Method \""+calledName.getString()+"\" doesn't exist in component "+componentImpl.getCallName()+" or access is denied.");
+    }
+    public Object runFunction(Object cfcFunctionObj, Object arg) throws PageException {
+        CFCFunction cfcFunction=(CFCFunction) cfcFunctionObj;
+        return cfcFunction.componentImpl._call(pageContext, cfcFunction.calledName, cfcFunction.udfImpl, null, new Object[]{arg});
+    }
+    public Object runFunction(Object cfcFunctionObj, Object ... args) throws PageException {
+        CFCFunction cfcFunction=(CFCFunction) cfcFunctionObj;
+        return cfcFunction.componentImpl._call(pageContext, cfcFunction.calledName, cfcFunction.udfImpl, null, args);
     }
 
 //    public static CallSite bootstrap(MethodHandles.Lookup lookup, String name, MethodType type)
