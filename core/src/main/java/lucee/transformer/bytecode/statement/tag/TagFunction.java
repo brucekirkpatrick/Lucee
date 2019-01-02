@@ -36,6 +36,7 @@ import lucee.transformer.bytecode.BodyBase;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.Page;
 import lucee.transformer.bytecode.Statement;
+import lucee.transformer.bytecode.literal.LitStringImpl;
 import lucee.transformer.bytecode.statement.FlowControlFinal;
 import lucee.transformer.bytecode.statement.IFunction;
 import lucee.transformer.bytecode.statement.PrintOut;
@@ -87,55 +88,70 @@ public final class TagFunction extends TagBase implements IFunction {
 	Tag tag;
 
 	// suppress WS between cffunction and the last cfargument
-	Tag last = null;
-	if (bc.getSupressWSbeforeArg()) {
-	    // check if there is a cfargument at all
-	    Iterator<Statement> it = statements.iterator();
-	    while (it.hasNext()) {
-		stat = it.next();
-		if (stat instanceof Tag) {
-		    tag = (Tag) stat;
-		    if (tag.getTagLibTag().getTagClassDefinition().isClassNameEqualTo("lucee.runtime.tag.Argument")) {
-			last = tag;
-		    }
-		}
-	    }
-
-	    // check if there are only literal WS printouts
-	    if (last != null) {
-		it = statements.iterator();
-		while (it.hasNext()) {
-		    stat = it.next();
-		    if (stat == last) break;
-
-		    if (stat instanceof PrintOut) {
-			PrintOut po = (PrintOut) stat;
-			Expression expr = po.getExpr();
-			if (!(expr instanceof LitString) || !StringUtil.isWhiteSpace(((LitString) expr).getString())) {
-			    last = null;
-			    break;
-			}
-		    }
-		}
-	    }
-	}
+//	Tag last = null;
+//	if (bc.getSupressWSbeforeArg()) {
+//	    // check if there is a cfargument at all
+//	    Iterator<Statement> it = statements.iterator();
+//	    while (it.hasNext()) {
+//		stat = it.next();
+//		if (stat instanceof Tag) {
+//		    tag = (Tag) stat;
+//		    if (tag.getTagLibTag().getTagClassDefinition().isClassNameEqualTo("lucee.runtime.tag.Argument")) {
+//			last = tag;
+//		    }
+//		}
+//	    }
+//
+//	    // check if there are only literal WS printouts
+//	    if (last != null) {
+//		it = statements.iterator();
+//		while (it.hasNext()) {
+//		    stat = it.next();
+//		    if (stat == last) break;
+//
+//		    if (stat instanceof PrintOut) {
+//			PrintOut po = (PrintOut) stat;
+//			Expression expr = po.getExpr();
+//			if (!(expr instanceof LitString) || !StringUtil.isWhiteSpace(((LitString) expr).getString())) {
+//			    last = null;
+//			    break;
+//			}
+//		    }
+//		}
+//	    }
+//	}
 
 	Iterator<Statement> it = statements.iterator();
-	boolean beforeLastArgument = last != null;
+	boolean inWhiteSpace =true;// last != null;
 	while (it.hasNext()) {
 	    stat = it.next();
-	    if (beforeLastArgument) {
-		if (stat == last) {
-		    beforeLastArgument = false;
-		}
-		else if (stat instanceof PrintOut) {
-		    PrintOut po = (PrintOut) stat;
-		    Expression expr = po.getExpr();
-		    if (expr instanceof LitString) {
-			LitString ls = (LitString) expr;
-			if (StringUtil.isWhiteSpace(ls.getString())) continue;
+	    if (inWhiteSpace) {
+//			if (stat == last) {
+//			    inWhiteSpace = false;
+//			}else
+		    if (stat instanceof PrintOut) {
+			    PrintOut po = (PrintOut) stat;
+			    Expression expr = po.getExpr();
+			    if (expr instanceof LitStringImpl) {
+					LitStringImpl ls = (LitStringImpl) expr;
+					ls.str=ls.str.replaceAll("^\\s+","");
+					if(ls.str.length()==0) {
+						continue;
+					}else{
+						// not whitespace, lets stop
+						inWhiteSpace=false;
+					}
+			    }else{
+				    // not whitespace, lets stop
+				    inWhiteSpace=false;
+
+			    }
+			}else if (stat instanceof Tag) {
+			    tag = (Tag) stat;
+			    if (!tag.getTagLibTag().getTagClassDefinition().isClassNameEqualTo("lucee.runtime.tag.Argument")) {
+				    inWhiteSpace = false;
+			    }
 		    }
-		}
 
 	    }
 	    if (stat instanceof Tag) {
