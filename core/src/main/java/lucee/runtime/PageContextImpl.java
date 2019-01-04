@@ -157,17 +157,8 @@ import lucee.runtime.tag.TagHandlerPool;
 import lucee.runtime.tag.TagUtil;
 import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.thread.ThreadsImpl;
-import lucee.runtime.type.Array;
-import lucee.runtime.type.Collection;
+import lucee.runtime.type.*;
 import lucee.runtime.type.Collection.Key;
-import lucee.runtime.type.Iterator;
-import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.Query;
-import lucee.runtime.type.SVArray;
-import lucee.runtime.type.Struct;
-import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.UDF;
-import lucee.runtime.type.UDFPlus;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.it.ItAsEnum;
 import lucee.runtime.type.ref.Reference;
@@ -1750,7 +1741,10 @@ public final class PageContextImpl extends PageContext {
     }
 
     	 */
-	return variableUtil.callFunctionWithoutNamedValues(this, coll, key, args);
+	    if (coll instanceof Objects) {
+		    return ((Objects) coll).call(this, key, args);
+	    }
+		return variableUtil.callFunctionWithoutNamedValues(this, coll, key, args);
     }
 
     // FUTURE add to interface
