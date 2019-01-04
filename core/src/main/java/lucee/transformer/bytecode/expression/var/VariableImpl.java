@@ -220,7 +220,8 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		// count 0
 		if (count == 0) return _writeOutEmpty(bc);
 
-		boolean doOnlyScope = scope == Scope.SCOPE_LOCAL;
+//		boolean doOnlyScope = scope == Scope.SCOPE_LOCAL;
+		boolean doOnlyScope =false;
 
 		// boolean last;
 		int c = 0;
@@ -297,7 +298,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 
 		// collection
 		RefInteger startIndex = new RefIntegerImpl();
-		_writeOutFirst(bc, (members.get(0)), mode, count == 1, true, defaultValue, startIndex);
+		_writeOutFirst(bc, (members.get(0)), mode, count == 1, false, defaultValue, startIndex);
 
 		// keys
 		Iterator<Member> it = members.iterator();
@@ -351,7 +352,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 			m = TypeScope.METHOD_VAR_BIND;
 		} else m = TypeScope.METHODS[scope];
 
-		TypeScope.invokeScope(adapter, m, t);
+		TypeScope.invokeScope(bc, adapter, m, t);
 
 		return m.getReturnType();
 	}
@@ -618,7 +619,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 //			adapter.visitMethodInsn(Opcodes.INVOKESTATIC, clazzType.getClassName(), methodName, "()Ljava/lang/Boolean;", false);
 		} else {
 			adapter.loadArg(0);
-			TypeScope.invokeScope(adapter, scope);
+			TypeScope.invokeScope(bc, adapter, scope);
 //			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 //			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
 			adapter.checkCast(clazzType);
@@ -651,7 +652,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 
 		if (!doOnlyScope) adapter.loadArg(0);
 
-		Type rtn = TypeScope.invokeScope(adapter, scope);
+		Type rtn = TypeScope.invokeScope(bc, adapter, scope);
 		if (doOnlyScope) return rtn;
 
 		return _writeOutUDF(bc, udf);
@@ -732,7 +733,7 @@ public class VariableImpl extends ExpressionBase implements Variable {
 			adapter.getStatic(clazzType, fieldName, fieldType);
 		} else {
 			adapter.loadArg(0);
-			TypeScope.invokeScope(adapter, scope);
+			TypeScope.invokeScope(bc, adapter, scope);
 //			adapter.checkCast(Types.PAGE_CONTEXT_IMPL);
 //			adapter.invokeVirtual(Types.PAGE_CONTEXT_IMPL, TypeScope.METHODS[scope]);
 			adapter.checkCast(clazzType);
@@ -850,15 +851,15 @@ L fully-qualified-class ;    fully-qualified-class
 
 		// collection
 		Type rtn;
-//		if (scope == Scope.SCOPE_VAR || scope == Scope.SCOPE_LOCAL || scope == Scope.SCOPE_UNDEFINED) {
-//			String memberName = member.getName().toString();
-//			// gets the value from a local variable if the scope didn't have the field
-//			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
-//			if(localIndex!=-1){
-//				adapter.loadLocal(localIndex);
-//				return Types.OBJECT;
-//			}
-//		}
+		String memberName = member.getName().toString();
+		if (scope== Scope.SCOPE_LOCAL || scope==Scope.SCOPE_VAR || scope==Scope.SCOPE_UNDEFINED) {
+			// gets the value from a local variable if the scope didn't have the field
+			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
+			if(localIndex!=-1){
+				adapter.loadLocal(localIndex);
+				return Types.OBJECT;
+			}
+		}
 
 		if (scope == Scope.SCOPE_LOCAL && defaultValue != null) { // local
 			adapter.loadArg(0);
@@ -869,18 +870,17 @@ L fully-qualified-class ;    fully-qualified-class
 			rtn = Types.OBJECT;
 		} else if (scope == Scope.SCOPE_JETENDO) {
 //		adapter.loadArg(0);
-//        TypeScope.invokeScope(adapter, scope);
+//        TypeScope.invokeScope(bc, adapter, scope);
 //		String memberName=member.getName().toString();
 //		writeOutGetField(adapter, JetendoImpl.class, memberName);
 //		return Types.OBJECT;
 
 //		adapter.loadArg(0);
-//		TypeScope.invokeScope(adapter, scope);
-			String memberName = member.getName().toString();
+//		TypeScope.invokeScope(bc, adapter, scope);
 			return writeOutGetScopeField(bc, adapter, JetendoImpl.class, scope, memberName);
 		} else { // all other scopes
 			adapter.loadArg(0);
-			rtn = TypeScope.invokeScope(adapter, scope);
+			rtn = TypeScope.invokeScope(bc, adapter, scope);
 		}
 
 		if (doOnlyScope) return rtn;

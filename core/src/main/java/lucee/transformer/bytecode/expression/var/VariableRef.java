@@ -64,8 +64,7 @@ public final class VariableRef extends ExpressionBase {
 
 	int scope = variable.getScope();
 	if (alwaysLocal && scope == Scope.SCOPE_UNDEFINED) scope = TypeScope.SCOPE_UNDEFINED_LOCAL;
-	TypeScope.invokeScope(adapter, scope);
-
+		TypeScope.invokeScope(bc, adapter, scope);
 	boolean isLast;
 	for (int i = 0; i < count; i++) {
 	    isLast = (i + 1) == count;
