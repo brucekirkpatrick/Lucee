@@ -58,6 +58,7 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
     public final ComponentImpl component;
     private static final int access = Component.ACCESS_PRIVATE;
     private final MapPro<Key, Object> shadow;
+    private Collection superComponent=null;
 
     /**
      * Constructor of the class
@@ -162,7 +163,10 @@ public class ComponentScopeShadow extends StructSupport implements ComponentScop
             char[] chars = key.getUpperString().toCharArray();
             // check for S U P E R
             if (chars[0] == 83 && chars[1] == 85 && chars[2] == 80 && chars[3] == 69 && chars[4] == 82) {
-                return SuperComponent.superInstance((ComponentImpl) ComponentUtil.getActiveComponent(ThreadLocalPageContext.get(), component).getBaseComponent());
+            	if(superComponent==null){
+		            superComponent=SuperComponent.superInstance(component.base);
+	            }
+                return superComponent;//(ComponentImpl) ComponentUtil.getActiveComponent(ThreadLocalPageContext.get(), component).getBaseComponent());
             }
         }else if(length==6) {
             char[] chars = key.getUpperString().toCharArray();
