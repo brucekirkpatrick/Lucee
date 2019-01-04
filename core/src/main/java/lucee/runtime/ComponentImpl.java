@@ -617,10 +617,10 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 		PageContextImpl pci=(PageContextImpl) pc;
 		try {
 			parent=pci.variables;
-			pci.variables=scope;
+			pci.variables=((ComponentScopeShadow) scope).component.top.scope;
 			((UndefinedImpl) pci.undefined).variable=scope;
 
-			pci.activeComponent = ((ComponentScopeShadow) scope).component;
+			pci.activeComponent = ((ComponentScopeShadow) scope).component.top;
 			if (args != null) {
 				return ((UDFImpl) udf)._callSimple2(pci, calledName, args, null, true);
 			}else{
