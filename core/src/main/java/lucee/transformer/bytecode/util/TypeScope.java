@@ -19,7 +19,6 @@
 package lucee.transformer.bytecode.util;
 
 import lucee.runtime.type.scope.*;
-import lucee.transformer.bytecode.BytecodeContext;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -105,13 +104,10 @@ public final class TypeScope {
 
     public final static Type SCOPE_ARGUMENT = Type.getType(Local.class);
 
-	public static Type invokeScope(BytecodeContext bc, GeneratorAdapter adapter, int scope) {
+	public static Type invokeScope(GeneratorAdapter adapter, int scope) {
 //		if(scope==Scope.SCOPE_APPLICATION){// || scope==Scope.SCOPE_REQUEST){// || scope==Scope.SCOPE_CGI || scope==Scope.SCOPE_COOKIE) {//
 //			adapter.invokeVirtual(Types.PAGE_CONTEXT, TypeScope.METHODS[scope]);
 //		}else {
-		if(scope == SCOPE_UNDEFINED_LOCAL || scope== Scope.SCOPE_LOCAL || scope==Scope.SCOPE_VAR || scope==Scope.SCOPE_UNDEFINED) {
-			return SCOPES[scope];
-		}
 			if(scope == SCOPE_UNDEFINED_LOCAL){
 				scope=Scope.SCOPE_UNDEFINED;
 			}
@@ -140,7 +136,7 @@ public final class TypeScope {
 //	else return invokeScope(adapter, TypeScope.METHODS[scope], Types.PAGE_CONTEXT);
 //    }
 
-    public static Type invokeScope(BytecodeContext bc, GeneratorAdapter adapter, Method m, Type type) {
+    public static Type invokeScope(GeneratorAdapter adapter, Method m, Type type) {
 	if (type == null) type = Types.PAGE_CONTEXT;
 	adapter.invokeVirtual(type, m);
 	return m.getReturnType();

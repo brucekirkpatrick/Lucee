@@ -99,8 +99,7 @@ public class Assign extends ExpressionBase {
 	    return _writeOutEmpty(bc);
 	}
 
-//	boolean doOnlyScope = variable.getScope() == Scope.SCOPE_LOCAL;
-	boolean	doOnlyScope=false;
+	boolean doOnlyScope = variable.getScope() == Scope.SCOPE_LOCAL;
 
 	Type rtn = Types.OBJECT;
 	// boolean last;
@@ -222,13 +221,9 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		Field field = getField(clazz, memberName);
 		if (field == null) {
 			// creates a local variable if the scope didn't have the field
-			int localIndex = bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
+			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
 //			value.writeOut(bc, MODE_VALUE);
 			value.writeOut(bc, MODE_REF);
-			if (adapter.getLocalType(localIndex) != Types.OBJECT){
-				adapter.cast(adapter.getLocalType(localIndex), Types.OBJECT);
-			}
-//			adapter.checkCast(Types.OBJECT);
 			adapter.dup();
 			adapter.storeLocal(localIndex);
 //			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
@@ -308,12 +303,11 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		if (doOnlyScope) {
 		    adapter.loadArg(0);
 		    if (scope == Scope.SCOPE_LOCAL) {
-			return TypeScope.invokeScope(bc, adapter, TypeScope.METHOD_LOCAL_TOUCH, Types.PAGE_CONTEXT);
+			return TypeScope.invokeScope(adapter, TypeScope.METHOD_LOCAL_TOUCH, Types.PAGE_CONTEXT);
 		    }
-		    return TypeScope.invokeScope(bc, adapter, variable.getScope());
+		    return TypeScope.invokeScope(adapter, variable.getScope());
 		}
 
-	    String memberName=member.getName().toString();
 	    // pc.get
 	    if (last) {
 
@@ -322,7 +316,7 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 //			    String memberName=member.getName().toString();
 //			    int localIndex = bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
 ////			    adapter.loadArg(0);
-////			    TypeScope.invokeScope(bc, adapter, scope);
+////			    TypeScope.invokeScope(adapter, scope);
 ////			    writeValue(bc);
 //			    value.writeOut(bc, MODE_REF);
 ////			    adapter.checkCast(Types.OBJECT);
@@ -330,21 +324,11 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 //			    adapter.storeLocal(localIndex);
 //			    return Types.OBJECT;
 //		    }else
-		    if(scope == Scope.SCOPE_JETENDO) {
-			    writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
-		    }else if(scope== Scope.SCOPE_LOCAL || scope==Scope.SCOPE_VAR || scope==Scope.SCOPE_UNDEFINED){
-			    int localIndex = bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
-			    value.writeOut(bc, MODE_REF);
-			    if (adapter.getLocalType(localIndex) != Types.OBJECT){
-				    adapter.cast(adapter.getLocalType(localIndex), Types.OBJECT);
-			    }
-//			adapter.checkCast(Types.OBJECT);
-			    adapter.dup();
-			    adapter.storeLocal(localIndex);
-			    return Types.OBJECT;
+		    if(scope == Scope.SCOPE_JETENDO){
+		    	writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
 		    }else {
 			    adapter.loadArg(0);
-			    TypeScope.invokeScope(bc, adapter, scope);
+			    TypeScope.invokeScope(adapter, scope);
 			    getFactory().registerKey(bc, member.getName(), false);
 			    writeValue(bc);
 			    adapter.invokeInterface(TypeScope.SCOPES[scope], METHOD_SCOPE_SET_KEY);
@@ -354,12 +338,10 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		    if(scope == Scope.SCOPE_JETENDO) {
 			    ((VariableImpl) variable)._writeOutFirstDataMember(bc, member, scope, false, false, null, null);
 //			    return writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
-		    }else if(scope== Scope.SCOPE_LOCAL){// || scope==Scope.SCOPE_VAR){// || scope==Scope.SCOPE_UNDEFINED) && !memberName.equalsIgnoreCase("top")){
-			    ((VariableImpl) variable)._writeOutFirstDataMember(bc, member, scope, false, false, null, null);
 		    }else {
 			    adapter.loadArg(0);
 			    adapter.loadArg(0);
-			    TypeScope.invokeScope(bc, adapter, scope);
+			    TypeScope.invokeScope(adapter, scope);
 			    getFactory().registerKey(bc, member.getName(), false);
 			    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
 		    }
@@ -373,13 +355,13 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 
 	if (variable.getScope() == Scope.SCOPE_ARGUMENTS) {
 	    adapter.loadArg(0);
-	    TypeScope.invokeScope(bc, adapter, Scope.SCOPE_ARGUMENTS);
+	    TypeScope.invokeScope(adapter, Scope.SCOPE_ARGUMENTS);
 	    writeValue(bc);
 	    adapter.invokeInterface(TypeScope.SCOPE_ARGUMENT, SET_ARGUMENT);
 	}
 	else {
 	    adapter.loadArg(0);
-	    TypeScope.invokeScope(bc, adapter, Scope.SCOPE_UNDEFINED);
+	    TypeScope.invokeScope(adapter, Scope.SCOPE_UNDEFINED);
 	    getFactory().registerKey(bc, bc.getFactory().createLitString(ScopeFactory.toStringScope(variable.getScope(), "undefined")), false);
 	    writeValue(bc);
 	    adapter.invokeInterface(TypeScope.SCOPES[Scope.SCOPE_UNDEFINED], METHOD_SCOPE_SET_KEY);
