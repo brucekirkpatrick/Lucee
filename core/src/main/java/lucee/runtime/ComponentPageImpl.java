@@ -168,13 +168,14 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    if (pc.getBasePageSource() == this.getPageSource() && pc.getConfig().debug()) pc.getDebugger().setOutput(false);
 	    boolean isPost = pc.getHttpServletRequest().getMethod().equalsIgnoreCase("POST");
 
-	    boolean suppressContent = pc.getRequestDialect() == CFMLEngine.DIALECT_LUCEE || ((PageContextImpl) pc).getSuppressContent();
-	    if (suppressContent) pc.clear();
+//	    boolean suppressContent = pc.getRequestDialect() == CFMLEngine.DIALECT_LUCEE || ((PageContextImpl) pc).getSuppressContent();
+//	    if (suppressContent)
+	    	pc.clear();
 	    Object method;
 
 	    if (fromRest) {
 
-		callRest(pc, component, Caster.toString(req.getAttribute("rest-path"), ""), (Result) req.getAttribute("rest-result"), suppressContent);
+		callRest(pc, component, Caster.toString(req.getAttribute("rest-path"), ""), (Result) req.getAttribute("rest-result"), false);
 		return null;
 	    }
 
@@ -188,7 +189,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 		}
 		// WDDX
 		else if ((method = getURLorForm(pc, KeyConstants._method, null)) != null) {
-		    callWDDX(pc, component, KeyImpl.toKey(method), suppressContent);
+		    callWDDX(pc, component, KeyImpl.toKey(method), false);
 		    // close(pc);
 		    return null;
 		}
@@ -205,7 +206,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 		}
 		// WDDX
 		else if ((method = getURLorForm(pc, KeyConstants._method, null)) != null) {
-		    callWDDX(pc, component, KeyImpl.toKey(method), suppressContent);
+		    callWDDX(pc, component, KeyImpl.toKey(method), false);
 		    // close(pc);
 		    return null;
 		}

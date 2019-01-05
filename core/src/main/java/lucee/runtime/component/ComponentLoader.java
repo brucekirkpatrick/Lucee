@@ -116,17 +116,17 @@ public class ComponentLoader {
 	    }
 	}
 
-	int dialect = currPS == null ? pc.getCurrentTemplateDialect() : currPS.getDialect();
+//	int dialect = currPS == null ? pc.getCurrentTemplateDialect() : currPS.getDialect();
 	// first try for the current dialect
-	Object obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, dialect, isExtendedComponent);
+	Object obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, CFMLEngine.DIALECT_CFML, isExtendedComponent);
 	// then we try the opposite dialect
-	if (obj == null && ((ConfigImpl) pc.getConfig()).allowLuceeDialect()) { // only when the lucee dialect is enabled we have to check the opposite
-	    obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions,
-		    dialect == CFMLEngine.DIALECT_CFML ? CFMLEngine.DIALECT_LUCEE : CFMLEngine.DIALECT_CFML, isExtendedComponent);
-	}
+//	if (obj == null && ((ConfigImpl) pc.getConfig()).allowLuceeDialect()) { // only when the lucee dialect is enabled we have to check the opposite
+//	    obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions,
+//		    dialect == CFMLEngine.DIALECT_CFML ? CFMLEngine.DIALECT_LUCEE : CFMLEngine.DIALECT_CFML, isExtendedComponent);
+//	}
 
 	if (obj == null)
-	    throw new ExpressionException("invalid " + toStringType(returnType, dialect) + " definition, can't find " + toStringType(returnType, dialect) + " [" + rawPath + "]");
+	    throw new ExpressionException("invalid " + toStringType(returnType, CFMLEngine.DIALECT_CFML) + " definition, can't find " + toStringType(returnType, CFMLEngine.DIALECT_CFML) + " [" + rawPath + "]");
 	return obj;
     }
 
@@ -134,7 +134,7 @@ public class ComponentLoader {
 	    PageSource currPS, ImportDefintion[] importDefintions, int dialect, final boolean isExtendedComponent) throws PageException {
 	ConfigImpl config = (ConfigImpl) pc.getConfig();
 
-	if (dialect == CFMLEngine.DIALECT_LUCEE && !config.allowLuceeDialect()) PageContextImpl.notSupported();
+	//if (dialect == CFMLEngine.DIALECT_LUCEE && !config.allowLuceeDialect()) PageContextImpl.notSupported();
 
 	boolean doCache = config.useComponentPathCache();
 	String sub = null;
@@ -365,7 +365,7 @@ public class ComponentLoader {
     }
 
     private static String toStringType(short returnType, int dialect) {
-	if (RETURN_TYPE_COMPONENT == returnType) return dialect == CFMLEngine.DIALECT_LUCEE ? "class" : "component";
+	if (RETURN_TYPE_COMPONENT == returnType) return "component";//dialect == CFMLEngine.DIALECT_LUCEE ? "class" :
 	if (RETURN_TYPE_INTERFACE == returnType) return "interface";
 	return "component/interface";
     }

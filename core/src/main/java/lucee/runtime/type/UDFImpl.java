@@ -167,7 +167,7 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 		if (funcArgs[i].isRequired()) {
 		    throw new ExpressionException("The parameter " + funcArgs[i].getName() + " to function " + getFunctionName() + " is required but was not passed in.");
 		}
-		if (pageContext.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && !pageContext.getConfig().getFullNullSupport()) newArgs.set(name, null);
+		if (!pageContext.getConfig().getFullNullSupport()) newArgs.set(name, null);
 	    }
 	    else newArgs.set(name, castTo(pageContext, funcArgs[i], defaultValue, i + 1));
 	}

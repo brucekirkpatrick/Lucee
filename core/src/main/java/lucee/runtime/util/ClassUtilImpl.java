@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import lucee.loader.engine.CFMLEngine;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -68,7 +69,7 @@ public class ClassUtilImpl implements ClassUtil {
 	    return new BIFProxy(res);
 	}
 
-	FunctionLib[] flds = ((ConfigWebImpl) pc.getConfig()).getFLDs(pc.getCurrentTemplateDialect());
+	FunctionLib[] flds = ((ConfigWebImpl) pc.getConfig()).getFLDs(CFMLEngine.DIALECT_CFML);//pc.getCurrentTemplateDialect());
 	FunctionLibFunction flf;
 	for (int i = 0; i < flds.length; i++) {
 	    flf = flds[i].getFunction(name);
