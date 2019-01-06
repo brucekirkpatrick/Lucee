@@ -72,15 +72,15 @@ public final class Application extends TagImpl {
     private static final int ACTION_CREATE = 0;
     private static final int ACTION_UPDATE = 1;
 
-    private Boolean setClientCookies;
+//    private Boolean setClientCookies;
     private Boolean setDomainCookies;
     private Boolean setSessionManagement;
-    private String clientstorage;
+//    private String clientstorage;
     private String sessionstorage;
-    private Boolean setClientManagement;
+//    private Boolean setClientManagement;
     private TimeSpan applicationTimeout;
     private TimeSpan sessionTimeout;
-    private TimeSpan clientTimeout;
+//    private TimeSpan clientTimeout;
     private TimeSpan requestTimeout;
     private Mapping[] mappings;
     private Mapping[] customTagMappings;
@@ -147,14 +147,14 @@ public final class Application extends TagImpl {
     @Override
     public void release() {
 	super.release();
-	setClientCookies = null;
+//	setClientCookies = null;
 	setDomainCookies = null;
 	setSessionManagement = null;
-	clientstorage = null;
+//	clientstorage = null;
 	sessionstorage = null;
-	setClientManagement = null;
+//	setClientManagement = null;
 	sessionTimeout = null;
-	clientTimeout = null;
+//	clientTimeout = null;
 	requestTimeout = null;
 	applicationTimeout = null;
 	mappings = null;
@@ -219,18 +219,18 @@ public final class Application extends TagImpl {
 	sessionCookie = null;
     }
 
-    /**
-     * set the value setclientcookies Yes or No. Yes enables client cookies. Default is Yes. If you set
-     * this attribute to "No", CFML does not automatically send the CFID and CFTOKEN cookies to the
-     * client browser; you must manually code CFID and CFTOKEN on the URL for every page that uses
-     * Session or Client variables.
-     * 
-     * @param setClientCookies value to set
-     **/
-    public void setSetclientcookies(boolean setClientCookies) {
-	this.setClientCookies = setClientCookies ? Boolean.TRUE : Boolean.FALSE;
-	// getAppContext().setSetClientCookies(setClientCookies);
-    }
+//    /**
+//     * set the value setclientcookies Yes or No. Yes enables client cookies. Default is Yes. If you set
+//     * this attribute to "No", CFML does not automatically send the CFID and CFTOKEN cookies to the
+//     * client browser; you must manually code CFID and CFTOKEN on the URL for every page that uses
+//     * Session or Client variables.
+//     *
+//     * @param setClientCookies value to set
+//     **/
+//    public void setSetclientcookies(boolean setClientCookies) {
+//	this.setClientCookies = setClientCookies ? Boolean.TRUE : Boolean.FALSE;
+//	// getAppContext().setSetClientCookies(setClientCookies);
+//    }
 
     /**
      * set the value setdomaincookies Yes or No. Sets the CFID and CFTOKEN cookies for a domain, not
@@ -357,28 +357,28 @@ public final class Application extends TagImpl {
 
     }
 
-    /**
-     * set the value clientstorage Specifies how the engine stores client variables
-     * 
-     * @param clientstorage value to set
-     **/
-    public void setClientstorage(String clientstorage) {
-	this.clientstorage = clientstorage;
-    }
+//    /**
+//     * set the value clientstorage Specifies how the engine stores client variables
+//     *
+//     * @param clientstorage value to set
+//     **/
+//    public void setClientstorage(String clientstorage) {
+//	this.clientstorage = clientstorage;
+//    }
 
     public void setSessionstorage(String sessionstorage) {
 	this.sessionstorage = sessionstorage;
     }
 
-    /**
-     * set the value clientmanagement Yes or No. Enables client variables. Default is No.
-     * 
-     * @param setClientManagement value to set
-     **/
-    public void setClientmanagement(boolean setClientManagement) {
-	this.setClientManagement = setClientManagement ? Boolean.TRUE : Boolean.FALSE;
-	// getAppContext().setSetClientManagement(setClientManagement);
-    }
+//    /**
+//     * set the value clientmanagement Yes or No. Enables client variables. Default is No.
+//     *
+//     * @param setClientManagement value to set
+//     **/
+//    public void setClientmanagement(boolean setClientManagement) {
+//	this.setClientManagement = setClientManagement ? Boolean.TRUE : Boolean.FALSE;
+//	// getAppContext().setSetClientManagement(setClientManagement);
+//    }
 
     /**
      * set the value sessiontimeout Enter the CreateTimeSpan function and values in days, hours,
@@ -398,17 +398,17 @@ public final class Application extends TagImpl {
 	this.wsType = AppListenerUtil.toWSType(wstype);
     }
 
-    public void setClientcluster(boolean clientCluster) {
-	this.clientCluster = clientCluster;
-    }
+//    public void setClientcluster(boolean clientCluster) {
+//	this.clientCluster = clientCluster;
+//    }
 
     public void setSessioncluster(boolean sessionCluster) {
 	this.sessionCluster = sessionCluster;
     }
 
-    public void setClienttimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
+//    public void setClienttimeout(TimeSpan clientTimeout) {
+//	this.clientTimeout = clientTimeout;
+//    }
 
     public void setRequesttimeout(TimeSpan requestTimeout) {
 	this.requestTimeout = requestTimeout;
@@ -501,7 +501,7 @@ public final class Application extends TagImpl {
     }
 
     /**
-     * @param s3 the s3 to set
+     * @param ftp the s3 to set
      */
     public void setFtp(Struct ftp) {
 	this.ftp = ftp;
@@ -576,10 +576,10 @@ public final class Application extends TagImpl {
     }
 
     /**
-     * @param scriptrotect the scriptrotect to set
+     * @param scriptprotect the scriptrotect to set
      */
-    public void setScriptprotect(String strScriptrotect) {
-	this.scriptrotect = strScriptrotect;
+    public void setScriptprotect(String scriptprotect) {
+	this.scriptrotect = scriptprotect;
     }
 
     public void setFunctionpaths(String strFunctionpaths) {
@@ -645,11 +645,11 @@ public final class Application extends TagImpl {
     private boolean set(ApplicationContext ac, boolean update) throws PageException {
 	if (applicationTimeout != null) ac.setApplicationTimeout(applicationTimeout);
 	if (sessionTimeout != null) ac.setSessionTimeout(sessionTimeout);
-	if (clientTimeout != null) ac.setClientTimeout(clientTimeout);
+//	if (clientTimeout != null) ac.setClientTimeout(clientTimeout);
 	if (requestTimeout != null) ac.setRequestTimeout(requestTimeout);
-	if (clientstorage != null) {
-	    ac.setClientstorage(clientstorage);
-	}
+//	if (clientstorage != null) {
+//	    ac.setClientstorage(clientstorage);
+//	}
 	if (sessionstorage != null) {
 	    ac.setSessionstorage(sessionstorage);
 	}
@@ -735,8 +735,8 @@ public final class Application extends TagImpl {
 	if (typeChecking != null) ac.setTypeChecking(typeChecking.booleanValue());
 	if (suppress != null) ac.setSuppressContent(suppress.booleanValue());
 	if (secureJsonPrefix != null) ac.setSecureJsonPrefix(secureJsonPrefix);
-	if (setClientCookies != null) ac.setSetClientCookies(setClientCookies.booleanValue());
-	if (setClientManagement != null) ac.setSetClientManagement(setClientManagement.booleanValue());
+//	if (setClientCookies != null) ac.setSetClientCookies(setClientCookies.booleanValue());
+//	if (setClientManagement != null) ac.setSetClientManagement(setClientManagement.booleanValue());
 	if (setDomainCookies != null) ac.setSetDomainCookies(setDomainCookies.booleanValue());
 	if (setSessionManagement != null) ac.setSetSessionManagement(setSessionManagement.booleanValue());
 	if (localMode != -1) ac.setLocalMode(localMode);
@@ -774,7 +774,7 @@ public final class Application extends TagImpl {
 	}
 
 	if (tag != null) ac.setTagAttributeDefaultValues(pageContext, tag);
-	ac.setClientCluster(clientCluster);
+//	ac.setClientCluster(clientCluster);
 	ac.setSessionCluster(sessionCluster);
 	ac.setCGIScopeReadonly(cgiReadOnly);
 	if (s3 != null) ac.setS3(AppListenerUtil.toS3(s3));

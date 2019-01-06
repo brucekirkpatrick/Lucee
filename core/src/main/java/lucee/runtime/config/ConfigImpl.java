@@ -245,14 +245,14 @@ public abstract class ConfigImpl implements Config {
     private boolean showVersion = false;
 
     private Resource tempDirectory;
-    private TimeSpan clientTimeout = new TimeSpanImpl(90, 0, 0, 0);
+//    private TimeSpan clientTimeout = new TimeSpanImpl(90, 0, 0, 0);
     private TimeSpan sessionTimeout = new TimeSpanImpl(0, 0, 30, 0);
     private TimeSpan applicationTimeout = new TimeSpanImpl(1, 0, 0, 0);
     private TimeSpan requestTimeout = new TimeSpanImpl(0, 0, 0, 30);
 
     private boolean sessionManagement = true;
-    private boolean clientManagement = false;
-    private boolean clientCookies = true;
+//    private boolean clientManagement = false;
+//    private boolean clientCookies = true;
     private boolean developMode = false;
     private boolean domainCookies = false;
 
@@ -594,29 +594,29 @@ public abstract class ConfigImpl implements Config {
 	return sessionTimeout;
     }
 
-    @Override
-    public TimeSpan getClientTimeout() {
-	return clientTimeout;
-    }
+//    @Override
+//    public TimeSpan getClientTimeout() {
+//	return clientTimeout;
+//    }
 
     @Override
     public TimeSpan getRequestTimeout() {
 	return requestTimeout;
     }
 
-    @Override
-    public boolean isClientCookies() {
-	return clientCookies;
-    }
+//    @Override
+//    public boolean isClientCookies() {
+//	return clientCookies;
+//    }
 
     public boolean isDevelopMode() {
 	return developMode;
     }
 
-    @Override
-    public boolean isClientManagement() {
-	return clientManagement;
-    }
+//    @Override
+//    public boolean isClientManagement() {
+//	return clientManagement;
+//    }
 
     @Override
     public boolean isDomainCookies() {
@@ -1526,16 +1526,16 @@ public abstract class ConfigImpl implements Config {
 	this.sessionTimeout = sessionTimeout;
     }
 
-    protected void setClientTimeout(String strClientTimeout) throws PageException {
-	setClientTimeout(Caster.toTimespan(strClientTimeout));
-    }
-
-    /**
-     * @param clientTimeout The sessionTimeout to set.
-     */
-    protected void setClientTimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
+//    protected void setClientTimeout(String strClientTimeout) throws PageException {
+//	setClientTimeout(Caster.toTimespan(strClientTimeout));
+//    }
+//
+//    /**
+//     * @param clientTimeout The sessionTimeout to set.
+//     */
+//    protected void setClientTimeout(TimeSpan clientTimeout) {
+//	this.clientTimeout = clientTimeout;
+//    }
 
     /**
      * @param strRequestTimeout The requestTimeout to set.
@@ -1552,12 +1552,12 @@ public abstract class ConfigImpl implements Config {
 	this.requestTimeout = requestTimeout;
     }
 
-    /**
-     * @param clientCookies The clientCookies to set.
-     */
-    protected void setClientCookies(boolean clientCookies) {
-	this.clientCookies = clientCookies;
-    }
+//    /**
+//     * @param clientCookies The clientCookies to set.
+//     */
+//    protected void setClientCookies(boolean clientCookies) {
+//	this.clientCookies = clientCookies;
+//    }
 
     /**
      * @param developMode
@@ -1566,12 +1566,12 @@ public abstract class ConfigImpl implements Config {
 	this.developMode = developMode;
     }
 
-    /**
-     * @param clientManagement The clientManagement to set.
-     */
-    protected void setClientManagement(boolean clientManagement) {
-	this.clientManagement = clientManagement;
-    }
+//    /**
+//     * @param clientManagement The clientManagement to set.
+//     */
+//    protected void setClientManagement(boolean clientManagement) {
+//	this.clientManagement = clientManagement;
+//    }
 
     /**
      * @param domainCookies The domainCookies to set.
@@ -2828,20 +2828,20 @@ public abstract class ConfigImpl implements Config {
 	this.allowRealPath = allowRealPath;
     }
 
-    /**
-     * @return the classClusterScope
-     */
-    @Override
-    public Class getClusterClass() {
-	return clusterClass;
-    }
+//    /**
+//     * @return the classClusterScope
+//     */
+//    @Override
+//    public Class getClusterClass() {
+//	return clusterClass;
+//    }
 
-    /**
-     * @param clusterClass the classClusterScope to set
-     */
-    protected void setClusterClass(Class clusterClass) {
-	this.clusterClass = clusterClass;
-    }
+//    /**
+//     * @param clusterClass the classClusterScope to set
+//     */
+//    protected void setClusterClass(Class clusterClass) {
+//	this.clusterClass = clusterClass;
+//    }
 
     @Override
     public Struct getRemoteClientUsage() {
@@ -3327,14 +3327,14 @@ public abstract class ConfigImpl implements Config {
 	return false;
     }
 
-    @Override
-    public boolean getClientCluster() {
-	return false;
-    }
-
-    public String getClientStorage() {
-	return clientStorage;
-    }
+//    @Override
+//    public boolean getClientCluster() {
+//	return false;
+//    }
+//
+//    public String getClientStorage() {
+//	return clientStorage;
+//    }
 
     public String getSessionStorage() {
 	return sessionStorage;

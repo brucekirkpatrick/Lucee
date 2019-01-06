@@ -98,8 +98,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final long serialVersionUID = -8230105685329758613L;
 
     private static final Collection.Key APPLICATION_TIMEOUT = KeyConstants._applicationTimeout;
-    private static final Collection.Key CLIENT_MANAGEMENT = KeyConstants._clientManagement;
-    private static final Collection.Key CLIENT_STORAGE = KeyImpl.intern("clientStorage");
+//    private static final Collection.Key CLIENT_MANAGEMENT = KeyConstants._clientManagement;
+//    private static final Collection.Key CLIENT_STORAGE = KeyImpl.intern("clientStorage");
     private static final Collection.Key SESSION_STORAGE = KeyImpl.intern("sessionStorage");
     private static final Collection.Key LOGIN_STORAGE = KeyImpl.intern("loginStorage");
     private static final Collection.Key SESSION_TYPE = KeyImpl.intern("sessionType");
@@ -109,9 +109,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key INVOKE_IMPLICIT_ACCESSOR = KeyImpl.intern("InvokeImplicitAccessor");
     private static final Collection.Key SESSION_MANAGEMENT = KeyImpl.intern("sessionManagement");
     private static final Collection.Key SESSION_TIMEOUT = KeyImpl.intern("sessionTimeout");
-    private static final Collection.Key CLIENT_TIMEOUT = KeyImpl.intern("clientTimeout");
+//    private static final Collection.Key CLIENT_TIMEOUT = KeyImpl.intern("clientTimeout");
     private static final Collection.Key REQUEST_TIMEOUT = KeyImpl.intern("requestTimeout");
-    private static final Collection.Key SET_CLIENT_COOKIES = KeyImpl.intern("setClientCookies");
+//    private static final Collection.Key SET_CLIENT_COOKIES = KeyImpl.intern("setClientCookies");
     private static final Collection.Key SET_DOMAIN_COOKIES = KeyImpl.intern("setDomainCookies");
     private static final Collection.Key SCRIPT_PROTECT = KeyImpl.intern("scriptProtect");
     private static final Collection.Key CUSTOM_TAG_PATHS = KeyImpl.intern("customtagpaths");
@@ -122,7 +122,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key LOCAL_MODE = KeyImpl.intern("localMode");
     private static final Collection.Key BUFFER_OUTPUT = KeyImpl.intern("bufferOutput");
     private static final Collection.Key SESSION_CLUSTER = KeyImpl.intern("sessionCluster");
-    private static final Collection.Key CLIENT_CLUSTER = KeyImpl.intern("clientCluster");
+//    private static final Collection.Key CLIENT_CLUSTER = KeyImpl.intern("clientCluster");
 
     private static final Collection.Key DEFAULT_DATA_SOURCE = KeyImpl.intern("defaultdatasource");
     private static final Collection.Key DEFAULT_CACHE = KeyImpl.intern("defaultcache");
@@ -143,8 +143,8 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private static final Collection.Key SESSION_COOKIE = KeyImpl.intern("sessioncookie");
     private static final Collection.Key AUTH_COOKIE = KeyImpl.intern("authcookie");
 
-    private static final Key ENABLE_NULL_SUPPORT = KeyImpl.intern("enableNULLSupport");
-    private static final Key NULL_SUPPORT = KeyImpl.intern("nullSupport");
+//    private static final Key ENABLE_NULL_SUPPORT = KeyImpl.intern("enableNULLSupport");
+//    private static final Key NULL_SUPPORT = KeyImpl.intern("nullSupport");
     private static final Key PSQ = KeyImpl.intern("psq");
     private static final Key PSQ_LONG = KeyImpl.intern("preservesinglequote");
     private static final Key VAR_USAGE = KeyImpl.intern("varusage");
@@ -156,13 +156,13 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     private String name = null;
 
-    private boolean setClientCookies;
+//    private boolean setClientCookies;
     private boolean setDomainCookies;
     private boolean setSessionManagement;
-    private boolean setClientManagement;
+//    private boolean setClientManagement;
     private TimeSpan applicationTimeout;
     private TimeSpan sessionTimeout;
-    private TimeSpan clientTimeout;
+//    private TimeSpan clientTimeout;
     private TimeSpan requestTimeout;
     private int loginStorage = Scope.SCOPE_COOKIE;
     private int scriptProtect;
@@ -175,9 +175,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private short wstype;
     private boolean wsMaintainSession = false;
     private boolean sessionCluster;
-    private boolean clientCluster;
+//    private boolean clientCluster;
 
-    private String clientStorage;
+//    private String clientStorage;
     private String sessionStorage;
     private String secureJsonPrefix = "//";
     private boolean secureJson;
@@ -214,22 +214,22 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     private boolean initApplicationTimeout;
     private boolean initSessionTimeout;
-    private boolean initClientTimeout;
+//    private boolean initClientTimeout;
     private boolean initRequestTimeout;
-    private boolean initSetClientCookies;
-    private boolean initSetClientManagement;
+//    private boolean initSetClientCookies;
+//    private boolean initSetClientManagement;
     private boolean initSetDomainCookies;
     private boolean initSetSessionManagement;
     private boolean initScriptProtect;
     private boolean initTypeChecking;
     private boolean initAllowCompression;
     private boolean initDefaultAttributeValues;
-    private boolean initClientStorage;
+//    private boolean initClientStorage;
     private boolean initSecureJsonPrefix;
     private boolean initSecureJson;
     private boolean initSessionStorage;
     private boolean initSessionCluster;
-    private boolean initClientCluster;
+//    private boolean initClientCluster;
     private boolean initLoginStorage;
     private boolean initSessionType;
     private boolean initWS;
@@ -285,12 +285,12 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     public ModernApplicationContext(PageContext pc, Component cfc, RefBoolean throwsErrorWhileInit) {
 	super(pc.getConfig());
 	ConfigImpl ci = ((ConfigImpl) config);
-	setClientCookies = config.isClientCookies();
+//	setClientCookies = config.isClientCookies();
 	setDomainCookies = config.isDomainCookies();
 	setSessionManagement = config.isSessionManagement();
-	setClientManagement = config.isClientManagement();
+//	setClientManagement = config.isClientManagement();
 	sessionTimeout = config.getSessionTimeout();
-	clientTimeout = config.getClientTimeout();
+//	clientTimeout = config.getClientTimeout();
 	requestTimeout = config.getRequestTimeout();
 	applicationTimeout = config.getApplicationTimeout();
 	scriptProtect = config.getScriptProtect();
@@ -312,9 +312,9 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.queryVarUsage = ci.getQueryVarUsage();
 
 	this.sessionCluster = config.getSessionCluster();
-	this.clientCluster = config.getClientCluster();
+//	this.clientCluster = config.getClientCluster();
 	this.sessionStorage = ci.getSessionStorage();
-	this.clientStorage = ci.getClientStorage();
+//	this.clientStorage = ci.getClientStorage();
 
 	this.triggerComponentDataMember = config.getTriggerComponentDataMember();
 	this.restSetting = config.getRestSetting();
@@ -442,15 +442,15 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return sessionTimeout;
     }
 
-    @Override
-    public TimeSpan getClientTimeout() {
-	if (!initClientTimeout) {
-	    Object o = get(component, CLIENT_TIMEOUT, null);
-	    if (o != null) clientTimeout = Caster.toTimespan(o, clientTimeout);
-	    initClientTimeout = true;
-	}
-	return clientTimeout;
-    }
+//    @Override
+//    public TimeSpan getClientTimeout() {
+//	if (!initClientTimeout) {
+//	    Object o = get(component, CLIENT_TIMEOUT, null);
+//	    if (o != null) clientTimeout = Caster.toTimespan(o, clientTimeout);
+//	    initClientTimeout = true;
+//	}
+//	return clientTimeout;
+//    }
 
     @Override
     public TimeSpan getRequestTimeout() {
@@ -469,25 +469,25 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	initRequestTimeout = true;
     }
 
-    @Override
-    public boolean isSetClientCookies() {
-	if (!initSetClientCookies) {
-	    Object o = get(component, SET_CLIENT_COOKIES, null);
-	    if (o != null) setClientCookies = Caster.toBooleanValue(o, setClientCookies);
-	    initSetClientCookies = true;
-	}
-	return setClientCookies;
-    }
-
-    @Override
-    public boolean isSetClientManagement() {
-	if (!initSetClientManagement) {
-	    Object o = get(component, CLIENT_MANAGEMENT, null);
-	    if (o != null) setClientManagement = Caster.toBooleanValue(o, setClientManagement);
-	    initSetClientManagement = true;
-	}
-	return setClientManagement;
-    }
+//    @Override
+//    public boolean isSetClientCookies() {
+//	if (!initSetClientCookies) {
+//	    Object o = get(component, SET_CLIENT_COOKIES, null);
+//	    if (o != null) setClientCookies = Caster.toBooleanValue(o, setClientCookies);
+//	    initSetClientCookies = true;
+//	}
+//	return setClientCookies;
+//    }
+//
+//    @Override
+//    public boolean isSetClientManagement() {
+//	if (!initSetClientManagement) {
+//	    Object o = get(component, CLIENT_MANAGEMENT, null);
+//	    if (o != null) setClientManagement = Caster.toBooleanValue(o, setClientManagement);
+//	    initSetClientManagement = true;
+//	}
+//	return setClientManagement;
+//    }
 
     @Override
     public boolean isSetDomainCookies() {
@@ -509,15 +509,15 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return setSessionManagement;
     }
 
-    @Override
-    public String getClientstorage() {
-	if (!initClientStorage) {
-	    String str = Caster.toString(get(component, CLIENT_STORAGE, null), null);
-	    if (!StringUtil.isEmpty(str)) clientStorage = str;
-	    initClientStorage = true;
-	}
-	return clientStorage;
-    }
+//    @Override
+//    public String getClientstorage() {
+//	if (!initClientStorage) {
+//	    String str = Caster.toString(get(component, CLIENT_STORAGE, null), null);
+//	    if (!StringUtil.isEmpty(str)) clientStorage = str;
+//	    initClientStorage = true;
+//	}
+//	return clientStorage;
+//    }
 
     @Override
     public int getScriptProtect() {
@@ -599,15 +599,15 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	return sessionCluster;
     }
 
-    @Override
-    public boolean getClientCluster() {
-	if (!initClientCluster) {
-	    Object o = get(component, CLIENT_CLUSTER, null);
-	    if (o != null) clientCluster = Caster.toBooleanValue(o, clientCluster);
-	    initClientCluster = true;
-	}
-	return clientCluster;
-    }
+//    @Override
+//    public boolean getClientCluster() {
+//	if (!initClientCluster) {
+//	    Object o = get(component, CLIENT_CLUSTER, null);
+//	    if (o != null) clientCluster = Caster.toBooleanValue(o, clientCluster);
+//	    initClientCluster = true;
+//	}
+//	return clientCluster;
+//    }
 
     @Override
     public short getSessionType() {
@@ -1266,17 +1266,17 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.sessionTimeout = sessionTimeout;
     }
 
-    @Override
-    public void setClientTimeout(TimeSpan clientTimeout) {
-	initClientTimeout = true;
-	this.clientTimeout = clientTimeout;
-    }
-
-    @Override
-    public void setClientstorage(String clientstorage) {
-	initClientStorage = true;
-	this.clientStorage = clientstorage;
-    }
+//    @Override
+//    public void setClientTimeout(TimeSpan clientTimeout) {
+//	initClientTimeout = true;
+//	this.clientTimeout = clientTimeout;
+//    }
+//
+//    @Override
+//    public void setClientstorage(String clientstorage) {
+//	initClientStorage = true;
+//	this.clientStorage = clientstorage;
+//    }
 
     @Override
     public void setSessionstorage(String sessionstorage) {
@@ -1360,17 +1360,17 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.secureJsonPrefix = secureJsonPrefix;
     }
 
-    @Override
-    public void setSetClientCookies(boolean setClientCookies) {
-	initSetClientCookies = true;
-	this.setClientCookies = setClientCookies;
-    }
-
-    @Override
-    public void setSetClientManagement(boolean setClientManagement) {
-	initSetClientManagement = true;
-	this.setClientManagement = setClientManagement;
-    }
+//    @Override
+//    public void setSetClientCookies(boolean setClientCookies) {
+//	initSetClientCookies = true;
+//	this.setClientCookies = setClientCookies;
+//    }
+//
+//    @Override
+//    public void setSetClientManagement(boolean setClientManagement) {
+//	initSetClientManagement = true;
+//	this.setClientManagement = setClientManagement;
+//    }
 
     @Override
     public void setSetDomainCookies(boolean setDomainCookies) {
@@ -1426,11 +1426,11 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.sessionType = sessionType;
     }
 
-    @Override
-    public void setClientCluster(boolean clientCluster) {
-	initClientCluster = true;
-	this.clientCluster = clientCluster;
-    }
+//    @Override
+//    public void setClientCluster(boolean clientCluster) {
+//	initClientCluster = true;
+//	this.clientCluster = clientCluster;
+//    }
 
     @Override
     public void setSessionCluster(boolean sessionCluster) {

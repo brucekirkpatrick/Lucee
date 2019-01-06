@@ -3571,24 +3571,24 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    Element scope = getChildByName(doc.getDocumentElement(), "scope");
 	    boolean hasCS = configServer != null;
 
-	    // Cluster Scope
-	    if (!hasCS) {
-		ClassDefinition cd = getClassDefinition(scope, "cluster-", config.getIdentification());
-		if (hasAccess && cd.hasClass()) {
-		    try {
-			Class clazz = cd.getClazz();
-			if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
-				"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
-
-			config.setClusterClass(clazz);
-
-		    }
-		    catch (Exception e) {
-			SystemOut.printDate(e);
-		    }
-
-		}
-	    }
+//	    // Cluster Scope
+//	    if (!hasCS) {
+//		ClassDefinition cd = getClassDefinition(scope, "cluster-", config.getIdentification());
+//		if (hasAccess && cd.hasClass()) {
+//		    try {
+//			Class clazz = cd.getClazz();
+//			if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
+//				"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
+//
+//			config.setClusterClass(clazz);
+//
+//		    }
+//		    catch (Exception e) {
+//			SystemOut.printDate(e);
+//		    }
+//
+//		}
+//	    }
 	    // else if(hasCS)
 	    // config.setClassClusterScope(configServer.getClassClusterScope());
 
@@ -3651,15 +3651,15 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    else if (hasCS) config.setMergeFormAndURL(configServer.mergeFormAndURL());
 
 	    // Client-Storage
-	    {
-		String clientStorage = getAttr(scope, "clientstorage");
-		if (StringUtil.isEmpty(clientStorage, true)) clientStorage = getAttr(scope, "client-storage");
-
-		if (hasAccess && !StringUtil.isEmpty(clientStorage)) {
-		    config.setClientStorage(clientStorage);
-		}
-		else if (hasCS) config.setClientStorage(configServer.getClientStorage());
-	    }
+//	    {
+//		String clientStorage = getAttr(scope, "clientstorage");
+//		if (StringUtil.isEmpty(clientStorage, true)) clientStorage = getAttr(scope, "client-storage");
+//
+//		if (hasAccess && !StringUtil.isEmpty(clientStorage)) {
+//		    config.setClientStorage(clientStorage);
+//		}
+//		else if (hasCS) config.setClientStorage(configServer.getClientStorage());
+//	    }
 
 	    // Session-Storage
 	    {
@@ -3673,19 +3673,19 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 
 	    // Client Timeout
-	    String clientTimeout = getAttr(scope, "clienttimeout");
-	    if (StringUtil.isEmpty(clientTimeout, true)) clientTimeout = getAttr(scope, "client-timeout");
-	    if (StringUtil.isEmpty(clientTimeout, true)) {
-		// deprecated
-		clientTimeout = getAttr(scope, "client-max-age");
-		int days = Caster.toIntValue(clientTimeout, -1);
-		if (days > 0) clientTimeout = days + ",0,0,0";
-		else clientTimeout = "";
-	    }
-	    if (hasAccess && !StringUtil.isEmpty(clientTimeout)) {
-		config.setClientTimeout(clientTimeout);
-	    }
-	    else if (hasCS) config.setClientTimeout(configServer.getClientTimeout());
+//	    String clientTimeout = getAttr(scope, "clienttimeout");
+//	    if (StringUtil.isEmpty(clientTimeout, true)) clientTimeout = getAttr(scope, "client-timeout");
+//	    if (StringUtil.isEmpty(clientTimeout, true)) {
+//		// deprecated
+//		clientTimeout = getAttr(scope, "client-max-age");
+//		int days = Caster.toIntValue(clientTimeout, -1);
+//		if (days > 0) clientTimeout = days + ",0,0,0";
+//		else clientTimeout = "";
+//	    }
+//	    if (hasAccess && !StringUtil.isEmpty(clientTimeout)) {
+//		config.setClientTimeout(clientTimeout);
+//	    }
+//	    else if (hasCS) config.setClientTimeout(configServer.getClientTimeout());
 
 	    // Session Timeout
 	    String sessionTimeout = getAttr(scope, "sessiontimeout");
@@ -3703,29 +3703,29 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    else if (hasCS) config.setApplicationTimeout(configServer.getApplicationTimeout());
 
 	    // Client Type
-	    String strClientType = getAttr(scope, "clienttype");
-	    if (hasAccess && !StringUtil.isEmpty(strClientType)) {
-		config.setClientType(strClientType);
-	    }
-	    else if (hasCS) config.setClientType(configServer.getClientType());
+//	    String strClientType = getAttr(scope, "clienttype");
+//	    if (hasAccess && !StringUtil.isEmpty(strClientType)) {
+//		config.setClientType(strClientType);
+//	    }
+//	    else if (hasCS) config.setClientType(configServer.getClientType());
 
 	    // Client
-	    Resource configDir = config.getConfigDir();
-	    String strClientDirectory = getAttr(scope, "client-directory");
-	    if (hasAccess && !StringUtil.isEmpty(strClientDirectory)) {
-		strClientDirectory = ConfigWebUtil.translateOldPath(strClientDirectory);
-		Resource res = ConfigWebUtil.getFile(configDir, strClientDirectory, "client-scope", configDir, FileUtil.TYPE_DIR, config);
-		config.setClientScopeDir(res);
-	    }
-	    else {
-		config.setClientScopeDir(configDir.getRealResource("client-scope"));
-	    }
-
-	    String strMax = getAttr(scope, "client-directory-max-size");
-	    if (hasAccess && !StringUtil.isEmpty(strMax)) {
-		config.setClientScopeDirSize(ByteSizeParser.parseByteSizeDefinition(strMax, config.getClientScopeDirSize()));
-	    }
-	    else if (hasCS) config.setClientScopeDirSize(configServer.getClientScopeDirSize());
+//	    Resource configDir = config.getConfigDir();
+//	    String strClientDirectory = getAttr(scope, "client-directory");
+//	    if (hasAccess && !StringUtil.isEmpty(strClientDirectory)) {
+//		strClientDirectory = ConfigWebUtil.translateOldPath(strClientDirectory);
+//		Resource res = ConfigWebUtil.getFile(configDir, strClientDirectory, "client-scope", configDir, FileUtil.TYPE_DIR, config);
+//		config.setClientScopeDir(res);
+//	    }
+//	    else {
+//		config.setClientScopeDir(configDir.getRealResource("client-scope"));
+//	    }
+//
+//	    String strMax = getAttr(scope, "client-directory-max-size");
+//	    if (hasAccess && !StringUtil.isEmpty(strMax)) {
+//		config.setClientScopeDirSize(ByteSizeParser.parseByteSizeDefinition(strMax, config.getClientScopeDirSize()));
+//	    }
+//	    else if (hasCS) config.setClientScopeDirSize(configServer.getClientScopeDirSize());
 
 	    // Session Management
 	    String strSessionManagement = getAttr(scope, "sessionmanagement");
@@ -3734,19 +3734,19 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else if (hasCS) config.setSessionManagement(configServer.isSessionManagement());
 
-	    // Client Management
-	    String strClientManagement = getAttr(scope, "clientmanagement");
-	    if (hasAccess && !StringUtil.isEmpty(strClientManagement)) {
-		config.setClientManagement(toBoolean(strClientManagement, false));
-	    }
-	    else if (hasCS) config.setClientManagement(configServer.isClientManagement());
-
-	    // Client Cookies
-	    String strClientCookies = getAttr(scope, "setclientcookies");
-	    if (hasAccess && !StringUtil.isEmpty(strClientCookies)) {
-		config.setClientCookies(toBoolean(strClientCookies, true));
-	    }
-	    else if (hasCS) config.setClientCookies(configServer.isClientCookies());
+//	    // Client Management
+//	    String strClientManagement = getAttr(scope, "clientmanagement");
+//	    if (hasAccess && !StringUtil.isEmpty(strClientManagement)) {
+//		config.setClientManagement(toBoolean(strClientManagement, false));
+//	    }
+//	    else if (hasCS) config.setClientManagement(configServer.isClientManagement());
+//
+//	    // Client Cookies
+//	    String strClientCookies = getAttr(scope, "setclientcookies");
+//	    if (hasAccess && !StringUtil.isEmpty(strClientCookies)) {
+//		config.setClientCookies(toBoolean(strClientCookies, true));
+//	    }
+//	    else if (hasCS) config.setClientCookies(configServer.isClientCookies());
 
 	    // Domain Cookies
 	    String strDomainCookies = getAttr(scope, "setdomaincookies");

@@ -236,7 +236,7 @@ public final class PageContextImpl extends PageContext {
 	public Jetendo jetendo;
 //	public Cluster cluster;
 	public Cookie cookie = new CookieImpl();
-	public Client client;
+//	public Client client;
 	public Application application;
 
     private DebuggerImpl debugger = new DebuggerImpl();
@@ -526,10 +526,10 @@ public final class PageContextImpl extends PageContext {
 	parent = null;
 	root = null;
 	// Attention have to be before close
-	if (client != null) {
-	    client.touchAfterRequest(this);
-	    client = null;
-	}
+//	if (client != null) {
+//	    client.touchAfterRequest(this);
+//	    client = null;
+//	}
 
 	if (session != null) {
 	    session.touchAfterRequest(this);
@@ -1149,8 +1149,8 @@ public final class PageContextImpl extends PageContext {
 		return jetendoScope();
 	case Scope.SCOPE_COOKIE:
 	    return cookieScope();
-	case Scope.SCOPE_CLIENT:
-	    return clientScope();
+//	case Scope.SCOPE_CLIENT:
+//	    return clientScope();
 	case Scope.SCOPE_LOCAL:
 	case ScopeSupport.SCOPE_VAR:
 	    return localScope();
@@ -1184,7 +1184,7 @@ public final class PageContextImpl extends PageContext {
 	if ("server".equals(strScope)) return serverScope();
 	if ("jetendo".equals(strScope)) return jetendoScope();
 	if ("cookie".equals(strScope)) return cookieScope();
-	if ("client".equals(strScope)) return clientScope();
+//	if ("client".equals(strScope)) return clientScope();
 	if ("local".equals(strScope)) return localScope();
 //	if ("cluster".equals(strScope)) return clusterScope();
 
@@ -1402,9 +1402,9 @@ public final class PageContextImpl extends PageContext {
 	return session;
     }
 
-    public void invalidateUserScopes(boolean migrateSessionData, boolean migrateClientData) throws PageException {
+    public void invalidateUserScopes(boolean migrateSessionData) throws PageException {
 	checkSessionContext();
-	scopeContext.invalidateUserScope(this, migrateSessionData, migrateClientData);
+	scopeContext.invalidateUserScope(this, migrateSessionData);
     }
 
     private void checkSessionContext() throws ExpressionException {
@@ -1449,27 +1449,27 @@ public final class PageContextImpl extends PageContext {
 	return cookie;
     }
 
-    @Override
-    public Client clientScope() throws PageException {
-	if (client == null) {
-	    if (!applicationContext.hasName())
-		throw new ExpressionException("there is no client context defined for this application", hintAplication("you can define a client context"));
-	    if (!applicationContext.isSetClientManagement()) throw new ExpressionException("client scope is not enabled", hintAplication("you can enable client scope"));
+//    @Override
+//    public Client clientScope() throws PageException {
+//	if (client == null) {
+//	    if (!applicationContext.hasName())
+//		throw new ExpressionException("there is no client context defined for this application", hintAplication("you can define a client context"));
+//	    if (!applicationContext.isSetClientManagement()) throw new ExpressionException("client scope is not enabled", hintAplication("you can enable client scope"));
+//
+//	    client = scopeContext.getClientScope(this);
+//	}
+//	return client;
+//    }
 
-	    client = scopeContext.getClientScope(this);
-	}
-	return client;
-    }
-
-    @Override
-    public Client clientScopeEL() {
-	if (client == null) {
-	    if (applicationContext == null || !applicationContext.hasName()) return null;
-	    if (!applicationContext.isSetClientManagement()) return null;
-	    client = scopeContext.getClientScopeEL(this);
-	}
-	return client;
-    }
+//    @Override
+//    public Client clientScopeEL() {
+//	if (client == null) {
+//	    if (applicationContext == null || !applicationContext.hasName()) return null;
+//	    if (!applicationContext.isSetClientManagement()) return null;
+//	    client = scopeContext.getClientScopeEL(this);
+//	}
+//	return client;
+//    }
 
     public Object set(Object coll, String key, Object value) {
 	throw new NoLongerSupported();
@@ -2680,7 +2680,7 @@ public final class PageContextImpl extends PageContext {
 	    cftoken = Caster.toString(oCftoken, "0");
 	}
 
-	if (setCookie && applicationContext.isSetClientCookies()) setClientCookies();
+//	if (setCookie && applicationContext.isSetClientCookies()) setClientCookies();
     }
 
     private boolean isValidCfToken(String value) {
@@ -2691,42 +2691,42 @@ public final class PageContextImpl extends PageContext {
 	cfid = ScopeContext.getNewCFId();
 	cftoken = ScopeContext.getNewCFToken();
 
-	if (applicationContext.isSetClientCookies()) setClientCookies();
+//	if (applicationContext.isSetClientCookies()) setClientCookies();
     }
 
-    private void setClientCookies() {
-	TimeSpan tsExpires = SessionCookieDataImpl.DEFAULT.getTimeout();
-	String domain = PageContextUtil.getCookieDomain(this);
-	boolean httpOnly = SessionCookieDataImpl.DEFAULT.isHttpOnly();
-	boolean secure = SessionCookieDataImpl.DEFAULT.isSecure();
-
-	ApplicationContext ac = getApplicationContext();
-
-	if (ac instanceof ApplicationContextSupport) {
-	    ApplicationContextSupport acs = (ApplicationContextSupport) ac;
-	    SessionCookieData data = acs.getSessionCookie();
-	    if (data != null) {
-		// expires
-		TimeSpan ts = data.getTimeout();
-		if (ts != null) tsExpires = ts;
-		// httpOnly
-		httpOnly = data.isHttpOnly();
-		// secure
-		secure = data.isSecure();
-		// domain
-		String tmp = data.getDomain();
-		if (!StringUtil.isEmpty(tmp, true)) domain = tmp.trim();
-	    }
-	}
-	int expires;
-	long tmp = tsExpires.getSeconds();
-	if (Integer.MAX_VALUE < tmp) expires = Integer.MAX_VALUE;
-	else expires = (int) tmp;
-
-	cookieScope().setCookieEL(KeyConstants._cfid, cfid, expires, secure, "/", domain, httpOnly, true, false);
-	cookieScope().setCookieEL(KeyConstants._cftoken, cftoken, expires, secure, "/", domain, httpOnly, true, false);
-
-    }
+//    private void setClientCookies() {
+//	TimeSpan tsExpires = SessionCookieDataImpl.DEFAULT.getTimeout();
+//	String domain = PageContextUtil.getCookieDomain(this);
+//	boolean httpOnly = SessionCookieDataImpl.DEFAULT.isHttpOnly();
+//	boolean secure = SessionCookieDataImpl.DEFAULT.isSecure();
+//
+//	ApplicationContext ac = getApplicationContext();
+//
+//	if (ac instanceof ApplicationContextSupport) {
+//	    ApplicationContextSupport acs = (ApplicationContextSupport) ac;
+//	    SessionCookieData data = acs.getSessionCookie();
+//	    if (data != null) {
+//		// expires
+//		TimeSpan ts = data.getTimeout();
+//		if (ts != null) tsExpires = ts;
+//		// httpOnly
+//		httpOnly = data.isHttpOnly();
+//		// secure
+//		secure = data.isSecure();
+//		// domain
+//		String tmp = data.getDomain();
+//		if (!StringUtil.isEmpty(tmp, true)) domain = tmp.trim();
+//	    }
+//	}
+//	int expires;
+//	long tmp = tsExpires.getSeconds();
+//	if (Integer.MAX_VALUE < tmp) expires = Integer.MAX_VALUE;
+//	else expires = (int) tmp;
+//
+//	cookieScope().setCookieEL(KeyConstants._cfid, cfid, expires, secure, "/", domain, httpOnly, true, false);
+//	cookieScope().setCookieEL(KeyConstants._cftoken, cftoken, expires, secure, "/", domain, httpOnly, true, false);
+//
+//    }
 
     @Override
     public int getId() {
@@ -3042,7 +3042,7 @@ public final class PageContextImpl extends PageContext {
 
 	session = null;
 	application = null;
-	client = null;
+//	client = null;
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
 //	setFullNullSupport();
 //	int scriptProtect = applicationContext.getScriptProtect();
@@ -3425,9 +3425,9 @@ public final class PageContextImpl extends PageContext {
 	this.session = null;
     }
 
-    public void resetClient() {
-	this.client = null;
-    }
+//    public void resetClient() {
+//	this.client = null;
+//    }
 
     /**
      * @return the gatewayContext
@@ -3761,7 +3761,7 @@ public final class PageContextImpl extends PageContext {
 		other.server=server;
 //		other.cluster=cluster;
 		other.cookie = new CookieImpl();
-		other.client=client;
+//		other.client=client;
 		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.
 		//other.undefined = new UndefinedImpl(other, (short)other.undefined.getType());
 

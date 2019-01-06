@@ -81,8 +81,8 @@ public class GetApplicationSettings extends BIF {
 
 	Struct sct = new StructImpl(Struct.TYPE_LINKED);
 	sct.setEL("applicationTimeout", ac.getApplicationTimeout());
-	sct.setEL("clientManagement", Caster.toBoolean(ac.isSetClientManagement()));
-	sct.setEL("clientStorage", ac.getClientstorage());
+//	sct.setEL("clientManagement", Caster.toBoolean(ac.isSetClientManagement()));
+//	sct.setEL("clientStorage", ac.getClientstorage());
 	sct.setEL("sessionStorage", ac.getSessionstorage());
 	sct.setEL("customTagPaths", toArray(ac.getCustomTagMappings()));
 	sct.setEL("componentPaths", toArray(ac.getComponentMappings()));
@@ -96,9 +96,9 @@ public class GetApplicationSettings extends BIF {
 	sct.setEL("secureJsonPrefix", ac.getSecureJsonPrefix());
 	sct.setEL("sessionManagement", Caster.toBoolean(ac.isSetSessionManagement()));
 	sct.setEL("sessionTimeout", ac.getSessionTimeout());
-	sct.setEL("clientTimeout", ac.getClientTimeout());
-	sct.setEL("setClientCookies", Caster.toBoolean(ac.isSetClientCookies()));
-	sct.setEL("setDomainCookies", Caster.toBoolean(ac.isSetDomainCookies()));
+//	sct.setEL("clientTimeout", ac.getClientTimeout());
+//	sct.setEL("setClientCookies", Caster.toBoolean(ac.isSetClientCookies()));
+//	sct.setEL("setDomainCookies", Caster.toBoolean(ac.isSetDomainCookies()));
 	sct.setEL(KeyConstants._name, ac.getName());
 	sct.setEL("localMode", ac.getLocalMode() == Undefined.MODE_LOCAL_OR_ARGUMENTS_ALWAYS ? Boolean.TRUE : Boolean.FALSE);
 	sct.setEL(KeyConstants._locale, LocaleFactory.toString(pc.getLocale()));
@@ -123,7 +123,7 @@ public class GetApplicationSettings extends BIF {
 	sct.setEL("sessionType", AppListenerUtil.toSessionType(((PageContextImpl) pc).getSessionType(), "application"));
 	sct.setEL("serverSideFormValidation", Boolean.FALSE); // TODO impl
 
-	sct.setEL("clientCluster", Caster.toBoolean(ac.getClientCluster()));
+//	sct.setEL("clientCluster", Caster.toBoolean(ac.getClientCluster()));
 	sct.setEL("sessionCluster", Caster.toBoolean(ac.getSessionCluster()));
 
 	sct.setEL("invokeImplicitAccessor", Caster.toBoolean(ac.getTriggerComponentDataMember()));

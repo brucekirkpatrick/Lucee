@@ -317,7 +317,7 @@ public class KeyConstants {
     public static final Key _classname = KeyImpl._const("classname");
     public static final Key _className = KeyImpl._const("className");
     public static final Key _clear = KeyImpl._const("clear");
-    public static final Key _client = KeyImpl._const("client");
+//    public static final Key _client = KeyImpl._const("client");
     public static final Key _clone = KeyImpl._const("clone");
     public static final Key _close = KeyImpl._const("close");
     public static final Key _code = KeyImpl._const("code");
@@ -872,7 +872,7 @@ public class KeyConstants {
     public static final Key _ref = KeyImpl._const("ref");
     public static final Key _script = KeyImpl._const("script");
     public static final Key _applicationTimeout = KeyImpl._const("applicationTimeout");
-    public static final Key _clientManagement = KeyImpl._const("clientManagement");
+//    public static final Key _clientManagement = KeyImpl._const("clientManagement");
     public static final Key _queries = KeyImpl._const("queries");
     public static final Key _history = KeyImpl._const("history");
     public static final Key _group = KeyImpl._const("group");

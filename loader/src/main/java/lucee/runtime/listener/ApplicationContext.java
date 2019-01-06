@@ -74,15 +74,15 @@ public interface ApplicationContext extends Serializable {
      */
     public abstract TimeSpan getSessionTimeout();
 
-    /**
-     * @return Returns the setClientCookies.
-     */
-    public abstract boolean isSetClientCookies();
-
-    /**
-     * @return Returns the setClientManagement.
-     */
-    public abstract boolean isSetClientManagement();
+//    /**
+//     * @return Returns the setClientCookies.
+//     */
+//    public abstract boolean isSetClientCookies();
+//
+//    /**
+//     * @return Returns the setClientManagement.
+//     */
+//    public abstract boolean isSetClientManagement();
 
     /**
      * @return Returns the setDomainCookies.
@@ -94,10 +94,10 @@ public interface ApplicationContext extends Serializable {
      */
     public abstract boolean isSetSessionManagement();
 
-    /**
-     * @return Returns the clientstorage.
-     */
-    public abstract String getClientstorage();
+//    /**
+//     * @return Returns the clientstorage.
+//     */
+//    public abstract String getClientstorage();
 
     /**
      * @return if application context has a name
@@ -139,7 +139,7 @@ public interface ApplicationContext extends Serializable {
 
     public String getSessionstorage();
 
-    public TimeSpan getClientTimeout();
+//    public TimeSpan getClientTimeout();
 
     public short getSessionType();
 
@@ -153,9 +153,9 @@ public interface ApplicationContext extends Serializable {
 
     public void setSessionTimeout(TimeSpan sessionTimeout);
 
-    public void setClientTimeout(TimeSpan clientTimeout);
-
-    public void setClientstorage(String clientstorage);
+//    public void setClientTimeout(TimeSpan clientTimeout);
+//
+//    public void setClientstorage(String clientstorage);
 
     public void setSessionstorage(String sessionstorage);
 
@@ -175,9 +175,9 @@ public interface ApplicationContext extends Serializable {
 
     public void setSecureJsonPrefix(String secureJsonPrefix);
 
-    public void setSetClientCookies(boolean setClientCookies);
-
-    public void setSetClientManagement(boolean setClientManagement);
+//    public void setSetClientCookies(boolean setClientCookies);
+//
+//    public void setSetClientManagement(boolean setClientManagement);
 
     public void setSetDomainCookies(boolean setDomainCookies);
 

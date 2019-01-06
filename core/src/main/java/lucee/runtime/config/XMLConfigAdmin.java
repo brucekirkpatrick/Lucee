@@ -216,7 +216,6 @@ public final class XMLConfigAdmin {
 
     /**
      * @param contextPath
-     * @param password
      * @throws FunctionLibException
      * @throws TagLibException
      * @throws IOException
@@ -591,8 +590,11 @@ public final class XMLConfigAdmin {
      * @param physical
      * @param archive
      * @param primary
-     * @param trusted
+     * @param inspect
      * @param toplevel
+     * @param listenerMode
+     * @param listenerType
+     * @param readOnly
      * @throws ExpressionException
      * @throws SecurityException
      */
@@ -860,7 +862,7 @@ public final class XMLConfigAdmin {
      * @param physical
      * @param archive
      * @param primary
-     * @param trusted
+     * @param inspect
      * @throws ExpressionException
      * @throws SecurityException
      */
@@ -1128,7 +1130,7 @@ public final class XMLConfigAdmin {
      * insert or update a Java CFX Tag
      * 
      * @param name
-     * @param strClass
+     * @param cd
      * @throws PageException
      */
     public void updateJavaCFX(String name, ClassDefinition cd) throws PageException {
@@ -1491,8 +1493,9 @@ public final class XMLConfigAdmin {
     /**
      * update or insert new database connection
      * 
+     * @param id
      * @param name
-     * @param clazzName
+     * @param cd
      * @param dsn
      * @param username
      * @param password
@@ -2794,36 +2797,36 @@ public final class XMLConfigAdmin {
 	scope.setAttribute("sessionmanagement", Caster.toString(sessionManagement, ""));
     }
 
-    /**
-     * enable or desable client management
-     * 
-     * @param clientManagement
-     * @throws SecurityException
-     */
-    public void updateClientManagement(Boolean clientManagement) throws SecurityException {
-	checkWriteAccess();
-	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
-
-	if (!hasAccess) throw new SecurityException("no access to update scope setting");
-
-	Element scope = _getRootElement("scope");
-	scope.setAttribute("clientmanagement", Caster.toString(clientManagement, ""));
-    }
-
-    /**
-     * set if client cookies are enabled or not
-     * 
-     * @param clientCookies
-     * @throws SecurityException
-     */
-    public void updateClientCookies(Boolean clientCookies) throws SecurityException {
-	checkWriteAccess();
-	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
-	if (!hasAccess) throw new SecurityException("no access to update scope setting");
-
-	Element scope = _getRootElement("scope");
-	scope.setAttribute("setclientcookies", Caster.toString(clientCookies, ""));
-    }
+//    /**
+//     * enable or desable client management
+//     *
+//     * @param clientManagement
+//     * @throws SecurityException
+//     */
+//    public void updateClientManagement(Boolean clientManagement) throws SecurityException {
+//	checkWriteAccess();
+//	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
+//
+//	if (!hasAccess) throw new SecurityException("no access to update scope setting");
+//
+//	Element scope = _getRootElement("scope");
+//	scope.setAttribute("clientmanagement", Caster.toString(clientManagement, ""));
+//    }
+//
+//    /**
+//     * set if client cookies are enabled or not
+//     *
+//     * @param clientCookies
+//     * @throws SecurityException
+//     */
+//    public void updateClientCookies(Boolean clientCookies) throws SecurityException {
+//	checkWriteAccess();
+//	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
+//	if (!hasAccess) throw new SecurityException("no access to update scope setting");
+//
+//	Element scope = _getRootElement("scope");
+//	scope.setAttribute("setclientcookies", Caster.toString(clientCookies, ""));
+//    }
 
     /**
      * set if it's develop mode or not
@@ -2953,7 +2956,8 @@ public final class XMLConfigAdmin {
     /**
      * update the baseComponent
      * 
-     * @param baseComponent
+     * @param baseComponentCFML
+     * @param baseComponentLucee
      * @throws SecurityException
      */
     public void updateBaseComponent(String baseComponentCFML, String baseComponentLucee) throws SecurityException {
@@ -5451,23 +5455,23 @@ public final class XMLConfigAdmin {
 
     }
 
-    public void updateClusterClass(ClassDefinition cd) throws PageException {
-	if (cd.getClassName() == null) cd = new ClassDefinitionImpl(ClusterNotSupported.class.getName(), null, null, null);
-
-	Class clazz = null;
-	try {
-	    clazz = cd.getClazz();
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-	if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
-		"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
-
-	Element scope = _getRootElement("scope");
-	setClass(scope, null, "cluster-", cd);
-	ScopeContext.clearClusterScope();
-    }
+//    public void updateClusterClass(ClassDefinition cd) throws PageException {
+//	if (cd.getClassName() == null) cd = new ClassDefinitionImpl(ClusterNotSupported.class.getName(), null, null, null);
+//
+//	Class clazz = null;
+//	try {
+//	    clazz = cd.getClazz();
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
+//	if (!Reflector.isInstaneOf(clazz, Cluster.class, false) && !Reflector.isInstaneOf(clazz, ClusterRemote.class, false)) throw new ApplicationException(
+//		"class [" + clazz.getName() + "] does not implement interface [" + Cluster.class.getName() + "] or [" + ClusterRemote.class.getName() + "]");
+//
+//	Element scope = _getRootElement("scope");
+//	setClass(scope, null, "cluster-", cd);
+//	ScopeContext.clearClusterScope();
+//    }
 
     public void updateVideoExecuterClass(ClassDefinition cd) throws PageException {
 
@@ -6280,7 +6284,7 @@ public final class XMLConfigAdmin {
      * returns the version if the extension is available
      * 
      * @param config
-     * @param id
+     * @param ed
      * @return
      * @throws PageException
      * @throws IOException

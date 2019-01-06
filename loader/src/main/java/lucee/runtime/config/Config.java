@@ -209,15 +209,15 @@ public interface Config {
      */
     public abstract TimeSpan getRequestTimeout();
 
-    /**
-     * @return Returns the clientCookies.
-     */
-    public abstract boolean isClientCookies();
-
-    /**
-     * @return Returns the clientManagement.
-     */
-    public abstract boolean isClientManagement();
+//    /**
+//     * @return Returns the clientCookies.
+//     */
+//    public abstract boolean isClientCookies();
+//
+//    /**
+//     * @return Returns the clientManagement.
+//     */
+//    public abstract boolean isClientManagement();
 
     /**
      * @return Returns the domainCookies.

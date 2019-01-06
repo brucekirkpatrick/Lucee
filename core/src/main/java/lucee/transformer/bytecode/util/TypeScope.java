@@ -33,7 +33,7 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_APPLICATION] = Type.getType(Application.class);
 	SCOPES[Scope.SCOPE_ARGUMENTS] = Type.getType(Local.class);
 	SCOPES[Scope.SCOPE_CGI] = Type.getType(CGI.class);
-	SCOPES[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
+//	SCOPES[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
 	SCOPES[Scope.SCOPE_COOKIE] = Type.getType(Cookie.class);
 	SCOPES[Scope.SCOPE_FORM] = Type.getType(Form.class);
 	SCOPES[Scope.SCOPE_LOCAL] = Type.getType(Local.class);
@@ -53,7 +53,7 @@ public final class TypeScope {
 		SCOPES_IMPL[Scope.SCOPE_APPLICATION] = Type.getType(ApplicationImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_ARGUMENTS] = Type.getType(LocalImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_CGI] = Type.getType(CGIImplReadOnly.class);
-		SCOPES_IMPL[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
+//		SCOPES_IMPL[Scope.SCOPE_CLIENT] = Type.getType(Client.class);
 		SCOPES_IMPL[Scope.SCOPE_COOKIE] = Type.getType(CookieImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_FORM] = Type.getType(UrlFormImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_LOCAL] = Type.getType(LocalImpl.class);
@@ -75,7 +75,7 @@ public final class TypeScope {
 	METHODS[Scope.SCOPE_APPLICATION] = new Method("applicationScope", SCOPES[Scope.SCOPE_APPLICATION], new Type[] {});
 	METHODS[Scope.SCOPE_ARGUMENTS] = new Method("argumentsScope", SCOPES[Scope.SCOPE_LOCAL], new Type[] {});
 	METHODS[Scope.SCOPE_CGI] = new Method("cgiScope", SCOPES[Scope.SCOPE_CGI], new Type[] {});
-	METHODS[Scope.SCOPE_CLIENT] = new Method("clientScope", SCOPES[Scope.SCOPE_CLIENT], new Type[] {});
+//	METHODS[Scope.SCOPE_CLIENT] = new Method("clientScope", SCOPES[Scope.SCOPE_CLIENT], new Type[] {});
 	METHODS[Scope.SCOPE_COOKIE] = new Method("cookieScope", SCOPES[Scope.SCOPE_COOKIE], new Type[] {});
 	METHODS[Scope.SCOPE_FORM] = new Method("formScope", SCOPES[Scope.SCOPE_FORM], new Type[] {});
 	METHODS[Scope.SCOPE_LOCAL] = new Method("localGet", Types.OBJECT, new Type[] {});

@@ -155,13 +155,13 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract Cookie cookieScope();
 
-    /**
-     * @return cookie scope
-     * @throws PageException
-     */
-    public abstract Client clientScope() throws PageException;
-
-    public abstract Client clientScopeEL();
+//    /**
+//     * @return cookie scope
+//     * @throws PageException
+//     */
+//    public abstract Client clientScope() throws PageException;
+//
+//    public abstract Client clientScopeEL();
 
 //    /**
 //     * @return cluster scope

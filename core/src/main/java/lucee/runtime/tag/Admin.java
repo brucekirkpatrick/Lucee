@@ -511,15 +511,15 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	    doTagIndex();
 	    return;
 	}
-	// cluster
-	if (action.equals("setcluster")) {
-	    doSetCluster();
-	    return;
-	}
-	if (action.equals("getcluster")) {
-	    doGetCluster();
-	    return;
-	}
+//	// cluster
+//	if (action.equals("setcluster")) {
+//	    doSetCluster();
+//	    return;
+//	}
+//	if (action.equals("getcluster")) {
+//	    doGetCluster();
+//	    return;
+//	}
 
 	if (action.equals("getextension")) {
 	    if (type == TYPE_SERVER) doGetRHServerExtension();
@@ -806,8 +806,8 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	else if (check("updateDefaultResourceProvider", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateDefaultResourceProvider();
 	else if (check("removeResourceProvider", ACCESS_FREE) && check2(ACCESS_WRITE)) doRemoveResourceProvider();
 
-	else if (check("getClusterClass", ACCESS_FREE) && check2(ACCESS_READ)) doGetClusterClass();
-	else if (check("updateClusterClass", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateClusterClass();
+//	else if (check("getClusterClass", ACCESS_FREE) && check2(ACCESS_READ)) doGetClusterClass();
+//	else if (check("updateClusterClass", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateClusterClass();
 
 	else if (check("getAdminSyncClass", ACCESS_FREE) && check2(ACCESS_READ)) doGetAdminSyncClass();
 	else if (check("updateAdminSyncClass", ACCESS_FREE) && check2(ACCESS_WRITE)) doUpdateAdminSyncClass();
@@ -2153,16 +2153,16 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	pageContext.setVariable(getString("admin", action, "returnVariable"), admin.getResourceProviders());
     }
 
-    private void doGetClusterClass() throws PageException {
-	pageContext.setVariable(getString("admin", action, "returnVariable"), config.getClusterClass().getName());
-    }
-
-    private void doUpdateClusterClass() throws PageException {
-	ClassDefinition cd = new ClassDefinitionImpl(getString("admin", action, "class"), getString("bundleName", null), getString("bundleVersion", null),
-		config.getIdentification());
-	admin.updateClusterClass(cd);
-	store();
-    }
+//    private void doGetClusterClass() throws PageException {
+//	pageContext.setVariable(getString("admin", action, "returnVariable"), config.getClusterClass().getName());
+//    }
+//
+//    private void doUpdateClusterClass() throws PageException {
+//	ClassDefinition cd = new ClassDefinitionImpl(getString("admin", action, "class"), getString("bundleName", null), getString("bundleVersion", null),
+//		config.getIdentification());
+//	admin.updateClusterClass(cd);
+//	store();
+//    }
 
     private void doUpdateAdminSyncClass() throws PageException {
 	ClassDefinition cd = new ClassDefinitionImpl(getString("admin", action, "class"), getString("bundleName", null), getString("bundleVersion", null),
@@ -3957,33 +3957,33 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	pageContext.setVariable(getString("admin", action, "returnVariable"), qry);
     }
 
-    private void doSetCluster() {// MUST remove this
-	try {
-	    _doSetCluster();
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	}
-    }
+//    private void doSetCluster() {// MUST remove this
+//	try {
+//	    _doSetCluster();
+//	}
+//	catch (Throwable t) {
+//	    ExceptionUtil.rethrowIfNecessary(t);
+//	}
+//    }
 
-    private void _doSetCluster() throws PageException {
-
-	Struct entries = Caster.toStruct(getObject("admin", action, "entries"));
-	Struct entry;
-	Iterator<Object> it = entries.valueIterator();
-	Cluster cluster = pageContext.clusterScope();
-	while (it.hasNext()) {
-	    entry = Caster.toStruct(it.next());
-	    cluster.setEntry(new ClusterEntryImpl(KeyImpl.getInstance(Caster.toString(entry.get(KeyConstants._key))),
-		    Caster.toSerializable(entry.get(KeyConstants._value, null), null), Caster.toLongValue(entry.get(KeyConstants._time))));
-	}
-
-	cluster.broadcast();
-    }
-
-    private void doGetCluster() throws PageException {
-	pageContext.setVariable(getString("admin", action, "returnVariable"), ((PageContextImpl) pageContext).clusterScope(false));
-    }
+//    private void _doSetCluster() throws PageException {
+//
+//	Struct entries = Caster.toStruct(getObject("admin", action, "entries"));
+//	Struct entry;
+//	Iterator<Object> it = entries.valueIterator();
+//	Cluster cluster = pageContext.clusterScope();
+//	while (it.hasNext()) {
+//	    entry = Caster.toStruct(it.next());
+//	    cluster.setEntry(new ClusterEntryImpl(KeyImpl.getInstance(Caster.toString(entry.get(KeyConstants._key))),
+//		    Caster.toSerializable(entry.get(KeyConstants._value, null), null), Caster.toLongValue(entry.get(KeyConstants._time))));
+//	}
+//
+//	cluster.broadcast();
+//    }
+//
+//    private void doGetCluster() throws PageException {
+//	pageContext.setVariable(getString("admin", action, "returnVariable"), ((PageContextImpl) pageContext).clusterScope(false));
+//    }
 
     private void doGetToken() throws PageException {
 	pageContext.setVariable(getString("admin", action, "returnVariable"), config.getIdentification().getSecurityToken());
@@ -4077,13 +4077,13 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	admin.updateAllowImplicidQueryCall(getBoolObject("admin", action, "allowImplicidQueryCall"));
 	admin.updateMergeFormAndUrl(getBoolObject("admin", action, "mergeFormAndUrl"));
 	admin.updateSessionManagement(getBoolObject("admin", action, "sessionManagement"));
-	admin.updateClientManagement(getBoolObject("admin", action, "clientManagement"));
+//	admin.updateClientManagement(getBoolObject("admin", action, "clientManagement"));
 	admin.updateDomaincookies(getBoolObject("admin", action, "domainCookies"));
-	admin.updateClientCookies(getBoolObject("admin", action, "clientCookies"));
+//	admin.updateClientCookies(getBoolObject("admin", action, "clientCookies"));
 	// admin.updateRequestTimeout(getTimespan("admin",action,"requestTimeout"));
-	admin.updateClientTimeout(getTimespan("admin", action, "clientTimeout"));
+//	admin.updateClientTimeout(getTimespan("admin", action, "clientTimeout"));
 	admin.updateSessionTimeout(getTimespan("admin", action, "sessionTimeout"));
-	admin.updateClientStorage(getString("admin", action, "clientStorage"));
+//	admin.updateClientStorage(getString("admin", action, "clientStorage"));
 	admin.updateSessionStorage(getString("admin", action, "sessionStorage"));
 	admin.updateApplicationTimeout(getTimespan("admin", action, "applicationTimeout"));
 	admin.updateSessionType(getString("admin", action, "sessionType"));
@@ -4380,10 +4380,10 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	sct.set("sessiontype", sessionType);
 	sct.set("localmode", localMode);
 	sct.set("sessionManagement", Caster.toBoolean(config.isSessionManagement()));
-	sct.set("clientManagement", Caster.toBoolean(config.isClientManagement()));
+//	sct.set("clientManagement", Caster.toBoolean(config.isClientManagement()));
 	sct.set("domainCookies", Caster.toBoolean(config.isDomainCookies()));
-	sct.set("clientCookies", Caster.toBoolean(config.isClientCookies()));
-	sct.set("clientStorage", config.getClientStorage());
+//	sct.set("clientCookies", Caster.toBoolean(config.isClientCookies()));
+//	sct.set("clientStorage", config.getClientStorage());
 	sct.set("sessionStorage", config.getSessionStorage());
 	sct.set("cgiReadonly", config.getCGIScopeReadonly());
 
@@ -4401,12 +4401,12 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	sct.set("applicationTimeout_minute", Caster.toInteger(ts.getMinute()));
 	sct.set("applicationTimeout_second", Caster.toInteger(ts.getSecond()));
 
-	ts = config.getClientTimeout();
-	sct.set("clientTimeout", ts);
-	sct.set("clientTimeout_day", Caster.toInteger(ts.getDay()));
-	sct.set("clientTimeout_hour", Caster.toInteger(ts.getHour()));
-	sct.set("clientTimeout_minute", Caster.toInteger(ts.getMinute()));
-	sct.set("clientTimeout_second", Caster.toInteger(ts.getSecond()));
+//	ts = config.getClientTimeout();
+//	sct.set("clientTimeout", ts);
+//	sct.set("clientTimeout_day", Caster.toInteger(ts.getDay()));
+//	sct.set("clientTimeout_hour", Caster.toInteger(ts.getHour()));
+//	sct.set("clientTimeout_minute", Caster.toInteger(ts.getMinute()));
+//	sct.set("clientTimeout_second", Caster.toInteger(ts.getSecond()));
 
 	// scope cascading type
 	if (config.getScopeCascadingType() == Config.SCOPE_STRICT) sct.set("scopeCascadingType", "strict");

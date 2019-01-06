@@ -68,16 +68,16 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     private static final long serialVersionUID = 940663152793150953L;
 
     private String name;
-    private boolean setClientCookies;
+//    private boolean setClientCookies;
     private boolean setDomainCookies;
     private boolean setSessionManagement;
-    private boolean setClientManagement;
+//    private boolean setClientManagement;
     private TimeSpan sessionTimeout = null;
     private TimeSpan requestTimeout = null;
-    private TimeSpan clientTimeout;
+//    private TimeSpan clientTimeout;
     private TimeSpan applicationTimeout = null;
     private int loginStorage = -1;
-    private String clientstorage;
+//    private String clientstorage;
     private String sessionstorage;
     private int scriptProtect;
     private boolean typeChecking;
@@ -149,13 +149,13 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     public ClassicApplicationContext(ConfigWeb config, String name, boolean isDefault, Resource source) {
 	super(config);
 	this.name = name;
-	setClientCookies = config.isClientCookies();
+//	setClientCookies = config.isClientCookies();
 	setDomainCookies = config.isDomainCookies();
 	setSessionManagement = config.isSessionManagement();
-	setClientManagement = config.isClientManagement();
+//	setClientManagement = config.isClientManagement();
 	sessionTimeout = config.getSessionTimeout();
 	requestTimeout = config.getRequestTimeout();
-	clientTimeout = config.getClientTimeout();
+//	clientTimeout = config.getClientTimeout();
 	applicationTimeout = config.getApplicationTimeout();
 	loginStorage = Scope.SCOPE_COOKIE;
 	scriptProtect = config.getScriptProtect();
@@ -178,8 +178,8 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	suppressRemoteComponentContent = ((ConfigImpl) config).isSuppressContent();
 	this.sessionType = config.getSessionType();
 	this.sessionCluster = config.getSessionCluster();
-	this.clientCluster = config.getClientCluster();
-	this.clientstorage = ((ConfigImpl) config).getClientStorage();
+//	this.clientCluster = config.getClientCluster();
+//	this.clientstorage = ((ConfigImpl) config).getClientStorage();
 	this.sessionstorage = ((ConfigImpl) config).getSessionStorage();
 
 	this.source = source;
@@ -204,16 +204,16 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl._duplicate(this);
 
 	dbl.name = name;
-	dbl.setClientCookies = setClientCookies;
+//	dbl.setClientCookies = setClientCookies;
 	dbl.setDomainCookies = setDomainCookies;
 	dbl.setSessionManagement = setSessionManagement;
-	dbl.setClientManagement = setClientManagement;
+//	dbl.setClientManagement = setClientManagement;
 	dbl.sessionTimeout = sessionTimeout;
 	dbl.requestTimeout = requestTimeout;
-	dbl.clientTimeout = clientTimeout;
+//	dbl.clientTimeout = clientTimeout;
 	dbl.applicationTimeout = applicationTimeout;
 	dbl.loginStorage = loginStorage;
-	dbl.clientstorage = clientstorage;
+//	dbl.clientstorage = clientstorage;
 	dbl.sessionstorage = sessionstorage;
 	dbl.scriptProtect = scriptProtect;
 	dbl.typeChecking = typeChecking;
@@ -326,44 +326,44 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.sessionTimeout = sessionTimeout;
     }
 
-    @Override
-    public TimeSpan getClientTimeout() {
-	return clientTimeout;
-    }
+//    @Override
+//    public TimeSpan getClientTimeout() {
+//	return clientTimeout;
+//    }
+//
+//    /**
+//     * @param clientTimeout The sessionTimeout to set.
+//     */
+//    @Override
+//    public void setClientTimeout(TimeSpan clientTimeout) {
+//	this.clientTimeout = clientTimeout;
+//    }
+//
+//    @Override
+//    public boolean isSetClientCookies() {
+//	return setClientCookies;
+//    }
+//
+//    /**
+//     * @param setClientCookies The setClientCookies to set.
+//     */
+//    @Override
+//    public void setSetClientCookies(boolean setClientCookies) {
+//	this.setClientCookies = setClientCookies;
+//    }
+//
+//    @Override
+//    public boolean isSetClientManagement() {
+//	return setClientManagement;
+//    }
 
-    /**
-     * @param sessionTimeout The sessionTimeout to set.
-     */
-    @Override
-    public void setClientTimeout(TimeSpan clientTimeout) {
-	this.clientTimeout = clientTimeout;
-    }
-
-    @Override
-    public boolean isSetClientCookies() {
-	return setClientCookies;
-    }
-
-    /**
-     * @param setClientCookies The setClientCookies to set.
-     */
-    @Override
-    public void setSetClientCookies(boolean setClientCookies) {
-	this.setClientCookies = setClientCookies;
-    }
-
-    @Override
-    public boolean isSetClientManagement() {
-	return setClientManagement;
-    }
-
-    /**
-     * @param setClientManagement The setClientManagement to set.
-     */
-    @Override
-    public void setSetClientManagement(boolean setClientManagement) {
-	this.setClientManagement = setClientManagement;
-    }
+//    /**
+//     * @param setClientManagement The setClientManagement to set.
+//     */
+//    @Override
+//    public void setSetClientManagement(boolean setClientManagement) {
+//	this.setClientManagement = setClientManagement;
+//    }
 
     @Override
     public boolean isSetDomainCookies() {
@@ -391,24 +391,24 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.setSessionManagement = setSessionManagement;
     }
 
-    @Override
-    public String getClientstorage() {
-	return clientstorage;
-    }
+//    @Override
+//    public String getClientstorage() {
+//	return clientstorage;
+//    }
 
     @Override
     public String getSessionstorage() {
 	return sessionstorage;
     }
 
-    /**
-     * @param clientstorage The clientstorage to set.
-     */
-    @Override
-    public void setClientstorage(String clientstorage) {
-	if (StringUtil.isEmpty(clientstorage, true)) return;
-	this.clientstorage = clientstorage;
-    }
+//    /**
+//     * @param clientstorage The clientstorage to set.
+//     */
+//    @Override
+//    public void setClientstorage(String clientstorage) {
+//	if (StringUtil.isEmpty(clientstorage, true)) return;
+//	this.clientstorage = clientstorage;
+//    }
 
     @Override
     public void setSessionstorage(String sessionstorage) {
@@ -436,7 +436,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
     }
 
     /**
-     * @param scriptProtect The scriptProtect to set.
+     * @param typeChecking
      */
     @Override
     public void setTypeChecking(boolean typeChecking) {
@@ -682,21 +682,21 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	this.sessionCluster = sessionCluster;
     }
 
-    /**
-     * @return the clientCluster
-     */
-    @Override
-    public boolean getClientCluster() {
-	return clientCluster;
-    }
-
-    /**
-     * @param clientCluster the clientCluster to set
-     */
-    @Override
-    public void setClientCluster(boolean clientCluster) {
-	this.clientCluster = clientCluster;
-    }
+//    /**
+//     * @return the clientCluster
+//     */
+//    @Override
+//    public boolean getClientCluster() {
+//	return clientCluster;
+//    }
+//
+//    /**
+//     * @param clientCluster the clientCluster to set
+//     */
+//    @Override
+//    public void setClientCluster(boolean clientCluster) {
+//	this.clientCluster = clientCluster;
+//    }
 
     @Override
     public void setS3(Properties s3) {

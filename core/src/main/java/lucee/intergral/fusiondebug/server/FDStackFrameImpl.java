@@ -131,23 +131,23 @@ public class FDStackFrameImpl implements IFDStackFrame {
     }
 
     private static boolean enabled(PageContextImpl pc, int scope) {
-	if (Scope.SCOPE_CLIENT == scope) {
-	    return pc.getApplicationContext().isSetClientManagement();
-	}
+//	if (Scope.SCOPE_CLIENT == scope) {
+//	    return pc.getApplicationContext().isSetClientManagement();
+//	}
 	if (Scope.SCOPE_SESSION == scope) {
 	    return pc.getApplicationContext().isSetSessionManagement();
 	}
 	if (Scope.SCOPE_CALLER == scope) {
 	    return pc.undefinedScope().get(KeyConstants._caller, null) instanceof Struct;
 	}
-	if (Scope.SCOPE_CLUSTER == scope) {
-	    try {
-		return !(pc.clusterScope() instanceof ClusterNotSupported);
-	    }
-	    catch (PageException e) {
-		return false;
-	    }
-	}
+//	if (Scope.SCOPE_CLUSTER == scope) {
+//	    try {
+//		return !(pc.clusterScope() instanceof ClusterNotSupported);
+//	    }
+//	    catch (PageException e) {
+//		return false;
+//	    }
+//	}
 	return true;
     }
 
