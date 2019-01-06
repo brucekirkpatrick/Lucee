@@ -59,7 +59,7 @@ public class TemplateUtilImpl implements TemplateUtil {
 
     @Override
     public Page searchPage(PageContext pc, PageSource child, String rawPath, Boolean searchLocal, Boolean searchRoot) throws PageException {
-	return ComponentLoader.searchPage(pc, child, rawPath, searchLocal, searchRoot);
+	return ComponentLoader.searchPage(pc, child, rawPath, searchLocal, searchRoot, false);
     }
 
     @Override

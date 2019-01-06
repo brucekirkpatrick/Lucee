@@ -3177,8 +3177,13 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public lucee.runtime.Component loadComponent(String compPath) throws PageException {
-	return ComponentLoader.searchComponent(this, null, compPath, null, null, false);
+	return ComponentLoader.searchComponent(this, null, compPath, null, null, false, false);
     }
+
+	@Override
+	public lucee.runtime.Component loadComponent(String compPath, Boolean forceReload) throws PageException {
+		return ComponentLoader.searchComponent(this, null, compPath, null, null, false, forceReload);
+	}
 
     /**
      * @return the base

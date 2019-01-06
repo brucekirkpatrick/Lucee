@@ -98,7 +98,7 @@ public class InterfaceImpl implements Interface {
 	while (it.hasNext()) {
 	    str = it.next().trim();
 	    if (str.isEmpty()) continue;
-	    inter = ComponentLoader.searchInterface(pc, loadingLocation, str);
+	    inter = ComponentLoader.searchInterface(pc, loadingLocation, str, false);
 	    extend.add(inter);
 	}
 	return extend;

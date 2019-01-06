@@ -25,6 +25,7 @@ package lucee.runtime.functions.other;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.Component;
 import lucee.runtime.PageContext;
+import lucee.runtime.PageContextImpl;
 import lucee.runtime.com.COMObject;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
@@ -37,23 +38,31 @@ import lucee.runtime.net.http.HTTPClient;
 import lucee.runtime.net.proxy.ProxyData;
 import lucee.runtime.net.proxy.ProxyDataImpl;
 import lucee.runtime.op.Caster;
+import lucee.runtime.op.Decision;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.type.Struct;
 
 public final class CreateObject implements Function {
     public static Object call(PageContext pc, String cfcName) throws PageException {
-	return call(pc, "component", cfcName, null, null);
+	return call(pc, "component", cfcName, null, null, false);
     }
 
     public static Object call(PageContext pc, String type, String className) throws PageException {
-	return call(pc, type, className, null, null);
+	return call(pc, type, className, null, null, false);
     }
+	public static Object call(PageContext pc, String type, String className, Boolean forceReload) throws PageException {
+		return call(pc, type, className, null, null, forceReload);
+	}
 
     public static Object call(PageContext pc, String type, String className, Object context) throws PageException {
-	return call(pc, type, className, context, null);
+    	if(Decision.isBoolean(context)){
+		    return call(pc, type, className, null, null, Caster.toBoolean(context));
+	    }else {
+		    return call(pc, type, className, context, null, false);
+	    }
     }
 
-    public static Object call(PageContext pc, String type, String className, Object context, Object serverName) throws PageException {
+    public static Object call(PageContext pc, String type, String className, Object context, Object serverName, Boolean forceReload) throws PageException {
 	type = StringUtil.toLowerCase(type);
 
 	// JAVA
@@ -67,7 +76,10 @@ public final class CreateObject implements Function {
 	}
 	// Component
 	if (type.equals("component") || type.equals("cfc")) {
-	    return doComponent(pc, className);
+		if(forceReload==null){
+			forceReload=false;
+		}
+	    return doComponent(pc, className, forceReload);
 	}
 	// Webservice
 	if (type.equals("webservice") || type.equals("wsdl")) {
@@ -144,8 +156,8 @@ public final class CreateObject implements Function {
 	return new COMObject(className);
     }
 
-    public static Component doComponent(PageContext pc, String className) throws PageException {
-	return pc.loadComponent(className);
+    public static Component doComponent(PageContext pc, String className, Boolean forceReload) throws PageException {
+	return ((PageContextImpl) pc).loadComponent(className, forceReload);
     }
 
     public static Object doWebService(PageContext pc, String wsdlUrl) throws PageException {

@@ -39,7 +39,7 @@ public class _CreateComponent {
 	String path = Caster.toString(objArr[objArr.length - 1]);
 	// not store the index to make it faster
 
-	Component c = CreateObject.doComponent(pc, path);
+	Component c = CreateObject.doComponent(pc, path, false);
 
 	// no init method
 	if (!(c.get(KeyConstants._init, null) instanceof UDF)) {

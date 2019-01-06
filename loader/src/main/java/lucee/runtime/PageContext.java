@@ -1112,6 +1112,8 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
 
     public abstract Component loadComponent(String compPath) throws PageException;
 
+    public abstract Component loadComponent(String compPath, Boolean forceReload) throws PageException;
+
     // public abstract void setActiveComponent(Component component);
 
     /**

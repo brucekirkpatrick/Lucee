@@ -36,7 +36,7 @@ public class CreateComponent {
     public static Component call(PageContext pc, String path, Object args) throws PageException {
 
 	// first argument is the component itself
-	Component c = CreateObject.doComponent(pc, path);
+	Component c = CreateObject.doComponent(pc, path, false);
 
 	if (c.get(KeyConstants._init, null) instanceof UDF) {
 	    // no arguments

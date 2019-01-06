@@ -78,30 +78,30 @@ public class ComponentLoader {
      * @return
      * @throws PageException
      */
-    public static ComponentImpl searchComponent(PageContext pc, PageSource loadingLocation, String rawPath, Boolean searchLocal, Boolean searchRoot, boolean isExtendedComponent)
+    public static ComponentImpl searchComponent(PageContext pc, PageSource loadingLocation, String rawPath, Boolean searchLocal, Boolean searchRoot, boolean isExtendedComponent, boolean forceReload)
 	    throws PageException {
-	return (ComponentImpl) _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, true, RETURN_TYPE_COMPONENT, isExtendedComponent);
+	return (ComponentImpl) _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, true, RETURN_TYPE_COMPONENT, isExtendedComponent, forceReload);
     }
 
     public static ComponentImpl searchComponent(PageContext pc, PageSource loadingLocation, String rawPath, Boolean searchLocal, Boolean searchRoot,
-	    final boolean isExtendedComponent, boolean executeConstr) throws PageException {
-	return (ComponentImpl) _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, RETURN_TYPE_COMPONENT, isExtendedComponent);
+	    final boolean isExtendedComponent, boolean executeConstr, boolean forceReload) throws PageException {
+	return (ComponentImpl) _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, RETURN_TYPE_COMPONENT, isExtendedComponent, forceReload);
     }
 
-    public static InterfaceImpl searchInterface(PageContext pc, PageSource loadingLocation, String rawPath, boolean executeConstr) throws PageException {
-	return (InterfaceImpl) _search(pc, loadingLocation, rawPath, Boolean.TRUE, Boolean.TRUE, executeConstr, RETURN_TYPE_INTERFACE, false);
+    public static InterfaceImpl searchInterface(PageContext pc, PageSource loadingLocation, String rawPath, boolean executeConstr, boolean forceReload) throws PageException {
+	return (InterfaceImpl) _search(pc, loadingLocation, rawPath, Boolean.TRUE, Boolean.TRUE, executeConstr, RETURN_TYPE_INTERFACE, false, forceReload);
     }
 
-    public static InterfaceImpl searchInterface(PageContext pc, PageSource loadingLocation, String rawPath) throws PageException {
-	return (InterfaceImpl) _search(pc, loadingLocation, rawPath, Boolean.TRUE, Boolean.TRUE, true, RETURN_TYPE_INTERFACE, false);
+    public static InterfaceImpl searchInterface(PageContext pc, PageSource loadingLocation, String rawPath, Boolean forceReload) throws PageException {
+	return (InterfaceImpl) _search(pc, loadingLocation, rawPath, Boolean.TRUE, Boolean.TRUE, true, RETURN_TYPE_INTERFACE, false, forceReload);
     }
 
-    public static Page searchPage(PageContext pc, PageSource child, String rawPath, Boolean searchLocal, Boolean searchRoot) throws PageException {
-	return (Page) _search(pc, child, rawPath, searchLocal, searchRoot, false, RETURN_TYPE_PAGE, false);
+    public static Page searchPage(PageContext pc, PageSource child, String rawPath, Boolean searchLocal, Boolean searchRoot, Boolean forceReload) throws PageException {
+	return (Page) _search(pc, child, rawPath, searchLocal, searchRoot, false, RETURN_TYPE_PAGE, false, forceReload);
     }
 
     private static Object _search(PageContext pc, PageSource loadingLocation, String rawPath, Boolean searchLocal, Boolean searchRoot, boolean executeConstr, short returnType,
-	    final boolean isExtendedComponent) throws PageException {
+	    final boolean isExtendedComponent, boolean forceReload) throws PageException {
 	PageSource currPS = pc.getCurrentPageSource(null);
 
 	ImportDefintion[] importDefintions = null;
@@ -111,14 +111,14 @@ public class ComponentLoader {
 	    if (cfc instanceof ComponentImpl && currPS.equals(cfc.getPageSource())) {
 		importDefintions = ((ComponentImpl) cfc)._getImportDefintions();
 	    }
-	    else if ((currP = currPS.loadPage(pc, false, null)) != null) {
+	    else if ((currP = currPS.loadPage(pc, forceReload, null)) != null) {
 		importDefintions = currP.getImportDefintions();
 	    }
 	}
 
 //	int dialect = currPS == null ? pc.getCurrentTemplateDialect() : currPS.getDialect();
 	// first try for the current dialect
-	Object obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, CFMLEngine.DIALECT_CFML, isExtendedComponent);
+	Object obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, CFMLEngine.DIALECT_CFML, isExtendedComponent, forceReload);
 	// then we try the opposite dialect
 //	if (obj == null && ((ConfigImpl) pc.getConfig()).allowLuceeDialect()) { // only when the lucee dialect is enabled we have to check the opposite
 //	    obj = _search(pc, loadingLocation, rawPath, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions,
@@ -131,7 +131,7 @@ public class ComponentLoader {
     }
 
     private static Object _search(PageContext pc, PageSource loadingLocation, String rawPath, Boolean searchLocal, Boolean searchRoot, boolean executeConstr, short returnType,
-	    PageSource currPS, ImportDefintion[] importDefintions, int dialect, final boolean isExtendedComponent) throws PageException {
+	    PageSource currPS, ImportDefintion[] importDefintions, int dialect, final boolean isExtendedComponent, boolean forceReload) throws PageException {
 	ConfigImpl config = (ConfigImpl) pc.getConfig();
 
 	//if (dialect == CFMLEngine.DIALECT_LUCEE && !config.allowLuceeDialect()) PageContextImpl.notSupported();
@@ -153,7 +153,7 @@ public class ComponentLoader {
 
 	boolean isRealPath = !StringUtil.startsWith(path, '/');
 	// PageSource currPS = pc.getCurrentPageSource();
-	// Page currP=currPS.loadPage(pc,false);
+	// Page currP=currPS.loadPage(pc,forceReload);
 	PageSource ps = null;
 	CIPage page = null;
 
@@ -167,7 +167,7 @@ public class ComponentLoader {
 	    for (int y = 0; y < acm.length; y++) {
 		m = acm[y];
 		ps = m.getPageSource(pathWithCFC);
-		page = toCIPage(ps.loadPageThrowTemplateException(pc, false, (Page) null));
+		page = toCIPage(ps.loadPageThrowTemplateException(pc, forceReload, (Page) null));
 		if (page != null) {
 
 		    return returnType == RETURN_TYPE_PAGE ? page : load(pc, page, trim(path.replace('/', '.')), sub, isRealPath, returnType, isExtendedComponent, executeConstr);
@@ -220,7 +220,7 @@ public class ComponentLoader {
 	if (searchLocal && isRealPath) {
 	    // check realpath
 	    PageSource[] arr = ((PageContextImpl) pc).getRelativePageSources(pathWithCFC);
-	    page = toCIPage(PageSourceImpl.loadPage(pc, arr, null));
+	    page = toCIPage(PageSourceImpl.loadPage(pc, arr, null, forceReload));
 	    if (page != null) {
 		if (doCache) config.putCachedPageSource(localCacheName, page.getPageSource());
 		return returnType == RETURN_TYPE_PAGE ? page : load(pc, page, trim(path.replace('/', '.')), sub, isRealPath, returnType, isExtendedComponent, executeConstr);
@@ -246,7 +246,7 @@ public class ComponentLoader {
 		    // search from local first
 		    if (searchLocal) {
 			arr = ((PageContextImpl) pc).getRelativePageSources(impDef.getPackageAsPath() + pathWithCFC);
-			page = toCIPage(PageSourceImpl.loadPage(pc, arr, null));
+			page = toCIPage(PageSourceImpl.loadPage(pc, arr, null, forceReload));
 			if (page != null) {
 			    if (doCache) config.putCachedPageSource("import:" + impDef.getPackageAsPath() + pathWithCFC, page.getPageSource());
 			    return returnType == RETURN_TYPE_PAGE ? page
@@ -255,7 +255,7 @@ public class ComponentLoader {
 		    }
 
 		    // search mappings and webroot
-		    page = toCIPage(PageSourceImpl.loadPage(pc, ((PageContextImpl) pc).getPageSources("/" + impDef.getPackageAsPath() + pathWithCFC), null));
+		    page = toCIPage(PageSourceImpl.loadPage(pc, ((PageContextImpl) pc).getPageSources("/" + impDef.getPackageAsPath() + pathWithCFC), null, forceReload));
 		    if (page != null) {
 			String key = impDef.getPackageAsPath() + pathWithCFC;
 			if (doCache && !((MappingImpl) page.getPageSource().getMapping()).isAppMapping()) config.putCachedPageSource("import:" + key, page.getPageSource());
@@ -271,7 +271,7 @@ public class ComponentLoader {
 			    for (int y = 0; y < mappings.length; y++) {
 				m = mappings[y];
 				ps = m.getPageSource(impDef.getPackageAsPath() + pathWithCFC);
-				page = toCIPage(ps.loadPageThrowTemplateException(pc, false, (Page) null));
+				page = toCIPage(ps.loadPageThrowTemplateException(pc, forceReload, (Page) null));
 				if (page != null) {
 				    if (doCache && z > 0) config.putCachedPageSource("import:" + impDef.getPackageAsPath() + pathWithCFC, page.getPageSource());
 				    return returnType == RETURN_TYPE_PAGE ? page
@@ -293,7 +293,7 @@ public class ComponentLoader {
 	else p = pathWithCFC;
 
 	// search mappings and webroot
-	page = toCIPage(PageSourceImpl.loadPage(pc, ((PageContextImpl) pc).getPageSources(p), null));
+	page = toCIPage(PageSourceImpl.loadPage(pc, ((PageContextImpl) pc).getPageSources(p), null, forceReload));
 	if (page != null) {
 	    String key = pathWithCFC;
 	    if (doCache && !((MappingImpl) page.getPageSource().getMapping()).isAppMapping()) config.putCachedPageSource(key, page.getPageSource());
@@ -308,13 +308,13 @@ public class ComponentLoader {
 		for (int i = 0; i < mappings.length; i++) {
 		    m = mappings[i];
 		    ps = m.getPageSource(p);
-		    page = toCIPage(ps.loadPageThrowTemplateException(pc, false, (Page) null));
+		    page = toCIPage(ps.loadPageThrowTemplateException(pc, forceReload, (Page) null));
 
 		    // recursive search
 		    if (page == null && config.doComponentDeepSearch() && path.indexOf('/') == -1) {
 			ps = MappingUtil.searchMappingRecursive(m, pathWithCFC, true);
 			if (ps != null) {
-			    page = toCIPage(ps.loadPageThrowTemplateException(pc, false, (Page) null));
+			    page = toCIPage(ps.loadPageThrowTemplateException(pc, forceReload, (Page) null));
 			    if (page != null) doCache = false;// do not cache this, it could be ambigous
 			}
 		    }
@@ -338,7 +338,7 @@ public class ComponentLoader {
 	    if (loadingLocation != null) {
 		ps = loadingLocation.getRealPage(pathWithCFC);
 		if (ps != null) {
-		    page = toCIPage(ps.loadPageThrowTemplateException(pc, false, (Page) null));
+		    page = toCIPage(ps.loadPageThrowTemplateException(pc, forceReload, (Page) null));
 
 		    if (page != null) {
 			return returnType == RETURN_TYPE_PAGE ? page
@@ -351,7 +351,7 @@ public class ComponentLoader {
 	if (StringUtil.startsWithIgnoreCase(rawPath, "cfide.")) {
 	    String rpm = Constants.DEFAULT_PACKAGE + "." + rawPath.substring(6);
 	    try {
-		return _search(pc, loadingLocation, rpm, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, dialect, false);
+		return _search(pc, loadingLocation, rpm, searchLocal, searchRoot, executeConstr, returnType, currPS, importDefintions, dialect, false, forceReload);
 	    }
 	    catch (ExpressionException ee) {
 		return null;
@@ -365,7 +365,7 @@ public class ComponentLoader {
     }
 
     private static String toStringType(short returnType, int dialect) {
-	if (RETURN_TYPE_COMPONENT == returnType) return "component";//dialect == CFMLEngine.DIALECT_LUCEE ? "class" :
+	if (RETURN_TYPE_COMPONENT == returnType) return "component";
 	if (RETURN_TYPE_INTERFACE == returnType) return "interface";
 	return "component/interface";
     }
