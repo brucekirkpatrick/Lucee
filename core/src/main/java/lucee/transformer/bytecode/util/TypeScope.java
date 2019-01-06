@@ -43,7 +43,7 @@ public final class TypeScope {
 	SCOPES[Scope.SCOPE_UNDEFINED] = Type.getType(Undefined.class);
 	SCOPES[Scope.SCOPE_URL] = Type.getType(URL.class);
 	SCOPES[Scope.SCOPE_VARIABLES] = Types.VARIABLES;
-	SCOPES[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
+//	SCOPES[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
 	SCOPES[Scope.SCOPE_VAR] = SCOPES[Scope.SCOPE_LOCAL];
 	SCOPES[Scope.SCOPE_JETENDO] = Type.getType(Jetendo.class);
 	// SCOPES[SCOPE_UNDEFINED_LOCAL]= SCOPES[Scope.SCOPE_LOCAL];
@@ -63,7 +63,7 @@ public final class TypeScope {
 		SCOPES_IMPL[Scope.SCOPE_UNDEFINED] = Type.getType(UndefinedImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_URL] = Type.getType(UrlFormImpl.class);
 		SCOPES_IMPL[Scope.SCOPE_VARIABLES] = Type.getType(VariablesImpl.class);
-		SCOPES_IMPL[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
+//		SCOPES_IMPL[Scope.SCOPE_CLUSTER] = Type.getType(Cluster.class);
 		SCOPES_IMPL[Scope.SCOPE_VAR] = SCOPES_IMPL[Scope.SCOPE_LOCAL];
 		SCOPES_IMPL[Scope.SCOPE_JETENDO] = Type.getType(JetendoImpl.class);
 		// SCOPES_IMPL[SCOPE_UNDEFINED_LOCAL]= SCOPES_IMPL[Scope.SCOPE_LOCAL];
@@ -85,7 +85,7 @@ public final class TypeScope {
 	METHODS[Scope.SCOPE_UNDEFINED] = new Method("us", SCOPES[Scope.SCOPE_UNDEFINED], new Type[] {});
 	METHODS[Scope.SCOPE_URL] = new Method("urlScope", SCOPES[Scope.SCOPE_URL], new Type[] {});
 	METHODS[Scope.SCOPE_VARIABLES] = new Method("variablesScope", SCOPES[Scope.SCOPE_VARIABLES], new Type[] {});
-	METHODS[Scope.SCOPE_CLUSTER] = new Method("clusterScope", SCOPES[Scope.SCOPE_CLUSTER], new Type[] {});
+//	METHODS[Scope.SCOPE_CLUSTER] = new Method("clusterScope", SCOPES[Scope.SCOPE_CLUSTER], new Type[] {});
 	METHODS[Scope.SCOPE_VAR] = new Method("localScope", SCOPES[Scope.SCOPE_VAR], new Type[] {});
 	METHODS[Scope.SCOPE_JETENDO] = new Method("jetendoScope", SCOPES[Scope.SCOPE_JETENDO], new Type[] {});
 	METHODS[SCOPE_UNDEFINED_LOCAL] = new Method("usl", SCOPE, new Type[] {});

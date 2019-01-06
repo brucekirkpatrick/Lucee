@@ -234,7 +234,7 @@ public final class PageContextImpl extends PageContext {
 	public Session session;
 	public Server server;
 	public Jetendo jetendo;
-	public Cluster cluster;
+//	public Cluster cluster;
 	public Cookie cookie = new CookieImpl();
 	public Client client;
 	public Application application;
@@ -1154,8 +1154,8 @@ public final class PageContextImpl extends PageContext {
 	case Scope.SCOPE_LOCAL:
 	case ScopeSupport.SCOPE_VAR:
 	    return localScope();
-	case Scope.SCOPE_CLUSTER:
-	    return clusterScope();
+//	case Scope.SCOPE_CLUSTER:
+//	    return clusterScope();
 	}
 	return variables;
     }
@@ -1186,7 +1186,7 @@ public final class PageContextImpl extends PageContext {
 	if ("cookie".equals(strScope)) return cookieScope();
 	if ("client".equals(strScope)) return clientScope();
 	if ("local".equals(strScope)) return localScope();
-	if ("cluster".equals(strScope)) return clusterScope();
+//	if ("cluster".equals(strScope)) return clusterScope();
 
 	return defaultValue;
     }
@@ -1428,20 +1428,20 @@ public final class PageContextImpl extends PageContext {
 	server = ScopeContext.getServerScope(this, ignoreScopes());
     }
 
-    @Override
-    public Cluster clusterScope() throws PageException {
-	return clusterScope(true);
-    }
-
-    @Override
-    public Cluster clusterScope(boolean create) throws PageException {
-	if (cluster == null && create) {
-	    cluster = ScopeContext.getClusterScope(config, create);
-	    // cluster.initialize(this);
-	}
-	// else if(!cluster.isInitalized()) cluster.initialize(this);
-	return cluster;
-    }
+//    @Override
+//    public Cluster clusterScope() throws PageException {
+//	return clusterScope(true);
+//    }
+//
+//    @Override
+//    public Cluster clusterScope(boolean create) throws PageException {
+//	if (cluster == null && create) {
+//	    cluster = ScopeContext.getClusterScope(config, create);
+//	    // cluster.initialize(this);
+//	}
+//	// else if(!cluster.isInitalized()) cluster.initialize(this);
+//	return cluster;
+//    }
 
     @Override
     public Cookie cookieScope() {
@@ -3759,7 +3759,7 @@ public final class PageContextImpl extends PageContext {
 //		other.cgiRW=cgiRW;
 		other.session=session;
 		other.server=server;
-		other.cluster=cluster;
+//		other.cluster=cluster;
 		other.cookie = new CookieImpl();
 		other.client=client;
 		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.

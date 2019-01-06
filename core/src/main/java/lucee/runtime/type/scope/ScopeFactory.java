@@ -104,8 +104,8 @@ public final class ScopeFactory {
 	    return "url";
 	case Scope.SCOPE_VARIABLES:
 	    return "variables";
-	case Scope.SCOPE_CLUSTER:
-	    return "cluster";
+//	case Scope.SCOPE_CLUSTER:
+//	    return "cluster";
 	}
 
 	return defaultValue;

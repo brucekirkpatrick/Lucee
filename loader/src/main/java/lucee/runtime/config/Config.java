@@ -614,12 +614,12 @@ public interface Config {
 
     public abstract int getLocalMode();
 
-    /**
-     * @return return the class defined for the cluster scope
-     * 
-     */
-    @Deprecated
-    public Class<?> getClusterClass();
+//    /**
+//     * @return return the class defined for the cluster scope
+//     *
+//     */
+//    @Deprecated
+//    public Class<?> getClusterClass();
 
     /**
      * @return classloader of ths context
@@ -777,7 +777,7 @@ public interface Config {
 
     public boolean getSessionCluster();
 
-    public boolean getClientCluster();
+//    public boolean getClientCluster();
 
     public Resource getSecurityDirectory();
 

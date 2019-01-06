@@ -1657,7 +1657,7 @@ public abstract class AbstrCFMLExprTransformer {
 	else if (idStr.equals("URL")) return data.factory.createVariable(Scope.SCOPE_URL, line, data.srcCode.getPosition());
 	else if (idStr.equals("CLIENT")) return data.factory.createVariable(Scope.SCOPE_CLIENT, line, data.srcCode.getPosition());
 	else if (idStr.equals("COOKIE")) return data.factory.createVariable(Scope.SCOPE_COOKIE, line, data.srcCode.getPosition());
-	else if (idStr.equals("CLUSTER")) return data.factory.createVariable(Scope.SCOPE_CLUSTER, line, data.srcCode.getPosition());
+//	else if (idStr.equals("CLUSTER")) return data.factory.createVariable(Scope.SCOPE_CLUSTER, line, data.srcCode.getPosition());
 
 	return null;
     }

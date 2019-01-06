@@ -145,7 +145,7 @@ public interface ApplicationContext extends Serializable {
 
     public boolean getSessionCluster();
 
-    public boolean getClientCluster();
+//    public boolean getClientCluster();
 
     public Mapping[] getComponentMappings();
 
@@ -187,7 +187,7 @@ public interface ApplicationContext extends Serializable {
 
     public void setSessionType(short sessionType);
 
-    public void setClientCluster(boolean clientCluster);
+//    public void setClientCluster(boolean clientCluster);
 
     public void setSessionCluster(boolean sessionCluster);
 

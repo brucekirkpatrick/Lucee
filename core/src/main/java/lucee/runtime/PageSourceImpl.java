@@ -179,9 +179,7 @@ public final class PageSourceImpl implements PageSource {
 
     /**
      * return page when already loaded, otherwise null
-     * 
-     * @param pc
-     * @param config
+     *
      * @return
      * @throws PageException
      */
@@ -815,7 +813,7 @@ public final class PageSourceImpl implements PageSource {
     /**
      * is given object equal to this
      * 
-     * @param other
+     * @param ps
      * @return is same
      */
     public boolean equals(PageSource ps) {

@@ -425,7 +425,7 @@
 		<custom key="remote.urlserverdesc">Remote Client Server (Beispiel: http://lucee.ch)</custom>
 		<custom key="remote.urlservermissing">Remote Client Server</custom>
 	
-		<custom key="remote.usage.cluster">Cluster Scope</custom>
+		<!--<custom key="remote.usage.cluster">Cluster Scope</custom>-->
 		<custom key="remote.usage.desc">Definiert für was alles der Remote Client verwendet werden soll</custom>
 		<custom key="remote.usage.sync">Admin Synchronisation</custom>
 		<custom key="remote.usage.title">Verwendung</custom>

@@ -163,20 +163,20 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
 
     public abstract Client clientScopeEL();
 
-    /**
-     * @return cluster scope
-     * @throws PageException
-     */
-    public abstract Cluster clusterScope() throws PageException;
+//    /**
+//     * @return cluster scope
+//     * @throws PageException
+//     */
+//    public abstract Cluster clusterScope() throws PageException;
 
-    /**
-     * cluster scope
-     * 
-     * @param create return null when false and scope does not exist
-     * @return cluster scope or null
-     * @throws PageException
-     */
-    public abstract Cluster clusterScope(boolean create) throws PageException;
+//    /**
+//     * cluster scope
+//     *
+//     * @param create return null when false and scope does not exist
+//     * @return cluster scope or null
+//     * @throws PageException
+//     */
+//    public abstract Cluster clusterScope(boolean create) throws PageException;
 
     /**
      * set property at a collection object
