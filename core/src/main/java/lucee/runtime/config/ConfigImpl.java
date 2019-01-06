@@ -3513,7 +3513,7 @@ public abstract class ConfigImpl implements Config {
 	return checkForChangesInConfigFile;
     }
 
-    public abstract Cluster createClusterScope() throws PageException;
+//    public abstract Cluster createClusterScope() throws PageException;
 
     protected void setExternalizeStringGTE(int externalizeStringGTE) {
 	this.externalizeStringGTE = externalizeStringGTE;

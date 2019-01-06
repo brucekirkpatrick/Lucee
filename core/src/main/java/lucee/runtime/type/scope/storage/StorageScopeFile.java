@@ -60,7 +60,7 @@ public abstract class StorageScopeFile extends StorageScopeImpl {
     protected StorageScopeFile(PageContext pc, Resource res, String strType, int type, Struct sct) {
 	super(sct == null ? (sct = new StructImpl()) : sct, doNowIfNull(pc, Caster.toDate(sct.get(TIMECREATED, null), false, pc.getTimeZone(), null)),
 		doNowIfNull(pc, Caster.toDate(sct.get(LASTVISIT, null), false, pc.getTimeZone(), null)), -1,
-		type == SCOPE_CLIENT ? Caster.toIntValue(sct.get(HITCOUNT, "1"), 1) : 0, strType, type);
+		0, strType, type);
 
 	this.res = res;// pc.getConfig().getClientScopeDir().getRealResource(name+"-"+pc.getCFID()+".script");
 
@@ -149,7 +149,7 @@ public abstract class StorageScopeFile extends StorageScopeImpl {
 
     protected static Resource _loadResource(ConfigWeb config, int type, String name, String cfid) {
 	ConfigImpl ci = (ConfigImpl) config;
-	Resource dir = type == SCOPE_CLIENT ? ci.getClientScopeDir() : ci.getSessionScopeDir();
+	Resource dir = ci.getSessionScopeDir();
 	return dir.getRealResource(getFolderName(name, cfid, true));
     }
 

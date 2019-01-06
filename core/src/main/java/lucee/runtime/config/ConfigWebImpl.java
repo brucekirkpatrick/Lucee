@@ -474,10 +474,10 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	configServer.checkPermGenSpace(check);
     }
 
-    @Override
-    public Cluster createClusterScope() throws PageException {
-	return configServer.createClusterScope();
-    }
+//    @Override
+//    public Cluster createClusterScope() throws PageException {
+//	return configServer.createClusterScope();
+//    }
 
     @Override
     public boolean hasServerPassword() {

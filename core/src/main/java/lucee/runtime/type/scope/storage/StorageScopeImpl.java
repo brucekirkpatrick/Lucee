@@ -159,12 +159,12 @@ public abstract class StorageScopeImpl extends StructSupport implements StorageS
 	_lastvisit = new DateTimeImpl(pc.getConfig());
 	lastvisit = System.currentTimeMillis();
 
-	if (type == SCOPE_CLIENT) {
-	    sct.setEL(HITCOUNT, new Double(hitcount++));
-	}
-	else {
+//	if (type == SCOPE_CLIENT) {
+//	    sct.setEL(HITCOUNT, new Double(hitcount++));
+//	}
+//	else {
 	    sct.setEL(SESSION_ID, pc.getApplicationContext().getName() + "_" + pc.getCFID() + "_" + pc.getCFToken());
-	}
+//	}
 	sct.setEL(TIMECREATED, timecreated);
     }
 
@@ -177,7 +177,7 @@ public abstract class StorageScopeImpl extends StructSupport implements StorageS
 
     void setTimeSpan(PageContext pc) {
 	ApplicationContext ac = pc.getApplicationContext();
-	this.timeSpan = getType() == SCOPE_SESSION ? ac.getSessionTimeout().getMillis() : ac.getClientTimeout().getMillis();
+	this.timeSpan = ac.getSessionTimeout().getMillis();
     }
 
     @Override
@@ -206,9 +206,9 @@ public abstract class StorageScopeImpl extends StructSupport implements StorageS
 	sct.setEL(LASTVISIT, _lastvisit);
 	sct.setEL(TIMECREATED, timecreated);
 
-	if (type == SCOPE_CLIENT) {
-	    sct.setEL(HITCOUNT, new Double(hitcount));
-	}
+//	if (type == SCOPE_CLIENT) {
+//	    sct.setEL(HITCOUNT, new Double(hitcount));
+//	}
     }
 
     @Override
@@ -222,7 +222,7 @@ public abstract class StorageScopeImpl extends StructSupport implements StorageS
      *         scope (cfid,cftoken,urltoken)
      */
     public boolean hasContent() {
-	if (sct.size() == (type == SCOPE_CLIENT ? 6 : 5) && sct.containsKey(URLTOKEN) && sct.containsKey(KeyConstants._cftoken) && sct.containsKey(KeyConstants._cfid)) {
+	if (sct.size() == (5) && sct.containsKey(URLTOKEN) && sct.containsKey(KeyConstants._cftoken) && sct.containsKey(KeyConstants._cfid)) {
 	    return false;
 	}
 	return true;

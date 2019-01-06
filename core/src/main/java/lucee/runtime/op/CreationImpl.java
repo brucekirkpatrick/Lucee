@@ -225,10 +225,10 @@ public final class CreationImpl implements Creation, Serializable {
 	return new RemoteClientTask(plans, remoteClient, attrColl, callerId, type);
     }
 
-    @Override
-    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset) {
-	return new ClusterEntryImpl(key, value, offset);
-    }
+//    @Override
+//    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset) {
+//	return new ClusterEntryImpl(key, value, offset);
+//    }
 
     @Override
     public Resource createResource(String path, boolean existing) throws PageException {

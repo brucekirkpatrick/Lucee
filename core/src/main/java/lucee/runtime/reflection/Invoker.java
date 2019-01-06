@@ -320,7 +320,8 @@ public final class Invoker {
 
 	// Method m=getMethodIgnoreCase(c,prop,null);
 	if (m.getReturnType().getName().equals("void")) throw new NoSuchMethodException("invalid return Type, method [" + m.getName() + "] can't have return type void");
-	return m.invoke(o, null);
+	Object[] objects=null;
+	return m.invoke(o, objects);
     }
 
     /**

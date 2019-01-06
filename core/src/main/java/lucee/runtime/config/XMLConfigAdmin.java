@@ -2612,26 +2612,26 @@ public final class XMLConfigAdmin {
 	throw new ApplicationException("no matching storage for [" + storage + "] found");
     }
 
-    /**
-     * updates session timeout value
-     * 
-     * @param span
-     * @throws SecurityException
-     */
-    public void updateClientTimeout(TimeSpan span) throws SecurityException {
-	checkWriteAccess();
-	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
-
-	if (!hasAccess) throw new SecurityException("no access to update scope setting");
-
-	Element scope = _getRootElement("scope");
-	if (span != null) scope.setAttribute("clienttimeout", span.getDay() + "," + span.getHour() + "," + span.getMinute() + "," + span.getSecond());
-	else scope.removeAttribute("clienttimeout");
-
-	// deprecated
-	if (scope.hasAttribute("client-max-age")) scope.removeAttribute("client-max-age");
-
-    }
+//    /**
+//     * updates session timeout value
+//     *
+//     * @param span
+//     * @throws SecurityException
+//     */
+//    public void updateClientTimeout(TimeSpan span) throws SecurityException {
+//	checkWriteAccess();
+//	boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManager.TYPE_SETTING);
+//
+//	if (!hasAccess) throw new SecurityException("no access to update scope setting");
+//
+//	Element scope = _getRootElement("scope");
+//	if (span != null) scope.setAttribute("clienttimeout", span.getDay() + "," + span.getHour() + "," + span.getMinute() + "," + span.getSecond());
+//	else scope.removeAttribute("clienttimeout");
+//
+//	// deprecated
+//	if (scope.hasAttribute("client-max-age")) scope.removeAttribute("client-max-age");
+//
+//    }
 
     public void updateCFMLWriterType(String writerType) throws SecurityException, ApplicationException {
 	checkWriteAccess();

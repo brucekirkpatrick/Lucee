@@ -73,9 +73,10 @@ public final class Controler extends Thread {
     private ControllerState state;
 
     /**
+     * @param configServer
      * @param contextes
      * @param interval
-     * @param run
+     * @param state
      */
     public Controler(ConfigServer configServer, Map contextes, int interval, ControllerState state) {
 	this.contextes = contextes;
@@ -189,12 +190,12 @@ public final class Controler extends Thread {
 	if (doHour) lastHourInterval = now;
 
 	// broadcast cluster scope
-	try {
-	    ScopeContext.getClusterScope(configServer, true).broadcast();
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	}
+//	try {
+//	    ScopeContext.getClusterScope(configServer, true).broadcast();
+//	}
+//	catch (Throwable t) {
+//	    ExceptionUtil.rethrowIfNecessary(t);
+//	}
 
 	// every 10 seconds
 	if (do10Seconds) {

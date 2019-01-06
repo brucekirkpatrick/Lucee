@@ -56,7 +56,7 @@ public final class CallerImpl extends StructSupport implements Caller {
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
 	    if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
-	    if (KeyConstants._client.equalsIgnoreCase(key)) return pc.clientScope();
+//	    if (KeyConstants._client.equalsIgnoreCase(key)) return pc.clientScope();
 //	    if (KeyConstants._cluster.equalsIgnoreCase(key)) return pc.clusterScope();
 	}
 	else if ('f' == c) {
@@ -120,12 +120,12 @@ public final class CallerImpl extends StructSupport implements Caller {
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(key)) return pc.cgiScope();
 	    if (KeyConstants._cookie.equalsIgnoreCase(key)) return pc.cookieScope();
-	    if (KeyConstants._client.equalsIgnoreCase(key)) {
-		try {
-		    return pc.clientScope();
-		}
-		catch (PageException e) {}
-	    }
+//	    if (KeyConstants._client.equalsIgnoreCase(key)) {
+//		try {
+//		    return pc.clientScope();
+//		}
+//		catch (PageException e) {}
+//	    }
 //	    if (KeyConstants._cluster.equalsIgnoreCase(key)) {
 //		try {
 //		    return pc.clusterScope();

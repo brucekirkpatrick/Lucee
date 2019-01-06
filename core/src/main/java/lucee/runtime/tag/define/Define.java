@@ -1,10 +1,9 @@
 package lucee.runtime.tag.define;
 
-import lucee.runtime.ComponentImpl;
-import lucee.runtime.PageSource;
-import lucee.runtime.PageSourceImpl;
+import lucee.runtime.*;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.tag.TagImpl;
+import lucee.runtime.functions.other.CreatePageContext;
 import lucee.runtime.op.Caster;
 import lucee.runtime.tag.define.DefineType;
 import lucee.runtime.type.scope.ScopeFactory;
@@ -197,6 +196,8 @@ public class Define extends TagImpl {
 			}
 		}
 		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
+
+//		bc.getConfig()
 //		ps.initializeDefine();
 		boolean isApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
 
@@ -208,9 +209,9 @@ public class Define extends TagImpl {
 			// do import
 			if(isApplicationCFC) {
 				// TODO: need to still compile/load the pagesource for typeDefine.importValue here like the one that runs _compile() in PageSourceImpl
-
-				ComponentImpl importComponent=(ComponentImpl) pageContext.loadComponent("zcorerootmapping.com.zos.template");
-				PageSource importPS=importComponent.getPageSource();
+//				PageContextImpl pc=PageContextImpl.createPageContext();
+//				ComponentImpl importComponent=(ComponentImpl) pc.loadComponent(typeDefine.importValue);
+//				PageSource importPS=importComponent.getPageSource();
 //				importPS.
 
 				for(DefineType typeDefinition:ps.cfmlTypeVariables.values()){
@@ -240,7 +241,7 @@ public class Define extends TagImpl {
 
 		if(typeDefine.variable.length()>0 && typeDefine.component.length()>0){
 			// verify no other attributes were used
-			if(typeDefine.importValue.length()>0 && typeDefine.name.length()>0 && typeDefine.type.length()>0 && typeDefine.arrayType.length()>0 && requiredAttr!=null) {
+			if(typeDefine.name.length()>0 || typeDefine.type.length()>0 || typeDefine.arrayType.length()>0 || requiredAttr!=null) {
 				throw new RuntimeException("cfdefine error - name, required, type, arrayType and import can't be combined with the variable attribute.");
 			}
 
@@ -268,10 +269,6 @@ public class Define extends TagImpl {
 		}
 
 		if(typeDefine.name.length()>0 && typeDefine.type.length()>0){
-			// verify no other attributes were used
-			if(typeDefine.importValue.length()>0 && typeDefine.variable.length()>0 && typeDefine.component.length()>0 && typeDefine.arrayType.length()>0) {
-				throw new RuntimeException("cfdefine error - variable, component and import can't be combined with the name attribute.");
-			}
 
 			if(isApplicationCFC) {
 				typeDefine.id = cfmlTypeDefinitions.size();

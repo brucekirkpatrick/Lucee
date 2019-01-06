@@ -74,8 +74,8 @@ public final class VariableInterpreter {
 	    return "cgi";
 	case Scope.SCOPE_COOKIE:
 	    return "cookie";
-	case Scope.SCOPE_CLIENT:
-	    return "client";
+//	case Scope.SCOPE_CLIENT:
+//	    return "client";
 	case Scope.SCOPE_FORM:
 	    return "form";
 	case Scope.SCOPE_REQUEST:
@@ -88,8 +88,8 @@ public final class VariableInterpreter {
 	    return "url";
 	case Scope.SCOPE_VARIABLES:
 	    return "variables";
-	case Scope.SCOPE_CLUSTER:
-	    return "cluster";
+//	case Scope.SCOPE_CLUSTER:
+//	    return "cluster";
 	case Scope.SCOPE_LOCAL:
 	    return "local";
 	}
@@ -557,8 +557,8 @@ public final class VariableInterpreter {
 	else if ('c' == c) {
 	    if ("cgi".equals(type)) return Scope.SCOPE_CGI;
 	    if ("cookie".equals(type)) return Scope.SCOPE_COOKIE;
-	    if ("client".equals(type)) return Scope.SCOPE_CLIENT;
-	    if ("cluster".equals(type)) return Scope.SCOPE_CLUSTER;
+//	    if ("client".equals(type)) return Scope.SCOPE_CLIENT;
+//	    if ("cluster".equals(type)) return Scope.SCOPE_CLUSTER;
 	}
 	else if ('f' == c) {
 	    if ("form".equals(type)) return Scope.SCOPE_FORM;
@@ -595,8 +595,8 @@ public final class VariableInterpreter {
 	else if ('c' == c) {
 	    if (KeyConstants._cgi.equalsIgnoreCase(type)) return Scope.SCOPE_CGI;
 	    if (KeyConstants._cookie.equalsIgnoreCase(type)) return Scope.SCOPE_COOKIE;
-	    if (KeyConstants._client.equalsIgnoreCase(type)) return Scope.SCOPE_CLIENT;
-	    if (KeyConstants._cluster.equalsIgnoreCase(type)) return Scope.SCOPE_CLUSTER;
+//	    if (KeyConstants._client.equalsIgnoreCase(type)) return Scope.SCOPE_CLIENT;
+//	    if (KeyConstants._cluster.equalsIgnoreCase(type)) return Scope.SCOPE_CLUSTER;
 	}
 	else if ('f' == c) {
 	    if (KeyConstants._form.equalsIgnoreCase(type)) return Scope.SCOPE_FORM;
@@ -670,12 +670,12 @@ public final class VariableInterpreter {
 	    return pc.serverScope();
 	case Scope.SCOPE_COOKIE:
 	    return pc.cookieScope();
-	case Scope.SCOPE_CLIENT:
-	    return pc.clientScope();
+//	case Scope.SCOPE_CLIENT:
+//	    return pc.clientScope();
 	case Scope.SCOPE_VAR:
 	    return pc.localScope();
-	case Scope.SCOPE_CLUSTER:
-	    return pc.clusterScope();
+//	case Scope.SCOPE_CLUSTER:
+//	    return pc.clusterScope();
 
 	case Scope.SCOPE_LOCAL:
 	    if (touch) return ((PageContextImpl) pc).localTouch();

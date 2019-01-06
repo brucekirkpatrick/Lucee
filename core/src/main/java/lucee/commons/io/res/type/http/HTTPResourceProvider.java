@@ -59,12 +59,12 @@ public class HTTPResourceProvider implements ResourceProviderPro {
 	if (arguments != null) {
 	    this.arguments = arguments;
 	    // client-timeout
-	    String strTimeout = (String) arguments.get("client-timeout");
-	    if (strTimeout != null) {
-		clientTimeout = Caster.toIntValue(strTimeout, clientTimeout);
-	    }
+//	    String strTimeout = (String) arguments.get("client-timeout");
+//	    if (strTimeout != null) {
+//		clientTimeout = Caster.toIntValue(strTimeout, clientTimeout);
+//	    }
 	    // socket-timeout
-	    strTimeout = (String) arguments.get("socket-timeout");
+		String strTimeout = (String) arguments.get("socket-timeout");
 	    if (strTimeout != null) {
 		socketTimeout = Caster.toIntValue(strTimeout, socketTimeout);
 	    }
@@ -127,12 +127,12 @@ public class HTTPResourceProvider implements ResourceProviderPro {
 	lock.read(res);
     }
 
-    /**
-     * @return the clientTimeout
-     */
-    public int getClientTimeout() {
-	return clientTimeout;
-    }
+//    /**
+//     * @return the clientTimeout
+//     */
+//    public int getClientTimeout() {
+//	return clientTimeout;
+//    }
 
     /**
      * @return the lockTimeout

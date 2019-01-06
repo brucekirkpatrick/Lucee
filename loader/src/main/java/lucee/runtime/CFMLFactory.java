@@ -139,6 +139,6 @@ public abstract class CFMLFactory extends JspFactory {
 
     public abstract Iterator<String> getCFMLExtensions();
 
-    public abstract Iterator<String> getLuceeExtensions();
+//    public abstract Iterator<String> getLuceeExtensions();
 
 }

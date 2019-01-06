@@ -111,7 +111,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 	if (_lastvisit == null) _lastvisit = timecreated;
 	lastvisit = _lastvisit == null ? 0 : _lastvisit.getTime();
 
-	this.hitcount = (type == SCOPE_CLIENT) ? Caster.toIntValue(data.g(KeyConstants._hitcount, ONE), 1) : 1;
+	this.hitcount = 1;
 	this.strType = strType;
 	this.type = type;
 	this.lastModified = lastModified;
@@ -150,7 +150,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
     public static Scope getInstance(int scope, IKHandler handler, String appName, String name, PageContext pc, Scope existing, Log log) throws PageException {
 	IKStorageValue sv = null;
 	if (Scope.SCOPE_SESSION == scope) sv = handler.loadData(pc, appName, name, "session", Scope.SCOPE_SESSION, log);
-	else if (Scope.SCOPE_CLIENT == scope) sv = handler.loadData(pc, appName, name, "client", Scope.SCOPE_CLIENT, log);
+//	else if (Scope.SCOPE_CLIENT == scope) sv = handler.loadData(pc, appName, name, "client", Scope.SCOPE_CLIENT, log);
 
 	if (sv != null) {
 	    long time = sv.lastModified();
@@ -163,7 +163,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 	    }
 
 	    if (Scope.SCOPE_SESSION == scope) return new IKStorageScopeSession(pc, handler, appName, name, sv.getValue(), time);
-	    else if (Scope.SCOPE_CLIENT == scope) return new IKStorageScopeClient(pc, handler, appName, name, sv.getValue(), time);
+//	    else if (Scope.SCOPE_CLIENT == scope) return new IKStorageScopeClient(pc, handler, appName, name, sv.getValue(), time);
 	}
 	else if (existing instanceof IKStorageScopeSupport) {
 	    IKStorageScopeSupport tmp = ((IKStorageScopeSupport) existing);
@@ -175,7 +175,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 	IKStorageScopeSupport rtn = null;
 	ConcurrentHashMapPro<Key, IKStorageScopeItem> map = new ConcurrentHashMapPro<Collection.Key, IKStorageScopeItem>();
 	if (Scope.SCOPE_SESSION == scope) rtn = new IKStorageScopeSession(pc, handler, appName, name, map, 0);
-	else if (Scope.SCOPE_CLIENT == scope) rtn = new IKStorageScopeClient(pc, handler, appName, name, map, 0);
+//	else if (Scope.SCOPE_CLIENT == scope) rtn = new IKStorageScopeClient(pc, handler, appName, name, map, 0);
 
 	rtn.store(pc);
 	return rtn;
@@ -192,7 +192,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
     public static boolean hasInstance(int scope, IKHandler handler, String appName, String name, PageContext pc) {
 	try {
 	    if (Scope.SCOPE_SESSION == scope) return handler.loadData(pc, appName, name, "session", Scope.SCOPE_SESSION, null) != null;
-	    else if (Scope.SCOPE_CLIENT == scope) return handler.loadData(pc, appName, name, "client", Scope.SCOPE_CLIENT, null) != null;
+//	    else if (Scope.SCOPE_CLIENT == scope) return handler.loadData(pc, appName, name, "client", Scope.SCOPE_CLIENT, null) != null;
 	    return false;
 	}
 	catch (PageException e) {
@@ -215,12 +215,12 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 	_lastvisit = new DateTimeImpl(pc.getConfig());
 	lastvisit = System.currentTimeMillis();
 
-	if (type == SCOPE_CLIENT) {
-	    data0.put(KeyConstants._hitcount, new IKStorageScopeItem(new Double(hitcount++)));
-	}
-	else {
+//	if (type == SCOPE_CLIENT) {
+//	    data0.put(KeyConstants._hitcount, new IKStorageScopeItem(new Double(hitcount++)));
+//	}
+//	else {
 	    data0.put(KeyConstants._sessionid, new IKStorageScopeItem(pc.getApplicationContext().getName() + "_" + pc.getCFID() + "_" + pc.getCFToken()));
-	}
+//	}
 	data0.put(KeyConstants._timecreated, new IKStorageScopeItem(timecreated));
     }
 
@@ -233,7 +233,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 
     void setTimeSpan(PageContext pc) {
 	ApplicationContext ac = pc.getApplicationContext();
-	this.timeSpan = getType() == SCOPE_SESSION ? ac.getSessionTimeout().getMillis() : ac.getClientTimeout().getMillis();
+	this.timeSpan = ac.getSessionTimeout().getMillis();
     }
 
     @Override
@@ -267,9 +267,9 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
 	data0.put(KeyConstants._lastvisit, new IKStorageScopeItem(_lastvisit));
 	data0.put(KeyConstants._timecreated, new IKStorageScopeItem(timecreated));
 
-	if (type == SCOPE_CLIENT) {
-	    data0.put(KeyConstants._hitcount, new IKStorageScopeItem(new Double(hitcount)));
-	}
+//	if (type == SCOPE_CLIENT) {
+//	    data0.put(KeyConstants._hitcount, new IKStorageScopeItem(new Double(hitcount)));
+//	}
 	store(pc);
     }
 
@@ -284,7 +284,7 @@ public abstract class IKStorageScopeSupport extends StructSupport implements Sto
      *         scope (cfid,cftoken,urltoken)
      */
     public boolean hasContent() {
-	if (size() == (type == SCOPE_CLIENT ? 6 : 5) && containsKey(KeyConstants._urltoken) && containsKey(KeyConstants._cftoken) && containsKey(KeyConstants._cfid)) {
+	if (size() == (5) && containsKey(KeyConstants._urltoken) && containsKey(KeyConstants._cftoken) && containsKey(KeyConstants._cfid)) {
 	    return false;
 	}
 	return true;

@@ -434,10 +434,9 @@ public final class ScopeContext {
      */
     public long getScopesSize(int scope) throws ExpressionException {
 	if (scope == Scope.SCOPE_APPLICATION) return SizeOf.size(applicationContexts);
-	if (scope == Scope.SCOPE_CLUSTER) return SizeOf.size(cluster);
+//	if (scope == Scope.SCOPE_CLUSTER) return SizeOf.size(cluster);
 	if (scope == Scope.SCOPE_SERVER) return SizeOf.size(server);
 	if (scope == Scope.SCOPE_SESSION) return SizeOf.size(this.cfSessionContexts);
-	if (scope == Scope.SCOPE_CLIENT) return SizeOf.size(this.cfClientContexts);
 
 	throw new ExpressionException("can only return information of scope that are not request dependent");
     }
@@ -700,7 +699,7 @@ public final class ScopeContext {
 //    }
 
     public boolean remove(int type, String appName, String cfid) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
 	Map<String, Scope> context = getSubMap(contexts, appName);
 	Object res = context.remove(cfid);
 	getLog().log(Log.LEVEL_INFO, "scope-context", "remove " + VariableInterpreter.scopeInt2String(type) + " scope " + appName + "/" + cfid + " from memory");
@@ -821,22 +820,14 @@ public final class ScopeContext {
 		    // SessionEndListener())
 		    // ,new CacheStorageScopeCleaner(Scope.SCOPE_SESSION, new SessionEndListener())
 	    });
-	    if (client == null) client = new StorageScopeEngine(factory, log,
-		    new StorageScopeCleaner[] { new FileStorageScopeCleaner(Scope.SCOPE_CLIENT, null), new DatasourceStorageScopeCleaner(Scope.SCOPE_CLIENT, null)
-		    // ,new CacheStorageScopeCleaner(Scope.SCOPE_CLIENT, null) //Cache storage need no control, if
-		    // there is no listener
-		    });
 	    // store session/client scope and remove from memory
-	    storeUnusedStorageScope(factory, Scope.SCOPE_CLIENT);
 	    storeUnusedStorageScope(factory, Scope.SCOPE_SESSION);
 
 	    // remove unused memory based client/session scope (invoke onSessonEnd)
-	    clearUnusedMemoryScope(factory, Scope.SCOPE_CLIENT);
 	    clearUnusedMemoryScope(factory, Scope.SCOPE_SESSION);
 
 	    // session must be executed first, because session creates a reference from client scope
 	    session.clean();
-	    client.clean();
 
 	    // clean all unused application scopes
 	    clearUnusedApplications(factory);
@@ -897,8 +888,8 @@ public final class ScopeContext {
     }
 
     private void storeUnusedStorageScope(CFMLFactoryImpl cfmlFactory, int type) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
-	long timespan = type == Scope.SCOPE_CLIENT ? CLIENT_MEMORY_TIMESPAN : SESSION_MEMORY_TIMESPAN;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
+	long timespan = SESSION_MEMORY_TIMESPAN;
 	String strType = VariableInterpreter.scopeInt2String(type);
 
 	if (contexts.size() == 0) return;
@@ -936,7 +927,7 @@ public final class ScopeContext {
      *
      */
     private void clearUnusedMemoryScope(CFMLFactoryImpl cfmlFactory, int type) {
-	Map<String, Map<String, Scope>> contexts = type == Scope.SCOPE_CLIENT ? cfClientContexts : cfSessionContexts;
+	Map<String, Map<String, Scope>> contexts = cfSessionContexts;
 	if (contexts.size() == 0) return;
 
 	Object[] arrContexts = contexts.keySet().toArray();

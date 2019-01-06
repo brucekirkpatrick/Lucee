@@ -618,26 +618,26 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
      * ((MappingImpl)mapping).getPCLCollection(); return pcl==null?0:pcl.count(); }
      */
 
-    @Override
-    public Cluster createClusterScope() throws PageException {
-	Cluster cluster = null;
-	try {
-	    if (Reflector.isInstaneOf(getClusterClass(), Cluster.class, false)) {
-		cluster = (Cluster) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
-		cluster.init(this);
-	    }
-	    else if (Reflector.isInstaneOf(getClusterClass(), ClusterRemote.class, false)) {
-		ClusterRemote cb = (ClusterRemote) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
-
-		cluster = new ClusterWrap(this, cb);
-		// cluster.init(cs);
-	    }
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
-	return cluster;
-    }
+//    @Override
+//    public Cluster createClusterScope() throws PageException {
+//	Cluster cluster = null;
+//	try {
+//	    if (Reflector.isInstaneOf(getClusterClass(), Cluster.class, false)) {
+//		cluster = (Cluster) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
+//		cluster.init(this);
+//	    }
+//	    else if (Reflector.isInstaneOf(getClusterClass(), ClusterRemote.class, false)) {
+//		ClusterRemote cb = (ClusterRemote) ClassUtil.loadInstance(getClusterClass(), ArrayUtil.OBJECT_EMPTY);
+//
+//		cluster = new ClusterWrap(this, cb);
+//		// cluster.init(cs);
+//	    }
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
+//	return cluster;
+//    }
 
     @Override
     public boolean hasServerPassword() {

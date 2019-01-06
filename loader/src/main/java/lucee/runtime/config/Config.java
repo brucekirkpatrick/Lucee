@@ -199,10 +199,10 @@ public interface Config {
      */
     public abstract TimeSpan getSessionTimeout();
 
-    /**
-     * @return Returns the client Timeout.
-     */
-    public TimeSpan getClientTimeout();
+//    /**
+//     * @return Returns the client Timeout.
+//     */
+//    public TimeSpan getClientTimeout();
 
     /**
      * @return Returns the request Timeout.

@@ -145,14 +145,14 @@ class Surveillance {
 	s = sc.getScopesSize(Scope.SCOPE_APPLICATION);
 	webScopes.set("application", Caster.toDouble(s));
 
-	s = sc.getScopesSize(Scope.SCOPE_CLUSTER);
-	srvScopes.set("cluster", Caster.toDouble(s));
+//	s = sc.getScopesSize(Scope.SCOPE_CLUSTER);
+//	srvScopes.set("cluster", Caster.toDouble(s));
 
 	s = sc.getScopesSize(Scope.SCOPE_SERVER);
 	srvScopes.set("server", Caster.toDouble(s));
 
-	s = sc.getScopesSize(Scope.SCOPE_CLIENT);
-	webScopes.set("client", Caster.toDouble(s));
+//	s = sc.getScopesSize(Scope.SCOPE_CLIENT);
+//	webScopes.set("client", Caster.toDouble(s));
 
 	web.set(KeyConstants._scopes, webScopes);
 	server.set(KeyConstants._scopes, srvScopes);

@@ -92,7 +92,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
     private URL url = null;
     private CFMLEngineImpl engine;
     private ArrayList<String> cfmlExtensions;
-    private ArrayList<String> luceeExtensions;
+//    private ArrayList<String> luceeExtensions;
     private ServletConfig servletConfig;
 
     public CFMLFactoryImpl(CFMLEngineImpl engine, ServletConfig sg) {
@@ -474,10 +474,10 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    }
 	    catch (PageException pe) {}
 
-	    try {
-		scopes.setEL(KeyConstants._client, pc.clientScope());
-	    }
-	    catch (PageException pe) {}
+//	    try {
+//		scopes.setEL(KeyConstants._client, pc.clientScope());
+//	    }
+//	    catch (PageException pe) {}
 	    scopes.setEL(KeyConstants._cookie, pc.cookieScope());
 	    scopes.setEL(KeyConstants._variables, pc.variablesScope());
 	    if (!(pc.localScope() instanceof LocalNotSupportedScope)) {
@@ -582,11 +582,11 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	return cfmlExtensions.iterator();
     }
 
-    @Override
-    public Iterator<String> getLuceeExtensions() {
-	if (luceeExtensions == null) _initExtensions();
-	return luceeExtensions.iterator();
-    }
+//    @Override
+//    public Iterator<String> getLuceeExtensions() {
+//	if (luceeExtensions == null) _initExtensions();
+//	return luceeExtensions.iterator();
+//    }
 
     public static RequestTimeoutException createRequestTimeoutException(PageContext pc) {
 	return new RequestTimeoutException(pc, pc.getThread().getStackTrace());

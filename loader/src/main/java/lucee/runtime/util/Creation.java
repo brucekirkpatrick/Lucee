@@ -238,7 +238,7 @@ public interface Creation {
 
     public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans, RemoteClient remoteClient, Struct attrColl, String callerId, String type);
 
-    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset);
+//    public ClusterEntry createClusterEntry(Key key, Serializable value, int offset);
 
     public Resource createResource(String path, boolean existing) throws PageException;
 

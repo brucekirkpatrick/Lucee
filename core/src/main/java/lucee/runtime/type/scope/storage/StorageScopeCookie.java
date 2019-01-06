@@ -71,7 +71,7 @@ public abstract class StorageScopeCookie extends StorageScopeImpl {
     protected StorageScopeCookie(PageContext pc, String cookieName, String strType, int type, Struct sct) {
 	super(sct, doNowIfNull(pc, Caster.toDate(sct.get(TIMECREATED, null), false, pc.getTimeZone(), null)),
 		doNowIfNull(pc, Caster.toDate(sct.get(LASTVISIT, null), false, pc.getTimeZone(), null)), -1,
-		type == SCOPE_CLIENT ? Caster.toIntValue(sct.get(HITCOUNT, "1"), 1) : 0, strType, type);
+		0, strType, type);
 	this.cookieName = cookieName;
     }
 
@@ -97,7 +97,7 @@ public abstract class StorageScopeCookie extends StorageScopeImpl {
 	if (!_isInit) return;
 
 	ApplicationContext ac = pc.getApplicationContext();
-	TimeSpan timespan = (getType() == SCOPE_CLIENT) ? ac.getClientTimeout() : ac.getSessionTimeout();
+	TimeSpan timespan = ac.getSessionTimeout();
 	Cookie cookie = pc.cookieScope();
 
 	Date exp = new DateTimeImpl(pc, System.currentTimeMillis() + timespan.getMillis(), true);
@@ -108,10 +108,10 @@ public abstract class StorageScopeCookie extends StorageScopeImpl {
 	    }
 	    cookie.setCookie(KeyImpl.init(cookieName + "_LV"), Caster.toString(_lastvisit.getTime()), exp, false, "/", null);
 
-	    if (getType() == SCOPE_CLIENT) {
-		cookie.setCookie(KeyImpl.init(cookieName + "_TC"), Caster.toString(timecreated.getTime()), exp, false, "/", null);
-		cookie.setCookie(KeyImpl.init(cookieName + "_HC"), Caster.toString(sct.get(HITCOUNT, "")), exp, false, "/", null);
-	    }
+//	    if (getType() == SCOPE_CLIENT) {
+//		cookie.setCookie(KeyImpl.init(cookieName + "_TC"), Caster.toString(timecreated.getTime()), exp, false, "/", null);
+//		cookie.setCookie(KeyImpl.init(cookieName + "_HC"), Caster.toString(sct.get(HITCOUNT, "")), exp, false, "/", null);
+//	    }
 
 	}
 	catch (Throwable t) {
@@ -139,18 +139,18 @@ public abstract class StorageScopeCookie extends StorageScopeImpl {
 		    if (l > 0) sct.setEL(LASTVISIT, new DateTimeImpl(pc, l, true));
 		}
 
-		if (type == SCOPE_CLIENT) {
-		    // hit count
-		    str = (String) pc.cookieScope().get(cookieName + "_HC", null);
-		    if (!StringUtil.isEmpty(str)) sct.setEL(HITCOUNT, Caster.toDouble(str, null));
-
-		    // time created
-		    str = (String) pc.cookieScope().get(cookieName + "_TC", null);
-		    if (!StringUtil.isEmpty(str)) {
-			l = Caster.toLongValue(str, 0);
-			if (l > 0) sct.setEL(TIMECREATED, new DateTimeImpl(pc, l, true));
-		    }
-		}
+//		if (type == SCOPE_CLIENT) {
+//		    // hit count
+//		    str = (String) pc.cookieScope().get(cookieName + "_HC", null);
+//		    if (!StringUtil.isEmpty(str)) sct.setEL(HITCOUNT, Caster.toDouble(str, null));
+//
+//		    // time created
+//		    str = (String) pc.cookieScope().get(cookieName + "_TC", null);
+//		    if (!StringUtil.isEmpty(str)) {
+//			l = Caster.toLongValue(str, 0);
+//			if (l > 0) sct.setEL(TIMECREATED, new DateTimeImpl(pc, l, true));
+//		    }
+//		}
 
 		ScopeContext.info(log, "load data from cookie for " + strType + " scope for " + pc.getApplicationContext().getName() + "/" + pc.getCFID());
 		return sct;

@@ -3786,6 +3786,22 @@ public final class PageContextImpl extends PageContext {
 		// undefined could be arguments, local, or variables depending on settings, but we force local, so we shouldn't copy this.
 		//other.undefined.initialize(other);
 	}
+	public static PageContextImpl createPageContext() throws PageException {
+
+		PageContextImpl pc2 = ThreadUtil.createPageContext(
+				null, // getConfig()
+				DevNullOutputStream.DEV_NULL_OUTPUT_STREAM,
+				"lucee",
+				"",
+				"",
+				CreatePageContext.toCookies(new StructImpl()),
+				CreatePageContext.toPair(new StructImpl(), true),
+				null,
+				CreatePageContext.toPair(new StructImpl(), true),
+				CreatePageContext.castValuesToString(new StructImpl()), true, -1);
+		return pc2;
+
+	}
 
 	public PageContext copyPageContext() throws PageException {
 
