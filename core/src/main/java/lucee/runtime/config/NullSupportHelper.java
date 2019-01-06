@@ -19,20 +19,20 @@
 package lucee.runtime.config;
 
 import lucee.runtime.PageContext;
-import lucee.runtime.PageContextImpl;
+//import lucee.runtime.PageContextImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.type.Null;
 
 public class NullSupportHelper {
 
     public static boolean full(PageContext pc) {
-	return ((PageContextImpl) pc).getFullNullSupport();
+	return true;//((PageContextImpl) pc).getFullNullSupport();
     }
 
     public static boolean full() {
 	PageContext pc = ThreadLocalPageContext.get();
 	if (pc == null) return false;
-	return ((PageContextImpl) pc).getFullNullSupport();
+	return true;//((PageContextImpl) pc).getFullNullSupport();
     }
 
     public static Object NULL(boolean fns) {

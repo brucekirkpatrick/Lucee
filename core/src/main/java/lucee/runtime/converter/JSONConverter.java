@@ -452,7 +452,7 @@ public final class JSONConverter extends ConverterSupport {
 	    int len = query.getRecordcount();
 	    pc = ThreadLocalPageContext.get(pc);
 	    boolean upperCase = false;
-	    if (pc != null) upperCase = pc.getCurrentTemplateDialect() == CFMLEngine.DIALECT_CFML && ((ConfigWebImpl) pc.getConfig()).getDotNotationUpperCase();
+	    if (pc != null) upperCase = ((ConfigWebImpl) pc.getConfig()).getDotNotationUpperCase();
 
 	    for (int i = 0; i < _keys.length; i++) {
 		if (oDoIt) sb.append(',');

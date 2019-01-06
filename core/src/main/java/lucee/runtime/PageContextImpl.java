@@ -313,7 +313,7 @@ public final class PageContextImpl extends PageContext {
 
     private StackTraceElement[] timeoutStacktrace;
 
-    private boolean fullNullSupport;
+//    private boolean fullNullSupport;
 
     /**
      * default Constructor
@@ -402,7 +402,7 @@ public final class PageContextImpl extends PageContext {
 	this.isChild = isChild;
 
 	applicationContext = defaultApplicationContext;
-	setFullNullSupport();
+//	setFullNullSupport();
 
 	startTime = System.currentTimeMillis();
 	thread = Thread.currentThread();
@@ -1043,7 +1043,7 @@ public final class PageContextImpl extends PageContext {
 	if (children == null) children = new ArrayList<PageContext>();
 	children.add(other);
 	other.applicationContext = applicationContext;
-	other.setFullNullSupport();
+//	other.setFullNullSupport();
 	other.thread = Thread.currentThread();
 	other.startTime = System.currentTimeMillis();
 
@@ -2407,14 +2407,14 @@ public final class PageContextImpl extends PageContext {
     @Override
     public final void execute(String realPath, boolean throwExcpetion, boolean onlyTopLevel) throws PageException {
 //	requestDialect = currentTemplateDialect = CFMLEngine.DIALECT_LUCEE;
-	setFullNullSupport();
+//	setFullNullSupport();
 	_execute(realPath, throwExcpetion, onlyTopLevel);
     }
 
     @Override
     public final void executeCFML(String realPath, boolean throwExcpetion, boolean onlyTopLevel) throws PageException {
 //	requestDialect = currentTemplateDialect = CFMLEngine.DIALECT_CFML;
-	setFullNullSupport();
+//	setFullNullSupport();
 	_execute(realPath, throwExcpetion, onlyTopLevel);
     }
 
@@ -2986,14 +2986,14 @@ public final class PageContextImpl extends PageContext {
     @Override
     public void addPageSource(PageSource ps, boolean alsoInclude) {
 //	currentTemplateDialect = ps.getDialect();
-	setFullNullSupport();
+//	setFullNullSupport();
 	pathList.add(ps);
 	if (alsoInclude) includePathList.add(ps);
     }
 
     public void addPageSource(PageSource ps, PageSource psInc) {
 //	currentTemplateDialect = ps.getDialect();
-	setFullNullSupport();
+//	setFullNullSupport();
 	pathList.add(ps);
 	if (psInc != null) includePathList.add(psInc);
     }
@@ -3044,7 +3044,7 @@ public final class PageContextImpl extends PageContext {
 	application = null;
 	client = null;
 	this.applicationContext = (ApplicationContextSupport) applicationContext;
-	setFullNullSupport();
+//	setFullNullSupport();
 //	int scriptProtect = applicationContext.getScriptProtect();
 //
 //	// ScriptProtecting
@@ -3587,11 +3587,11 @@ public final class PageContextImpl extends PageContext {
 
     // FUTURE add to interface
     public boolean getFullNullSupport() {
-	return fullNullSupport;
+	return true;//fullNullSupport;
     }
 
     private void setFullNullSupport() {
-	fullNullSupport = true;//currentTemplateDialect != CFMLEngine.DIALECT_CFML || applicationContext.getFullNullSupport();
+//	fullNullSupport = true;//currentTemplateDialect != CFMLEngine.DIALECT_CFML || applicationContext.getFullNullSupport();
     }
 
     public void registerLazyStatement(Statement s) {

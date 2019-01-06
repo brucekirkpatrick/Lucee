@@ -24,6 +24,8 @@ import java.util.Map;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.IterationTag;
 
+import lucee.runtime.exp.PageException;
+import lucee.runtime.tag.Define;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -161,6 +163,19 @@ public final class TagHelper {
 	else {
 	    currDoFinallyType = currType = getTagType(tag);
 
+	}
+	String tagName=tag.getFullname();
+	if(tagName != null && tagName.equalsIgnoreCase("cfdefine")){
+		// give the compiler the type information
+		Define define=new Define();
+		try {
+			define.registerType(bc, tag, tlt);
+		} catch (PageException e) {
+			throw new RuntimeException(e);
+		}
+
+		// cfdefine is designed to be no-op at runtime, so don't output any bytecode for it.
+		return;
 	}
 
 	final int currLocal = adapter.newLocal(currType);

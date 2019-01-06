@@ -135,7 +135,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
     private boolean wsMaintainSession;
 
-    private boolean fullNullSupport;
+//    private boolean fullNullSupport;
     private SerializationSettings serializationSettings = SerializationSettings.DEFAULT;
 
     private boolean queryPSQ;
@@ -169,7 +169,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
 	this.locale = config.getLocale();
 	this.timeZone = config.getTimeZone();
-	this.fullNullSupport = config.getFullNullSupport();
+//	this.fullNullSupport = config.getFullNullSupport();
 	this.scopeCascading = config.getScopeCascadingType();
 
 	this.webCharset = ((ConfigImpl) config).getWebCharSet();
@@ -238,7 +238,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 	dbl.queryVarUsage = queryVarUsage;
 	dbl.locale = locale;
 	dbl.timeZone = timeZone;
-	dbl.fullNullSupport = fullNullSupport;
+//	dbl.fullNullSupport = fullNullSupport;
 	dbl.scopeCascading = scopeCascading;
 	dbl.webCharset = webCharset;
 	dbl.resourceCharset = resourceCharset;
@@ -596,7 +596,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
     @Override
     public boolean getFullNullSupport() {
-	return fullNullSupport;
+	return true;//fullNullSupport;
     }
 
     @Override
@@ -637,7 +637,7 @@ public class ClassicApplicationContext extends ApplicationContextSupport {
 
     @Override
     public void setFullNullSupport(boolean fullNullSupport) {
-	this.fullNullSupport = fullNullSupport;
+//	this.fullNullSupport = fullNullSupport;
     }
 
     @Override

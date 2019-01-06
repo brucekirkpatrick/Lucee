@@ -147,108 +147,81 @@ public final class CFMLTransformer {
      */
     public Page transform(Factory factory, ConfigImpl config, PageSource ps, TagLib[] tlibs, FunctionLib[] flibs, boolean returnValue, boolean ignoreScopes)
 	    throws TemplateException, IOException {
-	Page p;
-	SourceCode sc;
+	    Page p;
+	    SourceCode sc;
 
-	boolean writeLog = config.getExecutionLogEnabled();
+	    boolean writeLog = config.getExecutionLogEnabled();
 
-	Charset charset = config.getTemplateCharset();
-	boolean dotUpper = ps.getDialect() == CFMLEngine.DIALECT_CFML && ((MappingImpl) ps.getMapping()).getDotNotationUpperCase();
+	    Charset charset = config.getTemplateCharset();
+	    boolean dotUpper = ((MappingImpl) ps.getMapping()).getDotNotationUpperCase();
 
-	// parse regular
-	while (true) {
-	    try {
-		sc = new PageSourceCode(ps, charset, writeLog);
-		p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
-		break;
-	    }
-	    catch (ProcessingDirectiveException pde) {
-		if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
-		if (pde.getDotNotationUpperCase() != null) dotUpper = pde.getDotNotationUpperCase().booleanValue();
-		if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
-	    }
-	}
-
-	// could it be a component?
-	boolean isCFML = ps.getDialect() == CFMLEngine.DIALECT_CFML;
-	boolean isCFMLCompExt = isCFML && Constants.isCFMLComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""));
-
-	boolean possibleUndetectedComponent = false;
-
-	// we don't have a component or interface
-	if (p.isPage()) {
-	    if (isCFML) possibleUndetectedComponent = isCFMLCompExt;
-	    else if (Constants.isLuceeComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""))) {
-		Expression expr;
-		Statement stat;
-		PrintOut po;
-		LitString ls;
-		List<Statement> statements = p.getStatements();
-
-		// check the root statements for component
-		Iterator<Statement> it = statements.iterator();
-		String str;
-		while (it.hasNext()) {
-		    stat = it.next();
-		    if (stat instanceof PrintOut && (expr = ((PrintOut) stat).getExpr()) instanceof LitString) {
-			ls = (LitString) expr;
-			str = ls.getString();
-			if (str.indexOf(Constants.LUCEE_COMPONENT_TAG_NAME) != -1 || str.indexOf(Constants.LUCEE_INTERFACE_TAG_NAME) != -1
-				|| str.indexOf(Constants.CFML_COMPONENT_TAG_NAME) != -1 // cfml name is supported as alias
-			) {
-			    possibleUndetectedComponent = true;
-			    break;
-			}
-		    }
-		}
-	    }
-	}
-
-	if (possibleUndetectedComponent) {
-	    Page _p;
-
-	    TagLibTag scriptTag = CFMLTransformer.getTLT(sc, isCFML ? Constants.CFML_SCRIPT_TAG_NAME : Constants.LUCEE_SCRIPT_TAG_NAME, config.getIdentification());
-
-	    sc.setPos(0);
-	    SourceCode original = sc;
-
-	    // try inside a cfscript
-	    String text = "<" + scriptTag.getFullName() + ">" + original.getText() + "\n</" + scriptTag.getFullName() + ">";
-	    sc = new PageSourceCode(ps, text, charset, writeLog);
-
-	    try {
-		while (true) {
-		    if (sc == null) {
-			sc = new PageSourceCode(ps, charset, writeLog);
-			text = "<" + scriptTag.getFullName() + ">" + sc.getText() + "\n</" + scriptTag.getFullName() + ">";
-			sc = new PageSourceCode(ps, text, charset, writeLog);
-		    }
+	    // parse regular
+	    while (true) {
 		    try {
-			_p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
-			break;
+			    sc = new PageSourceCode(ps, charset, writeLog);
+			    p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
+			    break;
+		    } catch (ProcessingDirectiveException pde) {
+			    if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
+			    if (pde.getDotNotationUpperCase() != null) dotUpper = pde.getDotNotationUpperCase().booleanValue();
+			    if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
 		    }
-		    catch (ProcessingDirectiveException pde) {
-			if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
-			if (pde.getDotNotationUpperCase() != null) dotUpper = pde.getDotNotationUpperCase().booleanValue();
-			if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
-			sc = null;
+	    }
+
+	    // could it be a component?
+	    boolean isCFMLCompExt = Constants.isCFMLComponentExtension(ResourceUtil.getExtension(ps.getResource(), ""));
+
+	    boolean possibleUndetectedComponent = false;
+
+	    // we don't have a component or interface
+	    if (p.isPage()) {
+	    	possibleUndetectedComponent = isCFMLCompExt;
+	    }
+
+	    if (possibleUndetectedComponent) {
+		    Page _p;
+
+		    TagLibTag scriptTag = CFMLTransformer.getTLT(sc, Constants.CFML_SCRIPT_TAG_NAME, config.getIdentification());
+
+		    sc.setPos(0);
+		    SourceCode original = sc;
+
+		    // try inside a cfscript
+		    String text = "<" + scriptTag.getFullName() + ">" + original.getText() + "\n</" + scriptTag.getFullName() + ">";
+		    sc = new PageSourceCode(ps, text, charset, writeLog);
+
+		    try {
+			    while (true) {
+				    if (sc == null) {
+					    sc = new PageSourceCode(ps, charset, writeLog);
+					    text = "<" + scriptTag.getFullName() + ">" + sc.getText() + "\n</" + scriptTag.getFullName() + ">";
+					    sc = new PageSourceCode(ps, text, charset, writeLog);
+				    }
+				    try {
+					    _p = transform(factory, config, sc, tlibs, flibs, ps.getResource().lastModified(), dotUpper, returnValue, ignoreScopes);
+					    break;
+				    } catch (ProcessingDirectiveException pde) {
+					    if (pde.getWriteLog() != null) writeLog = pde.getWriteLog().booleanValue();
+					    if (pde.getDotNotationUpperCase() != null)
+						    dotUpper = pde.getDotNotationUpperCase().booleanValue();
+					    if (!StringUtil.isEmpty(pde.getCharset())) charset = pde.getCharset();
+					    sc = null;
+				    }
+			    }
+		    } catch (ComponentTemplateException e) {
+			    throw e.getTemplateException();
 		    }
-		}
+		    // we only use that result if it is a component now
+		    if (_p != null && !_p.isPage()) return _p;
 	    }
-	    catch (ComponentTemplateException e) {
-		throw e.getTemplateException();
+
+	    if (isCFMLCompExt && !p.isComponent() && !p.isInterface()) {
+		    String msg = "template [" + ps.getDisplayPath() + "] must contain a component or an interface.";
+		    if (sc != null) throw new TemplateException(sc, msg);
+		    throw new TemplateException(msg);
 	    }
-	    // we only use that result if it is a component now
-	    if (_p != null && !_p.isPage()) return _p;
-	}
 
-	if (isCFMLCompExt && !p.isComponent() && !p.isInterface()) {
-	    String msg = "template [" + ps.getDisplayPath() + "] must contain a component or an interface.";
-	    if (sc != null) throw new TemplateException(sc, msg);
-	    throw new TemplateException(msg);
-	}
-
-	return p;
+	    return p;
     }
 
     public static TagLibTag getTLT(SourceCode cfml, String name, Identification id) throws TemplateException {
@@ -285,8 +258,8 @@ public final class CFMLTransformer {
 	boolean dnuc;
 	if (dotNotationUpperCase == null) {
 	    if (sc instanceof PageSourceCode)
-		dnuc = sc.getDialect() == CFMLEngine.DIALECT_CFML && ((MappingImpl) ((PageSourceCode) sc).getPageSource().getMapping()).getDotNotationUpperCase();
-	    else dnuc = sc.getDialect() == CFMLEngine.DIALECT_CFML && config.getDotNotationUpperCase();
+		dnuc = ((MappingImpl) ((PageSourceCode) sc).getPageSource().getMapping()).getDotNotationUpperCase();
+	    else dnuc = config.getDotNotationUpperCase();
 	}
 	else dnuc = dotNotationUpperCase;
 
@@ -298,9 +271,9 @@ public final class CFMLTransformer {
 	}
 
 	Page page = new Page(factory, config, sc, null, ConfigWebUtil.getEngine(config).getInfo().getFullVersionInfo(), sourceLastModified, sc.getWriteLog(),
-		sc.getDialect() == CFMLEngine.DIALECT_LUCEE || config.getSuppressWSBeforeArg(), config.getDefaultFunctionOutput(), returnValue, ignoreScope);
+		config.getSuppressWSBeforeArg(), config.getDefaultFunctionOutput(), returnValue, ignoreScope);
 
-	TransfomerSettings settings = new TransfomerSettings(dnuc, sc.getDialect() == CFMLEngine.DIALECT_CFML && factory.getConfig().getHandleUnQuotedAttrValueAsString(),
+	TransfomerSettings settings = new TransfomerSettings(dnuc, factory.getConfig().getHandleUnQuotedAttrValueAsString(),
 		ignoreScope);
 	Data data = new Data(factory, page, sc, new EvaluatorPool(), settings, _tlibs, flibs, config.getCoreTagLib(sc.getDialect()).getScriptTags(), false);
 	transform(data, page);

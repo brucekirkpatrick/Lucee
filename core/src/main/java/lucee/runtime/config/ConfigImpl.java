@@ -567,12 +567,11 @@ public abstract class ConfigImpl implements Config {
      * @return Array of Tag Library Deskriptors
      */
     public TagLib[] getTLDs(int dialect) {
-	return dialect == CFMLEngine.DIALECT_CFML ? cfmlTlds : luceeTlds;
+	return cfmlTlds;
     }
 
     protected void setTLDs(TagLib[] tlds, int dialect) {
-	if (dialect == CFMLEngine.DIALECT_CFML) cfmlTlds = tlds;
-	else luceeTlds = tlds;
+	    cfmlTlds = tlds;
     }
 
     @Override
@@ -1144,7 +1143,6 @@ public abstract class ConfigImpl implements Config {
     protected void addTag(String nameSpace, String nameSpaceSeperator, String name, int dialect, ClassDefinition cd) {
 	if (dialect == CFMLEngine.DIALECT_BOTH) {
 	    addTag(nameSpace, nameSpaceSeperator, name, CFMLEngine.DIALECT_CFML, cd);
-	    addTag(nameSpace, nameSpaceSeperator, name, CFMLEngine.DIALECT_LUCEE, cd);
 	    return;
 	}
 
@@ -1171,7 +1169,6 @@ public abstract class ConfigImpl implements Config {
     protected void setTldFile(Resource fileTld, int dialect) throws TagLibException {
 	if (dialect == CFMLEngine.DIALECT_BOTH) {
 	    setTldFile(fileTld, CFMLEngine.DIALECT_CFML);
-	    setTldFile(fileTld, CFMLEngine.DIALECT_LUCEE);
 	    return;
 	}
 
@@ -1252,7 +1249,6 @@ public abstract class ConfigImpl implements Config {
 	    tagMappings.put(mappingName, m);
 
 	    TagLib tlc = getCoreTagLib(CFMLEngine.DIALECT_CFML);
-	    TagLib tll = getCoreTagLib(CFMLEngine.DIALECT_LUCEE);
 
 	    // now overwrite with new data
 	    if (tagDirectory.isDirectory()) {
@@ -1260,7 +1256,6 @@ public abstract class ConfigImpl implements Config {
 			.list(new ExtensionResourceFilter(getMode() == ConfigImpl.MODE_STRICT ? Constants.getComponentExtensions() : Constants.getExtensions()));
 		for (int i = 0; i < files.length; i++) {
 		    if (tlc != null) createTag(tlc, files[i], mappingName);
-		    if (tll != null) createTag(tll, files[i], mappingName);
 		}
 	    }
 	}
@@ -1426,7 +1421,6 @@ public abstract class ConfigImpl implements Config {
     protected void setFldFile(Resource fileFld, int dialect) throws FunctionLibException {
 	if (dialect == CFMLEngine.DIALECT_BOTH) {
 	    setFldFile(fileFld, CFMLEngine.DIALECT_CFML);
-	    setFldFile(fileFld, CFMLEngine.DIALECT_LUCEE);
 	    return;
 	}
 
@@ -1663,9 +1657,9 @@ public abstract class ConfigImpl implements Config {
 
     /**
      * sets the Schedule Directory
-     * 
+     *
+     * @param engine
      * @param scheduleDirectory sets the schedule Directory
-     * @param logger
      * @throws PageException
      */
     protected void setScheduler(CFMLEngine engine, Resource scheduleDirectory) throws PageException {
@@ -1904,7 +1898,8 @@ public abstract class ConfigImpl implements Config {
     }
 
     /**
-     * @param searchEngine The searchEngine to set.
+     * @param cd
+     * @param directory
      */
     protected void setSearchEngine(ClassDefinition cd, String directory) {
 	this.searchEngineClassDef = cd;
@@ -2207,7 +2202,7 @@ public abstract class ConfigImpl implements Config {
     }
 
     /**
-     * @param mailDefaultEncoding the mailDefaultCharset to set
+     * @param mailDefaultCharset the mailDefaultCharset to set
      */
     protected void setMailDefaultEncoding(String mailDefaultCharset) {
 	this.mailDefaultCharset = CharsetUtil.toCharSet(mailDefaultCharset, this.mailDefaultCharset);
@@ -3872,15 +3867,15 @@ public abstract class ConfigImpl implements Config {
 	return cd == null || StringUtil.isEmpty(cd.getClassName());
     }
 
-    private boolean fullNullSupport = false;
+//    private boolean fullNullSupport = false;
 
     protected final void setFullNullSupport(boolean fullNullSupport) {
-	this.fullNullSupport = fullNullSupport;
+//	this.fullNullSupport = fullNullSupport;
     }
 
     @Override
     public final boolean getFullNullSupport() {
-	return fullNullSupport;
+	return true;//fullNullSupport;
     }
 
     private Log4jEngine logEngine;

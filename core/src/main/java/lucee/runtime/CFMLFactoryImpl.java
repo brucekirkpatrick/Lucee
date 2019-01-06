@@ -531,7 +531,6 @@ public final class CFMLFactoryImpl extends CFMLFactory {
     public int toDialect(String ext) {
 	// MUST improve perfomance
 	if (cfmlExtensions == null) _initExtensions();
-	if (cfmlExtensions.contains(ext.toLowerCase())) return CFMLEngine.DIALECT_CFML;
 	return CFMLEngine.DIALECT_CFML;
     }
 
@@ -540,34 +539,27 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	if (ext == null) return defaultValue;
 	if (cfmlExtensions == null) _initExtensions();
 	if (cfmlExtensions.contains(ext = ext.toLowerCase())) return CFMLEngine.DIALECT_CFML;
-	if (luceeExtensions.contains(ext)) return CFMLEngine.DIALECT_LUCEE;
 	return defaultValue;
     }
 
     private void _initExtensions() {
 	cfmlExtensions = new ArrayList<String>();
-	luceeExtensions = new ArrayList<String>();
 	try {
 
 	    Iterator<?> it = getServlet().getServletContext().getServletRegistrations().entrySet().iterator();
 	    Entry<String, ? extends ServletRegistration> e;
 	    String cn;
 	    while (it.hasNext()) {
-		e = (Entry<String, ? extends ServletRegistration>) it.next();
-		cn = e.getValue().getClassName();
-
-		if (cn != null && cn.indexOf("LuceeServlet") != -1) {
-		    setExtensions(luceeExtensions, e.getValue().getMappings().iterator());
-		}
-		else if (cn != null && cn.indexOf("CFMLServlet") != -1) {
-		    setExtensions(cfmlExtensions, e.getValue().getMappings().iterator());
-		}
+			e = (Entry<String, ? extends ServletRegistration>) it.next();
+			cn = e.getValue().getClassName();
+			if (cn != null && cn.indexOf("CFMLServlet") != -1) {
+			    setExtensions(cfmlExtensions, e.getValue().getMappings().iterator());
+			}
 	    }
 	}
 	catch (Throwable t) {
 	    ExceptionUtil.rethrowIfNecessary(t);
 	    ArrayUtil.addAll(cfmlExtensions, Constants.getCFMLExtensions());
-	    ArrayUtil.addAll(luceeExtensions, Constants.getLuceeExtensions());
 	}
     }
 

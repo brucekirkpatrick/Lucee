@@ -258,17 +258,17 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 
     public CIPage getBaseComponentPage(int dialect, PageContext pc) throws PageException {
 	// CFML
-	if (dialect == CFMLEngine.DIALECT_CFML) {
+//	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    if (baseComponentPageCFML == null) {
 		baseComponentPageCFML = (CIPage) getBaseComponentPageSource(dialect, pc).loadPage(pc, false);
 	    }
 	    return baseComponentPageCFML;
-	}
-	// Lucee
-	if (baseComponentPageLucee == null) {
-	    baseComponentPageLucee = (CIPage) getBaseComponentPageSource(dialect, pc).loadPage(pc, false);
-	}
-	return baseComponentPageLucee;
+//	}
+//	// Lucee
+//	if (baseComponentPageLucee == null) {
+//	    baseComponentPageLucee = (CIPage) getBaseComponentPageSource(dialect, pc).loadPage(pc, false);
+//	}
+//	return baseComponentPageLucee;
     }
 
     public void resetBaseComponentPage() {

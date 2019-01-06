@@ -223,8 +223,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    Array path = pc.getTemplatePath();
 	    // if(path.size()>1 ) {
 	    if (path.size() > 1 && !(path.size() == 3 && ListUtil.last(path.getE(2).toString(), "/\\", true)
-		    .equalsIgnoreCase(pc.getRequestDialect() == CFMLEngine.DIALECT_CFML ? lucee.runtime.config.Constants.CFML_APPLICATION_EVENT_HANDLER
-			    : lucee.runtime.config.Constants.LUCEE_APPLICATION_EVENT_HANDLER))) {// MUSTMUST
+		    .equalsIgnoreCase(lucee.runtime.config.Constants.CFML_APPLICATION_EVENT_HANDLER))) {// MUSTMUST
 												 // bad
 												 // impl
 												 // ->

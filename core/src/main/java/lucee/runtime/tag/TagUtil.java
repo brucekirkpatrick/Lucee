@@ -273,7 +273,7 @@ public class TagUtil {
 
 	    // MUST MOST of them are the same, so this is a huge overhead
 	    _addTagMetaData(pc, cw, CFMLEngine.DIALECT_CFML);
-	    _addTagMetaData(pc, cw, CFMLEngine.DIALECT_LUCEE);
+//	    _addTagMetaData(pc, cw, CFMLEngine.DIALECT_LUCEE);
 
 	}
 	catch (Exception e) {

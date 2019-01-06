@@ -198,7 +198,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private AuthCookieData authCookie;
     private Object mailListener;
     private TagListener queryListener;
-    private boolean fullNullSupport;
+//    private boolean fullNullSupport;
     private SerializationSettings serializationSettings;
 
     private boolean queryPSQ;
@@ -209,7 +209,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
     private boolean initCustomTypes;
     private boolean initMailListener;
     private boolean initQueryListener;
-    private boolean initFullNullSupport;
+//    private boolean initFullNullSupport;
     private boolean initCachedWithins;
 
     private boolean initApplicationTimeout;
@@ -307,7 +307,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	this.sessionType = config.getSessionType();
 	this.wstype = WS_TYPE_AXIS1;
 	this.cgiScopeReadonly = ci.getCGIScopeReadonly();
-	this.fullNullSupport = ci.getFullNullSupport();
+//	this.fullNullSupport = ci.getFullNullSupport();
 	this.queryPSQ = ci.getPSQL();
 	this.queryVarUsage = ci.getQueryVarUsage();
 
@@ -1800,20 +1800,20 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 
     @Override
     public boolean getFullNullSupport() {
-	if (!initFullNullSupport) {
-	    Boolean b = Caster.toBoolean(get(component, NULL_SUPPORT, null), null);
-	    if (b == null) b = Caster.toBoolean(get(component, ENABLE_NULL_SUPPORT, null), null);
-	    if (b != null) fullNullSupport = b.booleanValue();
-
-	    initFullNullSupport = true;
-	}
-	return fullNullSupport;
+//	if (!initFullNullSupport) {
+//	    Boolean b = Caster.toBoolean(get(component, NULL_SUPPORT, null), null);
+//	    if (b == null) b = Caster.toBoolean(get(component, ENABLE_NULL_SUPPORT, null), null);
+//	    if (b != null) fullNullSupport = b.booleanValue();
+//
+//	    initFullNullSupport = true;
+//	}
+	return true;//fullNullSupport;
     }
 
     @Override
     public void setFullNullSupport(boolean fullNullSupport) {
-	this.fullNullSupport = fullNullSupport;
-	this.initFullNullSupport = true;
+//	this.fullNullSupport = fullNullSupport;
+//	this.initFullNullSupport = true;
     }
 
     @Override

@@ -679,7 +679,7 @@ public final class Page extends BodyBase implements Root {
 
     public static String createSubClass(String name, String subName, int dialect) {
 	if (!StringUtil.isEmpty(subName)) {
-	    String suffix = (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_CLASS_SUFFIX : Constants.LUCEE_CLASS_SUFFIX);
+	    String suffix = (Constants.CFML_CLASS_SUFFIX);
 	    subName = subName.toLowerCase();
 	    if (name.endsWith(suffix)) name = name.substring(0, name.length() - 3) + "$" + subName + suffix;
 	    else name += "$" + subName;

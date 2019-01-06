@@ -179,7 +179,8 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
      * EBNF:<br />
      * <code>{statement spaces};</code>
      * 
-     * @param parent uebergeornetes Element dem das Statement zugewiesen wird.
+     * @param data
+     * @param body
      * @param isRoot befindet sich der Parser im root des data.srcCode Docs
      * @throws TemplateException
      */
@@ -465,7 +466,7 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
 
 	// do we have a starting component?
 	if (!data.srcCode.isCurrent(getComponentName(data.srcCode.getDialect()))
-		&& (data.srcCode.getDialect() == CFMLEngine.DIALECT_CFML || !data.srcCode.isCurrent(Constants.CFML_COMPONENT_TAG_NAME))) {
+		&& (!data.srcCode.isCurrent(Constants.CFML_COMPONENT_TAG_NAME))) {
 	    data.srcCode.setPos(pos);
 	    return null;
 	}
@@ -478,7 +479,7 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
     }
 
     private String getComponentName(int dialect) {
-	return dialect == CFMLEngine.DIALECT_LUCEE ? Constants.LUCEE_COMPONENT_TAG_NAME : Constants.CFML_COMPONENT_TAG_NAME;
+	return Constants.CFML_COMPONENT_TAG_NAME;
     }
 
     /**
@@ -523,7 +524,8 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
     /**
      * Liest ein Switch Block ein
      * 
-     * @param block
+     * @param data,
+     * @param body
      * @throws TemplateException
      */
     private final void switchBlock(Data data, Body body) throws TemplateException {
@@ -1215,10 +1217,7 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
     private final Tag __multiAttrStatement(Body parent, Data data, TagLibTag tlt) throws TemplateException {
 	if (data.ep == null) return null;
 	String type = tlt.getName();
-	if (data.srcCode.forwardIfCurrent(type) ||
-	// lucee dialect support component as alias for class
-		(data.srcCode.getDialect() == CFMLEngine.DIALECT_LUCEE && type.equalsIgnoreCase(Constants.LUCEE_COMPONENT_TAG_NAME)
-			&& data.srcCode.forwardIfCurrent(Constants.CFML_COMPONENT_TAG_NAME))) {
+	if (data.srcCode.forwardIfCurrent(type)) {
 
 	    boolean isValid = (data.srcCode.isCurrent(' ') || (tlt.getHasBody() && data.srcCode.isCurrent('{')));
 	    if (!isValid) {
@@ -2180,7 +2179,8 @@ public abstract class AbstrCFMLScriptTransformer extends AbstrCFMLExprTransforme
      * EBNF:<br />
      * <code>"{" spaces {statements} "}" | statement;</code>
      * 
-     * @param block
+     * @param data
+     * @param body
      * @return was a block
      * @throws TemplateException
      */

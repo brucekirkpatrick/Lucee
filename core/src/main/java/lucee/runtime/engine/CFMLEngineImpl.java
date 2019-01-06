@@ -608,8 +608,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     /**
      * get singelton instance of the CFML Engine, throwsexception when not already init
-     * 
-     * @param factory
+     *
      * @return CFMLEngine
      */
     public static synchronized CFMLEngine getInstance() throws ServletException {
@@ -1477,25 +1476,15 @@ public final class CFMLEngineImpl implements CFMLEngine {
     @Override
     public ScriptEngineFactory getScriptEngineFactory(int dialect) {
 
-	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    if (cfmlScriptEngine == null) cfmlScriptEngine = new ScriptEngineFactoryImpl(this, false, dialect);
 	    return cfmlScriptEngine;
-	}
-
-	if (luceeScriptEngine == null) luceeScriptEngine = new ScriptEngineFactoryImpl(this, false, dialect);
-	return luceeScriptEngine;
     }
 
     @Override
     public ScriptEngineFactory getTagEngineFactory(int dialect) {
 
-	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    if (cfmlTagEngine == null) cfmlTagEngine = new ScriptEngineFactoryImpl(this, true, dialect);
 	    return cfmlTagEngine;
-	}
-
-	if (luceeTagEngine == null) luceeTagEngine = new ScriptEngineFactoryImpl(this, true, dialect);
-	return luceeTagEngine;
     }
 
     @Override
@@ -1548,13 +1537,12 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	String context = config instanceof ConfigWeb ? "Web" : "Server";
 	if (!ThreadLocalPageContext.callOnStart.get()) return;
 
-	Resource listenerTemplateLucee = config.getConfigDir().getRealResource("context/" + context + "." + lucee.runtime.config.Constants.getLuceeComponentExtension());
+//	Resource listenerTemplateLucee = config.getConfigDir().getRealResource("context/" + context + "." + lucee.runtime.config.Constants.getLuceeComponentExtension());
 	Resource listenerTemplateCFML = config.getConfigDir().getRealResource("context/" + context + "." + lucee.runtime.config.Constants.getCFMLComponentExtension());
 
 	// dialect
 	int dialect;
-	if (listenerTemplateLucee.isFile()) dialect = CFMLEngine.DIALECT_LUCEE;
-	else if (listenerTemplateCFML.isFile()) dialect = CFMLEngine.DIALECT_CFML;
+	if (listenerTemplateCFML.isFile()) dialect = CFMLEngine.DIALECT_CFML;
 	else return;
 
 	// we do not wait for this
@@ -1581,8 +1569,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
 	    String id = CreateUniqueId.invoke();
 	    final String requestURI = "/" + (isWeb ? "lucee" : "lucee-server") + "/" + context + "."
-		    + (dialect == CFMLEngine.DIALECT_LUCEE ? lucee.runtime.config.Constants.getLuceeComponentExtension()
-			    : lucee.runtime.config.Constants.getCFMLComponentExtension());
+		    + lucee.runtime.config.Constants.getCFMLComponentExtension();
 
 	    // PageContext oldPC = ThreadLocalPageContext.get();
 	    PageContext pc = null;
@@ -1616,8 +1603,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 			    DevNullOutputStream.DEV_NULL_OUTPUT_STREAM, true, Long.MAX_VALUE,
 			    Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.ignore.scopes", null), false));
 		}
-		if (dialect == CFMLEngine.DIALECT_LUCEE) pc.execute(requestURI, true, false);
-		else pc.executeCFML(requestURI, true, false);
+		pc.executeCFML(requestURI, true, false);
 	    }
 	    catch (Throwable t) {
 		// we simply ignore exceptions, if the template itself throws an error it will be handled by the

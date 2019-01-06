@@ -100,7 +100,7 @@ public class ModernAppListener extends AppListenerSupport {
     public void onRequest(PageContext pc, PageSource requestedPage, RequestListener rl) throws PageException {
 	// on requestStart
 	PageSource appPS = AppListenerUtil.getApplicationPageSource(pc, requestedPage,
-		pc.getRequestDialect() == CFMLEngine.DIALECT_CFML ? Constants.CFML_APPLICATION_EVENT_HANDLER : Constants.LUCEE_APPLICATION_EVENT_HANDLER, mode);
+		Constants.CFML_APPLICATION_EVENT_HANDLER, mode);
 	_onRequest(pc, requestedPage, appPS, rl);
     }
 
@@ -246,11 +246,7 @@ public class ModernAppListener extends AppListenerSupport {
 
     private boolean isComponent(PageContext pc, PageSource requestedPage) {
 	// CFML
-	if (pc.getRequestDialect() == CFMLEngine.DIALECT_CFML) {
-	    return ResourceUtil.getExtension(requestedPage.getRealpath(), "").equalsIgnoreCase(Constants.getCFMLComponentExtension());
-	}
-	// Lucee
-	return !PageSourceImpl.isTemplate(pc, requestedPage, true);
+	     return ResourceUtil.getExtension(requestedPage.getRealpath(), "").equalsIgnoreCase(Constants.getCFMLComponentExtension());
     }
 
     private PageException handlePageException(PageContextImpl pci, Component app, PageException pe, PageSource requestedPage, String targetPage, RefBoolean goon)
@@ -454,7 +450,7 @@ public class ModernAppListener extends AppListenerSupport {
 	pc.setApplicationContext(appContext);
 
 	// scope cascading
-	if (pc.getRequestDialect() == CFMLEngine.DIALECT_CFML && ((UndefinedImpl) pc.undefinedScope()).getScopeCascadingType() != appContext.getScopeCascading()) {
+	if (((UndefinedImpl) pc.undefinedScope()).getScopeCascadingType() != appContext.getScopeCascading()) {
 	    pc.undefinedScope().initialize(pc);
 	}
 

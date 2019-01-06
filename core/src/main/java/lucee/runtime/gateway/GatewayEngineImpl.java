@@ -378,15 +378,14 @@ public class GatewayEngineImpl implements GatewayEngine {
 	    pc = createPageContext(requestURI, id, functionName, arguments, cfcPeristent, true);
 	    String ext = ResourceUtil.getExtension(cfcPath, null);
 	    ConfigWeb config = (ConfigWeb) ThreadLocalPageContext.getConfig();
-	    int dialect = ext == null ? CFMLEngine.DIALECT_CFML : config.getFactory().toDialect(ext);
+	    int dialect =CFMLEngine.DIALECT_CFML;
 	    // ThreadLocalPageContext.register(pc);
 	    Component cfc = getCFC(pc, requestURI);
 	    if (cfc.containsKey(functionName)) {
-		if (dialect == CFMLEngine.DIALECT_LUCEE) pc.execute(requestURI, true, false);
-		else pc.executeCFML(requestURI, true, false);
+	    	pc.executeCFML(requestURI, true, false);
 
-		// Result
-		return pc.variablesScope().get(AMF_FORWARD, null);
+			// Result
+			return pc.variablesScope().get(AMF_FORWARD, null);
 	    }
 	}
 	finally {
@@ -406,8 +405,9 @@ public class GatewayEngineImpl implements GatewayEngine {
 
 	    req.setAttribute("client", "lucee-gateway-1-0");
 	    req.setAttribute("call-type", "store-only");
-	    if (dialect == CFMLEngine.DIALECT_LUCEE) pc.execute(requestURI, true, false);
-	    else pc.executeCFML(requestURI, true, false);
+//	    if (dialect == CFMLEngine.DIALECT_LUCEE) pc.execute(requestURI, true, false);
+//	    else
+		pc.executeCFML(requestURI, true, false);
 	    return (Component) req.getAttribute("component");
 	}
 	finally {

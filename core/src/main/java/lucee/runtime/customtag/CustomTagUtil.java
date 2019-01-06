@@ -171,7 +171,7 @@ public class CustomTagUtil {
     }
 
     public static String getComponentExtension(PageContext pc, PageSource ps) {
-	return ps.getDialect() == CFMLEngine.DIALECT_CFML ? Constants.getCFMLComponentExtension() : Constants.getLuceeComponentExtension();
+	return Constants.getCFMLComponentExtension();
     }
 
     public static String[] getFileNames(Config config, String name) throws ExpressionException {

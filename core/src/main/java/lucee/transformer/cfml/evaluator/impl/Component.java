@@ -67,7 +67,7 @@ public class Component extends EvaluatorSupport {
 	    // is in script
 	    Tag p = ASMUtil.getParentTag(tag);
 	    if ((pPage = p.getParent()) instanceof Page && p.getTagLibTag().getName()
-		    .equalsIgnoreCase(((Page) pPage).getSourceCode().getDialect() == CFMLEngine.DIALECT_CFML ? Constants.CFML_SCRIPT_TAG_NAME : Constants.LUCEE_SCRIPT_TAG_NAME)) { // chnaged
+		    .equalsIgnoreCase(Constants.CFML_SCRIPT_TAG_NAME)) { // chnaged
 																						    // order
 																						    // of
 																						    // the

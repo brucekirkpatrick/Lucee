@@ -158,7 +158,7 @@ public class ComponentLoader {
 	CIPage page = null;
 
 	// MUSTMUST improve to handle different extensions
-	String pathWithCFC = path.concat("." + (dialect == CFMLEngine.DIALECT_CFML ? Constants.getCFMLComponentExtension() : Constants.getLuceeComponentExtension()));
+	String pathWithCFC = path.concat("." + (Constants.getCFMLComponentExtension()));
 
 	// no cache for per application pathes
 	Mapping[] acm = pc.getApplicationContext().getComponentMappings();

@@ -94,7 +94,7 @@ public class Renderer {
 
     public static Result script(PageContext pc, String cfml, int dialect, boolean catchOutput, boolean ignoreScopes) throws PageException {
 	String prefix = ((ConfigImpl) pc.getConfig()).getCoreTagLib(dialect).getNameSpaceAndSeparator();
-	String name = prefix + (dialect == CFMLEngine.DIALECT_CFML ? Constants.CFML_SCRIPT_TAG_NAME : Constants.LUCEE_SCRIPT_TAG_NAME);
+	String name = prefix + Constants.CFML_SCRIPT_TAG_NAME;
 	return tag(pc, "<" + name + ">" + cfml + "</" + name + ">", dialect, catchOutput, ignoreScopes);
     }
 
