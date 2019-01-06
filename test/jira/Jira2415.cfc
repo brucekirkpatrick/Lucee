@@ -60,7 +60,7 @@ component extends="org.lucee.cfml.test.LuceeTestCase"	{
 
 	
 	private boolean function hasFullNullSupport(){
-		return server.ColdFusion.ProductName EQ "Lucee" && getPageContext().getConfig().getFullNullSupport();
+		return true;//server.ColdFusion.ProductName EQ "Lucee" && getPageContext().getConfig().getFullNullSupport();
 	}
 } 
 </cfscript>

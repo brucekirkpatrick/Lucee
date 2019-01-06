@@ -1046,6 +1046,72 @@ A return value from the CreateTimeSpan function, for example, "#CreateTimeSpan(0
 		<attribute-type>fixed</attribute-type>
 	</tag>
 
+
+	<tag>
+		<name>define</name>
+		<tag-class>lucee.runtime.tag.Define</tag-class>
+		<body-content>must</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<description>Define types separately from their implementation.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>import</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>A root relative path to a CFC that contains other cfdefine tags. The CFC will not be executed at runtime.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>variable</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>A complex variable path such as application.path.to.object, to be combined with component attribute.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>A valid variable name</description>
+		</attribute>
+		<attribute>
+			<type>component</type>
+			<name>component</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Root relative path to a component</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>dynamic</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>arrayType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+	</tag>
+
 	<!-- Directory -->
 	<tag>
 		<name>directory</name>
