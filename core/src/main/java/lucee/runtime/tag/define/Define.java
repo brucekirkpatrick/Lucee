@@ -1,5 +1,8 @@
 package lucee.runtime.tag.define;
 
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.commons.GeneratorAdapter;
 import lucee.runtime.*;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.tag.TagImpl;
@@ -19,6 +22,8 @@ import lucee.transformer.expression.var.DataMember;
 import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
 import lucee.transformer.library.tag.TagLibTag;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import java.util.*;
 
@@ -53,72 +58,107 @@ public class Define extends TagImpl {
 //
 	public static DefineType checkVariableDefinition(BytecodeContext bc, Member member){
 		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
+		return null;
 //		ps.initializeDefine();
-		boolean isApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
-		DefineType def;
-		if(isApplicationCFC){
-			def=checkVariableDefinition(bc, member, cfmlTypeVariables, "", true);
-		}else {
-			def=checkVariableDefinition(bc, member, ps.cfmlTypeVariables, "", false);
-		}
-		return def;
+//		boolean isApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
+//		DefineType def;
+//		if(isApplicationCFC){
+//			def=checkVariableDefinition(bc, member, cfmlTypeVariables, "", true);
+//		}else {
+//			def=checkVariableDefinition(bc, member, ps.cfmlTypeVariables, "", false);
+//		}
+//		return def;
 	}
 
 	public static DefineType checkVariableDefinition(BytecodeContext bc, Member member, LinkedHashMap<String, DefineType> variables, String variableString, boolean isApplicationCFC){
 		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
+		return null;
 //		ps.initializeDefine();
-		DefineType def = variables.getOrDefault(variableString, null);
-		if (def != null) {
-			return def;
-		}
-
-		// loop each member, check scope + current fields, until one matches.
-		Variable parent=member.getParent();
-		String scope=ScopeFactory.toStringScope(parent.getScope(), "undefined");
-		List<Member> members=parent.getMembers();
-		List<String> memberStrings=new ArrayList<>();
-		String currentMembers=scope;
-
-		// build all combinations first
-		for(int i=0;i<members.size();i++) {
-			Member m=members.get(i);
-			String name;
-			if(m instanceof UDF) {
-				UDF udfMember = (UDF) m;
-				name=udfMember.getName().toString();
-			}else if(m instanceof DataMember) {
-				DataMember dataMember = (DataMember) m;
-				name=dataMember.getName().toString();
-			}else{
-				continue; // ignore certain types
-			}
-			currentMembers += "." + name;
-
-			memberStrings.add(currentMembers);
-		}
-
-		Object[] keys = variables.entrySet().toArray();
-
-		// we loop in reverse to check the most deep (or at least the last) keys first, in case there are overlapping cfdefine variables.
-		for(int i=memberStrings.size()-1;i>=0;i--) {
-			// in reverse order, check for a matching define which helps us find the define closest to the current code, which may override others
-			for (int g = keys.length - 1; g >= 0; g--) {
-				String key=keys.toString();
-				if (currentMembers.equalsIgnoreCase(key)) {
-					def = variables.get(key);
-					break;
-				}
-			}
-
-			if (def != null) {
-				// TODO: must transform all the statements from 0 to i to be a direct reference instead of the key name.
-				// actually, we just need to get the arrayIndex in application.cfc where the cfc was stored
-				break;
-			}
-		}
-		return def;
+//		DefineType def = variables.getOrDefault(variableString, null);
+//		if (def != null) {
+//			return def;
+//		}
+//
+//		// loop each member, check scope + current fields, until one matches.
+//		Variable parent=member.getParent();
+//		String scope=ScopeFactory.toStringScope(parent.getScope(), "undefined");
+//		List<Member> members=parent.getMembers();
+//		List<String> memberStrings=new ArrayList<>();
+//		String currentMembers=scope;
+//
+//		// build all combinations first
+//		for(int i=0;i<members.size();i++) {
+//			Member m=members.get(i);
+//			String name;
+//			if(m instanceof UDF) {
+//				UDF udfMember = (UDF) m;
+//				name=udfMember.getName().toString();
+//			}else if(m instanceof DataMember) {
+//				DataMember dataMember = (DataMember) m;
+//				name=dataMember.getName().toString();
+//			}else{
+//				continue; // ignore certain types
+//			}
+//			currentMembers += "." + name;
+//
+//			memberStrings.add(currentMembers);
+//		}
+//
+//		Object[] keys = variables.entrySet().toArray();
+//
+//		// we loop in reverse to check the most deep (or at least the last) keys first, in case there are overlapping cfdefine variables.
+//		for(int i=memberStrings.size()-1;i>=0;i--) {
+//			// in reverse order, check for a matching define which helps us find the define closest to the current code, which may override others
+//			for (int g = keys.length - 1; g >= 0; g--) {
+//				String key=keys[g].toString();
+//				if (currentMembers.equalsIgnoreCase(key)) {
+//					def = variables.get(key);
+//					break;
+//				}
+//			}
+//
+//			if (def != null) {
+//				// TODO: must transform all the statements from 0 to i to be a direct reference instead of the key name.
+//				// actually, we just need to get the arrayIndex in application.cfc where the cfc was stored
+//				break;
+//			}
+//		}
+//		return def;
 
 	}
+
+	public static void storeBytecodeFields(ClassWriter cw){
+		// + Opcodes.ACC_FINAL
+		FieldVisitor fv = cw.visitField(Opcodes.ACC_PUBLIC, "componentVariables", "[Llucee/runtime/ComponentImpl;", null, null);
+		fv.visitEnd();
+	}
+
+	public static void storeBytecodeData(GeneratorAdapter constrAdapter, PageSourceImpl ps, String className){
+		// load "this"
+		constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
+		int count=ps.cfmlTypeVariables.size(); // TODO: the variables are not there yet...
+		Type componentImplType=Type.getType(ComponentImpl.class);
+		constrAdapter.push(count);
+		constrAdapter.newArray(componentImplType);
+		int index = 0;
+		Set<Map.Entry<String, DefineType>> typeKeys = ps.cfmlTypeVariables.entrySet();
+//				String key=keys[g].toString();
+		// cfmlTypeVariables
+		Iterator<Map.Entry<String, DefineType>> typeKeysIterator=typeKeys.iterator();
+		while(typeKeysIterator.hasNext()){
+//			    Entry<String, DefineType> typeEntry=typeKeysIterator.next();
+//			    typeEntry.getValue();
+//		    for(int i=0;i<count;i++) {
+			constrAdapter.dup();
+			constrAdapter.push(index++);
+			constrAdapter.visitInsn(Opcodes.ACONST_NULL);
+			constrAdapter.visitInsn(Opcodes.AASTORE);
+		}
+		String componentImplClassName = componentImplType.toString();
+		constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "componentVariables", "["+componentImplClassName);
+
+	}
+
 	public static DefineType checkNameDefinition(LinkedHashMap<String, DefineType> names){
 		DefineType def=null;
 		return def;

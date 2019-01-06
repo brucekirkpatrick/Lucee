@@ -19,12 +19,12 @@
 package lucee.transformer.bytecode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
+import lucee.runtime.*;
+import lucee.runtime.tag.define.Define;
+import lucee.runtime.tag.define.DefineType;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -41,12 +41,6 @@ import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.lang.StringUtil;
 import lucee.loader.engine.CFMLEngine;
-import lucee.runtime.Component;
-import lucee.runtime.ComponentPageImpl;
-import lucee.runtime.InterfacePageImpl;
-import lucee.runtime.Mapping;
-import lucee.runtime.PageImpl;
-import lucee.runtime.PageSource;
 import lucee.runtime.component.ImportDefintion;
 import lucee.runtime.component.ImportDefintionImpl;
 import lucee.runtime.config.Config;
@@ -340,6 +334,7 @@ public final class Page extends BodyBase implements Root {
 	ConstrBytecodeContext constr = new ConstrBytecodeContext(optionalPS, this, keys, cw, className, constrAdapter, CONSTRUCTOR_PS, writeLog(), suppressWSbeforeArg, output,
 		returnValue);
 	constrAdapter.loadThis();
+
 	Type t;
 
 	if (isComponent(comp)) {
@@ -367,6 +362,10 @@ public final class Page extends BodyBase implements Root {
 	// BECOMES: this.initKeys();
 	constrAdapter.visitMethodInsn(Opcodes.INVOKEVIRTUAL, constr.getClassName(), "initKeys", "()V");
 
+    if (optionalPS != null) {
+	    Define.storeBytecodeFields(cw);
+    }
+
 	// private static ImportDefintion[] test=new ImportDefintion[]{...};
 	{
 	    FieldVisitor fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "imports", "[Llucee/runtime/component/ImportDefintion;", null, null);
@@ -388,31 +387,6 @@ public final class Page extends BodyBase implements Root {
 	    constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "imports", "[Llucee/runtime/component/ImportDefintion;");
 
 	}
-	    {
-		    FieldVisitor fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "componentVariables", "[Llucee/runtime/ComponentImpl;", null, null);
-		    fv.visitEnd();
-
-		    // TODO: we need to build a fixed length array for cfdefine variables after we have them all.
-
-		    FieldVisitor fv2 = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "typeDefinitions", "[Llucee/runtime/ComponentImpl;", null, null);
-		    fv2.visitEnd();
-//		    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
-//		    ArrayVisitor av = new ArrayVisitor();
-//		    av.visitBegin(constrAdapter, Types.IMPORT_DEFINITIONS, imports.size());
-//		    int index = 0;
-//		    Iterator<String> it = imports.iterator();
-//		    while (it.hasNext()) {
-//			    av.visitBeginItem(constrAdapter, index++);
-//			    constrAdapter.push(it.next());
-//			    ASMConstants.NULL(constrAdapter);
-//			    constrAdapter.invokeStatic(Types.IMPORT_DEFINITIONS_IMPL, ID_GET_INSTANCE);
-//			    av.visitEndItem(constrAdapter);
-//		    }
-//		    av.visitEnd();
-//		    constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "imports", "[Llucee/runtime/component/ImportDefintion;");
-
-	    }
-
 	// getVersion
 	GeneratorAdapter adapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL, VERSION, null, null, cw);
 	adapter.push(version);
@@ -659,10 +633,41 @@ public final class Page extends BodyBase implements Root {
 		udfIndex++;
 	}
 
-	// setPageSource(pageSource);
+	/*
+
+	{
+	    FieldVisitor fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "imports", "[Llucee/runtime/component/ImportDefintion;", null, null);
+	    fv.visitEnd();
+
+	    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
+	    ArrayVisitor av = new ArrayVisitor();
+	    av.visitBegin(constrAdapter, Types.IMPORT_DEFINITIONS, imports.size());
+	    int index = 0;
+	    Iterator<String> it = imports.iterator();
+	    while (it.hasNext()) {
+		av.visitBeginItem(constrAdapter, index++);
+		constrAdapter.push(it.next());
+		ASMConstants.NULL(constrAdapter);
+		constrAdapter.invokeStatic(Types.IMPORT_DEFINITIONS_IMPL, ID_GET_INSTANCE);
+		av.visitEndItem(constrAdapter);
+	    }
+	    av.visitEnd();
+	    constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "imports", "[Llucee/runtime/component/ImportDefintion;");
+
+	}
+	 */
+
+
+
+	    // setPageSource(pageSource);
 	constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
 	constrAdapter.visitVarInsn(Opcodes.ALOAD, 1);
 	constrAdapter.invokeVirtual(t, SET_PAGE_SOURCE);
+
+	    if (optionalPS != null) {
+		    PageSourceImpl ps=(PageSourceImpl) optionalPS;
+		    Define.storeBytecodeData(constrAdapter, ps, getClassName());
+	    }
 
 	constrAdapter.returnValue();
 	constrAdapter.endMethod();
