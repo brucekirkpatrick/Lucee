@@ -107,8 +107,7 @@ public class InternalRequest implements Function {
 	Charset _charset = null;
 	try {
 
-	    if (CFMLEngine.DIALECT_LUCEE == dialect) _pc.execute(template, true, false);
-	    else _pc.executeCFML(template, true, false);
+	    _pc.executeCFML(template, true, false);
 
 	}
 	finally {
