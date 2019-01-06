@@ -54,7 +54,7 @@ public final class GetComponentMetaData implements Function {
 	// TODO better solution
 	catch (ApplicationException ae) {
 	    try {
-		InterfaceImpl inter = ComponentLoader.searchInterface(pc, ((PageContextImpl) pc).getCurrentPageSource(null), Caster.toString(obj));
+		InterfaceImpl inter = ComponentLoader.searchInterface(pc, ((PageContextImpl) pc).getCurrentPageSource(null), Caster.toString(obj), false);
 		return inter.getMetaData(pc);
 	    }
 	    catch (PageException pe) {

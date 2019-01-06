@@ -95,7 +95,7 @@ public final class ObjectTag extends TagImpl {
     public int doStartTag() throws PageException {
 
 	if (component != null) {
-	    pageContext.setVariable(name, CreateObject.doComponent(pageContext, component));
+	    pageContext.setVariable(name, CreateObject.doComponent(pageContext, component, false));
 	}
 	else if (type.equals("java")) {
 	    checkAccess(pageContext, type);
