@@ -25,7 +25,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.IterationTag;
 
 import lucee.runtime.exp.PageException;
-import lucee.runtime.tag.Define;
+import lucee.runtime.tag.define.Define;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

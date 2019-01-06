@@ -16,7 +16,6 @@
  */
 package lucee.transformer.bytecode.expression.var;
 
-import java.lang.invoke.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -24,13 +23,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import lucee.runtime.exp.PageException;
+import lucee.runtime.tag.define.Define;
 import lucee.runtime.type.KeyImpl;
-import lucee.runtime.type.scope.Jetendo;
 import lucee.runtime.type.scope.JetendoImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -65,8 +61,6 @@ import lucee.transformer.expression.var.Member;
 import lucee.transformer.expression.var.Variable;
 import lucee.transformer.library.function.FunctionLibFunction;
 import lucee.transformer.library.function.FunctionLibFunctionArg;
-
-import static org.objectweb.asm.Opcodes.*;
 
 public class VariableImpl extends ExpressionBase implements Variable {
 
@@ -358,6 +352,9 @@ public class VariableImpl extends ExpressionBase implements Variable {
 
 	private Type _writeOutFirst(BytecodeContext bc, Member member, int mode, boolean last, boolean doOnlyScope, Expression defaultValue, RefInteger startIndex)
 			throws TransformerException {
+
+		// TODO: finish implementing the Define feature
+		Define.checkVariableDefinition(bc, member);
 
 		if (member instanceof DataMember) {
 			return _writeOutFirstDataMember(bc, (DataMember) member, scope, last, doOnlyScope, defaultValue, startIndex);

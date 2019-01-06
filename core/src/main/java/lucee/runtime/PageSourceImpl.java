@@ -39,10 +39,8 @@ import lucee.commons.lang.types.RefIntegerSync;
 import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.compiler.CFMLCompilerImpl.Result;
 import lucee.runtime.config.Config;
-import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
-import lucee.runtime.config.ConfigWebUtil;
 import lucee.runtime.config.Constants;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
@@ -52,7 +50,8 @@ import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.exp.TemplateException;
 import lucee.runtime.functions.system.GetDirectoryFromPath;
 import lucee.runtime.op.Caster;
-import lucee.runtime.tag.Define;
+import lucee.runtime.tag.define.Define;
+import lucee.runtime.tag.define.DefineType;
 import lucee.runtime.type.dt.DateTimeImpl;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ListUtil;
@@ -62,8 +61,8 @@ import lucee.transformer.util.PageSourceCode;
  * represent a cfml file on the runtime system
  */
 public final class PageSourceImpl implements PageSource {
-	public LinkedHashMap<String, Define.CFMLTypeDefinition> cfmlTypeVariables=new LinkedHashMap<>();
-	public LinkedHashMap<String, Define.CFMLTypeDefinition> cfmlTypeDefinitions=new LinkedHashMap<>();
+	public LinkedHashMap<String, DefineType> cfmlTypeVariables=new LinkedHashMap<>();
+	public LinkedHashMap<String, DefineType> cfmlTypeDefinitions=new LinkedHashMap<>();
 
     private static final long serialVersionUID = -7661676586215092539L;
     // public static final byte LOAD_NONE=1;
@@ -91,6 +90,7 @@ public final class PageSourceImpl implements PageSource {
     private long lastAccess;
     private RefIntegerSync accessCount = new RefIntegerSync();
     private boolean flush = false;
+
 
     private PageSourceImpl() {
 	mapping = null;
@@ -144,6 +144,12 @@ public final class PageSourceImpl implements PageSource {
 	this.relPath = realPath;
 	if (logAccessDirectory != null) dump();
     }
+
+//	public void initializeDefine(){
+//    	if(cfmlTypeVariables!=null) return;
+//		cfmlTypeVariables=new LinkedHashMap<>();
+//		cfmlTypeDefinitions=new LinkedHashMap<>();
+//	}
 
     private void dump() {
 	Resource res = getResource();

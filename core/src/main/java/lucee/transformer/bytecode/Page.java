@@ -251,13 +251,14 @@ public final class Page extends BodyBase implements Root {
      * @param factory
      * @param config
      * @param sc SourceCode for this Page
-     * @param className name of the class produced (pattern: org.whatever.Susi)
      * @param tc
      * @param version
      * @param lastModifed
      * @param writeLog
      * @param suppressWSbeforeArg
-     * @param dotNotationUpperCase
+     * @param output
+     * @param returnValue
+     * @param ignoreScopes
      */
     public Page(Factory factory, Config config, SourceCode sc, TagCIObject tc, long version, long lastModifed, boolean writeLog, boolean suppressWSbeforeArg, boolean output,
 	    boolean returnValue, boolean ignoreScopes) {
@@ -387,6 +388,30 @@ public final class Page extends BodyBase implements Root {
 	    constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "imports", "[Llucee/runtime/component/ImportDefintion;");
 
 	}
+	    {
+		    FieldVisitor fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "componentVariables", "[Llucee/runtime/ComponentImpl;", null, null);
+		    fv.visitEnd();
+
+		    // TODO: we need to build a fixed length array for cfdefine variables after we have them all.
+
+		    FieldVisitor fv2 = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "typeDefinitions", "[Llucee/runtime/ComponentImpl;", null, null);
+		    fv2.visitEnd();
+//		    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
+//		    ArrayVisitor av = new ArrayVisitor();
+//		    av.visitBegin(constrAdapter, Types.IMPORT_DEFINITIONS, imports.size());
+//		    int index = 0;
+//		    Iterator<String> it = imports.iterator();
+//		    while (it.hasNext()) {
+//			    av.visitBeginItem(constrAdapter, index++);
+//			    constrAdapter.push(it.next());
+//			    ASMConstants.NULL(constrAdapter);
+//			    constrAdapter.invokeStatic(Types.IMPORT_DEFINITIONS_IMPL, ID_GET_INSTANCE);
+//			    av.visitEndItem(constrAdapter);
+//		    }
+//		    av.visitEnd();
+//		    constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, className, "imports", "[Llucee/runtime/component/ImportDefintion;");
+
+	    }
 
 	// getVersion
 	GeneratorAdapter adapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL, VERSION, null, null, cw);

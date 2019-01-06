@@ -1049,8 +1049,8 @@ A return value from the CreateTimeSpan function, for example, "#CreateTimeSpan(0
 
 	<tag>
 		<name>define</name>
-		<tag-class>lucee.runtime.tag.Define</tag-class>
-		<body-content>must</body-content>
+		<tag-class>lucee.runtime.tag.define.Define</tag-class>
+		<body-content>free</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
 		<description>Define types separately from their implementation.</description>
 		<attribute-type>fixed</attribute-type>
