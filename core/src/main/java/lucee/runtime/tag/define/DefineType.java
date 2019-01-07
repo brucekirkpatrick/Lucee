@@ -5,6 +5,7 @@ import lucee.transformer.bytecode.statement.tag.Tag;
 public class DefineType {
 	public Tag tag;
 	public int id;
+	public boolean inApplicationCFC=false;
 	public boolean required=false;
 	public boolean dynamic=false;
 	public String importValue="";
@@ -18,6 +19,7 @@ public class DefineType {
 	}
 	public DefineType duplicate(){
 		DefineType tdNew=new DefineType(this.tag);
+		tdNew.inApplicationCFC=this.inApplicationCFC;
 		tdNew.required=this.required;
 		tdNew.dynamic=this.dynamic;
 		tdNew.importValue=this.importValue;

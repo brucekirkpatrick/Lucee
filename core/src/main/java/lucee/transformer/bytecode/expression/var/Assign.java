@@ -18,8 +18,12 @@
  */
 package lucee.transformer.bytecode.expression.var;
 
+import lucee.runtime.tag.define.Define;
+import lucee.runtime.tag.define.DefineType;
+import lucee.runtime.tag.define.DefineTypeMatch;
 import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.scope.JetendoImpl;
+import lucee.runtime.type.scope.ServerImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -327,11 +331,18 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		    if(scope == Scope.SCOPE_JETENDO){
 		    	writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
 		    }else {
-			    adapter.loadArg(0);
-			    TypeScope.invokeScope(adapter, scope);
-			    getFactory().registerKey(bc, member.getName(), false);
-			    writeValue(bc);
-			    adapter.invokeInterface(TypeScope.SCOPES[scope], METHOD_SCOPE_SET_KEY);
+			    DefineTypeMatch match= Define.checkVariableDefinition(bc, member);
+			    if(match!=null) {
+				    // TODO: implement Define lookup
+				     String temp="";
+				     // ((ServerImpl) var1.server).componentVariables[defineType.id];
+			    }else {
+				    adapter.loadArg(0);
+				    TypeScope.invokeScope(adapter, scope);
+				    getFactory().registerKey(bc, member.getName(), false);
+				    writeValue(bc);
+				    adapter.invokeInterface(TypeScope.SCOPES[scope], METHOD_SCOPE_SET_KEY);
+			    }
 		    }
 	    }
 	    else {
@@ -339,11 +350,18 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 			    ((VariableImpl) variable)._writeOutFirstDataMember(bc, member, scope, false, false, null, null);
 //			    return writeOutPutScopeField(bc, adapter, JetendoImpl.class, Scope.SCOPE_JETENDO, member);
 		    }else {
-			    adapter.loadArg(0);
-			    adapter.loadArg(0);
-			    TypeScope.invokeScope(adapter, scope);
-			    getFactory().registerKey(bc, member.getName(), false);
-			    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
+			    DefineTypeMatch match= Define.checkVariableDefinition(bc, member);
+			    if(match!=null) {
+				    // TODO: implement Define lookup
+				    String temp="";
+				    // ((ServerImpl) var1.server).componentVariables[defineType.id];
+			    }else {
+				    adapter.loadArg(0);
+				    adapter.loadArg(0);
+				    TypeScope.invokeScope(adapter, scope);
+				    getFactory().registerKey(bc, member.getName(), false);
+				    adapter.invokeVirtual(Types.PAGE_CONTEXT, TOUCH_KEY);
+			    }
 		    }
 	    }
 	    return Types.OBJECT;

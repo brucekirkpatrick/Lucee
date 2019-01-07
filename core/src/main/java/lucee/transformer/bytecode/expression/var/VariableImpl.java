@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lucee.runtime.tag.define.Define;
+import lucee.runtime.tag.define.DefineTypeMatch;
 import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.scope.JetendoImpl;
 import lucee.transformer.bytecode.reflection.ASMProxyFactory;
@@ -354,7 +355,10 @@ public class VariableImpl extends ExpressionBase implements Variable {
 			throws TransformerException {
 
 		// TODO: finish implementing the Define feature
-		Define.checkVariableDefinition(bc, member);
+		DefineTypeMatch match=Define.checkVariableDefinition(bc, member);
+		if(match!=null){
+
+		}
 
 		if (member instanceof DataMember) {
 			return _writeOutFirstDataMember(bc, (DataMember) member, scope, last, doOnlyScope, defaultValue, startIndex);

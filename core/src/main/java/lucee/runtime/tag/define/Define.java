@@ -56,74 +56,85 @@ public class Define extends TagImpl {
 	}
 
 //
-	public static DefineType checkVariableDefinition(BytecodeContext bc, Member member){
+	public static DefineTypeMatch checkVariableDefinition(BytecodeContext bc, Member member){
 		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
-		return null;
+//		return null;
 //		ps.initializeDefine();
-//		boolean isApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
-//		DefineType def;
-//		if(isApplicationCFC){
-//			def=checkVariableDefinition(bc, member, cfmlTypeVariables, "", true);
-//		}else {
-//			def=checkVariableDefinition(bc, member, ps.cfmlTypeVariables, "", false);
-//		}
-//		return def;
+		boolean inApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
+		DefineTypeMatch match;
+		if(inApplicationCFC){
+			match=checkVariableDefinition(bc, member, cfmlTypeVariables); // , true
+		}else {
+			match=checkVariableDefinition(bc, member, ps.cfmlTypeVariables); // ,  false
+		}
+		if(match!=null){
+//			match.defineType
+//			match.matchOffset
+		}
+		return match;
 	}
 
-	public static DefineType checkVariableDefinition(BytecodeContext bc, Member member, LinkedHashMap<String, DefineType> variables, String variableString, boolean isApplicationCFC){
-		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
-		return null;
+	public static DefineTypeMatch checkVariableDefinition(BytecodeContext bc, Member member, LinkedHashMap<String, DefineType> variables){ // , boolean inApplicationCFC
+//		PageSourceImpl ps=(PageSourceImpl) bc.getPageSource();
+//		return null;
 //		ps.initializeDefine();
-//		DefineType def = variables.getOrDefault(variableString, null);
-//		if (def != null) {
-//			return def;
-//		}
-//
-//		// loop each member, check scope + current fields, until one matches.
-//		Variable parent=member.getParent();
-//		String scope=ScopeFactory.toStringScope(parent.getScope(), "undefined");
-//		List<Member> members=parent.getMembers();
-//		List<String> memberStrings=new ArrayList<>();
-//		String currentMembers=scope;
-//
-//		// build all combinations first
-//		for(int i=0;i<members.size();i++) {
-//			Member m=members.get(i);
-//			String name;
-//			if(m instanceof UDF) {
-//				UDF udfMember = (UDF) m;
-//				name=udfMember.getName().toString();
-//			}else if(m instanceof DataMember) {
-//				DataMember dataMember = (DataMember) m;
-//				name=dataMember.getName().toString();
-//			}else{
-//				continue; // ignore certain types
-//			}
-//			currentMembers += "." + name;
-//
-//			memberStrings.add(currentMembers);
-//		}
-//
-//		Object[] keys = variables.entrySet().toArray();
-//
-//		// we loop in reverse to check the most deep (or at least the last) keys first, in case there are overlapping cfdefine variables.
-//		for(int i=memberStrings.size()-1;i>=0;i--) {
-//			// in reverse order, check for a matching define which helps us find the define closest to the current code, which may override others
-//			for (int g = keys.length - 1; g >= 0; g--) {
-//				String key=keys[g].toString();
-//				if (currentMembers.equalsIgnoreCase(key)) {
-//					def = variables.get(key);
+
+		// loop each member, check scope + current fields, until one matches.
+		Variable parent=member.getParent();
+		String scope=ScopeFactory.toStringScope(parent.getScope(), "undefined");
+		List<Member> members=parent.getMembers();
+		List<String> memberStrings=new ArrayList<>();
+		String currentMembers=scope;
+
+		// build all combinations first
+		for(int i=0;i<members.size();i++) {
+			Member m=members.get(i);
+			String name;
+			if(m instanceof UDF) {
+				UDF udfMember = (UDF) m;
+				name=udfMember.getName().toString();
+			}else if(m instanceof DataMember) {
+				DataMember dataMember = (DataMember) m;
+				name=dataMember.getName().toString();
+			}else{
+				continue; // ignore certain types
+			}
+			currentMembers += "." + name;
+
+			memberStrings.add(currentMembers);
+		}
+
+		DefineTypeMatch defineTypeMatch;
+		DefineType def = variables.getOrDefault(currentMembers, null);
+		if (def != null) {
+			defineTypeMatch=new DefineTypeMatch(def, memberStrings.size());
+			return defineTypeMatch;
+		}
+
+		Object[] keys = variables.entrySet().toArray();
+
+		// we loop in reverse to check the most deep (or at least the last) keys first, in case there are overlapping cfdefine variables.
+		for(int i=memberStrings.size()-1;i>=0;i--) {
+			// in reverse order, check for a matching define which helps us find the define closest to the current code, which may override others
+			for (int g = keys.length - 1; g >= 0; g--) {
+				String key=keys[g].toString();
+				if (currentMembers.equalsIgnoreCase(key)) {
+					def = variables.getOrDefault(key, null);
+					if(def!=null) {
+						return new DefineTypeMatch(def, g);
+					}
 //					break;
-//				}
-//			}
-//
+				}
+			}
+
 //			if (def != null) {
 //				// TODO: must transform all the statements from 0 to i to be a direct reference instead of the key name.
 //				// actually, we just need to get the arrayIndex in application.cfc where the cfc was stored
+//
 //				break;
 //			}
-//		}
-//		return def;
+		}
+		return null;
 
 	}
 
@@ -146,9 +157,8 @@ public class Define extends TagImpl {
 		// cfmlTypeVariables
 		Iterator<Map.Entry<String, DefineType>> typeKeysIterator=typeKeys.iterator();
 		while(typeKeysIterator.hasNext()){
-//			    Entry<String, DefineType> typeEntry=typeKeysIterator.next();
+			Map.Entry<String, DefineType> typeEntry=typeKeysIterator.next();
 //			    typeEntry.getValue();
-//		    for(int i=0;i<count;i++) {
 			constrAdapter.dup();
 			constrAdapter.push(index++);
 			constrAdapter.visitInsn(Opcodes.ACONST_NULL);
@@ -239,44 +249,46 @@ public class Define extends TagImpl {
 
 //		bc.getConfig()
 //		ps.initializeDefine();
-		boolean isApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
+		boolean inApplicationCFC= ps.getFileName().equalsIgnoreCase("application.cfc");
+
+		typeDefine.inApplicationCFC=inApplicationCFC;
 
 		if(typeDefine.importValue.length()>0){
+			throw new RuntimeException("cfdefine error - import attribute is not supported yet.");
 			// verify no other attributes were used
-			if(typeDefine.variable.length()>0 && typeDefine.component.length()>0 && typeDefine.name.length()>0 && typeDefine.type.length()>0 && typeDefine.arrayType.length()>0 && requiredAttr!=null && dynamicAttr!=null) {
-				throw new RuntimeException("cfdefine error - import attribute can't be combined with any other cfdefine attribute.");
-			}
-			// do import
-			if(isApplicationCFC) {
-				// TODO: need to still compile/load the pagesource for typeDefine.importValue here like the one that runs _compile() in PageSourceImpl
-//				PageContextImpl pc=PageContextImpl.createPageContext();
-//				ComponentImpl importComponent=(ComponentImpl) pc.loadComponent(typeDefine.importValue);
-//				PageSource importPS=importComponent.getPageSource();
-//				importPS.
-
-				for(DefineType typeDefinition:ps.cfmlTypeVariables.values()){
-					DefineType td=typeDefinition.duplicate();
-					td.id=cfmlTypeVariables.size();
-					cfmlTypeVariables.put(typeDefinition.variable, td);
-				}
-				for(DefineType typeDefinition:ps.cfmlTypeDefinitions.values()){
-					DefineType td=typeDefinition.duplicate();
-					td.id=cfmlTypeDefinitions.size();
-					cfmlTypeDefinitions.put(typeDefinition.variable, td);
-				}
-			}else{
-				for(DefineType typeDefinition:ps.cfmlTypeVariables.values()){
-					DefineType td=typeDefinition.duplicate();
-					td.id=ps.cfmlTypeVariables.size();
-					ps.cfmlTypeVariables.put(typeDefinition.variable, td);
-				}
-				for(DefineType typeDefinition:ps.cfmlTypeDefinitions.values()){
-					DefineType td=typeDefinition.duplicate();
-					td.id=ps.cfmlTypeDefinitions.size();
-					ps.cfmlTypeDefinitions.put(typeDefinition.variable, td);
-				}
-			}
-			return;
+//			if(typeDefine.variable.length()>0 && typeDefine.component.length()>0 && typeDefine.name.length()>0 && typeDefine.type.length()>0 && typeDefine.arrayType.length()>0 && requiredAttr!=null && dynamicAttr!=null) {
+//				throw new RuntimeException("cfdefine error - import attribute can't be combined with any other cfdefine attribute.");
+//			}
+//			// TODO: need to still compile/load the pagesource for typeDefine.importValue here like the one that runs _compile() in PageSourceImpl
+//			PageContextImpl pc=PageContextImpl.createPageContext();
+//			ComponentImpl importComponent=(ComponentImpl) pc.loadComponent(typeDefine.importValue);
+//			PageSourceImpl importPS=(PageSourceImpl) importComponent.getPageSource();
+////				importPS.
+//			// do import
+//			if(inApplicationCFC) {
+//				for(DefineType typeDefinition:importPS.cfmlTypeVariables.values()){
+//					DefineType td=typeDefinition.duplicate();
+//					td.id=cfmlTypeVariables.size();
+//					cfmlTypeVariables.put(typeDefinition.variable, td);
+//				}
+//				for(DefineType typeDefinition:importPS.cfmlTypeDefinitions.values()){
+//					DefineType td=typeDefinition.duplicate();
+//					td.id=cfmlTypeDefinitions.size();
+//					cfmlTypeDefinitions.put(typeDefinition.variable, td);
+//				}
+//			}else{
+//				for(DefineType typeDefinition:importPS.cfmlTypeVariables.values()){
+//					DefineType td=typeDefinition.duplicate();
+//					td.id=ps.cfmlTypeVariables.size();
+//					ps.cfmlTypeVariables.put(typeDefinition.variable, td);
+//				}
+//				for(DefineType typeDefinition:importPS.cfmlTypeDefinitions.values()){
+//					DefineType td=typeDefinition.duplicate();
+//					td.id=ps.cfmlTypeDefinitions.size();
+//					ps.cfmlTypeDefinitions.put(typeDefinition.variable, td);
+//				}
+//			}
+//			return;
 		}
 
 		if(typeDefine.variable.length()>0 && typeDefine.component.length()>0){
@@ -285,7 +297,7 @@ public class Define extends TagImpl {
 				throw new RuntimeException("cfdefine error - name, required, type, arrayType and import can't be combined with the variable attribute.");
 			}
 
-			if(isApplicationCFC) {
+			if(inApplicationCFC) {
 				typeDefine.id = cfmlTypeVariables.size();
 				cfmlTypeVariables.put(typeDefine.variable, typeDefine);
 				// TODO: write bytecode to store in the application.cfc component Page near top.
@@ -310,7 +322,7 @@ public class Define extends TagImpl {
 
 		if(typeDefine.name.length()>0 && typeDefine.type.length()>0){
 
-			if(isApplicationCFC) {
+			if(inApplicationCFC) {
 				typeDefine.id = cfmlTypeDefinitions.size();
 				cfmlTypeDefinitions.put(typeDefine.name, typeDefine);
 			}else{

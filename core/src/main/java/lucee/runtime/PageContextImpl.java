@@ -3789,7 +3789,7 @@ public final class PageContextImpl extends PageContext {
 	public static PageContextImpl createPageContext() throws PageException {
 
 		PageContextImpl pc2 = ThreadUtil.createPageContext(
-				null, // getConfig()
+				null, // TODO: must figure out how to get rid of config or make it work | getConfig()
 				DevNullOutputStream.DEV_NULL_OUTPUT_STREAM,
 				"lucee",
 				"",
