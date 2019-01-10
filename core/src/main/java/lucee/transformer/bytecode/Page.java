@@ -323,10 +323,9 @@ public final class Page extends BodyBase implements Root {
 	}
 
 	// static constructor
-	// GeneratorAdapter statConstrAdapter = new
-	// GeneratorAdapter(Opcodes.ACC_PUBLIC,STATIC_CONSTRUCTOR,null,null,cw);
-	// StaticConstrBytecodeContext statConstr = null;//new
-	// BytecodeContext(null,null,this,externalizer,keys,cw,name,statConstrAdapter,STATIC_CONSTRUCTOR,writeLog(),suppressWSbeforeArg);
+//	 GeneratorAdapter statConstrAdapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC,STATIC_CONSTRUCTOR,null,null,cw);
+////	 StaticConstrBytecodeContext statConstr = null;//new
+//	 BytecodeContext(null,null,this,externalizer,keys,cw,name,statConstrAdapter,STATIC_CONSTRUCTOR,writeLog(),suppressWSbeforeArg);
 
 	// constructor
 	GeneratorAdapter constrAdapter = new GeneratorAdapter(Opcodes.ACC_PUBLIC, CONSTRUCTOR_PS, null, null, cw);
@@ -669,8 +668,6 @@ public final class Page extends BodyBase implements Root {
 		    Define.storeBytecodeData(constrAdapter, ps, getClassName());
 	    }
 
-	constrAdapter.returnValue();
-	constrAdapter.endMethod();
 
 	// INIT KEYS
 	{
@@ -685,6 +682,9 @@ public final class Page extends BodyBase implements Root {
 	    // end method
 	    aInit.endMethod();
 	}
+
+
+
 
 	// set field subs
 	FieldVisitor fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "subs", "[Llucee/runtime/CIPage;", null, null);
@@ -704,7 +704,54 @@ public final class Page extends BodyBase implements Root {
 	    }
 	}
 
-	return cw.toByteArray();
+//
+
+	    // Set the first 100 Key as static fields in this class
+	    {
+		    if(keys.size()>0) {
+			    LitString value;
+			    int keyCount=keys.size();
+			    if(keyCount>100){
+			    	keyCount=100;
+			    }
+			    for (int i = 0; i < 100; i++) {
+				    fv = cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "_K"+i, "Llucee/runtime/type/Collection$Key;", null, null);
+				    fv.visitEnd();
+			    }
+			    for (int i = 0; i < keyCount; i++) {
+				    value = keys.get(i);
+				    ExpressionUtil.writeOutSilent(value, constr, Expression.MODE_REF);
+				    constrAdapter.visitMethodInsn(Opcodes.INVOKESTATIC, "lucee/runtime/type/KeyImpl", "intern", "(Ljava/lang/String;)Llucee/runtime/type/Collection$Key;", false);
+				    constrAdapter.visitFieldInsn(Opcodes.PUTSTATIC, getClassName(), "_K"+i, "Llucee/runtime/type/Collection$Key;");
+			    }
+		    }
+	    }
+
+	    constrAdapter.returnValue();
+	    constrAdapter.endMethod();
+//	    LitString value;
+
+	    // this generates the right bytecode, but for some reason, the fields are null when read, so we had to use the class constructor to set those fields instead.
+//	    GeneratorAdapter gaClassInit = new GeneratorAdapter(Opcodes.ACC_PUBLIC, STATIC_CONSTRUCTOR, null, null, cw);
+//	    BytecodeContext bcClassInit = new BytecodeContext(null, null, this, keys, cw, className, gaClassInit, STATIC_CONSTRUCTOR, writeLog(), suppressWSbeforeArg, output, returnValue);
+//	    gaClassInit.visitCode();
+//
+//	    int keyCount=keys.size();
+//	    if(keyCount>100){
+//		    keyCount=100;
+//	    }
+//	    for (int i = 0; i < keyCount; i++) {
+//		    value = keys.get(i);
+//		    ExpressionUtil.writeOutSilent(value, bcClassInit, Expression.MODE_REF);
+//		    gaClassInit.visitMethodInsn(Opcodes.INVOKESTATIC, "lucee/runtime/type/KeyImpl", "intern", "(Ljava/lang/String;)Llucee/runtime/type/Collection$Key;", false);
+//		    gaClassInit.visitFieldInsn(Opcodes.PUTSTATIC, getClassName(), "_K"+i, "Llucee/runtime/type/Collection$Key;");
+//	    }
+//	    gaClassInit.visitInsn(Opcodes.RETURN);
+//	    gaClassInit.visitMaxs(keyCount, 0);
+//	    gaClassInit.visitEnd();
+//
+//	    cw.visitEnd();
+		return cw.toByteArray();
     }
 
     public static String createSubClass(String name, String subName, int dialect) {
@@ -819,27 +866,55 @@ public final class Page extends BodyBase implements Root {
 
     public static void registerFields(BytecodeContext bc, List<LitString> keys) throws TransformerException {
 	// if(keys.size()==0) return;
-	GeneratorAdapter ga = bc.getAdapter();
+		    GeneratorAdapter ga = bc.getAdapter();
+		    FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
+		    fv.visitEnd();
 
-	FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
-	fv.visitEnd();
+		    int index = 0;
+		    LitString value;
+		    Iterator<LitString> it = keys.iterator();
+		    ga.visitVarInsn(Opcodes.ALOAD, 0);
+		    ga.push(keys.size());
+		    ga.newArray(Types.COLLECTION_KEY);
+		    while (it.hasNext()) {
+			    value = it.next();
+			    ga.dup();
+			    ga.push(index);
+			    // value.setExternalize(false);
+			    ExpressionUtil.writeOutSilent(value, bc, Expression.MODE_REF);
+			    ga.invokeStatic(KEY_IMPL, KEY_INTERN);
+			    ga.visitInsn(Opcodes.AASTORE);
+			    index++;
 
-	int index = 0;
-	LitString value;
-	Iterator<LitString> it = keys.iterator();
-	ga.visitVarInsn(Opcodes.ALOAD, 0);
-	ga.push(keys.size());
-	ga.newArray(Types.COLLECTION_KEY);
-	while (it.hasNext()) {
-	    value = it.next();
-	    ga.dup();
-	    ga.push(index++);
-	    // value.setExternalize(false);
-	    ExpressionUtil.writeOutSilent(value, bc, Expression.MODE_REF);
-	    ga.invokeStatic(KEY_IMPL, KEY_INTERN);
-	    ga.visitInsn(Opcodes.AASTORE);
-	}
-	ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
+		    }
+		    ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
+//
+//	    if(keys.size()-100>0) {
+//		    GeneratorAdapter ga = bc.getAdapter();
+//		    FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
+//		    fv.visitEnd();
+//
+//		    int index = 0;
+//		    LitString value;
+//		    Iterator<LitString> it = keys.iterator();
+//		    ga.visitVarInsn(Opcodes.ALOAD, 0);
+//		    ga.push(keys.size() - 100);
+//		    ga.newArray(Types.COLLECTION_KEY);
+//		    while (it.hasNext()) {
+//			    value = it.next();
+//			    if (index >= 100) {
+//				    ga.dup();
+//				    ga.push(index - 100);
+//				    // value.setExternalize(false);
+//				    ExpressionUtil.writeOutSilent(value, bc, Expression.MODE_REF);
+//				    ga.invokeStatic(KEY_IMPL, KEY_INTERN);
+//				    ga.visitInsn(Opcodes.AASTORE);
+//			    }
+//			    index++;
+//
+//		    }
+//		    ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
+//	    }
     }
 
     private void writeUdfDefaultValueInner(BytecodeContext bc, Function[] functions, int offset, int length) throws TransformerException {

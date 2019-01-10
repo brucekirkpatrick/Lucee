@@ -321,10 +321,14 @@ public class BytecodeFactory extends FactoryBase {
 		return;
 	    }
 	    int index = bc.registerKey(ls);
-	    bc.getAdapter().visitVarInsn(Opcodes.ALOAD, 0);
-	    bc.getAdapter().visitFieldInsn(Opcodes.GETFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
-	    bc.getAdapter().push(index);
-	    bc.getAdapter().visitInsn(Opcodes.AALOAD);
+//		if(index>=100){
+			bc.getAdapter().visitVarInsn(Opcodes.ALOAD, 0);
+			bc.getAdapter().visitFieldInsn(Opcodes.GETFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
+			bc.getAdapter().push(index);//-100);
+			bc.getAdapter().visitInsn(Opcodes.AALOAD);
+//		}else{
+//			bc.getAdapter().visitFieldInsn(Opcodes.GETSTATIC, bc.getClassName(), "_K"+(index), "Llucee/runtime/type/Collection$Key;");
+//		}
 
 	    // ExpressionUtil.writeOutSilent(lit,bc, Expression.MODE_REF);
 	    // bc.getAdapter().invokeStatic(Page.KEY_IMPL, Page.KEY_INTERN);
