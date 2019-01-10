@@ -28,7 +28,7 @@ public final class LocalImpl extends ScopeSupport implements Scope, Local {
 //	public Set functionArgumentNames;
 
     public LocalImpl() {
-	super("local", Scope.SCOPE_LOCAL, Struct.TYPE_SYNC);
+	super("local", Scope.SCOPE_LOCAL, Struct.TYPE_HASHMAP);
     }
 
     @Override

@@ -32,5 +32,6 @@ public interface Struct extends Collection, Map, Objects {
     public static final int TYPE_SYNC = 2;
     public static final int TYPE_REGULAR = 3;
     public static final int TYPE_SOFT = 4;
+    public static final int TYPE_HASHMAP=5;
 
 }

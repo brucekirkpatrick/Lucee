@@ -86,6 +86,7 @@ public class StructImpl extends StructSupport {
         else if (type == TYPE_LINKED) map = new SyncMap<Collection.Key, Object>(new LinkedHashMapPro<Collection.Key, Object>(initialCapacity));
         else if (type == TYPE_LINKED_NOT_SYNC) map = new LinkedHashMapPro<Collection.Key, Object>(initialCapacity);
         else if (type == TYPE_SYNC) map = new SyncMap<Collection.Key, Object>();
+        else if (type == TYPE_HASHMAP) map = new HashMapPro<Collection.Key, Object>();
         else map = MapFactory.getConcurrentMap(initialCapacity);
     }
 
