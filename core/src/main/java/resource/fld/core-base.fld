@@ -4395,7 +4395,38 @@ EntitySave(entity, [forceinsert])</description>
 			<type>struct</type>
 		</return>
 	</function>
-	
+
+	<!-- WriteDump -->
+	<function>
+		<name>WriteDump</name>
+		<class>lucee.runtime.functions.other.Dump</class>
+		<description>Outputs the elements, variables and values of most kinds of CFML objects. Useful for debugging. You can display the contents of simple and complex variables, objects, components, user-defined functions, and other elements.</description>
+		<argument>
+			<name>var</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>Any object</description>
+		</argument>
+		<return>
+			<type>void</type>
+		</return>
+	</function>
+
+	<!-- Dump -->
+	<function>
+		<name>Dump</name>
+		<class>lucee.runtime.functions.other.Dump</class>
+		<description>Outputs the elements, variables and values of most kinds of CFML objects. Useful for debugging. You can display the contents of simple and complex variables, objects, components, user-defined functions, and other elements.</description>
+		<argument>
+			<name>var</name>
+			<type>any</type>
+			<required>Yes</required>
+			<description>Any object</description>
+		</argument>
+		<return>
+			<type>void</type>
+		</return>
+	</function>
 	<!-- FileGetMimeType -->
 	<function>
 		<name>FileGetMimeType</name>
