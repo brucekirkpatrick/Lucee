@@ -610,27 +610,6 @@ public final class Page extends BodyBase implements Root {
 	constrAdapter.newArray(Types.UDF_PROPERTIES);
 	constrAdapter.visitFieldInsn(Opcodes.PUTFIELD, getClassName(), "udfs", udfpropsClassName);
 
-	// set item
-	Data data;
-	int udfIndex=0;
-	while (it.hasNext()) {
-	    data = it.next();
-	    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
-	    constrAdapter.visitFieldInsn(Opcodes.GETFIELD, constr.getClassName(), "udfs", Types.UDF_PROPERTIES_ARRAY.toString());
-	    constrAdapter.push(data.arrayIndex);
-	    data.function.createUDFProperties(constr, data.valueIndex, data.type);
-	    constrAdapter.visitInsn(Opcodes.AASTORE);
-
-	    // TODO: finish making a way to store UDF as class fields.
-	    //data.function.storeUDFField(cw, constr, data.valueIndex, data.type);
-
-
-		// set the field in constructor..
-		// constrAdapter
-
-
-		udfIndex++;
-	}
 
 	/*
 
@@ -669,19 +648,6 @@ public final class Page extends BodyBase implements Root {
 	    }
 
 
-	// INIT KEYS
-	{
-		// create a new method call initKeys in the class
-	    GeneratorAdapter aInit = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, INIT_KEYS, null, null, cw);
-	    // adds this.initKeys() to constructor
-	    BytecodeContext bcInit = new BytecodeContext(optionalPS, constr, this, keys, cw, className, aInit, INIT_KEYS, writeLog(), suppressWSbeforeArg, output, returnValue);
-	    // body of initKeys
-	    registerFields(bcInit, keys);
-	    // return nothing
-	    aInit.returnValue();
-	    // end method
-	    aInit.endMethod();
-	}
 
 
 
@@ -704,31 +670,26 @@ public final class Page extends BodyBase implements Root {
 	    }
 	}
 
-//
-
 	    // Set the first 100 Key as static fields in this class
-	    {
-		    if(keys.size()>0) {
-			    LitString value;
-			    int keyCount=keys.size();
-			    if(keyCount>100){
-			    	keyCount=100;
-			    }
-			    for (int i = 0; i < 100; i++) {
-				    fv = cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "_K"+i, "Llucee/runtime/type/Collection$Key;", null, null);
-				    fv.visitEnd();
-			    }
-			    for (int i = 0; i < keyCount; i++) {
-				    value = keys.get(i);
-				    ExpressionUtil.writeOutSilent(value, constr, Expression.MODE_REF);
-				    constrAdapter.visitMethodInsn(Opcodes.INVOKESTATIC, "lucee/runtime/type/KeyImpl", "intern", "(Ljava/lang/String;)Llucee/runtime/type/Collection$Key;", false);
-				    constrAdapter.visitFieldInsn(Opcodes.PUTSTATIC, getClassName(), "_K"+i, "Llucee/runtime/type/Collection$Key;");
-			    }
-		    }
-	    }
-
-	    constrAdapter.returnValue();
-	    constrAdapter.endMethod();
+//	    {
+//		    for (int i = 0; i < 10; i++) {
+//			    fv = cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "_K"+i, "Llucee/runtime/type/Collection$Key;", null, null);
+//			    fv.visitEnd();
+//		    }
+//		    LitString value;
+//		    int keyCount=keys.size();
+//		    if(keyCount>=10){
+//		        keyCount=10;
+//		    }
+//		    if(keys.size()>0) {
+//			    for (int i = 0; i < keyCount; i++) {
+//				    value = keys.get(i);
+//				    ExpressionUtil.writeOutSilent(value, constr, Expression.MODE_REF);
+//				    constrAdapter.visitMethodInsn(Opcodes.INVOKESTATIC, "lucee/runtime/type/KeyImpl", "intern", "(Ljava/lang/String;)Llucee/runtime/type/Collection$Key;", false);
+//				    constrAdapter.visitFieldInsn(Opcodes.PUTSTATIC, getClassName(), "_K"+i, "Llucee/runtime/type/Collection$Key;");
+//			    }
+//		    }
+//	    }
 //	    LitString value;
 
 	    // this generates the right bytecode, but for some reason, the fields are null when read, so we had to use the class constructor to set those fields instead.
@@ -749,8 +710,47 @@ public final class Page extends BodyBase implements Root {
 //	    gaClassInit.visitInsn(Opcodes.RETURN);
 //	    gaClassInit.visitMaxs(keyCount, 0);
 //	    gaClassInit.visitEnd();
-//
-//	    cw.visitEnd();
+
+	    // set item
+	    Data data;
+	    int udfIndex=0;
+	    while (it.hasNext()) {
+		    data = it.next();
+		    constrAdapter.visitVarInsn(Opcodes.ALOAD, 0);
+		    constrAdapter.visitFieldInsn(Opcodes.GETFIELD, constr.getClassName(), "udfs", Types.UDF_PROPERTIES_ARRAY.toString());
+		    constrAdapter.push(data.arrayIndex);
+		    data.function.createUDFProperties(constr, data.valueIndex, data.type);
+		    constrAdapter.visitInsn(Opcodes.AASTORE);
+
+		    // TODO: finish making a way to store UDF as class fields.
+		    //data.function.storeUDFField(cw, constr, data.valueIndex, data.type);
+
+
+		    // set the field in constructor..
+		    // constrAdapter
+
+
+		    udfIndex++;
+	    }
+
+
+	    // INIT KEYS
+	    {
+		    // create a new method call initKeys in the class
+		    GeneratorAdapter aInit = new GeneratorAdapter(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, INIT_KEYS, null, null, cw);
+		    // adds this.initKeys() to constructor
+		    BytecodeContext bcInit = new BytecodeContext(optionalPS, constr, this, keys, cw, className, aInit, INIT_KEYS, writeLog(), suppressWSbeforeArg, output, returnValue);
+		    // body of initKeys
+		    registerFields(bcInit, keys);
+		    // return nothing
+		    aInit.returnValue();
+		    // end method
+		    aInit.endMethod();
+	    }
+
+	    constrAdapter.returnValue();
+	    constrAdapter.endMethod();
+
 		return cw.toByteArray();
     }
 
@@ -865,56 +865,31 @@ public final class Page extends BodyBase implements Root {
     }
 
     public static void registerFields(BytecodeContext bc, List<LitString> keys) throws TransformerException {
-	// if(keys.size()==0) return;
-		    GeneratorAdapter ga = bc.getAdapter();
-		    FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
-		    fv.visitEnd();
+	    GeneratorAdapter ga = bc.getAdapter();
+	    FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
+	    fv.visitEnd();
 
-		    int index = 0;
-		    LitString value;
-		    Iterator<LitString> it = keys.iterator();
-		    ga.visitVarInsn(Opcodes.ALOAD, 0);
-		    ga.push(keys.size());
-		    ga.newArray(Types.COLLECTION_KEY);
-		    while (it.hasNext()) {
-			    value = it.next();
+	    int index = 0;
+	    LitString value;
+	    Iterator<LitString> it = keys.iterator();
+	    ga.visitVarInsn(Opcodes.ALOAD, 0);
+	    int keyCount=keys.size();// - 10;
+	    ga.push(keyCount>0?keyCount:0);
+	    ga.newArray(Types.COLLECTION_KEY);
+	    while (it.hasNext()) {
+		    value = it.next();
+//		    if (index >= 10) {
 			    ga.dup();
-			    ga.push(index);
+			    ga.push(index);// - 10);
 			    // value.setExternalize(false);
 			    ExpressionUtil.writeOutSilent(value, bc, Expression.MODE_REF);
 			    ga.invokeStatic(KEY_IMPL, KEY_INTERN);
 			    ga.visitInsn(Opcodes.AASTORE);
-			    index++;
-
-		    }
-		    ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
-//
-//	    if(keys.size()-100>0) {
-//		    GeneratorAdapter ga = bc.getAdapter();
-//		    FieldVisitor fv = bc.getClassWriter().visitField(Opcodes.ACC_PRIVATE, "keys", Types.COLLECTION_KEY_ARRAY.toString(), null, null);
-//		    fv.visitEnd();
-//
-//		    int index = 0;
-//		    LitString value;
-//		    Iterator<LitString> it = keys.iterator();
-//		    ga.visitVarInsn(Opcodes.ALOAD, 0);
-//		    ga.push(keys.size() - 100);
-//		    ga.newArray(Types.COLLECTION_KEY);
-//		    while (it.hasNext()) {
-//			    value = it.next();
-//			    if (index >= 100) {
-//				    ga.dup();
-//				    ga.push(index - 100);
-//				    // value.setExternalize(false);
-//				    ExpressionUtil.writeOutSilent(value, bc, Expression.MODE_REF);
-//				    ga.invokeStatic(KEY_IMPL, KEY_INTERN);
-//				    ga.visitInsn(Opcodes.AASTORE);
-//			    }
-//			    index++;
-//
 //		    }
-//		    ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
-//	    }
+		    index++;
+
+	    }
+	    ga.visitFieldInsn(Opcodes.PUTFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
     }
 
     private void writeUdfDefaultValueInner(BytecodeContext bc, Function[] functions, int offset, int length) throws TransformerException {

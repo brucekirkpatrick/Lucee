@@ -58,7 +58,7 @@ public final class FunctionImpl extends Function {
 	    adapter.invokeVirtual(Types.PAGE_CONTEXT, VARIABLE_SCOPE);
 	}
 
-	bc.getFactory().registerKey(bc, name, true);
+	bc.getFactory().registerKey(bc, name, false);
 	if (pageType == PAGE_TYPE_COMPONENT) {
 	    loadUDFProperties(bc, valueIndex, arrayIndex, TYPE_UDF);
 	    adapter.invokeVirtual(Types.COMPONENT_IMPL, REG_UDF_KEY);

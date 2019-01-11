@@ -307,12 +307,13 @@ public class BytecodeFactory extends FactoryBase {
     @Override
     public void registerKey(Context c, Expression name, boolean doUpperCase) throws TransformerException {
 	BytecodeContext bc = (BytecodeContext) c;
+	doUpperCase=true;
 	if (name instanceof Literal) {
 	    Literal l = (Literal) name;
 
 	    LitString ls = name instanceof LitString ? (LitString) l : c.getFactory().createLitString(l.getString());
 	    if (doUpperCase) {
-		ls = ls.duplicate();
+//		ls = ls.duplicate();
 		ls.upperCase();
 	    }
 	    String key = KeyConstants.getFieldName(ls.getString());
@@ -321,10 +322,10 @@ public class BytecodeFactory extends FactoryBase {
 		return;
 	    }
 	    int index = bc.registerKey(ls);
-//		if(index>=100){
+//		if(index>=10){
 			bc.getAdapter().visitVarInsn(Opcodes.ALOAD, 0);
 			bc.getAdapter().visitFieldInsn(Opcodes.GETFIELD, bc.getClassName(), "keys", Types.COLLECTION_KEY_ARRAY.toString());
-			bc.getAdapter().push(index);//-100);
+			bc.getAdapter().push(index);//-10);
 			bc.getAdapter().visitInsn(Opcodes.AALOAD);
 //		}else{
 //			bc.getAdapter().visitFieldInsn(Opcodes.GETSTATIC, bc.getClassName(), "_K"+(index), "Llucee/runtime/type/Collection$Key;");
