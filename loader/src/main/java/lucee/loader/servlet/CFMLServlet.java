@@ -19,6 +19,7 @@
 package lucee.loader.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -30,7 +31,20 @@ import lucee.loader.engine.CFMLEngineFactory;
 /**
  */
 public class CFMLServlet extends AbsServlet {
+	public static long startEngineTime=System.currentTimeMillis();
 
+	public static class StartTimeEvent{
+		public long time;
+		public String message;
+		public StartTimeEvent(String message){
+			this.time=System.currentTimeMillis();
+			this.message=message;
+		}
+	}
+	public static ArrayList<StartTimeEvent> startTimes=new ArrayList<>();
+	public static void logStartTime(String message){
+		startTimes.add(new StartTimeEvent(message+"\n"));
+	}
     private static final long serialVersionUID = -1878214660283329587L;
 
     /**
@@ -38,8 +52,11 @@ public class CFMLServlet extends AbsServlet {
      */
     @Override
     public void init(final ServletConfig sg) throws ServletException {
+    	CFMLServlet.logStartTime("CFMLServlet init start");
 	super.init(sg);
+	    CFMLServlet.logStartTime("CFMLServlet init Servlet init end");
 	engine = CFMLEngineFactory.getInstance(sg, this);
+	    CFMLServlet.logStartTime("CFMLServlet init CFML factory instance end");
     }
 
     /**
@@ -48,6 +65,8 @@ public class CFMLServlet extends AbsServlet {
      */
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+	    CFMLServlet.logStartTime("CFMLServlet service start");
 	engine.serviceCFML(this, req, rsp);
+	    CFMLServlet.logStartTime("CFMLServlet service end");
     }
 }

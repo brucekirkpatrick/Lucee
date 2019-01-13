@@ -77,6 +77,7 @@ import lucee.commons.lock.Lock;
 import lucee.commons.net.HTTPUtil;
 import lucee.intergral.fusiondebug.server.FDSignal;
 import lucee.loader.engine.CFMLEngine;
+import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.cache.CacheConnection;
 import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.cache.tag.CacheHandler;
@@ -325,6 +326,7 @@ public final class PageContextImpl extends PageContext {
      */
     public PageContextImpl(ScopeContext scopeContext, ConfigWebImpl config, int id, HttpServlet servlet, boolean jsr223) {
 	// must be first because is used after
+	    CFMLServlet.logStartTime("PageContextImpl created");
 	tagHandlerPool = config.getTagHandlerPool();
 	this.servlet = servlet;
 
@@ -391,6 +393,7 @@ public final class PageContextImpl extends PageContext {
      */
     public PageContextImpl initialize(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
 	    boolean autoFlush, boolean isChild, boolean ignoreScopes) {
+	    CFMLServlet.logStartTime("PageContextImpl initialize start");
 	parent = null;
 	root = null;
 	requestId = counter++;
@@ -492,6 +495,8 @@ public final class PageContextImpl extends PageContext {
 
 
 	    timeoutStacktrace = null;
+
+	    CFMLServlet.logStartTime("PageContextImpl initialized");
 	return this;
     }
 
@@ -507,6 +512,7 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public void release() {
+	    CFMLServlet.logStartTime("PageContextImpl release start");
 	config.releaseCacheHandlers(this);
 
 	if (config.getExecutionLogEnabled()) {
@@ -644,6 +650,8 @@ public final class PageContextImpl extends PageContext {
 	tagName = null;
 	parentTags = null;
 	_psq = null;
+
+	    CFMLServlet.logStartTime("PageContextImpl release end");
     }
 
     private void releaseORM() throws PageException {
@@ -2446,9 +2454,11 @@ public final class PageContextImpl extends PageContext {
     private final void execute(PageSource ps, boolean throwExcpetion, boolean onlyTopLevel) throws PageException {
 	ApplicationListener listener = gatewayContext ? config.getApplicationListener() : ((MappingImpl) ps.getMapping()).getApplicationListener();
 	Throwable _t = null;
+	    CFMLServlet.logStartTime("PageContextImpl execute begin");
 	try {
 	    initallog();
 	    listener.onRequest(this, ps, null);
+		CFMLServlet.logStartTime("PageContextImpl after onRequest");
 	    if (ormSession != null) {
 		releaseORM();
 		removeLastPageSource(true);

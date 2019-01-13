@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.Logger;
 import org.osgi.framework.Bundle;
@@ -61,6 +62,7 @@ public class BundleLoader {
 			throws IOException, BundleException {
 		if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1) System.err.println(rc.getName());
 
+		CFMLServlet.logStartTime("BundleLoader loadBundles begin");
 		engine = engFac;
 		engine.log(Logger.LOG_DEBUG, "Bundle jar directory:" + jarDirectory.getAbsolutePath());
 		//jars[i].getAbsolutePath());
@@ -100,13 +102,16 @@ public class BundleLoader {
 
 			// close all bundles
 			Felix felix;
-			if (old != null) {
-				removeBundlesEL(old);
-				felix = old.felix;
-				// stops felix (wait for it)
-				BundleUtil.stop(felix, false);
-				felix = engFac.getFelix(cacheRootDir, config);
-			} else felix = engFac.getFelix(cacheRootDir, config);
+
+			// TODO: this looks unnecessary - probably only for upgrading lucee
+//			if (old != null) {
+//				removeBundlesEL(old);
+//				felix = old.felix;
+//				// stops felix (wait for it)
+//				BundleUtil.stop(felix, false);
+//			}
+			felix = engFac.getFelix(cacheRootDir, config);
+			CFMLServlet.logStartTime("BundleLoader loadBundles after close all bundles");
 			final BundleContext bc = felix.getBundleContext();
 
 			// get bundle needed for that core
@@ -148,6 +153,7 @@ public class BundleLoader {
 					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
 					bundles.add(tempBundle);
 				}
+				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 1");
 			}
 
 			// Add Required Bundle Fragments
@@ -161,6 +167,7 @@ public class BundleLoader {
 				if (f == null)
 					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
 				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
+				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 2");
 			}
 
 			// Add Lucee core Bundle
@@ -168,6 +175,7 @@ public class BundleLoader {
 			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
 			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
 
+			CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle core");
 			// Start the bundles
 			BundleUtil.start(engFac, bundles);
 			BundleUtil.start(engFac, bundle);

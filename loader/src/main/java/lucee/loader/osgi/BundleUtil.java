@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.apache.felix.framework.Logger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -77,6 +78,7 @@ public class BundleUtil {
     }
 
     public static void start(final CFMLEngineFactory factory, final List<Bundle> bundles) throws BundleException {
+	    CFMLServlet.logStartTime("BundleUtil.start begin");
 		if (bundles == null || bundles.isEmpty()) return;
 
 		// allow bundles to load in parallel
@@ -85,10 +87,12 @@ public class BundleUtil {
 			start(factory, it.next(), true);
 		}
 		it = bundles.iterator();
+	    CFMLServlet.logStartTime("Bundle.start before bundle load wait");
 		// we wait here because Lucee core requires all the bundles and lucee core will load next.
 		while (it.hasNext()) {
 			waitFor(it.next(), Bundle.STARTING, Bundle.RESOLVED, Bundle.INSTALLED, 60000L);
 		}
+	    CFMLServlet.logStartTime("Bundle.start bundles loaded");
 	}
 	public static void start(final CFMLEngineFactory factory, final Bundle bundle, boolean async) throws BundleException {
 		final String fh = bundle.getHeaders().get("Fragment-Host");

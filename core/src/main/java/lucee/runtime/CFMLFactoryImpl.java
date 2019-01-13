@@ -48,6 +48,7 @@ import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.SizeOf;
 import lucee.commons.lang.SystemOut;
 import lucee.loader.engine.CFMLEngine;
+import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
@@ -66,6 +67,7 @@ import lucee.runtime.type.ArrayImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.dt.DateTimeImpl;
+import lucee.runtime.type.scope.JetendoImpl;
 import lucee.runtime.type.scope.LocalNotSupportedScope;
 import lucee.runtime.type.scope.ScopeContext;
 import lucee.runtime.type.util.ArrayUtil;
@@ -99,6 +101,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	this.engine = engine;
 	if (engine == null) aprint.ds();
 	this.servletConfig = sg;
+		CFMLServlet.logStartTime("CFMLFactoryImpl created");
     }
 
     /**
