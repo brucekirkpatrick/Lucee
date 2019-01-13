@@ -1241,7 +1241,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    m.invoke(f, new Object[0]);
 	}
 	// FUTURE do not use reflection
-	// this will for sure fail if CFMLEngineFactory does not have this method
+	// this will for sure fail if CFMLEngineFactory does not have this metafter addBundle sehod
 	catch (Exception e) {}
     }
 

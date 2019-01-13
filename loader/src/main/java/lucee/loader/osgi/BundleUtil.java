@@ -49,7 +49,7 @@ public class BundleUtil {
     }
 
     public static Bundle addBundle(final CFMLEngineFactory factory, final BundleContext context, final Resource bundle, final Log log) throws IOException, BundleException {
-	return addBundle(factory, context, bundle.getAbsolutePath(), bundle.getInputStream(), true, log);
+	return addBundle(factory, context, "file:"+bundle.getAbsolutePath(), bundle.getInputStream(), true, log);
     }
 
     public static Bundle addBundle(final CFMLEngineFactory factory, final BundleContext context, final String path, final InputStream is, final boolean closeIS, final Log log)
