@@ -27,6 +27,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -126,6 +130,7 @@ public class BundleLoader {
 			final Map<String, String> requiredBundles = readRequireBundle(rb); // Require-Bundle
 			final Map<String, String> requiredBundleFragments = readRequireBundle(rbf); // Require-Bundle-Fragment
 			final Map<String, File> availableBundles = loadAvailableBundles(jarDirectory);
+			CFMLServlet.logStartTime("BundleLoader loadBundles after loadAvailableBundles");
 
 			// deploys bundled bundles to bundle directory
 			// deployBundledBundles(jarDirectory, availableBundles);
@@ -153,7 +158,6 @@ public class BundleLoader {
 					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
 					bundles.add(tempBundle);
 				}
-				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 1");
 			}
 
 			// Add Required Bundle Fragments
@@ -167,7 +171,6 @@ public class BundleLoader {
 				if (f == null)
 					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
 				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
-				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 2");
 			}
 
 			// Add Lucee core Bundle
@@ -175,7 +178,7 @@ public class BundleLoader {
 			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
 			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
 
-			CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle core");
+			CFMLServlet.logStartTime("BundleLoader loadBundles after adding all bundles");
 			// Start the bundles
 			BundleUtil.start(engFac, bundles);
 			BundleUtil.start(engFac, bundle);
@@ -192,16 +195,41 @@ public class BundleLoader {
 	private static Map<String, File> loadAvailableBundles(final File jarDirectory) {
 		final Map<String, File> rtn = new HashMap<String, File>();
 
+		ArrayList<Future<String>> futures=new ArrayList<>();
+		ExecutorService executor = Executors.newFixedThreadPool(8);
+
 		final File[] jars = jarDirectory.listFiles();
 		if (jars != null) for (int i = 0; i < jars.length; i++) {
 			if (!jars[i].isFile() || !jars[i].getName().endsWith(".jar")) continue;
-			try {
-				rtn.put(loadBundleInfo(jars[i]), jars[i]);
-				engine.log(Logger.LOG_DEBUG, "Available bundle:" + jars[i].getAbsolutePath());
-			} catch (final IOException ioe) {
-				ioe.printStackTrace();
-			}
+			File currentJar=jars[i];
+			// TODO: load in parallel because this reads manifest slowly from compressed jars
+			futures.add(executor.submit(()->{
+				try {
+					String s=loadBundleInfo(currentJar);
+					rtn.put(s, currentJar);
+					return s;
+				} catch (final IOException ioe) {
+					throw new RuntimeException("Manifest read error", ioe);
+				}
+			} ));
+			engine.log(Logger.LOG_DEBUG, "Available bundle:" + jars[i].getAbsolutePath());
+//			try {
+//				rtn.put(loadBundleInfo(jars[i]), jars[i]);
+//				engine.log(Logger.LOG_DEBUG, "Available bundle:" + jars[i].getAbsolutePath());
+//			} catch (final IOException ioe) {
+//				ioe.printStackTrace();
+//			}
 		}
+		Consumer<Future<String>> consumer= futureString-> {
+			try {
+				String tempString=futureString.get();
+			} catch (Exception e1) {
+				throw new RuntimeException(e1);
+			}
+		};
+		Iterator<Future<String>> futureIteratorCheck = futures.iterator();
+		futureIteratorCheck.forEachRemaining(consumer);
+		executor.shutdown();
 		return rtn;
 	}
 

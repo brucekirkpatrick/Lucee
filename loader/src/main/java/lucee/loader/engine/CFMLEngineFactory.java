@@ -284,6 +284,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 //		}
 
 		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after sleep");
+//		felix.stop();
 		BundleUtil.stop(felix, false);
 		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after stop");
 	}
@@ -442,6 +443,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	}
 
 	public Felix getFelix(final File cacheRootDir, Map<String, Object> config) throws BundleException {
+		CFMLServlet.logStartTime("CFMLEngineFactory getFelix begin");
 
 		if (config == null) config = new HashMap<String, Object>();
 
@@ -463,7 +465,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		// Allow felix.cache.locking to be overridden by env var (true/false)
 		// Enables or disables bundle cache locking, which is used to prevent concurrent access to the
 		// bundle cache.
-		String strCacheLocking = getSystemPropOrEnvVar("felix.cache.locking", null);
+		String strCacheLocking = "false";//getSystemPropOrEnvVar("felix.cache.locking", null);
 		if (!Util.isEmpty(strCacheLocking)) {
 			config.put("felix.cache.locking", strCacheLocking);
 		}
@@ -471,15 +473,15 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		// Allow FRAMEWORK_STORAGE_CLEAN to be overridden by env var
 		// The value can either be "none" or "onFirstInit", where "none" does not flush the bundle cache
 		// and "onFirstInit" flushes the bundle cache when the framework instance is first initialized.
-		String strStorageClean = getSystemPropOrEnvVar("felix.storage.clean", null);
+		String strStorageClean = "none";//getSystemPropOrEnvVar("felix.storage.clean", null);
 		if (!Util.isEmpty(strStorageClean)) {
 			config.put(Constants.FRAMEWORK_STORAGE_CLEAN, strStorageClean);
 		}
 
 		// Default storage clean if not set above
-		final String storageClean = (String) config.get(Constants.FRAMEWORK_STORAGE_CLEAN);
+		final String storageClean = "none";//(String) config.get(Constants.FRAMEWORK_STORAGE_CLEAN);
 		if (Util.isEmpty(storageClean))
-			config.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+			config.put(Constants.FRAMEWORK_STORAGE_CLEAN, "none");//Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 
 		// parent classLoader
 		final String parentClassLoader = (String) config.get(Constants.FRAMEWORK_BUNDLE_PARENT);
@@ -487,6 +489,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 			config.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_FRAMEWORK);
 		else config.put(Constants.FRAMEWORK_BUNDLE_PARENT, BundleUtil.toFrameworkBundleParent(parentClassLoader));
 
+		CFMLServlet.logStartTime("CFMLEngineFactory getFelix before mkdirs");
 		// felix.cache.rootdir
 		boolean isNew = false;
 		if (!cacheRootDir.exists()) {
