@@ -540,10 +540,12 @@
     <echots message="build loader"/>
   
     <!-- genrates the jar from the loader -->
-    <jar 
-      basedir="${temp}/loader" 
+    <jar
       jarfile="${trgLoader}/lucee-${version}.jar" 
-      manifest="${goal}/META-INF/MANIFEST.MF"/>
+      manifest="${goal}/META-INF/MANIFEST.MF">
+        <fileset dir="${temp}/loader" />
+        <fileset dir="${rootDir}/jar-resources" />
+    </jar>
 	</target>
 
 </project>
