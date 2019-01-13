@@ -18,6 +18,7 @@
  **/
 package lucee.transformer.bytecode.statement;
 
+import lucee.transformer.bytecode.BodyBase;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -33,10 +34,10 @@ import lucee.transformer.expression.Expression;
 
 public final class For extends StatementBaseNoFinal implements FlowControlBreak, FlowControlContinue, HasBody {
 
-    private Expression init;
-    private Expression condition;
-    private Expression update;
-    private Body body;
+    public Expression init;
+	public Expression condition;
+	public Expression update;
+	public Body body;
 
     // private static final int I=1;
 
@@ -112,6 +113,9 @@ public final class For extends StatementBaseNoFinal implements FlowControlBreak,
     @Override
     public Body getBody() {
 	return body;
+    }
+    public BodyBase getBodyBase(){
+    	return (BodyBase) body;
     }
 
     @Override

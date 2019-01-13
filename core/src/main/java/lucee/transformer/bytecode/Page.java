@@ -228,8 +228,8 @@ public final class Page extends BodyBase implements Root {
     // private boolean isComponent;
     // private boolean isInterface;
 
-    private ArrayList<IFunction> functions = new ArrayList<IFunction>();
-    private ArrayList<TagThread> threads = new ArrayList<TagThread>();
+    public ArrayList<IFunction> functions = new ArrayList<IFunction>();
+	public ArrayList<TagThread> threads = new ArrayList<TagThread>();
     private Resource staticTextLocation;
     private int off;
     private int methodCount = 0;
@@ -237,7 +237,7 @@ public final class Page extends BodyBase implements Root {
     private boolean splitIfNecessary;
     private TagCIObject _comp;
     private String className; // following the pattern "or/susi/Sorglos"
-    private Config config;
+	public Config config;
     private SourceCode sourceCode;
     private int hash;
 

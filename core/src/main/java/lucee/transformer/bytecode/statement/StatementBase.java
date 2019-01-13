@@ -32,11 +32,11 @@ import lucee.transformer.bytecode.util.ExpressionUtil;
  */
 public abstract class StatementBase implements Statement {
 
-    private Position start;
-    private Position end;
-    private Statement parent;
-    private int hasReturnChild = -1;
-    private Factory factory;
+    public Position start;
+    public Position end;
+    public Statement parent;
+    public int hasReturnChild = -1;
+    public Factory factory;
 
     /**
      * constructor of the class

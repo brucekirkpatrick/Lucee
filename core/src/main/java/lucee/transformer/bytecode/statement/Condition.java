@@ -34,8 +34,8 @@ import lucee.transformer.expression.Expression;
 
 public final class Condition extends StatementBaseNoFinal implements HasBodies {
 
-    private ArrayList<Pair> ifs = new ArrayList<Pair>();
-    private Pair _else;
+    public ArrayList<Pair> ifs = new ArrayList<Pair>();
+    public Pair _else;
 
     /**
      * Constructor of the class
@@ -91,17 +91,17 @@ public final class Condition extends StatementBaseNoFinal implements HasBodies {
     }
 
     public final class Pair {
-	private ExprBoolean condition;
-	private Statement body;
-	private Position start;
-	public Position end;
+		public ExprBoolean condition;
+	    public Statement body;
+		private Position start;
+		public Position end;
 
-	public Pair(ExprBoolean condition, Statement body, Position start, Position end) {
-	    this.condition = condition;
-	    this.body = body;
-	    this.start = start;
-	    this.end = end;
-	}
+		public Pair(ExprBoolean condition, Statement body, Position start, Position end) {
+		    this.condition = condition;
+		    this.body = body;
+		    this.start = start;
+		    this.end = end;
+		}
     }
 
     @Override

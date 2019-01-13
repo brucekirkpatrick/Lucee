@@ -28,6 +28,7 @@ import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
 import lucee.transformer.bytecode.Body;
+import lucee.transformer.bytecode.BodyBase;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.statement.FlowControlFinal;
 import lucee.transformer.bytecode.statement.StatementBase;
@@ -40,16 +41,16 @@ import lucee.transformer.library.tag.TagLibTagAttr;
  */
 public abstract class TagBase extends StatementBase implements Tag {
 
-    private Body body = null;
-    private String appendix;
-    private String fullname;
-    private TagLibTag tagLibTag;
-    Map<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
+    public Body body = null;
+    public String appendix;
+    public String fullname;
+    public TagLibTag tagLibTag;
+    public Map<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
     // Map<String,String> missingAttributes=new HashMap<String,String>();
-    HashSet<TagLibTagAttr> missingAttributes = new HashSet<TagLibTagAttr>();
-    private boolean scriptBase = false;
+    public HashSet<TagLibTagAttr> missingAttributes = new HashSet<TagLibTagAttr>();
+    public boolean scriptBase = false;
 
-    private Map<String, Attribute> metadata;
+    public Map<String, Attribute> metadata;
     // private Label finallyLabel;
 
     public TagBase(Factory factory, Position start, Position end) {
@@ -107,6 +108,9 @@ public abstract class TagBase extends StatementBase implements Tag {
     @Override
     public Body getBody() {
 	return body;
+    }
+    public BodyBase getBodyBase(){
+    	return (BodyBase) body;
     }
 
     @Override

@@ -38,7 +38,7 @@ import lucee.transformer.expression.Expression;
  */
 public final class Return extends StatementBaseNoFinal {
 
-    Expression expr;
+    public Expression expr;
 
     /**
      * Constructor of the class

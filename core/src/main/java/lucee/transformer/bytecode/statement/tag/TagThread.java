@@ -92,6 +92,10 @@ public final class TagThread extends TagBaseNoFinal {
 	return new BodyBase(getFactory());
     }
 
+	public BodyBase getBodyBase() {
+		return new BodyBase(getFactory());
+	}
+
     public Body getRealBody() {
 	return super.getBody();
     }

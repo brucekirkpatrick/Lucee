@@ -38,8 +38,13 @@ import lucee.runtime.exp.TemplateException;
 import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
-import lucee.transformer.bytecode.BytecodeFactory;
-import lucee.transformer.bytecode.Page;
+import lucee.transformer.bytecode.*;
+import lucee.transformer.bytecode.statement.*;
+import lucee.transformer.bytecode.statement.tag.Tag;
+import lucee.transformer.bytecode.statement.tag.TagBase;
+import lucee.transformer.bytecode.statement.tag.TagThread;
+import lucee.transformer.bytecode.statement.udf.Function;
+import lucee.transformer.bytecode.statement.udf.FunctionImpl;
 import lucee.transformer.bytecode.util.ASMUtil;
 import lucee.transformer.bytecode.util.ClassRenamer;
 import lucee.transformer.cfml.tag.CFMLTransformer;
@@ -60,8 +65,7 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 
     /**
      * Constructor of the compiler
-     * 
-     * @param config
+     *
      */
     public CFMLCompilerImpl() {
 	cfmlTransformer = new CFMLTransformer();
@@ -148,9 +152,12 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (!classFileDirectory.exists()) classFileDirectory.mkdirs();
 		IOUtil.copy(new ByteArrayInputStream(result.barr), classFile, true);
 	    }
+		optimizeResult(result);
 
 	    return result;
 	}
+
+
 	catch (AlreadyClassException ace) {
 
 	    byte[] bytes = ace.getEncrypted() ? readEncrypted(ace) : readPlain(ace);
@@ -183,6 +190,8 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		IOUtil.copy(new ByteArrayInputStream(result.barr), classFile, true);
 	    }
 
+		optimizeResult(result);
+
 	    return result;
 	}
 	catch (TransformerException bce) {
@@ -192,6 +201,224 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 	    if (ps != null) bce.addContext(ps, line, col, null);
 	    throw bce;
 	}
+    }
+
+
+	// TODO: add second pass optimizer transformations
+    /*
+     need to support these types of optimizations:
+     defining the type and parent object of a variable
+     transforming isDefined("request.key.key2") to structkeyexists(request, "key") and structkeyexists(request.key, "key2")
+
+
+     change Variable,
+      */
+
+    // need to be able to recurse through statement expressions
+	// might need to allow returning a new expression to replace it in the parent record.
+	// might need to allow removing expression.
+	private void optimizeExpression(){
+
+		/*
+		ExpressionInvoker; // has members I'd need to process
+		 */
+		/*
+VariableString // variable that is definitely a string inside
+ExpressionInvoker // a kind of cfml method call
+Call // a kind of cfml method call
+VariableRef // used in for(row in query) for the row part, and others
+DynAssign // used for static assignments - not sure if that means CFC static or something else
+Assign // left = right cfml assignment
+Argument // any function argument, not the scope
+
+EmptyArray // cfml empty array
+EmptyStruct // cfml empty struct
+Empty
+EmptyArray
+
+// these convert expression to the right type and also wrap them as unique typed Expression.  A literal value is stored internally
+CastFloat
+CastString
+CastDouble
+CastBoolean
+CastFloat
+CastString
+CastOther
+CastInt
+Null
+
+// literal values
+LiteralStringArray
+LitLongImpl
+LitIntegerImpl
+LitBooleanImpl
+LitStringImpl
+LitDoubleImpl
+LitFloatImpl
+NullConstant // check full null support and writes out the right null value
+
+// may contain literal or cast expression
+ExprDouble
+ExprBoolean
+ExprFloat
+ExprInt
+
+Variable
+VariableImpl
+
+// other
+CollectionKeyArray // Array of Key objects
+
+// operators - have member expression that may need to be updated
+OpBool
+OpDouble
+OpDecision
+OpString
+OpBool
+OpContional
+OpElvis
+OpDouble
+OpUnary
+OpNegateNumber
+OpDecision
+OpNegate
+OpString
+OpBigDecimal
+
+// ignore for now
+FailSafeExpression; // never used
+FunctionAsExpression // used for closures - ignore for now
+ClosureAsExpression // used for closures - ignore for now
+
+// bytecode exceptions
+RPCException
+FunctionNotSupported
+CasterException
+AbortException
+FunctionException
+XMLException
+ValueSupport // FusionDebug stuff
+Value // FusionDebug stuff
+
+// query of query stuff that can be ignored
+Column
+ColumnExpression
+BracketExpression
+Operation2
+Operation1
+OperationN
+Operation3
+Operation
+
+
+		 */
+	}
+
+	class StatementContainer{
+		public Function functionParent=null;
+		public TagThread tagThreadParent=null;
+		public ForEach forEachParent=null;
+		public Statement statement=null;
+		public int type=StatementTypes.FUNCTION;
+	}
+	private Result optimizeStatement(Result result, StatementContainer sc) {
+		// how many types of statements are there?
+		if(sc.statement instanceof Return){
+			Return sReturn=(Return) sc.statement;
+			// sReturn.expr // be able to loop over all types of Expressions
+		}else if(sc.statement instanceof DoWhile){
+			DoWhile sDoWhile=(DoWhile) sc.statement;
+		}else if(sc.statement instanceof PrintOut){
+			PrintOut sPrintOut=(PrintOut) sc.statement;
+		}else if(sc.statement instanceof Function){
+			Function sFunction=(Function) sc.statement;
+		}else if(sc.statement instanceof Switch){
+			Switch sSwitch=(Switch) sc.statement;
+		}else if(sc.statement instanceof NativeSwitch){
+			NativeSwitch sNativeSwitch=(NativeSwitch) sc.statement;
+		}else if(sc.statement instanceof TryCatchFinally){
+			TryCatchFinally sTryCatchFinally=(TryCatchFinally) sc.statement;
+		}else if(sc.statement instanceof ExpressionAsStatement){
+			ExpressionAsStatement sExpressionAsStatement=(ExpressionAsStatement) sc.statement;
+		}else if(sc.statement instanceof While){
+			While sWhile=(While) sc.statement;
+		}else if(sc.statement instanceof ForEach){
+			ForEach sForEach=(ForEach) sc.statement;
+
+			StatementContainer scForEach=new StatementContainer();
+			sc.forEachParent=sForEach;
+			sc.type=StatementTypes.FOR_EACH;
+			for(Statement s2 : sForEach.getBodyBase().statements) {
+				result=optimizeStatement(result, scForEach);
+
+			}
+		}else if(sc.statement instanceof TagBase){
+			TagBase sTagBase=(TagBase) sc.statement;
+			sTagBase.getBody();
+		}else if(sc.statement instanceof Abort){
+			Abort sAbort=(Abort) sc.statement;
+			// just creates newInstance
+		}else if(sc.statement instanceof For){
+			For sFor=(For) sc.statement;
+			sFor.getBodyBase();
+			// sFor.condition; // multiple kinds for the middle expr?
+			// what is sFor.update - the right side?
+			// what is sFor.init - the left side?
+		}else if(sc.statement instanceof SystemOut){
+			SystemOut sSystemOut=(SystemOut) sc.statement;
+			// this is for System.out.println
+		}else if(sc.statement instanceof Condition){
+			Condition sCondition=(Condition) sc.statement;
+			// multiple kinds
+			for(Condition.Pair pair: sCondition.ifs) { // array of Pair
+//					    	pair.body;
+//					    	pair.condition;
+			}
+			// this one is just abstract - and means that the expression has children I guess.
+//				    }else if(s instanceof StatementBaseNoFinal){
+//						StatementBaseNoFinal sStatementBaseNoFinal=(StatementBaseNoFinal) s;
+//					    sStatementBaseNoFinal.getFlowControlFinal()
+		}else if(sc.statement instanceof Tag){
+			Tag sTag=(Tag) sc.statement;
+		}
+		if(sc.type==0) {
+			// sc.functionParent
+		}else if(sc.type==1){
+			// sc.tagThreadParent
+		}
+		return result;
+	}
+    private Result optimizeResult(Result result){
+    	Result resultNew=result;
+
+	    for(TagThread tt: result.page.threads){
+		    StatementContainer sc=new StatementContainer();
+		    sc.tagThreadParent=tt;
+		    sc.type=StatementTypes.TAG_THREAD;
+		    for(Statement s : tt.getBodyBase().statements) {
+			    resultNew=optimizeStatement(result, sc);
+		    }
+		    tt.appendix.toString(); // string
+		    tt.fullname.toString(); // string
+		    tt.tagLibTag.getName();
+		    tt.attributes.size(); // map
+		    tt.missingAttributes.size(); // hashset
+		    boolean tempBool=tt.scriptBase; // boolean
+
+		    tt.metadata.size(); // map
+	    }
+	    for(IFunction f : result.page.functions){
+		    if(f instanceof Function) {
+			    Function func = (Function) f;
+			    StatementContainer sc=new StatementContainer();
+			    sc.functionParent=func;
+			    sc.type=StatementTypes.FUNCTION;
+			    for(Statement s : func.getBodyBase().statements) {
+				    resultNew=optimizeStatement(result, sc);
+			    }
+		    }
+	    }
+    	return resultNew;
     }
 
     private byte[] readPlain(AlreadyClassException ace) throws IOException {

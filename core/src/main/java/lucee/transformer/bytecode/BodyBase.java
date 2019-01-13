@@ -45,8 +45,8 @@ import lucee.transformer.expression.literal.LitString;
 public class BodyBase extends StatementBaseNoFinal implements Body {
 
     private static long counter = 0;
-    private LinkedList<Statement> statements = new LinkedList<Statement>();
-    private Statement last = null;
+    public LinkedList<Statement> statements = new LinkedList<Statement>();
+    public Statement last = null;
     // private int count=-1;
     private final static int MAX_STATEMENTS = 156; // reduced to work with Java 7+ bytecode
 

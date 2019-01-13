@@ -18,6 +18,7 @@
  */
 package lucee.runtime.type.scope;
 
+import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.Component;
 import lucee.runtime.ComponentImpl;
 import lucee.runtime.PageContext;
@@ -31,9 +32,11 @@ import lucee.runtime.type.*;
 
 import java.lang.invoke.*;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static lucee.loader.servlet.CFMLServlet.startEngineTime;
 import static lucee.runtime.Component.ACCESS_PRIVATE;
 
 /**
@@ -80,6 +83,22 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     private static Field[] fields;
     public JetendoImpl(){
         super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
+    }
+
+    public Object resetLuceeStartTime(){
+        startEngineTime=System.currentTimeMillis();
+        CFMLServlet.startTimes=new ArrayList<>();
+        return null;
+    }
+    public String showLuceeStartTime(){
+        StringBuilder sb=new StringBuilder();
+        long lastTime=startEngineTime;
+        for(CFMLServlet.StartTimeEvent ste:CFMLServlet.startTimes){
+            sb.append((ste.time-lastTime)+"|ms for "+ste.message);
+            lastTime=ste.time;
+        }
+        sb.append((System.currentTimeMillis()-startEngineTime)+"ms total time to restart lucee and run CFML code again");
+        return sb.toString();
     }
     /**
      * constructor of the server scope

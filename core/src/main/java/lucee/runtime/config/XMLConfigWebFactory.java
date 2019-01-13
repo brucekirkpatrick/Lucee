@@ -48,6 +48,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletConfig;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.w3c.dom.Document;
@@ -354,6 +355,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
     synchronized static void load(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 	double start = System.currentTimeMillis();
 	if (LOG) SystemOut.printDate("start reading config");
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load begin");
 
 	ThreadLocalConfig.register(config);
 	boolean reload = false;
@@ -427,9 +429,13 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	config.setLastModified();
 	if (config instanceof ConfigWeb) ConfigWebUtil.deployWebContext(cs, (ConfigWeb) config, false);
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWebContext");
 	if (config instanceof ConfigWeb) ConfigWebUtil.deployWeb(cs, (ConfigWeb) config, false);
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWeb");
 	if (LOG) SystemOut.printDate("deploy web context");
 	loadConfig(cs, config, doc);
+
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after loadConfig");
 	int mode = config.getMode();
 	Log log = config.getLog("application");
 	if (LOG) SystemOut.printDate("loaded config");
@@ -447,12 +453,14 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded version");
 	loadSecurity(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded security");
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 	try {
 	    ConfigWebUtil.loadLib(cs, config);
 	}
 	catch (Exception e) {
 	    log(config, log, e);
 	}
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after loadLib");
 	if (LOG) SystemOut.printDate("loaded lib");
 	loadSystem(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded system");
@@ -478,6 +486,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	loadRest(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded rest");
 	loadExtensions(cs, config, doc, log);
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 	if (LOG) SystemOut.printDate("loaded extensions");
 	loadPagePool(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded page pool");
@@ -507,6 +516,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	loadError(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded error");
 	loadCFX(cs, config, doc, log);
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 	if (LOG) SystemOut.printDate("loaded cfx");
 	loadComponent(cs, config, doc, mode, log);
 	if (LOG) SystemOut.printDate("loaded component");
@@ -528,6 +538,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	if (LOG) SystemOut.printDate("loaded settings2");
 	loadListener(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded listeners");
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 	loadDumpWriter(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded dump writers");
 	loadGatewayEL(cs, config, doc, log);
@@ -541,11 +552,13 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	loadLogin(cs, config, doc, log);
 	if (LOG) SystemOut.printDate("loaded login");
 	config.setLoadTime(System.currentTimeMillis());
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 
 	if (config instanceof ConfigWebImpl) {
 	    TagUtil.addTagMetaData((ConfigWebImpl) config, log);
 	    if (LOG) SystemOut.printDate("added tag meta data");
 	}
+	    CFMLServlet.logStartTime("XMLConfigWebFactory load end");
     }
 
     private static void loadResourceProvider(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {

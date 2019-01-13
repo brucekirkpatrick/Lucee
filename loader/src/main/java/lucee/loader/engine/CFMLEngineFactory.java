@@ -54,6 +54,7 @@ import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.Logger;
 import org.osgi.framework.BundleException;
@@ -151,6 +152,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	 */
 	public synchronized static CFMLEngine getInstance(final ServletConfig config) throws ServletException {
 
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance begin");
 		if (singelton != null) {
 			if (factory == null)
 				factory = singelton.getCFMLEngineFactory(); // not sure if this ever is done, but it does not hurt
@@ -158,12 +160,16 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		}
 
 		if (factory == null) factory = new CFMLEngineFactory(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
 
 		// read init param from config
 		factory.readInitParam(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
 
 		factory.initEngineIfNecessary();
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
 		singelton.addServletConfig(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
 
 		// add listener for update
 		// factory.addListener(singelton);
@@ -198,14 +204,18 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	public static CFMLEngine getInstance(final ServletConfig config, final EngineChangeListener listener) throws ServletException {
 		getInstance(config);
 
+		CFMLServlet.logStartTime("CFMLEngineFactory getInstance(config) end");
 		// add listener for update
 		factory.addListener(listener);
 
 		// read init param from config
 		factory.readInitParam(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory readInitParam end");
 
 		factory.initEngineIfNecessary();
+		CFMLServlet.logStartTime("CFMLEngineFactory initEngine end");
 		singelton.addServletConfig(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory addServletConfig end");
 
 		// make the FDController visible for the FDClient
 		FDControllerFactory.makeVisible();
@@ -264,18 +274,22 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		if (bc == null || bc.felix == null) return;
 
 		// stop
-		BundleLoader.removeBundles(bc);
+//		BundleLoader.removeBundles(bc);
+//		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after removeBundles");
+//
+//		// we give it some time
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//		}
 
-		// we give it some time
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-		}
-
+		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after sleep");
 		BundleUtil.stop(felix, false);
+		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after stop");
 	}
 
 	private void initEngine() throws ServletException {
+		CFMLServlet.logStartTime("CFMLEngineFactory initEngine begin");
 		final Version coreVersion = VersionInfo.getIntVersion();
 		final long coreCreated = VersionInfo.getCreateTime();
 
@@ -297,6 +311,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 				lucee = patche;
 		if (lucee != null && Util.isNewerThan(coreVersion, toVersion(lucee.getName(), VERSION_ZERO))) lucee = null;
 
+		CFMLServlet.logStartTime("CFMLEngineFactory after patch check");
 		// Load Lucee
 		// URL url=null;
 		ArrayList<String> errorList = new ArrayList<>();
@@ -343,6 +358,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 					rcPack200.delete();
 				}
 
+				CFMLServlet.logStartTime("CFMLEngineFactory initEngine after unpack lucee core lco");
 				errorList.add("Copy lucee core: " + getVersion(rc) + "." + coreExt);
 				lucee = new File(patcheDir, getVersion(rc) + "." + coreExt);
 				try {
@@ -361,7 +377,9 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
 				errorList.add("Bundle Directory: " + getBundleDirectory());
 				log(Logger.LOG_DEBUG, "Bundle Directory: " + getBundleDirectory());
+				CFMLServlet.logStartTime("CFMLEngineFactory initEngine before loadBundles");
 				bundleCollection = BundleLoader.loadBundles(this, getFelixCacheDirectory(), getBundleDirectory(), lucee, bundleCollection);
+				CFMLServlet.logStartTime("CFMLEngineFactory initEngine after loadBundles");
 				// bundle=loadBundle(lucee);
 				errorList.add("loaded bundle:" + bundleCollection.core.getSymbolicName());
 				log(Logger.LOG_DEBUG, "loaded bundle:" + bundleCollection.core.getSymbolicName());
@@ -389,11 +407,14 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 //		return;
 		}
 
+		CFMLServlet.logStartTime("CFMLEngineFactory initEngine before getUpdateType");
 		// check updates
 		String updateType = singelton.getUpdateType();
+		CFMLServlet.logStartTime("CFMLEngineFactory initEngine after getUpdateType");
 		if (updateType == null || updateType.length() == 0) updateType = "manuell"; // TODO should be manual?
 
 		if (updateType.equalsIgnoreCase("auto")) new UpdateChecker(this, null).start();
+		CFMLServlet.logStartTime("CFMLEngineFactory initEngine end");
 
 	}
 
@@ -498,9 +519,12 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		}
 		// log(Logger.LOG_INFO, sb.toString());
 
+		CFMLServlet.logStartTime("CFMLEngineFactory before new Felix");
 		felix = new Felix(config);
+		CFMLServlet.logStartTime("CFMLEngineFactory after new Felix (occurs outside Lucee)");
 		try {
 			felix.start();
+			CFMLServlet.logStartTime("CFMLEngineFactory after start Felix");
 		} catch (BundleException be) {
 			// this could be cause by an invalid felix cache, so we simply delete it and try again
 			if (!isNew && "Error creating bundle cache.".equals(be.getMessage())) {
@@ -595,7 +619,6 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	/**
 	 * restart the cfml engine
 	 *
-	 * @param password
 	 * @return has updated
 	 * @throws IOException
 	 * @throws ServletException
@@ -1414,7 +1437,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	/**
 	 * Load CFMl Engine Implementation (lucee.runtime.engine.CFMLEngineImpl) from a Classloader
 	 *
-	 * @param bundle
+	 * @param bc
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SecurityException

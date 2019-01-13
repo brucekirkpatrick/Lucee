@@ -60,6 +60,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -179,7 +180,6 @@ import lucee.runtime.video.VideoUtilImpl;
  * The CFMl Engine
  */
 public final class CFMLEngineImpl implements CFMLEngine {
-
     private static Map<String, CFMLFactory> initContextes = MapFactory.<String, CFMLFactory>getConcurrentMap();
     private static Map<String, CFMLFactory> contextes = MapFactory.<String, CFMLFactory>getConcurrentMap();
     private ConfigServerImpl configServer = null;
@@ -618,6 +618,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     @Override
     public void addServletConfig(ServletConfig config) throws ServletException {
+	    CFMLServlet.logStartTime("CFMLServlet addServletConfig start");
 	if (PageSourceImpl.logAccessDirectory == null) {
 	    String str = config.getInitParameter("lucee-log-access-directory");
 	    if (!StringUtil.isEmpty(str)) {
@@ -658,8 +659,11 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	servletConfigs.add(config);
 	String real = ReqRspUtil.getRootPath(config.getServletContext());
 	if (!initContextes.containsKey(real)) {
+		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory start");
 	    CFMLFactory jspFactory = loadJSPFactory(getConfigServerImpl(), config, initContextes.size());
+		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory end");
 	    initContextes.put(real, jspFactory);
+		CFMLServlet.logStartTime("CFMLServlet init context(s) end");
 	}
     }
 
@@ -747,6 +751,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     private ConfigServerImpl getConfigServerImpl() {
+	    CFMLServlet.logStartTime("CFMLEngineImpl getConfigServerImpl begin");
 	if (configServer == null) {
 	    try {
 		Resource context = getSeverContextConfigDirectory(factory);
@@ -755,6 +760,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    catch (Exception e) {
 		SystemOut.printDate(e);
 	    }
+		CFMLServlet.logStartTime("CFMLEngineImpl getConfigServerImpl after newInstance for the xml configServer");
 	}
 	return configServer;
     }
@@ -872,6 +878,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 		catch (IOException e) {}
 	    }
 	}
+	    CFMLServlet.logStartTime("CFMLEngineImpl getConfigDirectory end");
 	return configDir;
     }
 
@@ -977,6 +984,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 		SystemOut.printDate(e);
 	    }
 	}
+	    CFMLServlet.logStartTime("CFMLEngineImpl getCFMLFactory end");
 	return factory;
     }
 
@@ -997,6 +1005,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     private void _service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, short type) throws ServletException, IOException {
 	CFMLFactoryImpl factory = (CFMLFactoryImpl) getCFMLFactory(servlet.getServletConfig(), req);
+	    CFMLServlet.logStartTime("CFMLEngineImpl _service begin");
 	// is Lucee dialect enabled?
 	if (type == Request.TYPE_LUCEE) {
 	    if (!((ConfigImpl) factory.getConfig()).allowLuceeDialect()) {
@@ -1010,6 +1019,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	}
 	boolean exeReqAsync = exeRequestAsync();
 	PageContextImpl pc = factory.getPageContextImpl(servlet, req, rsp, null, false, -1, false, !exeReqAsync, false, -1, true, false, false);
+	    CFMLServlet.logStartTime("CFMLEngineImpl _service after create PageContextImpl");
 	try {
 	    Request r = new Request(pc, type);
 	    if (exeReqAsync) {
@@ -1041,7 +1051,9 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    // run in thread coming from servlet engine
 	    else {
 		try {
+			CFMLServlet.logStartTime("CFMLEngineImpl _service before Request.exe");
 		    Request.exe(pc, type, true, false);
+			CFMLServlet.logStartTime("CFMLEngineImpl _service after Request.exe");
 		}
 		catch (RequestTimeoutException rte) {
 		    if (rte.getThreadDeath() != null) throw rte.getThreadDeath();
@@ -1142,13 +1154,16 @@ public final class CFMLEngineImpl implements CFMLEngine {
     @Override
     public void reset(String configId) {
 	SystemOut.printDate("reset CFML Engine");
+		CFMLServlet.logStartTime("CFMLEngineImpl reset begin");
 	getControler().close();
 	RetireOutputStreamFactory.close();
 
 	// release HTTP Pool
 	HTTPEngine4Impl.releaseConnectionManager();
+	    CFMLServlet.logStartTime("CFMLEngineImpl reset after releaseConnectionManager");
 
 	releaseCache(getConfigServerImpl());
+	    CFMLServlet.logStartTime("CFMLEngineImpl reset after releaseCache");
 
 	CFMLFactoryImpl cfmlFactory;
 	// ScopeContext scopeContext;
@@ -1170,6 +1185,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 		    // PageContext
 		    try {
 			cfmlFactory.resetPageContext();
+			    CFMLServlet.logStartTime("CFMLEngineImpl reset after resetPageContext");
 		    }
 		    catch (Throwable t) {
 			ExceptionUtil.rethrowIfNecessary(t);
@@ -1199,6 +1215,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
 		    // Cache
 		    releaseCache(cfmlFactory.getConfigWebImpl());
+			CFMLServlet.logStartTime("CFMLEngineImpl reset after releaseCache");
 
 		}
 		catch (Throwable t) {
@@ -1208,6 +1225,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
 	    // release felix itself
 	    shutdownFelix();
+		CFMLServlet.logStartTime("CFMLEngineImpl reset after shutdownFelix");
 
 	}
 	finally {

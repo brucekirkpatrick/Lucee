@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.osgi.framework.BundleException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,6 +70,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
     public static ConfigServerImpl newInstance(CFMLEngineImpl engine, Map<String, CFMLFactory> initContextes, Map<String, CFMLFactory> contextes, Resource configDir)
 	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
 
+	    CFMLServlet.logStartTime("XMLConfigServerFactory begin");
 	boolean isCLI = SystemUtil.isCLICall();
 	if (isCLI) {
 	    Resource logs = configDir.getRealResource("logs");
@@ -104,19 +106,25 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	}
 
 	Document doc = loadDocumentCreateIfFails(configFile, "server");
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
 
 	// get version
 	Element luceeConfiguration = doc.getDocumentElement();
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after getDocumentElement");
 	String strVersion = luceeConfiguration.getAttribute("version");
 	double version = Caster.toDoubleValue(strVersion, 1.0d);
 	boolean cleanupDatasources = version < 5.0D;
 
 	ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
 	load(config, doc, false, doNew);
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after load");
 
 	createContextFiles(configDir, config, doNew, cleanupDatasources);
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after createContextFiles");
 
 	((CFMLEngineImpl) ConfigWebUtil.getEngine(config)).onStart(config, false);
+	    CFMLServlet.logStartTime("XMLConfigServerFactory end");
 	return config;
     }
 

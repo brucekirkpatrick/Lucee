@@ -307,7 +307,7 @@ public class BytecodeFactory extends FactoryBase {
     @Override
     public void registerKey(Context c, Expression name, boolean doUpperCase) throws TransformerException {
 	BytecodeContext bc = (BytecodeContext) c;
-	doUpperCase=true;
+//	doUpperCase=true;
 	if (name instanceof Literal) {
 	    Literal l = (Literal) name;
 

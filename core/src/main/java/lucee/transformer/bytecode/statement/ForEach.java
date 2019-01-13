@@ -18,6 +18,7 @@
  */
 package lucee.transformer.bytecode.statement;
 
+import lucee.transformer.bytecode.BodyBase;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -39,9 +40,9 @@ import lucee.transformer.expression.var.Variable;
 
 public final class ForEach extends StatementBase implements FlowControlBreak, FlowControlContinue, HasBody {
 
-    private Body body;
-    private VariableRef key;
-    private Expression value;
+    public Body body;
+    public VariableRef key;
+    public Expression value;
 
     private final static Method HAS_NEXT = new Method("hasNext", Types.BOOLEAN_VALUE, new Type[] {});
     private final static Method NEXT = new Method("next", Types.OBJECT, new Type[] {});
@@ -150,6 +151,9 @@ public final class ForEach extends StatementBase implements FlowControlBreak, Fl
     @Override
     public Body getBody() {
 	return body;
+    }
+    public BodyBase getBodyBase(){
+    	return (BodyBase) body;
     }
 
     @Override

@@ -18,6 +18,7 @@
  **/
 package lucee.transformer.bytecode.expression;
 
+import lucee.commons.lang.CFTypes;
 import org.objectweb.asm.Type;
 
 import lucee.commons.lang.ClassException;
@@ -40,10 +41,23 @@ public abstract class ExpressionBase implements Expression {
     private Position end;
     private Factory factory;
 
+    public int expressionType=0;
+
     public ExpressionBase(Factory factory, Position start, Position end) {
 	this.start = start;
 	this.end = end;
 	this.factory = factory;
+    }
+
+    // like this: expr.setExpressionType(CFTypes.TYPE_STRING);
+    public void setExpressionType(int type){
+    	expressionType=type;
+    	/*
+    	loop query="#myquery#"{
+    	    echo(myquery.column);
+    	}
+
+    	 */
     }
 
     @Override
@@ -67,7 +81,7 @@ public abstract class ExpressionBase implements Expression {
     /**
      * write out the statement to the adapter
      * 
-     * @param adapter
+     * @param bc
      * @param mode
      * @return return Type of expression
      * @throws TemplateException

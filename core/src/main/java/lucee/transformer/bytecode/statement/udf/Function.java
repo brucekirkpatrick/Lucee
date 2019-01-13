@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lucee.transformer.bytecode.*;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Opcodes;
@@ -42,11 +43,6 @@ import lucee.runtime.type.util.ComponentUtil;
 import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
-import lucee.transformer.bytecode.Body;
-import lucee.transformer.bytecode.BytecodeContext;
-import lucee.transformer.bytecode.ConstrBytecodeContext;
-import lucee.transformer.bytecode.Page;
-import lucee.transformer.bytecode.Root;
 import lucee.transformer.bytecode.statement.Argument;
 import lucee.transformer.bytecode.statement.HasBody;
 import lucee.transformer.bytecode.statement.IFunction;
@@ -123,26 +119,26 @@ public abstract class Function extends StatementBaseNoFinal implements Opcodes, 
 	    INIT_FAI_KEY9 };
     private static final Method[] INIT_FAI_KEY_LIGHT = new Method[] { INIT_FAI_KEY1, INIT_FAI_KEY3 };
 
-    ExprString name;
-    ExprString returnType;
-    ExprBoolean output;
-    ExprBoolean bufferOutput;
+    public ExprString name;
+	public ExprString returnType;
+	public ExprBoolean output;
+	public ExprBoolean bufferOutput;
     // ExprBoolean abstry=LitBoolean.FALSE;
-    int access = Component.ACCESS_PUBLIC;
-    ExprString displayName;
-    ExprString hint;
-    Body body;
-    List<Argument> arguments = new ArrayList<Argument>();
-    Map<String, Attribute> metadata;
-    ExprString returnFormat;
-    ExprString description;
-    ExprBoolean secureJson;
-    ExprBoolean verifyClient;
-    ExprInt localMode;
-    protected int valueIndex;
-    protected int arrayIndex;
-    private Literal cachedWithin;
-    private int modifier;
+    public int access = Component.ACCESS_PUBLIC;
+	public ExprString displayName;
+	public ExprString hint;
+	public Body body;
+	public List<Argument> arguments = new ArrayList<Argument>();
+	public Map<String, Attribute> metadata;
+	public ExprString returnFormat;
+	public ExprString description;
+	public ExprBoolean secureJson;
+	public ExprBoolean verifyClient;
+	public ExprInt localMode;
+	public int valueIndex;
+	public int arrayIndex;
+	public Literal cachedWithin;
+	public int modifier;
 
     public Function(Root root, String name, int access, int modifier, String returnType, Body body, Position start, Position end) {
 	super(body.getFactory(), start, end);
@@ -534,6 +530,9 @@ public abstract class Function extends StatementBaseNoFinal implements Opcodes, 
     @Override
     public final Body getBody() {
 	return body;
+    }
+    public BodyBase getBodyBase(){
+    	return (BodyBase) body;
     }
 
     public final void setMetaData(Map<String, Attribute> metadata) {
