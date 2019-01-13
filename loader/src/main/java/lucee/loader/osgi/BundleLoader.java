@@ -27,11 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -50,7 +45,6 @@ import lucee.loader.util.Util;
 
 public class BundleLoader {
 	public static CFMLEngineFactory engine;
-	private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
 	/**
 	 * build (if necessary) a bundle and load it
@@ -106,7 +100,6 @@ public class BundleLoader {
 				}
 			}
 
-
 			// close all bundles
 			Felix felix;
 
@@ -117,6 +110,9 @@ public class BundleLoader {
 //				// stops felix (wait for it)
 //				BundleUtil.stop(felix, false);
 //			}
+			felix = engFac.getFelix(cacheRootDir, config);
+			CFMLServlet.logStartTime("BundleLoader loadBundles after close all bundles");
+			final BundleContext bc = felix.getBundleContext();
 
 			// get bundle needed for that core
 			final String rb = attrs.getValue("Require-Bundle");
@@ -129,121 +125,61 @@ public class BundleLoader {
 			// load Required/Available Bundles
 			final Map<String, String> requiredBundles = readRequireBundle(rb); // Require-Bundle
 			final Map<String, String> requiredBundleFragments = readRequireBundle(rbf); // Require-Bundle-Fragment
-			CFMLServlet.logStartTime("BundleLoader loadBundles after readRequiredBundles");
 			final Map<String, File> availableBundles = loadAvailableBundles(jarDirectory);
-			CFMLServlet.logStartTime("BundleLoader loadBundles after loadAvailableBundles");
 
 			// deploys bundled bundles to bundle directory
 			// deployBundledBundles(jarDirectory, availableBundles);
 
-			Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
-//			String bundleStartList1="";
-//			while (it.hasNext()) {
-//				e = it.next();
-//				id = e.getKey() + "|" + e.getValue();
-//				f = availableBundles.get(id);
-//
-//				bundleStartList1+=" file:"+f.getAbsolutePath();
-//			}
-//			String bundleStartList2="";
-//			it = requiredBundleFragments.entrySet().iterator();
-//			while (it.hasNext()) {
-//				e = it.next();
-//				id = e.getKey() + "|" + e.getValue();
-//				f = availableBundles.get(id);
-//
-//				bundleStartList2+=" file:"+f.getAbsolutePath();
-//			}
-//			String bundleStartList3="file:"+rc.getAbsolutePath();
-//			config.put("felix.auto.start.1", bundleStartList1.trim());
-//			config.put("felix.auto.start.2", bundleStartList2.trim());
-//			config.put("felix.auto.start.3", bundleStartList3.trim());
-
-			felix = engFac.getFelix(cacheRootDir, config);
-			CFMLServlet.logStartTime("BundleLoader loadBundles after getFelix");
-			final BundleContext bc = felix.getBundleContext();
-//			String felixStart=bc.getProperty("felix.auto.start.1");
-//			AutoProcessor ap=new AutoProcessor();
-//			AutoProcessor.process(config, bc);
-//			Bundle[] allBundles=bc.getBundles();
-//			int len=allBundles.length;
-//			engine.log(Logger.LOG_DEBUG, "Bundle count:" + len);
-
-			final List<Bundle> bundles = new ArrayList<Bundle>();
-
-			ArrayList<Future<Bundle>> futures=new ArrayList<>();
-
-			Entry<String, String> e;
 			// Add Required Bundles
-			it = requiredBundles.entrySet().iterator();
+			Entry<String, String> e;
+			File f;
+			String id;
+			final List<Bundle> bundles = new ArrayList<Bundle>();
+			Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
 			while (it.hasNext()) {
 				e = it.next();
-				File f = availableBundles.get(e.getKey() + "|" + e.getValue());
-				futures.add(executor.submit(()-> BundleUtil.addBundle(engFac, bc, f, null)));
+				id = e.getKey() + "|" + e.getValue();
+				f = availableBundles.get(id);
+				// StringBuilder sb=new StringBuilder();
+				if (f == null) {
+					/*
+					 * sb.append(id+"\n"); Iterator<String> _it = availableBundles.keySet().iterator();
+					 * while(_it.hasNext()){ sb.append("- "+_it.next()+"\n"); } throw new
+					 * RuntimeException(sb.toString());
+					 */
+				}
+				if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+				if (bc != null) {
+					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
+					bundles.add(tempBundle);
+				}
+				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 1");
 			}
 
 			// Add Required Bundle Fragments
 			final List<Bundle> fragments = new ArrayList<Bundle>();
 			it = requiredBundleFragments.entrySet().iterator();
 			while (it.hasNext()) {
-
 				e = it.next();
-				String id = e.getKey() + "|" + e.getValue();
-				File f = availableBundles.get(id);
+				id = e.getKey() + "|" + e.getValue();
+				f = availableBundles.get(id);
 
-//				if (f == null)
-//					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
-//				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
-				futures.add(executor.submit(()->{
-					Bundle tempBundle=BundleUtil.addBundle(engFac, bc, f, null);
-					synchronized (fragments) {
-						fragments.add(tempBundle);
-					}
-					return null;
-				} ));
+				if (f == null)
+					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
+				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
 				CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle set 2");
-
-//				File f = availableBundles.get(e.getKey() + "|" + e.getValue());
-//				futures.add(executor.submit(()-> BundleUtil.addBundle(engFac, bc, f, null)));
 			}
-			// Add Lucee core Bundle - has to load separately and last
-//			Bundle bundle=bc.installBundle("file:"+rc.getAbsolutePath());
-			final List<Bundle> bundlesCore = new ArrayList<Bundle>();
-			futures.add(executor.submit(()->{
-				bundlesCore.add(BundleUtil.addBundle(engFac, bc, rc, null));
-				return null;
-			} ));
 
-//			futures.add(executor.submit(()->bc.installBundle("file:"+rc.getAbsolutePath())));
+			// Add Lucee core Bundle
+			Bundle bundle;
+			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
+			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
 
-			Iterator<Future<Bundle>> futureIteratorCheck = futures.iterator();
-
-			Consumer<Future<Bundle>> consumer= futureBundle-> {
-				try {
-					Bundle tempBundle=futureBundle.get();
-					if(tempBundle!=null) {
-						synchronized(bundles) {
-							bundles.add(tempBundle);
-						}
-					}
-				} catch (Exception eBundle) {
-					throw new RuntimeException(eBundle);
-				}
-			};
-			futureIteratorCheck.forEachRemaining(consumer);
-
-			Bundle bundle=bundlesCore.get(0);
-
-			CFMLServlet.logStartTime("BundleLoader loadBundles after parallel addBundle core");
+			CFMLServlet.logStartTime("BundleLoader loadBundles after addBundle core");
 			// Start the bundles
 			BundleUtil.start(engFac, bundles);
 			BundleUtil.start(engFac, bundle);
 
-			Bundle[] allBundles2=bc.getBundles();
-			int len2=allBundles2.length;
-			engine.log(Logger.LOG_DEBUG, "Bundle count after start:" + len2);
-
-			executor.shutdownNow();
 			return new BundleCollection(felix, bundle, bundles);
 		} finally {
 			if (jf != null) try {
@@ -260,7 +196,6 @@ public class BundleLoader {
 		if (jars != null) for (int i = 0; i < jars.length; i++) {
 			if (!jars[i].isFile() || !jars[i].getName().endsWith(".jar")) continue;
 			try {
-				// TODO: load in parallel
 				rtn.put(loadBundleInfo(jars[i]), jars[i]);
 				engine.log(Logger.LOG_DEBUG, "Available bundle:" + jars[i].getAbsolutePath());
 			} catch (final IOException ioe) {
