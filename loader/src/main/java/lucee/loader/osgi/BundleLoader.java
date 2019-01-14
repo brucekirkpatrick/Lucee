@@ -49,6 +49,7 @@ import lucee.loader.util.Util;
 
 public class BundleLoader {
 	public static CFMLEngineFactory engine;
+	private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
 	/**
 	 * build (if necessary) a bundle and load it
@@ -141,6 +142,7 @@ public class BundleLoader {
 			String id;
 			final List<Bundle> bundles = new ArrayList<Bundle>();
 			Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
+			ArrayList<Future<Bundle>> futures=new ArrayList<>();
 			while (it.hasNext()) {
 				e = it.next();
 				id = e.getKey() + "|" + e.getValue();
@@ -155,8 +157,10 @@ public class BundleLoader {
 				}
 				if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
 				if (bc != null) {
-					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
-					bundles.add(tempBundle);
+//					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
+//					bundles.add(tempBundle);
+					final File fTemp=f;
+					futures.add(executor.submit(()-> BundleUtil.addBundle(engFac, bc, fTemp, null)));
 				}
 			}
 
@@ -177,6 +181,19 @@ public class BundleLoader {
 			Bundle bundle;
 			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
 			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
+			Iterator<Future<Bundle>> futureIteratorCheck = futures.iterator();
+			Consumer<Future<Bundle>> consumer= futureBundle-> {
+				try {
+					Bundle tempBundle=futureBundle.get();
+					if(tempBundle!=null) {
+						bundles.add(tempBundle);
+					}
+				} catch (Exception eBundle) {
+					throw new RuntimeException(eBundle);
+				}
+			};
+			futureIteratorCheck.forEachRemaining(consumer);
+			executor.shutdown();
 
 			CFMLServlet.logStartTime("BundleLoader loadBundles after adding all bundles");
 			// Start the bundles
@@ -196,7 +213,7 @@ public class BundleLoader {
 		final Map<String, File> rtn = new HashMap<String, File>();
 
 		ArrayList<Future<String>> futures=new ArrayList<>();
-		ExecutorService executor = Executors.newFixedThreadPool(8);
+		ExecutorService executor = Executors.newFixedThreadPool(4);
 
 		final File[] jars = jarDirectory.listFiles();
 		if (jars != null) for (int i = 0; i < jars.length; i++) {
