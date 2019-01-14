@@ -302,7 +302,7 @@ public final class XMLUtilImpl implements XMLUtil {
     }
 
     @Override
-    public synchronized ArrayList<Node> getChildNodes(Node node, short type, String filter) {
+    public  ArrayList<Node> getChildNodes(Node node, short type, String filter) {
 	ArrayList<Node> rtn = new ArrayList<Node>();
 	NodeList nodes = node.getChildNodes();
 	int len = nodes.getLength();
@@ -321,7 +321,7 @@ public final class XMLUtilImpl implements XMLUtil {
 	return rtn;
     }
 
-    public synchronized List<Node> getChildNodesAsList(Node node, short type, String filter) {
+    public  List<Node> getChildNodesAsList(Node node, short type, String filter) {
 	List<Node> rtn = new ArrayList<Node>();
 	NodeList nodes = node.getChildNodes();
 	int len = nodes.getLength();
@@ -341,7 +341,7 @@ public final class XMLUtilImpl implements XMLUtil {
     }
 
     @Override
-    public synchronized Node getChildNode(Node node, short type, String filter, int index) {
+    public  Node getChildNode(Node node, short type, String filter, int index) {
 	NodeList nodes = node.getChildNodes();
 	int len = nodes.getLength();
 	Node n;
@@ -454,7 +454,7 @@ public final class XMLUtilImpl implements XMLUtil {
     }
 
     @Override
-    public synchronized Element getChildWithName(String name, Element el) {
+    public  Element getChildWithName(String name, Element el) {
 	Element[] children = getChildElementsAsArray(el);
 	for (int i = 0; i < children.length; i++) {
 	    if (name.equalsIgnoreCase(children[i].getNodeName())) return children[i];

@@ -17,16 +17,7 @@
  */
 package lucee.loader.engine;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -150,29 +141,35 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	 * @return Singelton Instance of the Factory
 	 * @throws ServletException
 	 */
-	public synchronized static CFMLEngine getInstance(final ServletConfig config) throws ServletException {
+	final static Object mutex = new Object();
+	public static CFMLEngine getInstance(final ServletConfig config) throws ServletException {
 
 		CFMLServlet.logStartTime("CFMLEngineFactory getInstance begin");
 		if (singelton != null) {
-			if (factory == null)
+			if (factory == null) {
 				factory = singelton.getCFMLEngineFactory(); // not sure if this ever is done, but it does not hurt
+			}
 			return singelton;
 		}
+		synchronized(mutex) {
 
-		if (factory == null) factory = new CFMLEngineFactory(config);
-		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
+			if (factory == null) {
+				factory = new CFMLEngineFactory(config);
+			}
+			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
 
-		// read init param from config
-		factory.readInitParam(config);
-		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
+			// read init param from config
+			factory.readInitParam(config);
+			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
 
-		factory.initEngineIfNecessary();
-		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
-		singelton.addServletConfig(config);
-		CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
+			factory.initEngineIfNecessary();
+			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
+			singelton.addServletConfig(config);
+			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
 
-		// add listener for update
-		// factory.addListener(singelton);
+			// add listener for update
+			// factory.addListener(singelton);
+		}
 		return singelton;
 	}
 

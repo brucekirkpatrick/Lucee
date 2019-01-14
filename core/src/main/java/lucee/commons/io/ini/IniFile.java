@@ -245,7 +245,7 @@ public final class IniFile {
      */
     public static Struct getProfileSections(Resource file) throws IOException {
 	IniFile ini = new IniFile(file);
-	Struct rtn = new StructImpl(Struct.TYPE_SYNC);
+	Struct rtn = new StructImpl(Struct.TYPE_HASHMAP);
 	Map sections = ini.getSections();
 	Iterator it = sections.keySet().iterator();
 	while (it.hasNext()) {

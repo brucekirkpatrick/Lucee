@@ -439,7 +439,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws PageException
      * @throws BundleException
      */
-    synchronized static void load(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+     static void load(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 	    double start = System.currentTimeMillis();
 	    if (LOG) SystemOut.printDate("start reading config");
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load begin");
@@ -516,7 +516,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    if (config instanceof ConfigWeb) ConfigWebUtil.deployWebContext(cs, (ConfigWeb) config, false);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWebContext");
     }
-	synchronized static void load2(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load2(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		if (config instanceof ConfigWeb) ConfigWebUtil.deployWeb(cs, (ConfigWeb) config, false);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWeb");
 		if (LOG) SystemOut.printDate("deploy web context");
@@ -534,7 +534,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded loggers");
 		loadTempDirectory(cs, config, doc, isReload, log);
 	}
-	synchronized static void load3(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load3(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		Log log = config.getLog("application");
 		if (LOG) SystemOut.printDate("loaded temp dir");
 		loadId(cs, config, doc, log);
@@ -550,7 +550,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			log(config, log, e);
 		}
 	}
-	synchronized static void load4(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load4(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		Log log = config.getLog("application");
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after loadLib");
 		if (LOG) SystemOut.printDate("loaded lib");
@@ -565,7 +565,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded webservice");
 		loadORM(cs, config, doc, log);
 	}
-	synchronized static void load5(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load5(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Log log = config.getLog("application");
 		if (LOG) SystemOut.printDate("loaded orm");
@@ -582,7 +582,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded rest");
 	}
 
-	synchronized static void load6(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load6(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Log log = config.getLog("application");
 		loadExtensions(cs, config, doc, log);
@@ -598,7 +598,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded custom tag mappings");
 	}
 
-	synchronized static void load7(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load7(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Log log = config.getLog("application");
 		// loadFilesystem(cs, config, doc, doNew); // load tlds
@@ -616,7 +616,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		loadScheduler(cs, config, doc, log);
 	}
 
-	synchronized static void load8(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load8(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Log log = config.getLog("application");
 		if (LOG) SystemOut.printDate("loaded scheduled tasks");
@@ -635,7 +635,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded java");
 		loadSetting(cs, config, doc, log);
 	}
-	synchronized static void load9(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load9(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		Log log = config.getLog("application");
 		if (LOG) SystemOut.printDate("loaded setting");
 		loadProxy(cs, config, doc, log);
@@ -650,7 +650,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded settings2");
 		loadListener(cs, config, doc, log);
 	}
-	synchronized static void load10(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+	 static void load10(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
 		Log log = config.getLog("application");
 	    if (LOG) SystemOut.printDate("loaded listeners");
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
@@ -670,7 +670,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 
     }
-	synchronized static void loadPart2(ConfigServerImpl cs, ConfigImpl config, boolean isReload, boolean doNew) throws IOException {
+	 static void loadPart2(ConfigServerImpl cs, ConfigImpl config, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Document doc=config.doc;
 		Log log = config.getLog("application");
