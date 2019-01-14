@@ -159,12 +159,14 @@ import lucee.transformer.library.tag.TagLibException;
 import lucee.transformer.library.tag.TagLibFactory;
 import lucee.transformer.library.tag.TagLibTag;
 import lucee.transformer.library.tag.TagLibTagAttr;
+import org.w3c.dom.Document;
 
 /**
  * Hold the definitions of the Lucee configuration.
  */
 public abstract class ConfigImpl implements Config {
 
+    public Document doc;
     public static final int CLIENT_BOOLEAN_TRUE = 0;
     public static final int CLIENT_BOOLEAN_FALSE = 1;
     public static final int SERVER_BOOLEAN_TRUE = 2;

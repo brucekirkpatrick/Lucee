@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -147,7 +148,10 @@ public final class TagLibFactory extends DefaultHandler {
 	this.id = id;
 	this.lib = lib == null ? new TagLib() : lib;
 	InputSource is = new InputSource(this.getClass().getResourceAsStream(systemTLD));
+//	    CFMLServlet.logStartTime("TagLibFactory after new InputSource");
+
 	init(is);
+//	    CFMLServlet.logStartTime("TagLibFactory after init");
 	this.lib.setIsCore(true);
     }
 
@@ -521,8 +525,11 @@ public final class TagLibFactory extends DefaultHandler {
 
 	if (systemTLDs[CFMLEngine.DIALECT_CFML] == null) {
 	    TagLib cfml = new TagLibFactory(null, TLD_BASE, id).getLib();
+//		CFMLServlet.logStartTime("TagLibFactory after tag new base getLib");
+
 //	    TagLib lucee = cfml.duplicate(false);
 	    systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(cfml, TLD_CFML, id).getLib();
+//		CFMLServlet.logStartTime("TagLibFactory after tag new cfml getLib");
 //	    systemTLDs[CFMLEngine.DIALECT_LUCEE] = new TagLibFactory(lucee, TLD_LUCEE, id).getLib();
 	}
 	return systemTLDs;

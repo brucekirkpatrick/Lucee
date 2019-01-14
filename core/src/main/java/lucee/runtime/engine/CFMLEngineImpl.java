@@ -207,6 +207,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
     private CFMLEngineImpl(CFMLEngineFactory factory, BundleCollection bc) {
 	this.factory = factory;
 	this.bundleCollection = bc;
+	    CFMLServlet.logStartTime("CFMLEngineImpl begin");
 
 	// log the startup process
 	String logDir = SystemUtil.getSystemPropOrEnvVar("startlogdirectory", null);// "/Users/mic/Tmp/");
@@ -249,14 +250,19 @@ public final class CFMLEngineImpl implements CFMLEngine {
 		throw new RuntimeException(t);
 	    }
 	}
+	CFMLServlet.logStartTime("CFMLEngineImpl after getFelix");
 
+	// TODO: put in thread
 	this.info = new InfoImpl(bundleCollection == null ? null : bundleCollection.core);
 	Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader()); // MUST better location for this
+	    CFMLServlet.logStartTime("CFMLEngineImpl after InfoImpl");
 
 	UpdateInfo updateInfo;
 	Resource configDir = null;
 	try {
+		// TODO: put in thread
 	    configDir = getSeverContextConfigDirectory(factory);
+		CFMLServlet.logStartTime("CFMLEngineImpl after getSeverContextConfigDirectory");
 	    updateInfo = XMLConfigFactory.doNew(this, configDir, true);
 	}
 	catch (IOException e) {

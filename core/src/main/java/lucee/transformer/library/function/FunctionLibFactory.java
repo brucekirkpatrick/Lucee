@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import lucee.loader.servlet.CFMLServlet;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -124,7 +125,9 @@ public final class FunctionLibFactory extends DefaultHandler {
 	this.id = id;
 	this.lib = lib == null ? new FunctionLib() : lib;
 	this.core = core;
+
 	InputSource is = new InputSource(this.getClass().getResourceAsStream(systemFLD));
+//	    CFMLServlet.logStartTime("TagLibFactory after new InputSource");
 	init(is);
     }
 
@@ -410,8 +413,10 @@ public final class FunctionLibFactory extends DefaultHandler {
     public static FunctionLib[] loadFromSystem(Identification id) throws FunctionLibException {
 	if (systemFLDs[CFMLEngine.DIALECT_CFML] == null) {
 	    FunctionLib cfml = new FunctionLibFactory(null, FLD_BASE, id, true).getLib();
+//		CFMLServlet.logStartTime("FunctionLibFactory after new function base getLib");
 //	    FunctionLib lucee = cfml.duplicate(false);
 	    systemFLDs[CFMLEngine.DIALECT_CFML] = new FunctionLibFactory(cfml, FLD_CFML, id, true).getLib();
+//		CFMLServlet.logStartTime("FunctionLibFactory after function cfml getLib");
 //	    systemFLDs[CFMLEngine.DIALECT_LUCEE] = new FunctionLibFactory(lucee, FLD_LUCEE, id, true).getLib();
 	}
 	return systemFLDs;

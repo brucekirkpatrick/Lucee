@@ -108,12 +108,12 @@ public class BundleLoader {
 			Felix felix;
 
 			// TODO: this looks unnecessary - probably only for upgrading lucee
-//			if (old != null) {
-//				removeBundlesEL(old);
-//				felix = old.felix;
-//				// stops felix (wait for it)
-//				BundleUtil.stop(felix, false);
-//			}
+			if (old != null) {
+				removeBundlesEL(old);
+				felix = old.felix;
+				// stops felix (wait for it)
+				BundleUtil.stop(felix, false);
+			}
 			felix = engFac.getFelix(cacheRootDir, config);
 			CFMLServlet.logStartTime("BundleLoader loadBundles after close all bundles");
 			final BundleContext bc = felix.getBundleContext();

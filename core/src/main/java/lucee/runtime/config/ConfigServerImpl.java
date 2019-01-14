@@ -48,6 +48,7 @@ import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.SystemOut;
 import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;
+import lucee.loader.servlet.CFMLServlet;
 import lucee.loader.util.ExtensionFilter;
 import lucee.runtime.CFMLFactory;
 import lucee.runtime.CFMLFactoryImpl;
@@ -123,8 +124,8 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
 
     private int permGenCleanUpThreshold = 60;
 
-    final TagLib cfmlCoreTLDs;
-    final FunctionLib cfmlCoreFLDs;
+    TagLib cfmlCoreTLDs;
+    FunctionLib cfmlCoreFLDs;
 
     private ServletConfig srvConfig;
 
@@ -140,13 +141,15 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
     protected ConfigServerImpl(CFMLEngineImpl engine, Map<String, CFMLFactory> initContextes, Map<String, CFMLFactory> contextes, Resource configDir, Resource configFile)
 	    throws TagLibException, FunctionLibException {
 	super(configDir, configFile);
-	this.cfmlCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
+//	this.cfmlCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
+
 //	this.luceeCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_LUCEE, id);
-	this.cfmlCoreFLDs = FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
+//	this.cfmlCoreFLDs = FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, id);
 //	this.luceeCoreFLDs = FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_LUCEE, id);
 
 	this.engine = engine;
 	engine.setConfigServerImpl(this);
+//	    CFMLServlet.logStartTime("TagLibFactory setConfigServerImpl");
 	this.initContextes = initContextes;
 	// this.contextes=contextes;
 	this.rootDir = configDir;

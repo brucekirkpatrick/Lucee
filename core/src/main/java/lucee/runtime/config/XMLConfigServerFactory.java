@@ -20,10 +20,19 @@ package lucee.runtime.config;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import lucee.loader.servlet.CFMLServlet;
+import lucee.transformer.library.function.FunctionLib;
+import lucee.transformer.library.function.FunctionLibFactory;
+import lucee.transformer.library.tag.TagLib;
+import lucee.transformer.library.tag.TagLibFactory;
 import org.osgi.framework.BundleException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,61 +80,160 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
 
 	    CFMLServlet.logStartTime("XMLConfigServerFactory begin");
-	boolean isCLI = SystemUtil.isCLICall();
-	if (isCLI) {
-	    Resource logs = configDir.getRealResource("logs");
-	    logs.mkdirs();
-	    Resource out = logs.getRealResource("out");
-	    Resource err = logs.getRealResource("err");
-	    ResourceUtil.touch(out);
-	    ResourceUtil.touch(err);
-	    if (logs instanceof FileResource) {
-		SystemUtil.setPrintWriter(SystemUtil.OUT, new PrintWriter((FileResource) out));
-		SystemUtil.setPrintWriter(SystemUtil.ERR, new PrintWriter((FileResource) err));
+		boolean isCLI = SystemUtil.isCLICall();
+		if (isCLI) {
+		    Resource logs = configDir.getRealResource("logs");
+		    logs.mkdirs();
+		    Resource out = logs.getRealResource("out");
+		    Resource err = logs.getRealResource("err");
+		    ResourceUtil.touch(out);
+		    ResourceUtil.touch(err);
+		    if (logs instanceof FileResource) {
+				SystemUtil.setPrintWriter(SystemUtil.OUT, new PrintWriter((FileResource) out));
+				SystemUtil.setPrintWriter(SystemUtil.ERR, new PrintWriter((FileResource) err));
+		    }
+		    else {
+				SystemUtil.setPrintWriter(SystemUtil.OUT, new PrintWriter(IOUtil.getWriter(out, "UTF-8")));
+				SystemUtil.setPrintWriter(SystemUtil.ERR, new PrintWriter(IOUtil.getWriter(err, "UTF-8")));
+		    }
+			CFMLServlet.logStartTime("XMLConfigServerFactory after iscli");
+		}
+		SystemOut.print(SystemUtil.getPrintWriter(SystemUtil.OUT), "===================================================================\n" + "SERVER CONTEXT\n"
+			+ "-------------------------------------------------------------------\n" + "- config:" + configDir + "\n" + "- loader-version:" + SystemUtil.getLoaderVersion()
+			+ "\n" + "- core-version:" + engine.getInfo().getVersion() + "\n" + "===================================================================\n"
+
+		);
+
+		int iDoNew = doNew(engine, configDir, false).updateType;
+		boolean doNew = iDoNew != NEW_NONE;
+		CFMLServlet.logStartTime("XMLConfigServerFactory after doNew");
+
+	    ArrayList<Future<Object>> futures=new ArrayList<>();
+	    ArrayList<Future<Boolean>> futures2=new ArrayList<>();
+	    ExecutorService executor = Executors.newWorkStealingPool(4);
+
+	    Resource configFile = configDir.getRealResource("lucee-server.xml");
+	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");
+	    futures.add(executor.submit(()->{
+		    if (!configFile.exists()) {
+			    configFile.createFile(true);
+			    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
+			    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
+		    }
+
+//		    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
+		    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
+//		    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
+		    Document doc = loadDocumentCreateIfFails(configFile, "server");
+		    config.doc=doc;
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load2(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load3(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load4(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load5(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load6(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load7(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load8(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load9(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(()-> {
+			    XMLConfigWebFactory.load10(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    return config;
+	    } ));
+
+	    futures.add(executor.submit(()->{
+		    createContextFiles(configDir, doNew);
+//		    CFMLServlet.logStartTime("XMLConfigServerFactory after createContextFiles (in a thread)");
+		    return true;
+	    } ));
+
+	    TagLib tagLib=null;
+	    FunctionLib functionLib=null;
+	    ConfigServerImpl configImpl=null;
+	    futures.add(executor.submit(()->{
+		    return TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+	    } ));
+
+//	this.luceeCoreTLDs = TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_LUCEE, id);
+	    futures.add(executor.submit(()->{
+	        return FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+	    } ));
+
+
+
+	    for(int i=0;i<futures.size();i++){
+		    try {
+			    Object obj=futures.get(i).get();
+			    if(obj instanceof Boolean){
+			    	continue;
+			    }else if(obj instanceof TagLib) {
+				    tagLib = (TagLib) obj;
+			    }else if(obj instanceof FunctionLib) {
+				    functionLib = (FunctionLib) obj;
+			    }else if(obj instanceof ConfigServerImpl){
+				    configImpl=(ConfigServerImpl) obj;
+			    }else{
+				    throw new RuntimeException("Invalid return type for one of the futures");
+			    }
+		    } catch (InterruptedException | ExecutionException e) {
+			    throw new RuntimeException(e);
+		    }
 	    }
-	    else {
-		SystemUtil.setPrintWriter(SystemUtil.OUT, new PrintWriter(IOUtil.getWriter(out, "UTF-8")));
-		SystemUtil.setPrintWriter(SystemUtil.ERR, new PrintWriter(IOUtil.getWriter(err, "UTF-8")));
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after loading 4 threads");
+	    configImpl.cfmlCoreTLDs=tagLib;
+	    configImpl.cfmlCoreFLDs=functionLib;
+	    final ConfigServerImpl configImplTemp=configImpl;
+	    futures2.add(executor.submit(()-> {
+		    XMLConfigWebFactory.loadPart2(null, configImplTemp, false, doNew);
+		    return new Boolean(true);
+	    }));
+	    configImplTemp.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
+	    for(int i=0;i<futures2.size();i++){
+		    try {
+			    Boolean obj = futures2.get(i).get();
+			    if(!obj){
+			    	throw new RuntimeException("Failed to load future: "+i+" in XMLConfigWebFactory");
+			    }
+		    } catch (InterruptedException | ExecutionException e) {
+			    throw new RuntimeException(e);
+		    }
 	    }
-	}
-	SystemOut.print(SystemUtil.getPrintWriter(SystemUtil.OUT), "===================================================================\n" + "SERVER CONTEXT\n"
-		+ "-------------------------------------------------------------------\n" + "- config:" + configDir + "\n" + "- loader-version:" + SystemUtil.getLoaderVersion()
-		+ "\n" + "- core-version:" + engine.getInfo().getVersion() + "\n" + "===================================================================\n"
+	    executor.shutdown();
+	    CFMLServlet.logStartTime("XMLConfigServerFactory after load threads part 2");
 
-	);
 
-	int iDoNew = doNew(engine, configDir, false).updateType;
-	boolean doNew = iDoNew != NEW_NONE;
-
-	Resource configFile = configDir.getRealResource("lucee-server.xml");
-
-	if (!configFile.exists()) {
-	    configFile.createFile(true);
-	    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
-	    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
-	}
-
-	Document doc = loadDocumentCreateIfFails(configFile, "server");
-	    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
-
-	// get version
-	Element luceeConfiguration = doc.getDocumentElement();
-	    CFMLServlet.logStartTime("XMLConfigServerFactory after getDocumentElement");
-	String strVersion = luceeConfiguration.getAttribute("version");
-	double version = Caster.toDoubleValue(strVersion, 1.0d);
-	boolean cleanupDatasources = version < 5.0D;
-
-	ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
-	    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
-	load(config, doc, false, doNew);
-	    CFMLServlet.logStartTime("XMLConfigServerFactory after load");
-
-	createContextFiles(configDir, config, doNew, cleanupDatasources);
-	    CFMLServlet.logStartTime("XMLConfigServerFactory after createContextFiles");
-
-	((CFMLEngineImpl) ConfigWebUtil.getEngine(config)).onStart(config, false);
+	    // this isn't needed:
+//	((CFMLEngineImpl) ConfigWebUtil.getEngine(config)).onStart(config, false);
 	    CFMLServlet.logStartTime("XMLConfigServerFactory end");
-	return config;
+	return configImpl;
     }
 
     /**
@@ -151,7 +259,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 	load(configServer, loadDocument(configFile), true, doNew);
 
-	((CFMLEngineImpl) ConfigWebUtil.getEngine(configServer)).onStart(configServer, true);
+
+//	((CFMLEngineImpl) ConfigWebUtil.getEngine(configServer)).onStart(configServer, true);
     }
 
     private static long second(long ms) {
@@ -173,6 +282,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	ConfigImpl.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
 	XMLConfigWebFactory.load(null, configServer, doc, isReload, doNew);
 
+
 	loadLabel(configServer, doc);
     }
 
@@ -193,7 +303,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	configServer.setLabels(labels);
     }
 
-    private static void createContextFiles(Resource configDir, ConfigServer config, boolean doNew, boolean cleanupDatasources) {
+    private static void createContextFiles(Resource configDir, boolean doNew) {
 
 	Resource contextDir = configDir.getRealResource("context");
 	Resource adminDir = contextDir.getRealResource("admin");

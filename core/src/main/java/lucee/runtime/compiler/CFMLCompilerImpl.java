@@ -152,7 +152,8 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		if (!classFileDirectory.exists()) classFileDirectory.mkdirs();
 		IOUtil.copy(new ByteArrayInputStream(result.barr), classFile, true);
 	    }
-		optimizeResult(result);
+		// TODO: this gives 500 on restart-lucee.cfc for some reason, need to fix
+//		optimizeResult(result);
 
 	    return result;
 	}
@@ -190,7 +191,8 @@ public final class CFMLCompilerImpl implements CFMLCompiler {
 		IOUtil.copy(new ByteArrayInputStream(result.barr), classFile, true);
 	    }
 
-		optimizeResult(result);
+		// TODO: this gives 500 on restart-lucee.cfc for some reason, need to fix
+//		optimizeResult(result);
 
 	    return result;
 	}
