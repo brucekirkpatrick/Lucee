@@ -353,6 +353,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			    throw new RuntimeException(e);
 		    }
 	    }
+	    executor.shutdown();
 	    CFMLServlet.logStartTime("XMLConfigServerFactory after loading 4 threads");
 
 	    CFMLServlet.logStartTime("XMLConfigWebFactory web end");
