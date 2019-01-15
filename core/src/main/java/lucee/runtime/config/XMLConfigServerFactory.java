@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import lucee.loader.osgi.BundleLoader;
 import lucee.loader.servlet.CFMLServlet;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibFactory;
@@ -111,7 +110,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 	    ArrayList<Future<Object>> futures=new ArrayList<>();
 	    ArrayList<Future<Boolean>> futures2=new ArrayList<>();
-	    ExecutorService executor = BundleLoader.executor;//Executors.newFixedThreadPool(8);
+	    ExecutorService executor = Executors.newWorkStealingPool(4);
 
 	    Resource configFile = configDir.getRealResource("lucee-server.xml");
 	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");
@@ -127,7 +126,6 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 //		    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
 		    Document doc = loadDocumentCreateIfFails(configFile, "server");
 		    config.doc=doc;
-		    XMLConfigWebFactory.load3(null, config, doc, false, doNew);
 		    futures2.add(executor.submit(()-> {
 			    XMLConfigWebFactory.load(null, config, doc, false, doNew);
 			    return new Boolean(true);
@@ -168,7 +166,6 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 			    XMLConfigWebFactory.load10(null, config, doc, false, doNew);
 			    return new Boolean(true);
 		    }));
-		    ConfigWebUtil.loadLib(null, config);
 		    return config;
 	    } ));
 
@@ -216,18 +213,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	    final ConfigServerImpl configImplTemp=configImpl;
 	    futures2.add(executor.submit(()-> {
 		    XMLConfigWebFactory.loadPart2(null, configImplTemp, false, doNew);
-		    XMLConfigWebFactory.loadRunnable(null, configImplTemp, configImplTemp.doc, false, doNew);
 		    return new Boolean(true);
 	    }));
-//	    executor.submit(()-> {
-//		    XMLConfigWebFactory.loadRunnable(null, configImplTemp, configImplTemp.doc, false, doNew);
-//		    try {
-//			    Thread.sleep(3000);
-//		    } catch (InterruptedException e) {
-//			    e.printStackTrace();
-//		    }
-//		    executor.shutdown();
-//	    });
 	    configImplTemp.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
 	    for(int i=0;i<futures2.size();i++){
 		    try {
@@ -239,9 +226,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 			    throw new RuntimeException(e);
 		    }
 	    }
-	    configImplTemp.setLoadTime(System.currentTimeMillis());
-
-	    configImplTemp.setLoadTime(System.currentTimeMillis());
+	    executor.shutdown();
 	    CFMLServlet.logStartTime("XMLConfigServerFactory after load threads part 2");
 
 

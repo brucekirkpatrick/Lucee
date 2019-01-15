@@ -52,7 +52,6 @@ import java.util.concurrent.Future;
 
 import javax.servlet.ServletConfig;
 
-import lucee.loader.osgi.BundleLoader;
 import lucee.loader.servlet.CFMLServlet;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -283,7 +282,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	if (configDir.exists()) createHtAccess(configDir.getRealResource(".htaccess"));
 
 
-	    ExecutorService executor = BundleLoader.executor;//Executors.newWorkStealingPool(20);
+	    ExecutorService executor = Executors.newWorkStealingPool(4);
 	    ArrayList<Future<Boolean>> futures=new ArrayList<>();
 	    futures.add(executor.submit(()-> {
 			createContextFiles(configDir, servletConfig, doNew);
@@ -292,15 +291,12 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    final ConfigWebImpl configWeb = new ConfigWebImpl(factory, configServer, servletConfig, configDir, configFile);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory web before load");
 
-	    load(configServer, configWeb, doc, false, doNew);
-	    configWeb.doc=doc;
-	    configServer.doc=doc;
-//	    futures.add(executor.submit(()-> {
-//			load(configServer, configWeb, doc, false, doNew);
-//		    configWeb.doc=doc;
-//		    configServer.doc=doc;
-//		    return new Boolean(true);
-//	    }));
+	    futures.add(executor.submit(()-> {
+			load(configServer, configWeb, doc, false, doNew);
+		    configWeb.doc=doc;
+		    configServer.doc=doc;
+		    return new Boolean(true);
+	    }));
 	    futures.add(executor.submit(()-> {
 		    load2(configServer, configWeb, doc, true, doNew);
 		    return new Boolean(true);
@@ -338,18 +334,8 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		    return new Boolean(true);
 	    }));
-//	    executor.submit(()-> {
-//		    loadRunnable(configServer, configWeb, doc, false, doNew);
-//		    try {
-//			    Thread.sleep(3000);
-//		    } catch (InterruptedException e) {
-//			    e.printStackTrace();
-//		    }
-//		    executor.shutdown();
-//	    });
 	    futures.add(executor.submit(()-> {
 			loadPart2(configServer, configWeb, false, doNew);
-		    XMLConfigWebFactory.loadRunnable(configServer, configWeb, configWeb.doc, false, doNew);
 		    return new Boolean(true);
 	    }));
 	    futures.add(executor.submit(()-> {
@@ -367,7 +353,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			    throw new RuntimeException(e);
 		    }
 	    }
-	    configWeb.setLoadTime(System.currentTimeMillis());
+	    executor.shutdown();
 	    CFMLServlet.logStartTime("XMLConfigServerFactory after loading 4 threads");
 
 	    CFMLServlet.logStartTime("XMLConfigWebFactory web end");
@@ -432,7 +418,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    load8(cs, cw, doc, true, doNew);
 	    load9(cs, cw, doc, true, doNew);
 	    load10(cs, cw, doc, true, doNew);
-	    loadRunnable(cs, cw, doc, true, doNew);
 	loadPart2(cs, cw, true, doNew);
 	createContextFilesPost(configDir, cw, null, false, doNew);
 
@@ -455,7 +440,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws BundleException
      */
      static void load(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-	     long startTime = System.currentTimeMillis();
+	    double start = System.currentTimeMillis();
 	    if (LOG) SystemOut.printDate("start reading config");
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load begin");
 
@@ -532,7 +517,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWebContext");
     }
 	 static void load2(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		if (config instanceof ConfigWeb) ConfigWebUtil.deployWeb(cs, (ConfigWeb) config, false);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after deployWeb");
 		if (LOG) SystemOut.printDate("deploy web context");
@@ -549,11 +533,8 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		// loadServerLibDesc(cs, config, doc,log);
 		if (LOG) SystemOut.printDate("loaded loggers");
 		loadTempDirectory(cs, config, doc, isReload, log);
-
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load2");
 	}
 	 static void load3(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		Log log = config.getLog("application");
 		if (LOG) SystemOut.printDate("loaded temp dir");
 		loadId(cs, config, doc, log);
@@ -570,7 +551,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		}
 	}
 	 static void load4(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		Log log = config.getLog("application");
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory load after loadLib");
 		if (LOG) SystemOut.printDate("loaded lib");
@@ -578,12 +558,19 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded system");
 		loadResourceProvider(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded resource providers");
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load4");
+		config.doc = doc;
+		loadExtensionBundles(cs, config, doc, log);
+		if (LOG) SystemOut.printDate("loaded extension bundles");
+		loadWS(cs, config, doc, log);
+		if (LOG) SystemOut.printDate("loaded webservice");
+		loadORM(cs, config, doc, log);
 	}
 	 static void load5(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		int mode = config.getMode();
 		Log log = config.getLog("application");
+		if (LOG) SystemOut.printDate("loaded orm");
+		loadCacheHandler(cs, config, doc, log);
+		if (LOG) SystemOut.printDate("loaded cache handlers");
 		loadCharset(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded charset");
 		loadApplication(cs, config, doc, mode, log);
@@ -591,25 +578,30 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		loadMappings(cs, config, doc, mode, log); // it is important this runs after
 		if (LOG) SystemOut.printDate("loaded mappings");
 		// loadApplication
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load5");
+		loadRest(cs, config, doc, log);
+		if (LOG) SystemOut.printDate("loaded rest");
 	}
 
 	 static void load6(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		int mode = config.getMode();
 		Log log = config.getLog("application");
+		loadExtensions(cs, config, doc, log);
+//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
+		if (LOG) SystemOut.printDate("loaded extensions");
 		loadPagePool(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded page pool");
 		loadDataSources(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded datasources");
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load6");
+		loadCache(cs, config, doc, log);
+		if (LOG) SystemOut.printDate("loaded cache");
+		loadCustomTagsMappings(cs, config, doc, mode, log);
+		if (LOG) SystemOut.printDate("loaded custom tag mappings");
 	}
 
 	 static void load7(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		int mode = config.getMode();
 		Log log = config.getLog("application");
-		// not used: loadFilesystem(cs, config, doc, doNew); // load tlds
+		// loadFilesystem(cs, config, doc, doNew); // load tlds
 		if (LOG) SystemOut.printDate("loaded tags");
 		loadRegional(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded regional");
@@ -620,66 +612,32 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		loadMail(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded mail");
 		loadSearch(cs, config, doc, log);
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load7");
+		if (LOG) SystemOut.printDate("loaded search");
+		loadScheduler(cs, config, doc, log);
 	}
 
 	 static void load8(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
 		int mode = config.getMode();
 		Log log = config.getLog("application");
-		loadComponent(cs, config, doc, mode, log);
-		if (LOG) SystemOut.printDate("loaded component");
-		loadJava(cs, config, doc, log); // define compile type
-		if (LOG) SystemOut.printDate("loaded java");
-		loadSetting(cs, config, doc, log);
-		 if (LOG) SystemOut.printDate("loaded setting");
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load8");
-	}
-	 static void load9(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-		 long startTime = System.currentTimeMillis();
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load9");
-	}
-	 static void load10(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
-//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
-		 long startTime = System.currentTimeMillis();
-		 Log log = config.getLog("application");
-		 loadExtensionBundles(cs, config, doc, log);
-		 if (LOG) SystemOut.printDate("loaded extension bundles");
-		 CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for load10");
-
-    }
-	static void loadRunnable(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew){
-		// load everything that isn't needed for the first CFML request here.
-
-		long startTime = System.currentTimeMillis();
-		int mode = config.getMode();
-		Log log = config.getLog("application");
-
-		loadWS(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded webservice");
-		loadORM(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded orm");
-		loadCacheHandler(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded cache handlers");
-		loadRest(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded rest");
-		loadExtensions(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded extensions");
-		loadCache(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded cache");
-		loadCustomTagsMappings(cs, config, doc, mode, log);
-		if (LOG) SystemOut.printDate("loaded custom tag mappings");
-		if (LOG) SystemOut.printDate("loaded search");
-		loadScheduler(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded scheduled tasks");
 		loadDebug(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded debug");
 		loadError(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded error");
 		loadCFX(cs, config, doc, log);
+//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
 		if (LOG) SystemOut.printDate("loaded cfx");
+		loadComponent(cs, config, doc, mode, log);
+		if (LOG) SystemOut.printDate("loaded component");
 		loadUpdate(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded update");
+		loadJava(cs, config, doc, log); // define compile type
+		if (LOG) SystemOut.printDate("loaded java");
+		loadSetting(cs, config, doc, log);
+	}
+	 static void load9(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+		Log log = config.getLog("application");
+		if (LOG) SystemOut.printDate("loaded setting");
 		loadProxy(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded proxy");
 		loadRemoteClient(cs, config, doc, log);
@@ -691,28 +649,27 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		settings(config, log);
 		if (LOG) SystemOut.printDate("loaded settings2");
 		loadListener(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded listeners");
-//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
-		loadDumpWriter(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded dump writers");
-		loadGatewayEL(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded gateways");
-		loadExeLog(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded exe log");
-		loadQueue(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded queue");
-		loadMonitors(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded monitors");
-		loadLogin(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded login");
-		config.setLoadTime(System.currentTimeMillis());
-		CFMLServlet.logStartTime((System.currentTimeMillis()-startTime)+"ms for loadRunnable");
-//		try {
-//
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
 	}
+	 static void load10(ConfigServerImpl cs, ConfigImpl config, Document doc, boolean isReload, boolean doNew) throws IOException {
+		Log log = config.getLog("application");
+	    if (LOG) SystemOut.printDate("loaded listeners");
+//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
+	    loadDumpWriter(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded dump writers");
+	    loadGatewayEL(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded gateways");
+	    loadExeLog(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded exe log");
+	    loadQueue(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded queue");
+	    loadMonitors(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded monitors");
+	    loadLogin(cs, config, doc, log);
+	    if (LOG) SystemOut.printDate("loaded login");
+	    config.setLoadTime(System.currentTimeMillis());
+//	    CFMLServlet.logStartTime("XMLConfigWebFactory load after many load operations");
+
+    }
 	 static void loadPart2(ConfigServerImpl cs, ConfigImpl config, boolean isReload, boolean doNew) throws IOException {
 		int mode = config.getMode();
 		Document doc=config.doc;
