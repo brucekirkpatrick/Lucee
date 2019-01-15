@@ -49,7 +49,7 @@ import lucee.loader.util.Util;
 
 public class BundleLoader {
 	public static CFMLEngineFactory engine;
-	private static ExecutorService executor = Executors.newFixedThreadPool(4);
+	public static ExecutorService executor = Executors.newWorkStealingPool(12);
 
 	/**
 	 * build (if necessary) a bundle and load it
@@ -193,7 +193,7 @@ public class BundleLoader {
 				}
 			};
 			futureIteratorCheck.forEachRemaining(consumer);
-			executor.shutdown();
+//			executor.shutdown();
 
 			CFMLServlet.logStartTime("BundleLoader loadBundles after adding all bundles");
 			// Start the bundles
@@ -213,7 +213,7 @@ public class BundleLoader {
 		final Map<String, File> rtn = new HashMap<String, File>();
 
 		ArrayList<Future<String>> futures=new ArrayList<>();
-		ExecutorService executor = Executors.newFixedThreadPool(4);
+		ExecutorService executor = BundleLoader.executor;//Executors.newFixedThreadPool(4);
 
 		final File[] jars = jarDirectory.listFiles();
 		if (jars != null) for (int i = 0; i < jars.length; i++) {
@@ -246,7 +246,7 @@ public class BundleLoader {
 		};
 		Iterator<Future<String>> futureIteratorCheck = futures.iterator();
 		futureIteratorCheck.forEachRemaining(consumer);
-		executor.shutdown();
+//		executor.shutdown();
 		return rtn;
 	}
 
