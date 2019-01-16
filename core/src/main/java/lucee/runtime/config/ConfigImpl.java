@@ -3390,7 +3390,7 @@ public abstract class ConfigImpl implements Config {
     }
 
     public DebugEntry getDebugEntry(String ip, DebugEntry defaultValue) {
-	if (debugEntries.length == 0) return defaultValue;
+	if (debugEntries == null || debugEntries.length == 0) return defaultValue;
 	short[] sarr;
 
 	try {

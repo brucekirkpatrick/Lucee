@@ -216,7 +216,7 @@ public abstract class XMLConfigFactory {
 	return getChildByName(parent, nodeName, insertBefore, false);
     }
 
-    static Element getChildByName(Node parent, String nodeName, boolean insertBefore, boolean doNotCreate) {
+    static synchronized Element getChildByName(Node parent, String nodeName, boolean insertBefore, boolean doNotCreate) {
 	if (parent == null) return null;
 	NodeList list = parent.getChildNodes();
 	int len = list.getLength();
@@ -224,7 +224,7 @@ public abstract class XMLConfigFactory {
 	for (int i = 0; i < len; i++) {
 	    Node node = list.item(i);
 
-	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase(nodeName)) {
+	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() != null && node.getNodeName().equalsIgnoreCase(nodeName)) {
 		return (Element) node;
 	    }
 	}

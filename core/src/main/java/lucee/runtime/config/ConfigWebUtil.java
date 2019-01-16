@@ -428,7 +428,16 @@ public final class ConfigWebUtil {
 
 	boolean has = true;
 	if (config instanceof ConfigWeb) {
-	    has = ((ConfigWeb) config).getSecurityManager().getAccess(type) != SecurityManager.VALUE_NO;
+		ConfigWeb configWeb=((ConfigWeb) config);
+		if(configWeb==null){
+			throw new RuntimeException("config was null");
+		}
+		SecurityManager securityManager=configWeb.getSecurityManager();
+		while(securityManager==null){
+			Thread.yield();
+			securityManager=configWeb.getSecurityManager();
+		}
+	    has = securityManager.getAccess(type) != SecurityManager.VALUE_NO;
 	}
 	return has;
     }

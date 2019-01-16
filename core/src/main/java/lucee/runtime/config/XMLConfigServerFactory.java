@@ -110,7 +110,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 	    ArrayList<Future<Object>> futures=new ArrayList<>();
 	    ArrayList<Future<Boolean>> futures2=new ArrayList<>();
-	    ExecutorService executor = Executors.newWorkStealingPool(4);
+	    ExecutorService executor = Executors.newWorkStealingPool(6);
 
 	    Resource configFile = configDir.getRealResource("lucee-server.xml");
 	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");

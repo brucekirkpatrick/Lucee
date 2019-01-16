@@ -449,36 +449,36 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	    try {
 		    // fix stuff from older config files
-		    if (XMLConfigAdmin.fixLFI(doc)) {
-			    String xml = XMLCaster.toString(doc);
-			    // TODO 4.5->5.0
-			    xml = StringUtil.replace(xml, "<lucee-configuration", "<cfLuceeConfiguration", false);
-			    xml = StringUtil.replace(xml, "</lucee-configuration", "</cfLuceeConfiguration", false);
-			    IOUtil.write(config.getConfigFile(), xml, CharsetUtil.UTF8, false);
-			    try {
-				    doc = XMLConfigWebFactory.loadDocument(config.getConfigFile());
-			    } catch (SAXException e) {
-			    }
-		    }
-		    if (LOG) SystemOut.printDate("fixed LFI");
-
-		    if (XMLConfigAdmin.fixSalt(doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed salt");
-
-		    if (XMLConfigAdmin.fixS3(doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed S3");
-
-		    if (XMLConfigAdmin.fixPSQ(doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed PSQ");
-
-		    if (XMLConfigAdmin.fixLogging(cs, config, doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed logging");
-
-		    if (XMLConfigAdmin.fixExtension(config, doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed Extension");
-
-		    if (XMLConfigAdmin.fixComponentMappings(config, doc)) reload = true;
-		    if (LOG) SystemOut.printDate("fixed component mappings");
+//		    if (XMLConfigAdmin.fixLFI(doc)) {
+//			    String xml = XMLCaster.toString(doc);
+//			    // TODO 4.5->5.0
+//			    xml = StringUtil.replace(xml, "<lucee-configuration", "<cfLuceeConfiguration", false);
+//			    xml = StringUtil.replace(xml, "</lucee-configuration", "</cfLuceeConfiguration", false);
+//			    IOUtil.write(config.getConfigFile(), xml, CharsetUtil.UTF8, false);
+//			    try {
+//				    doc = XMLConfigWebFactory.loadDocument(config.getConfigFile());
+//			    } catch (SAXException e) {
+//			    }
+//		    }
+//		    if (LOG) SystemOut.printDate("fixed LFI");
+//
+//		    if (XMLConfigAdmin.fixSalt(doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed salt");
+//
+//		    if (XMLConfigAdmin.fixS3(doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed S3");
+//
+//		    if (XMLConfigAdmin.fixPSQ(doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed PSQ");
+//
+//		    if (XMLConfigAdmin.fixLogging(cs, config, doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed logging");
+//
+//		    if (XMLConfigAdmin.fixExtension(config, doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed Extension");
+//
+//		    if (XMLConfigAdmin.fixComponentMappings(config, doc)) reload = true;
+//		    if (LOG) SystemOut.printDate("fixed component mappings");
 
 		    // delete to big felix.log (there is also code in the loader to do this, but if the loader is not
 		    // updated ...)
@@ -498,15 +498,15 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		    }
 		    if (LOG) SystemOut.printDate("fixed to big felix.log");
 
-		    if (reload) {
-			    XMLCaster.writeTo(doc, config.getConfigFile());
-			    try {
-				    doc = XMLConfigWebFactory.loadDocument(config.getConfigFile());
-			    } catch (SAXException e) {
-			    }
-			    if (LOG) SystemOut.printDate("reload xml");
-
-		    }
+//		    if (reload) {
+//			    XMLCaster.writeTo(doc, config.getConfigFile());
+//			    try {
+//				    doc = XMLConfigWebFactory.loadDocument(config.getConfigFile());
+//			    } catch (SAXException e) {
+//			    }
+//			    if (LOG) SystemOut.printDate("reload xml");
+//
+//		    }
 
 	    } catch (Exception e) {
 		    log(config, null, e);
