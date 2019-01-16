@@ -49,7 +49,7 @@ import lucee.loader.util.Util;
 
 public class BundleLoader {
 	public static CFMLEngineFactory engine;
-	private static ExecutorService executor = Executors.newFixedThreadPool(4);
+	private static ExecutorService executor;
 
 	/**
 	 * build (if necessary) a bundle and load it
@@ -66,6 +66,8 @@ public class BundleLoader {
 	public static BundleCollection loadBundles(final CFMLEngineFactory engFac, final File cacheRootDir, final File jarDirectory, final File rc, final BundleCollection old)
 			throws IOException, BundleException {
 		if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1) System.err.println(rc.getName());
+
+		executor=Executors.newFixedThreadPool(8);
 
 		CFMLServlet.logStartTime("BundleLoader loadBundles begin");
 		engine = engFac;
