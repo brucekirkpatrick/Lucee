@@ -90,17 +90,9 @@ public final class TagLibFactory extends DefaultHandler {
     // private final static String TLD_1_0= "/resource/tld/web-cfmtaglibrary_1_0";
 
     private final static String TLD_BASE = "/resource/tld/core-base.tld";
-    private final static String TLD_CFML = "/resource/tld/core-cfml.tld";
-    private final static String TLD_LUCEE = "/resource/tld/core-lucee.tld";
+//    private final static String TLD_CFML = "/resource/tld/core-cfml.tld";
+//    private final static String TLD_LUCEE = "/resource/tld/core-lucee.tld";
 
-    /**
-     * Privater Konstruktor, der als Eingabe die TLD als File Objekt erhaelt.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @param file File Objekt auf die TLD.
-     * @throws TagLibException
-     * @throws IOException
-     */
     private TagLibFactory(TagLib lib, Resource res, Identification id) throws TagLibException {
 	this.id = id;
 	this.lib = lib == null ? new TagLib() : lib;
@@ -118,13 +110,6 @@ public final class TagLibFactory extends DefaultHandler {
 	}
     }
 
-    /**
-     * Privater Konstruktor, der als Eingabe die TLD als File Objekt erhaelt.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @param file File Objekt auf die TLD.
-     * @throws TagLibException
-     */
     private TagLibFactory(TagLib lib, InputStream stream, Identification id) throws TagLibException {
 	this.id = id;
 	this.lib = lib == null ? new TagLib() : lib;
@@ -138,12 +123,6 @@ public final class TagLibFactory extends DefaultHandler {
 	}
     }
 
-    /**
-     * Privater Konstruktor nur mit Sax Parser Definition, liest Default TLD vom System ein.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @throws TagLibException
-     */
     private TagLibFactory(TagLib lib, String systemTLD, Identification id) throws TagLibException {
 	this.id = id;
 	this.lib = lib == null ? new TagLib() : lib;
@@ -155,13 +134,6 @@ public final class TagLibFactory extends DefaultHandler {
 	this.lib.setIsCore(true);
     }
 
-    /**
-     * Generelle Initialisierungsmetode der Konstruktoren.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @param is InputStream auf die TLD.
-     * @throws TagLibException
-     */
     private void init(InputSource is) throws TagLibException {
 	// print.dumpStack();
 	try {
@@ -524,11 +496,13 @@ public final class TagLibFactory extends DefaultHandler {
     private static TagLib[] loadFromSystem(Identification id) throws TagLibException {
 
 	if (systemTLDs[CFMLEngine.DIALECT_CFML] == null) {
-	    TagLib cfml = new TagLibFactory(null, TLD_BASE, id).getLib();
+//	    TagLib cfml = new TagLibFactory(null, TLD_BASE, id).getLib();
 //		CFMLServlet.logStartTime("TagLibFactory after tag new base getLib");
 
 //	    TagLib lucee = cfml.duplicate(false);
-	    systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(cfml, TLD_CFML, id).getLib();
+//	    systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(cfml, TLD_CFML, id).getLib();
+
+		systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(null, TLD_BASE, id).getLib();
 //		CFMLServlet.logStartTime("TagLibFactory after tag new cfml getLib");
 //	    systemTLDs[CFMLEngine.DIALECT_LUCEE] = new TagLibFactory(lucee, TLD_LUCEE, id).getLib();
 	}

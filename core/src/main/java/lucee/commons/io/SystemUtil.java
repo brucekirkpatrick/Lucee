@@ -1155,20 +1155,21 @@ public final class SystemUtil {
      * @return - the value of the property referenced by propOrEnv or the defaultValue if not found
      */
     public static String getSystemPropOrEnvVar(String name, String defaultValue) {
+    	return defaultValue;
 	// env
-	String value = System.getenv(name);
-	if (!StringUtil.isEmpty(value)) return value;
-
-	// prop
-	value = System.getProperty(name);
-	if (!StringUtil.isEmpty(value)) return value;
-
-	// env 2
-	name = name.replace('.', '_').toUpperCase();
-	value = System.getenv(name);
-	if (!StringUtil.isEmpty(value)) return value;
-
-	return defaultValue;
+//	String value = System.getenv(name);
+//	if (!StringUtil.isEmpty(value)) return value;
+//
+//	// prop
+//	value = System.getProperty(name);
+//	if (!StringUtil.isEmpty(value)) return value;
+//
+//	// env 2
+//	name = name.replace('.', '_').toUpperCase();
+//	value = System.getenv(name);
+//	if (!StringUtil.isEmpty(value)) return value;
+//
+//	return defaultValue;
     }
 
     public static void addLibraryPathIfNoExist(Resource res, Log log) {

@@ -75,27 +75,9 @@ public final class FunctionLibFactory extends DefaultHandler {
 
     // private final static String FLD_1_0= "/resource/fld/web-cfmfunctionlibrary_1_0";
     private final static String FLD_BASE = "/resource/fld/core-base.fld";
-    private final static String FLD_CFML = "/resource/fld/core-cfml.fld";
-    private final static String FLD_LUCEE = "/resource/fld/core-lucee.fld";
+//    private final static String FLD_CFML = "/resource/fld/core-cfml.fld";
+//    private final static String FLD_LUCEE = "/resource/fld/core-lucee.fld";
 
-    /**
-     * Privater Konstruktor, der als Eingabe die FLD als InputStream erhaelt.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @param is InputStream auf die TLD.
-     * @throws FunctionLibException
-     * 
-     *             private FunctionLibFactory(String saxParser,InputSource is) throws
-     *             FunctionLibException { super(); init(saxParser,is); }
-     */
-
-    /**
-     * Privater Konstruktor, der als Eingabe die FLD als File Objekt erhaelt.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @param file File Objekt auf die TLD.
-     * @throws FunctionLibException
-     */
     private FunctionLibFactory(FunctionLib lib, Resource file, Identification id, boolean core) throws FunctionLibException {
 	super();
 	this.id = id;
@@ -114,12 +96,6 @@ public final class FunctionLibFactory extends DefaultHandler {
 	}
     }
 
-    /**
-     * Privater Konstruktor nur mit Sax Parser Definition, liest Default FLD vom System ein.
-     * 
-     * @param saxParser String Klassenpfad zum Sax Parser.
-     * @throws FunctionLibException
-     */
     private FunctionLibFactory(FunctionLib lib, String systemFLD, Identification id, boolean core) throws FunctionLibException {
 	super();
 	this.id = id;
@@ -412,10 +388,12 @@ public final class FunctionLibFactory extends DefaultHandler {
      */
     public static FunctionLib[] loadFromSystem(Identification id) throws FunctionLibException {
 	if (systemFLDs[CFMLEngine.DIALECT_CFML] == null) {
-	    FunctionLib cfml = new FunctionLibFactory(null, FLD_BASE, id, true).getLib();
+//	    FunctionLib cfml = new FunctionLibFactory(null, FLD_BASE, id, true).getLib();
 //		CFMLServlet.logStartTime("FunctionLibFactory after new function base getLib");
 //	    FunctionLib lucee = cfml.duplicate(false);
-	    systemFLDs[CFMLEngine.DIALECT_CFML] = new FunctionLibFactory(cfml, FLD_CFML, id, true).getLib();
+//	    systemFLDs[CFMLEngine.DIALECT_CFML] = new FunctionLibFactory(cfml, FLD_CFML, id, true).getLib();
+
+		systemFLDs[CFMLEngine.DIALECT_CFML] = new FunctionLibFactory(null, FLD_BASE, id, true).getLib();
 //		CFMLServlet.logStartTime("FunctionLibFactory after function cfml getLib");
 //	    systemFLDs[CFMLEngine.DIALECT_LUCEE] = new FunctionLibFactory(lucee, FLD_LUCEE, id, true).getLib();
 	}

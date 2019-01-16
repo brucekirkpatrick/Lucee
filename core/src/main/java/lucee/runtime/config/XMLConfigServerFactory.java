@@ -110,7 +110,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 	    ArrayList<Future<Object>> futures=new ArrayList<>();
 	    ArrayList<Future<Boolean>> futures2=new ArrayList<>();
-	    ExecutorService executor = Executors.newWorkStealingPool(6);
+	    ExecutorService executor = Executors.newWorkStealingPool(8);
 
 	    Resource configFile = configDir.getRealResource("lucee-server.xml");
 	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");
@@ -169,11 +169,11 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    return config;
 	    } ));
 
-	    futures.add(executor.submit(()->{
-		    createContextFiles(configDir, doNew);
-//		    CFMLServlet.logStartTime("XMLConfigServerFactory after createContextFiles (in a thread)");
-		    return true;
-	    } ));
+//	    futures.add(executor.submit(()->{
+//		    createContextFiles(configDir, doNew);
+////		    CFMLServlet.logStartTime("XMLConfigServerFactory after createContextFiles (in a thread)");
+//		    return true;
+//	    } ));
 
 	    TagLib tagLib=null;
 	    FunctionLib functionLib=null;
@@ -305,84 +305,84 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
     private static void createContextFiles(Resource configDir, boolean doNew) {
 
-	Resource contextDir = configDir.getRealResource("context");
-	Resource adminDir = contextDir.getRealResource("admin");
-
-	// Debug
-	Resource debug = adminDir.getRealResource("debug");
-	create("/resource/context/admin/debug/", new String[] { "Debug.cfc", "Field.cfc", "Group.cfc", "Classic.cfc", "Modern.cfc", "Comment.cfc" }, debug, doNew);
-
-	// DB Drivers types
-	Resource dbDir = adminDir.getRealResource("dbdriver");
-	Resource typesDir = dbDir.getRealResource("types");
-	create("/resource/context/admin/dbdriver/types/", new String[] { "IDriver.cfc", "Driver.cfc", "IDatasource.cfc", "IDriverSelector.cfc", "Field.cfc" }, typesDir, doNew);
-
-	create("/resource/context/admin/dbdriver/", new String[] { "Other.cfc" }, dbDir, doNew);
-
-	// Cache Drivers
-	Resource cDir = adminDir.getRealResource("cdriver");
-	create("/resource/context/admin/cdriver/", new String[] { "Cache.cfc", "RamCache.cfc"
-		// ,"EHCache.cfc"
-		, "Field.cfc", "Group.cfc" }, cDir, doNew);
-
-	Resource wcdDir = configDir.getRealResource("web-context-deployment/admin");
-	Resource cdDir = wcdDir.getRealResource("cdriver");
-
-	try {
-	    ResourceUtil.deleteEmptyFolders(wcdDir);
-	}
-	catch (IOException e) {
-	    SystemOut.printDate(e);
-	}
-
-	// Mail Server Drivers
-	Resource msDir = adminDir.getRealResource("mailservers");
-	create("/resource/context/admin/mailservers/",
-		new String[] { "Other.cfc", "GMail.cfc", "GMX.cfc", "iCloud.cfc", "Yahoo.cfc", "Outlook.cfc", "MailCom.cfc", "MailServer.cfc" }, msDir, doNew);
-
-	// Gateway Drivers
-	Resource gDir = adminDir.getRealResource("gdriver");
-	create("/resource/context/admin/gdriver/", new String[] { "TaskGatewayDriver.cfc", "DirectoryWatcher.cfc", "MailWatcher.cfc", "Gateway.cfc", "Field.cfc", "Group.cfc" },
-		gDir, doNew);
-
-	// Logging/appender
-	Resource app = adminDir.getRealResource("logging/appender");
-	create("/resource/context/admin/logging/appender/",
-		new String[] { "DatasourceAppender.cfc", "ConsoleAppender.cfc", "ResourceAppender.cfc", "Appender.cfc", "Field.cfc", "Group.cfc" }, app, doNew);
-
-	// Logging/layout
-	Resource lay = adminDir.getRealResource("logging/layout");
-	create("/resource/context/admin/logging/layout/",
-		new String[] { "ClassicLayout.cfc", "HTMLLayout.cfc", "PatternLayout.cfc", "XMLLayout.cfc", "Layout.cfc", "Field.cfc", "Group.cfc" }, lay, doNew);
-
-	// Security
-	Resource secDir = configDir.getRealResource("security");
-	if (!secDir.exists()) secDir.mkdirs();
-	Resource res = create("/resource/security/", "cacerts", secDir, false);
-	System.setProperty("javax.net.ssl.trustStore", res.toString());
-
-	// Jacob
-	if (SystemUtil.isWindows()) {
-
-	    Resource binDir = configDir.getRealResource("bin");
-	    if (binDir != null) {
-
-		if (!binDir.exists()) binDir.mkdirs();
-
-		String name = (SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "jacob-x64.dll" : "jacob-i586.dll";
-
-		Resource jacob = binDir.getRealResource(name);
-		if (!jacob.exists()) {
-		    createFileFromResourceEL("/resource/bin/windows" + ((SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "64" : "32") + "/" + name, jacob);
-		}
-		// SystemOut.printDate(SystemUtil.PRINTWRITER_OUT,"set-property ->
-		// "+LibraryLoader.JACOB_DLL_PATH+":"+jacob.getAbsolutePath());
-		System.setProperty(LibraryLoader.JACOB_DLL_PATH, jacob.getAbsolutePath());
-		// SystemOut.printDate(SystemUtil.PRINTWRITER_OUT,"set-property ->
-		// "+LibraryLoader.JACOB_DLL_NAME+":"+name);
-		System.setProperty(LibraryLoader.JACOB_DLL_NAME, name);
-	    }
-	}
+//	Resource contextDir = configDir.getRealResource("context");
+//	Resource adminDir = contextDir.getRealResource("admin");
+//
+//	// Debug
+//	Resource debug = adminDir.getRealResource("debug");
+//	create("/resource/context/admin/debug/", new String[] { "Debug.cfc", "Field.cfc", "Group.cfc", "Classic.cfc", "Modern.cfc", "Comment.cfc" }, debug, doNew);
+//
+//	// DB Drivers types
+//	Resource dbDir = adminDir.getRealResource("dbdriver");
+//	Resource typesDir = dbDir.getRealResource("types");
+//	create("/resource/context/admin/dbdriver/types/", new String[] { "IDriver.cfc", "Driver.cfc", "IDatasource.cfc", "IDriverSelector.cfc", "Field.cfc" }, typesDir, doNew);
+//
+//	create("/resource/context/admin/dbdriver/", new String[] { "Other.cfc" }, dbDir, doNew);
+//
+//	// Cache Drivers
+//	Resource cDir = adminDir.getRealResource("cdriver");
+//	create("/resource/context/admin/cdriver/", new String[] { "Cache.cfc", "RamCache.cfc"
+//		// ,"EHCache.cfc"
+//		, "Field.cfc", "Group.cfc" }, cDir, doNew);
+//
+//	Resource wcdDir = configDir.getRealResource("web-context-deployment/admin");
+//	Resource cdDir = wcdDir.getRealResource("cdriver");
+//
+//	try {
+//	    ResourceUtil.deleteEmptyFolders(wcdDir);
+//	}
+//	catch (IOException e) {
+//	    SystemOut.printDate(e);
+//	}
+//
+//	// Mail Server Drivers
+//	Resource msDir = adminDir.getRealResource("mailservers");
+//	create("/resource/context/admin/mailservers/",
+//		new String[] { "Other.cfc", "GMail.cfc", "GMX.cfc", "iCloud.cfc", "Yahoo.cfc", "Outlook.cfc", "MailCom.cfc", "MailServer.cfc" }, msDir, doNew);
+//
+//	// Gateway Drivers
+//	Resource gDir = adminDir.getRealResource("gdriver");
+//	create("/resource/context/admin/gdriver/", new String[] { "TaskGatewayDriver.cfc", "DirectoryWatcher.cfc", "MailWatcher.cfc", "Gateway.cfc", "Field.cfc", "Group.cfc" },
+//		gDir, doNew);
+//
+//	// Logging/appender
+//	Resource app = adminDir.getRealResource("logging/appender");
+//	create("/resource/context/admin/logging/appender/",
+//		new String[] { "DatasourceAppender.cfc", "ConsoleAppender.cfc", "ResourceAppender.cfc", "Appender.cfc", "Field.cfc", "Group.cfc" }, app, doNew);
+//
+//	// Logging/layout
+//	Resource lay = adminDir.getRealResource("logging/layout");
+//	create("/resource/context/admin/logging/layout/",
+//		new String[] { "ClassicLayout.cfc", "HTMLLayout.cfc", "PatternLayout.cfc", "XMLLayout.cfc", "Layout.cfc", "Field.cfc", "Group.cfc" }, lay, doNew);
+//
+//	// Security
+//	Resource secDir = configDir.getRealResource("security");
+//	if (!secDir.exists()) secDir.mkdirs();
+//	Resource res = create("/resource/security/", "cacerts", secDir, false);
+//	System.setProperty("javax.net.ssl.trustStore", res.toString());
+//
+//	// Jacob
+//	if (SystemUtil.isWindows()) {
+//
+//	    Resource binDir = configDir.getRealResource("bin");
+//	    if (binDir != null) {
+//
+//		if (!binDir.exists()) binDir.mkdirs();
+//
+//		String name = (SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "jacob-x64.dll" : "jacob-i586.dll";
+//
+//		Resource jacob = binDir.getRealResource(name);
+//		if (!jacob.exists()) {
+//		    createFileFromResourceEL("/resource/bin/windows" + ((SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "64" : "32") + "/" + name, jacob);
+//		}
+//		// SystemOut.printDate(SystemUtil.PRINTWRITER_OUT,"set-property ->
+//		// "+LibraryLoader.JACOB_DLL_PATH+":"+jacob.getAbsolutePath());
+//		System.setProperty(LibraryLoader.JACOB_DLL_PATH, jacob.getAbsolutePath());
+//		// SystemOut.printDate(SystemUtil.PRINTWRITER_OUT,"set-property ->
+//		// "+LibraryLoader.JACOB_DLL_NAME+":"+name);
+//		System.setProperty(LibraryLoader.JACOB_DLL_NAME, name);
+//	    }
+//	}
     }
 
 }

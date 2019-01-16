@@ -67,7 +67,7 @@ public class BundleLoader {
 			throws IOException, BundleException {
 		if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1) System.err.println(rc.getName());
 
-		executor=Executors.newWorkStealingPool(6);
+		executor=Executors.newWorkStealingPool(8);
 
 		CFMLServlet.logStartTime("BundleLoader loadBundles begin");
 		engine = engFac;
