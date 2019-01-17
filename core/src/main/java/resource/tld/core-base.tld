@@ -610,6 +610,20 @@
 		<attribute-type>fixed</attribute-type>
 	</tag>
 
+	<tag>
+		<name>dump</name>
+		<tag-class>lucee.runtime.tag.Dump</tag-class>
+		<body-content>empty</body-content>
+		<body-rtexprvalue>false</body-rtexprvalue>
+		<description>Visualize the object.</description>
+		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>any</type>
+			<name>var</name>
+			<required>true</required>
+			<description>Any cfml variable or simple value.</description>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>define</name>
