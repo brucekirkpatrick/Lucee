@@ -1,1 +1,0 @@
-<html><head></head><body><cfhtmlhead text="{first}"><cfhtmlhead action="read" variable="res"><cfoutput>#res#</cfoutput></body></html>

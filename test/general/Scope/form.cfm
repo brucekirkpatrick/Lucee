@@ -1,1 +1,0 @@
-<cfoutput><cfloop struct="#form#" index="key" item="value">#key#:#value#;</cfloop></cfoutput>

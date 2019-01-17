@@ -1,3 +1,0 @@
-interface {
-	void function f();
-}

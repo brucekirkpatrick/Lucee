@@ -1,1 +1,0 @@
-<cfapplication searchImplicitScopes="#url.searchImplicitScopes#">

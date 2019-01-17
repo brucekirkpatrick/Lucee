@@ -1,5 +1,0 @@
-component {
-	whatever function test() {
-		
-	}
-}

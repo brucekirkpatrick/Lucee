@@ -1,3 +1,0 @@
-interface {
-	function interinter();
-}

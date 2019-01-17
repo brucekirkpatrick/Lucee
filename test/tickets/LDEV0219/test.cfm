@@ -1,4 +1,0 @@
-<cfscript>
-	(function(){})();
-
-</cfscript>

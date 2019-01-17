@@ -1,1 +1,0 @@
-<html><head></head><body><cfhtmlhead action="write" text="{first}"><cfhtmlhead action="write" text="{second}"></body></html>
