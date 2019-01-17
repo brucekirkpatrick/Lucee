@@ -9,7 +9,7 @@
   <property name="bundleName" value="Lucee Core"/>
   <property name="bundleSymbolicName" value="lucee.core"/>
    
-  <property name="pack200"          value="false"/>
+  <!--<property name="pack200"          value="false"/>-->
 
 
 <!-- TODO get the version number from manifest.mf -->
@@ -19,170 +19,170 @@
       <format property="NOW" pattern="yyyy/MM/dd HH:mm:ss z" locale="en,GB"/>
   </tstamp> 
   
-  <scriptdef name="pack200File" language="javascript">
-     <attribute name="file" />
-     <attribute name="doit" />
-     <![CDATA[
+  <!--<scriptdef name="pack200File" language="javascript">-->
+     <!--<attribute name="file" />-->
+     <!--<attribute name="doit" />-->
+     <!--<![CDATA[-->
 
 
-     var trgJar = new java.io.File(attributes.get("file"));
-     var doit = attributes.get("doit").equalsIgnoreCase("true");
-     if(doit) {
-     
-      // prepare Pack200
-      var packer = java.util.jar.Pack200.newPacker();
+     <!--var trgJar = new java.io.File(attributes.get("file"));-->
+     <!--var doit = attributes.get("doit").equalsIgnoreCase("true");-->
+     <!--if(doit) {-->
+     <!---->
+      <!--// prepare Pack200-->
+      <!--var packer = java.util.jar.Pack200.newPacker();-->
 
-      // Initialize the state by setting the desired properties
-      var p = packer.properties();
-      p.put(java.util.jar.Pack200.Packer.EFFORT, "7");  // default is "5"
-      p.put(java.util.jar.Pack200.Packer.SEGMENT_LIMIT, "-1");
-      p.put(java.util.jar.Pack200.Packer.KEEP_FILE_ORDER, java.util.jar.Pack200.Packer.FALSE);
-      p.put(java.util.jar.Pack200.Packer.MODIFICATION_TIME, java.util.jar.Pack200.Packer.LATEST);
-      p.put(java.util.jar.Pack200.Packer.DEFLATE_HINT, java.util.jar.Pack200.Packer.FALSE);
-      //p.put(java.util.jar.Pack200.Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", java.util.jar.Pack200.Packer.STRIP);
-      p.put(java.util.jar.Pack200.Packer.UNKNOWN_ATTRIBUTE, java.util.jar.Pack200.Packer.ERROR);
-    
-      var name=trgJar.getName()+".pack.gz";
-      var trgPack=new java.io.File( trgJar.getParentFile() , name);
+      <!--// Initialize the state by setting the desired properties-->
+      <!--var p = packer.properties();-->
+      <!--p.put(java.util.jar.Pack200.Packer.EFFORT, "7");  // default is "5"-->
+      <!--p.put(java.util.jar.Pack200.Packer.SEGMENT_LIMIT, "-1");-->
+      <!--p.put(java.util.jar.Pack200.Packer.KEEP_FILE_ORDER, java.util.jar.Pack200.Packer.FALSE);-->
+      <!--p.put(java.util.jar.Pack200.Packer.MODIFICATION_TIME, java.util.jar.Pack200.Packer.LATEST);-->
+      <!--p.put(java.util.jar.Pack200.Packer.DEFLATE_HINT, java.util.jar.Pack200.Packer.FALSE);-->
+      <!--//p.put(java.util.jar.Pack200.Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", java.util.jar.Pack200.Packer.STRIP);-->
+      <!--p.put(java.util.jar.Pack200.Packer.UNKNOWN_ATTRIBUTE, java.util.jar.Pack200.Packer.ERROR);-->
+    <!---->
+      <!--var name=trgJar.getName()+".pack.gz";-->
+      <!--var trgPack=new java.io.File( trgJar.getParentFile() , name);-->
 
-      var is=null;
-      var os=null;
-      
-      try {
-        var echo = project.createTask( "echo" );
-        echo.setMessage("- pack "+name);
-        echo.perform();
+      <!--var is=null;-->
+      <!--var os=null;-->
+      <!---->
+      <!--try {-->
+        <!--var echo = project.createTask( "echo" );-->
+        <!--echo.setMessage("- pack "+name);-->
+        <!--echo.perform();-->
 
-        is = new java.util.jar.JarInputStream(new java.io.FileInputStream(trgJar));
-        os=new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(trgPack));
-        packer.pack(is, os);
-        trgJar.delete();
+        <!--is = new java.util.jar.JarInputStream(new java.io.FileInputStream(trgJar));-->
+        <!--os=new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(trgPack));-->
+        <!--packer.pack(is, os);-->
+        <!--trgJar.delete();-->
 
-      }
-      finally {
-        if(is!=null) {
-          try {is.close();} catch(e) {}
-        }
-        if(os!=null) {
-          try {os.close();} catch(e) {}
-        }
-      } 
-    }
-    ]]>
-  </scriptdef>
+      <!--}-->
+      <!--finally {-->
+        <!--if(is!=null) {-->
+          <!--try {is.close();} catch(e) {}-->
+        <!--}-->
+        <!--if(os!=null) {-->
+          <!--try {os.close();} catch(e) {}-->
+        <!--}-->
+      <!--} -->
+    <!--}-->
+    <!--]]>-->
+  <!--</scriptdef>-->
 
-  <scriptdef name="pack200Ext" language="javascript">
-     <attribute name="file" />
-     <attribute name="tmpdir" />
-     <attribute name="doit" />
-     <![CDATA[
-     var strFile = attributes.get("file");
-     var strTmpDir = attributes.get("tmpdir");
-     
+  <!--<scriptdef name="pack200Ext" language="javascript">-->
+     <!--<attribute name="file" />-->
+     <!--<attribute name="tmpdir" />-->
+     <!--<attribute name="doit" />-->
+     <!--<![CDATA[-->
+     <!--var strFile = attributes.get("file");-->
+     <!--var strTmpDir = attributes.get("tmpdir");-->
+     <!---->
 
-     var file = new java.io.File(strFile);
-     var tmpDir = new java.io.File(strTmpDir);
-     
-     tmpDir.mkdirs();
-    
+     <!--var file = new java.io.File(strFile);-->
+     <!--var tmpDir = new java.io.File(strTmpDir);-->
+     <!---->
+     <!--tmpDir.mkdirs();-->
+    <!---->
 
-     var doit = attributes.get("doit").equalsIgnoreCase("true");
-     if(doit) {
+     <!--var doit = attributes.get("doit").equalsIgnoreCase("true");-->
+     <!--if(doit) {-->
 
-     // extract jar
-      var unzip = project.createTask( "unzip" );
-      unzip.setSrc(file);
-      unzip.setDest(tmpDir);
-      unzip.perform();
-      
-      var echo = project.createTask( "echo" );
-      echo.setMessage("- unzip "+strFile);
-      echo.perform();
-     
-      // prepare Pack200
-      var packer = java.util.jar.Pack200.newPacker();
+     <!--// extract jar-->
+      <!--var unzip = project.createTask( "unzip" );-->
+      <!--unzip.setSrc(file);-->
+      <!--unzip.setDest(tmpDir);-->
+      <!--unzip.perform();-->
+      <!---->
+      <!--var echo = project.createTask( "echo" );-->
+      <!--echo.setMessage("- unzip "+strFile);-->
+      <!--echo.perform();-->
+     <!---->
+      <!--// prepare Pack200-->
+      <!--var packer = java.util.jar.Pack200.newPacker();-->
 
-      // Initialize the state by setting the desired properties
-      var p = packer.properties();
-      p.put(java.util.jar.Pack200.Packer.EFFORT, "7");  // default is "5"
-      p.put(java.util.jar.Pack200.Packer.SEGMENT_LIMIT, "-1");
-      p.put(java.util.jar.Pack200.Packer.KEEP_FILE_ORDER, java.util.jar.Pack200.Packer.FALSE);
-      p.put(java.util.jar.Pack200.Packer.MODIFICATION_TIME, java.util.jar.Pack200.Packer.LATEST);
-      p.put(java.util.jar.Pack200.Packer.DEFLATE_HINT, java.util.jar.Pack200.Packer.FALSE);
-      //p.put(java.util.jar.Pack200.Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", java.util.jar.Pack200.Packer.STRIP);
-      p.put(java.util.jar.Pack200.Packer.UNKNOWN_ATTRIBUTE, java.util.jar.Pack200.Packer.ERROR);
-      
-
-
-      var jarsDir = new java.io.File(tmpDir,"jars");
-      if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"jar");
-      if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"bundles");
-      if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"bundle");
-      if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"libs");
-      if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"lib");
-
-      var echo = project.createTask( "echo" );
-      echo.setMessage("jars: "+jarsDir);
-      echo.perform();
+      <!--// Initialize the state by setting the desired properties-->
+      <!--var p = packer.properties();-->
+      <!--p.put(java.util.jar.Pack200.Packer.EFFORT, "7");  // default is "5"-->
+      <!--p.put(java.util.jar.Pack200.Packer.SEGMENT_LIMIT, "-1");-->
+      <!--p.put(java.util.jar.Pack200.Packer.KEEP_FILE_ORDER, java.util.jar.Pack200.Packer.FALSE);-->
+      <!--p.put(java.util.jar.Pack200.Packer.MODIFICATION_TIME, java.util.jar.Pack200.Packer.LATEST);-->
+      <!--p.put(java.util.jar.Pack200.Packer.DEFLATE_HINT, java.util.jar.Pack200.Packer.FALSE);-->
+      <!--//p.put(java.util.jar.Pack200.Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", java.util.jar.Pack200.Packer.STRIP);-->
+      <!--p.put(java.util.jar.Pack200.Packer.UNKNOWN_ATTRIBUTE, java.util.jar.Pack200.Packer.ERROR);-->
+      <!---->
 
 
+      <!--var jarsDir = new java.io.File(tmpDir,"jars");-->
+      <!--if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"jar");-->
+      <!--if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"bundles");-->
+      <!--if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"bundle");-->
+      <!--if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"libs");-->
+      <!--if(!jarsDir.isDirectory())jarsDir = new java.io.File(tmpDir,"lib");-->
 
-      if(jarsDir.isDirectory()) {
-
-        var jars=jarsDir.listFiles();
-        for(var i=0;i<jars.length;i++) {
-          var trgJar=jars[i];
-          if(!trgJar.getName().endsWith(".jar")) continue;
-
-          var name=trgJar.getName()+".pack.gz";
-          var trgPack=new java.io.File( trgJar.getParentFile() , name);
-
-          var is=null;
-          var os=null;
-          
-          try {
-            var echo = project.createTask( "echo" );
-            echo.setMessage("- pack "+name);
-            echo.perform();
+      <!--var echo = project.createTask( "echo" );-->
+      <!--echo.setMessage("jars: "+jarsDir);-->
+      <!--echo.perform();-->
 
 
-            is = new java.util.jar.JarInputStream(new java.io.FileInputStream(trgJar));
-            os=new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(trgPack));
-            packer.pack(is, os);
-            trgJar.delete();
 
-          }
-          catch(e) {
-            var echo = project.createTask( "echo" );
-            echo.setMessage("- cannot pack "+trgPack);
-            echo.perform();
-            if(trgPack.isFile())trgPack.delete();
-            // sometime a jar cannot be compressed, in that case we simply keep it as it is
-          }
-          finally {
-            if(is!=null) {
-              try {is.close();} catch(e) {}
-            }
-            if(os!=null) {
-              try {os.close();} catch(e) {}
-            }
-          } // finally
-        } // for
+      <!--if(jarsDir.isDirectory()) {-->
 
-        var echo = project.createTask( "echo" );
-        echo.setMessage("- zip "+strFile);
-        echo.perform();
+        <!--var jars=jarsDir.listFiles();-->
+        <!--for(var i=0;i<jars.length;i++) {-->
+          <!--var trgJar=jars[i];-->
+          <!--if(!trgJar.getName().endsWith(".jar")) continue;-->
 
-        var zip = project.createTask( "zip" );
-        zip.setBasedir(tmpDir);
-        zip.setDestFile(file);
-        zip.perform();
+          <!--var name=trgJar.getName()+".pack.gz";-->
+          <!--var trgPack=new java.io.File( trgJar.getParentFile() , name);-->
 
-     
-      } // if
-    } // do it
-    ]]>
-  </scriptdef>
+          <!--var is=null;-->
+          <!--var os=null;-->
+          <!---->
+          <!--try {-->
+            <!--var echo = project.createTask( "echo" );-->
+            <!--echo.setMessage("- pack "+name);-->
+            <!--echo.perform();-->
+
+
+            <!--is = new java.util.jar.JarInputStream(new java.io.FileInputStream(trgJar));-->
+            <!--os=new java.util.zip.GZIPOutputStream(new java.io.FileOutputStream(trgPack));-->
+            <!--packer.pack(is, os);-->
+            <!--trgJar.delete();-->
+
+          <!--}-->
+          <!--catch(e) {-->
+            <!--var echo = project.createTask( "echo" );-->
+            <!--echo.setMessage("- cannot pack "+trgPack);-->
+            <!--echo.perform();-->
+            <!--if(trgPack.isFile())trgPack.delete();-->
+            <!--// sometime a jar cannot be compressed, in that case we simply keep it as it is-->
+          <!--}-->
+          <!--finally {-->
+            <!--if(is!=null) {-->
+              <!--try {is.close();} catch(e) {}-->
+            <!--}-->
+            <!--if(os!=null) {-->
+              <!--try {os.close();} catch(e) {}-->
+            <!--}-->
+          <!--} // finally-->
+        <!--} // for-->
+
+        <!--var echo = project.createTask( "echo" );-->
+        <!--echo.setMessage("- zip "+strFile);-->
+        <!--echo.perform();-->
+
+        <!--var zip = project.createTask( "zip" );-->
+        <!--zip.setBasedir(tmpDir);-->
+        <!--zip.setDestFile(file);-->
+        <!--zip.perform();-->
+
+     <!---->
+      <!--} // if-->
+    <!--} // do it-->
+    <!--]]>-->
+  <!--</scriptdef>-->
 
 
 
@@ -310,8 +310,10 @@
 
 
   <target name="init">
-    
 
+
+      <property name="baseDir" location=".."/>
+      <property name="rootDir" location=".."/>
     <property name="srcLoader" location="${rootDir}/loader/src/main/java"/>
     <property name="srcCore" location="${rootDir}/core/src/main/java"/>
     <property name="coreManifest" location="${srcCore}/META-INF/MANIFEST.MF"/>
@@ -428,9 +430,6 @@
       <attribute name="Bundle-SymbolicName" value="${bundleSymbolicName}"/>
       <attribute name="Bundle-ManifestVersion" value="2"/>
       <attribute name="Built-Date" value="${NOW}"/>
-      <!-- <attribute name="State" value="${state}"/>
-      <attribute name="Minor-Name" value="${name}"/>
-      <attribute name="Minor-Name-Explanation" value="${name.explanation}"/>-->
     </manifest>
   </target>
  
@@ -456,7 +455,6 @@
       <attribute name="Created-By" value="Lucee build process"/>
 
     </manifest>
-    <!-- TODO load dyn -->
   </target>
 
  
@@ -478,7 +476,7 @@
         file="${trgLoader}/${version}.lco" 
         tofile="${outputDir}/core/core.lco"/>
 
-    <pack200File file="${outputDir}/core/core.lco" doit="${pack200}"/>
+    <!--<pack200File file="${outputDir}/core/core.lco" doit="${pack200}"/>-->
 
     <!-- version -->
     <currentTime property="ct" />
@@ -500,52 +498,57 @@
   </target>
 
   <target name="buildLoaderAnt" depends="_core,setAntEnv,addFelix" description="generate the loader jar" >  
-    <echots message="build core"/>
-    
-    <!-- create core -->
-    <jar 
-        basedir="${core}" 
-        jarfile="${temp}/loader/core/core.lco" 
-        manifest="${core}/META-INF/MANIFEST.MF"/> 
+        <echots message="build core"/>
+
+        <!-- create core -->
+        <jar index="true" indexMetaInf="true"
+        basedir="${core}"
+        jarfile="${trgLoader}/${version}.lco"
+        manifest="${core}/META-INF/MANIFEST.MF"/>
 
 
 
-    <pack200File file="${temp}/loader/core/core.lco" doit="${pack200}"/>
-    
-    <!-- version -->
-    <currentTime property="ct" />
-    <echo file="${temp}/loader/lucee/version" message="${version}:${ct}" encoding="UTF-8"/>
+        <!--<pack200File file="${temp}/loader/core/core.lco" doit="${pack200}"/>-->
 
-    <!-- copy to core to the target folder -->
-    <copy 
-        file="${temp}/loader/core/core.lco" 
-        tofile="${trgLoader}/${version}.lco"/>
-    <copy 
-        file="${temp}/loader/core/core.lco" 
+        <!-- version -->
+        <currentTime property="ct" />
+        <echo file="${temp}/loader/lucee/version" message="${version}:${ct}" encoding="UTF-8"/>
+
+        <!-- copy to core to the target folder -->
+        <!--<move-->
+        <!--file="${temp}/loader/core/core.lco" -->
+        <!--tofile="${trgLoader}/${version}.lco"/>-->
+        <copy
+        file="${trgLoader}/${version}.lco"
         tofile="C:/lucee/tomcat/lucee-server/patches/${version}.lco"/>
 
 
 
-    <!-- <delete dir="${temp}"/>-->
-    <echots message="done"/>
+        <!-- <delete dir="${temp}"/>-->
+        <echots message="done"/>
     
   </target>
 
     <target name="restartLuceeEngine" depends="_core,setAntEnv,addFelix" description="generate the loader jar" >
-    <echots message="restarting lucee engine"/>
-    <get src="http://localhost:9988/restart-lucee.cfc?method=index" dest="C:/lucee/tomcat/webapps/ROOT/restarted.txt" />
-    </target>
+        <echots message="restarting lucee engine"/>
+        <get src="http://localhost:9988/restart-lucee.cfc?method=index" dest="C:/lucee/tomcat/webapps/ROOT/restarted.txt" />
+        </target>
 
-    <target name="buildFullLuceeJar">
-    <echots message="build loader"/>
-  
-    <!-- genrates the jar from the loader -->
-    <jar
-      jarfile="${trgLoader}/lucee-${version}.jar" 
-      manifest="${goal}/META-INF/MANIFEST.MF">
-        <fileset dir="${temp}/loader" />
-        <fileset dir="${rootDir}/jar-resources" />
-    </jar>
+        <target name="buildFullLuceeJar">
+        <echots message="build loader"/>
+
+            <jar index="true" indexMetaInf="true"
+                    basedir="${core}"
+                    jarfile="${temp}/loader/core/core.lco"
+                    manifest="${core}/META-INF/MANIFEST.MF"/>
+
+        <jar index="true" indexMetaInf="true"
+          jarfile="${trgLoader}/lucee-${version}.jar"
+          manifest="${goal}/META-INF/MANIFEST.MF">
+            <fileset dir="${temp}/loader/" />
+            <fileset dir="${rootDir}/jar-resources" />
+        </jar>
+        <copy file="${trgLoader}/lucee-${version}.jar" tofile="C:/lucee/lib/lucee-${version}.jar"/>
 	</target>
 
 </project>

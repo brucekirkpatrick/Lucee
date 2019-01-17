@@ -19,16 +19,14 @@
       <artifact:pom id="pom" file="pom.xml" />
 
       <!-- dependecies -->
-      <artifact:dependencies filesetId="mydeps" pomRefId="pom" />
+      <artifact:dependencies filesetId="mydeps" id="mydeps" pomRefId="pom" />
       <pathconvert property="dependencies" refid="mydeps"/>
 
       <property name="runtime_classpath" value="${java.class.path}:${dependencies}"/>
       <property name="outputDir" location="target/classes"/>
       <property name="target" location="target"/>
-      <property name="baseDir" location=".."/>
-      <property name="rootDir" location=".."/>
 
-  </target> 
+  </target>
 
   <target name="fastdevrestart" depends="setEnv,buildLoaderAnt,restartLuceeEngine" description="build Lucee core lco and restart local lucee">
 
@@ -37,8 +35,8 @@
 <target name="fastdev" depends="setEnv,buildLoaderAnt" description="build Lucee core lco only">
 
 </target>
-  <target name="fastdevjar" depends="setEnv,buildLoaderAnt,buildFullLuceeJar" description="build only Lucee itself">
+  <target name="fastdevjar" depends="setEnv,_core,setAntEnv,addFelix,buildFullLuceeJar" description="build only Lucee itself">
 
   </target>
-  
+
 </project>
