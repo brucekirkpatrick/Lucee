@@ -46,7 +46,7 @@ public class PasswordImpl implements Password {
 	this.origin = origin;
     }
 
-    private PasswordImpl(int origin, String rawPassword, String salt) {
+    public PasswordImpl(int origin, String rawPassword, String salt) {
 	this.rawPassword = rawPassword;
 	this.password = hash(rawPassword, salt);
 	this.salt = salt;

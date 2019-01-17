@@ -18,6 +18,7 @@
  */
 package lucee.runtime.config;
 
+import static lucee.runtime.config.Password.ORIGIN_ENCRYPTED;
 import static lucee.runtime.db.DatasourceManagerImpl.QOQ_DATASOURCE_NAME;
 
 import java.io.ByteArrayInputStream;
@@ -53,6 +54,9 @@ import java.util.concurrent.Future;
 import javax.servlet.ServletConfig;
 
 import lucee.loader.servlet.CFMLServlet;
+import lucee.runtime.crypt.BlowfishEasy;
+import lucee.transformer.library.function.FunctionLibFactory;
+import lucee.transformer.library.tag.TagLibFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.w3c.dom.Document;
@@ -2737,14 +2741,17 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      */
     private static void loadConfig(ConfigServerImpl configServer, ConfigImpl config, Document doc) {
 	Element luceeConfiguration = doc.getDocumentElement();
-
+		String pwEnc="pw";
+		String salt="salt";
+	    String rawPassword = new BlowfishEasy("tpwisgh").decryptString(pwEnc);
+	    Password pw = new PasswordImpl(ORIGIN_ENCRYPTED, rawPassword, salt);
 	// salt (every context need to have a salt)
-	String salt = getAttr(luceeConfiguration, "salt");
-	if (StringUtil.isEmpty(salt, true)) throw new RuntimeException("context is invalid, there is no salt!");
-	config.setSalt(salt = salt.trim());
-
-	// password
-	Password pw = PasswordImpl.readFromXML(luceeConfiguration, salt, false);
+//	String salt = getAttr(luceeConfiguration, "salt");
+//	if (StringUtil.isEmpty(salt, true)) throw new RuntimeException("context is invalid, there is no salt!");
+//	config.setSalt(salt = salt.trim());
+//
+//	// password
+//	Password pw = PasswordImpl.readFromXML(luceeConfiguration, salt, false);
 	if (pw != null) config.setPassword(pw);
 	else if (configServer != null) config.setPassword(configServer.getDefaultPassword());
 

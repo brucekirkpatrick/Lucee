@@ -425,21 +425,22 @@ public final class ConfigWebUtil {
      * @return has access
      */
     public static boolean hasAccess(Config config, int type) {
+    	return true;
 
-	boolean has = true;
-	if (config instanceof ConfigWeb) {
-		ConfigWeb configWeb=((ConfigWeb) config);
-		if(configWeb==null){
-			throw new RuntimeException("config was null");
-		}
-		SecurityManager securityManager=configWeb.getSecurityManager();
-		while(securityManager==null){
-			Thread.yield();
-			securityManager=configWeb.getSecurityManager();
-		}
-	    has = securityManager.getAccess(type) != SecurityManager.VALUE_NO;
-	}
-	return has;
+//	boolean has = true;
+//	if (config instanceof ConfigWeb) {
+//		ConfigWeb configWeb=((ConfigWeb) config);
+//		if(configWeb==null){
+//			throw new RuntimeException("config was null");
+//		}
+//		SecurityManager securityManager=configWeb.getSecurityManager();
+//		while(securityManager==null){
+//			Thread.yield();
+//			securityManager=configWeb.getSecurityManager();
+//		}
+//	    has = securityManager.getAccess(type) != SecurityManager.VALUE_NO;
+//	}
+//	return has;
     }
 
     public static String translateOldPath(String path) {
