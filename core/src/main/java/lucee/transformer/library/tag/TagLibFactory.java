@@ -70,7 +70,7 @@ public final class TagLibFactory extends DefaultHandler {
     private XMLReader xmlReader;
 
     private static Map<String, TagLib> hashLib = MapFactory.<String, TagLib>getConcurrentMap();
-    private static TagLib[] systemTLDs = new TagLib[2];
+    public static TagLib[] systemTLDs = new TagLib[2];
     private final TagLib lib;
 
     private TagLibTag tag;

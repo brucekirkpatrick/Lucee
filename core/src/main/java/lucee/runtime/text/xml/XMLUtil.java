@@ -935,7 +935,7 @@ public final class XMLUtil {
 	return node;
     }
 
-    public synchronized static ArrayNodeList getChildNodes(Node node, short type, boolean caseSensitive, String filter) {
+    public static ArrayNodeList getChildNodes(Node node, short type, boolean caseSensitive, String filter) {
 	ArrayNodeList rtn = new ArrayNodeList();
 	NodeList nodes = node == null ? null : node.getChildNodes();
 	int len = nodes == null ? 0 : nodes.getLength();

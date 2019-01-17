@@ -224,13 +224,13 @@ public abstract class ConfigImpl implements Config {
     private String cacheDefaultConnectionNameWebservice = null;
 
     private TagLib[] cfmlTlds = new TagLib[0];
-    private TagLib[] luceeTlds = new TagLib[0];
+//    private TagLib[] luceeTlds = new TagLib[0];
 
     private FunctionLib[] cfmlFlds = new FunctionLib[0];
-    private FunctionLib[] luceeFlds = new FunctionLib[0];
+//    private FunctionLib[] luceeFlds = new FunctionLib[0];
 
     private FunctionLib combinedCFMLFLDs;
-    private FunctionLib combinedLuceeFLDs;
+//    private FunctionLib combinedLuceeFLDs;
 
     private short type = SCOPE_STANDARD;
     private boolean _allowImplicidQueryCall = true;
@@ -534,14 +534,14 @@ public abstract class ConfigImpl implements Config {
      */
 
     protected void setFLDs(FunctionLib[] flds, int dialect) {
-	if (dialect == CFMLEngine.DIALECT_CFML) {
+//	if (dialect == CFMLEngine.DIALECT_CFML) {
 	    cfmlFlds = flds;
 	    combinedCFMLFLDs = null; // TODO improve check (hash)
-	}
-	else {
-	    luceeFlds = flds;
-	    combinedLuceeFLDs = null; // TODO improve check (hash)
-	}
+//	}
+//	else {
+//	    luceeFlds = flds;
+//	    combinedLuceeFLDs = null; // TODO improve check (hash)
+//	}
     }
 
     /**
@@ -550,17 +550,11 @@ public abstract class ConfigImpl implements Config {
      * @return Array of Function Library Deskriptors
      */
     public FunctionLib[] getFLDs(int dialect) {
-	return dialect == CFMLEngine.DIALECT_CFML ? cfmlFlds : luceeFlds;
+	return cfmlFlds;
     }
 
     public FunctionLib getCombinedFLDs(int dialect) {
-	if (dialect == CFMLEngine.DIALECT_CFML) {
-	    if (combinedCFMLFLDs == null) combinedCFMLFLDs = FunctionLibFactory.combineFLDs(cfmlFlds);
-	    return combinedCFMLFLDs;
-	}
-
-	if (combinedLuceeFLDs == null) combinedLuceeFLDs = FunctionLibFactory.combineFLDs(luceeFlds);
-	return combinedLuceeFLDs;
+        return cfmlFlds[CFMLEngine.DIALECT_CFML];
     }
 
     /**
@@ -569,6 +563,10 @@ public abstract class ConfigImpl implements Config {
      * @return Array of Tag Library Deskriptors
      */
     public TagLib[] getTLDs(int dialect) {
+
+        while(cfmlTlds.length==0){
+            Thread.yield();
+        }
 	return cfmlTlds;
     }
 
@@ -1148,7 +1146,7 @@ public abstract class ConfigImpl implements Config {
 	    return;
 	}
 
-	TagLib[] tlds = dialect == CFMLEngine.DIALECT_CFML ? cfmlTlds : luceeTlds;
+	TagLib[] tlds =cfmlTlds;
 
 	for (int i = 0; i < tlds.length; i++) {
 	    if (tlds[i].getNameSpaceAndSeparator().equalsIgnoreCase(nameSpace + nameSpaceSeperator)) {
@@ -1174,7 +1172,7 @@ public abstract class ConfigImpl implements Config {
 	    return;
 	}
 
-	TagLib[] tlds = dialect == CFMLEngine.DIALECT_CFML ? cfmlTlds : luceeTlds;
+        TagLib[] tlds =cfmlTlds;
 
 	if (fileTld == null) return;
 	this.tldFile = fileTld;
@@ -1214,8 +1212,7 @@ public abstract class ConfigImpl implements Config {
 
 	// now fill back to array
 	tlds = new TagLib[map.size()];
-	if (dialect == CFMLEngine.DIALECT_CFML) cfmlTlds = tlds;
-	else luceeTlds = tlds;
+	cfmlTlds = tlds;
 
 	int index = 0;
 	Iterator<TagLib> it = map.values().iterator();
@@ -1225,7 +1222,7 @@ public abstract class ConfigImpl implements Config {
     }
 
     public TagLib getCoreTagLib(int dialect) {
-	TagLib[] tlds = dialect == CFMLEngine.DIALECT_CFML ? cfmlTlds : luceeTlds;
+	TagLib[] tlds = cfmlTlds;
 
 	for (int i = 0; i < tlds.length; i++) {
 	    if (tlds[i].isCore()) return tlds[i];
@@ -1344,7 +1341,6 @@ public abstract class ConfigImpl implements Config {
 	    this.functionMappings.put(mappingName, mapping);
 
 	    FunctionLib flc = cfmlFlds[cfmlFlds.length - 1];
-	    FunctionLib fll = luceeFlds[luceeFlds.length - 1];
 
 	    // now overwrite with new data
 	    if (functionDirectory.isDirectory()) {
@@ -1352,10 +1348,8 @@ public abstract class ConfigImpl implements Config {
 
 		for (String file: files) {
 		    if (flc != null) createFunction(flc, file, mappingName);
-		    if (fll != null) createFunction(fll, file, mappingName);
 		}
 		combinedCFMLFLDs = null;
-		combinedLuceeFLDs = null;
 	    }
 	}
     }
@@ -1426,22 +1420,14 @@ public abstract class ConfigImpl implements Config {
 	    return;
 	}
 
-	FunctionLib[] flds = dialect == CFMLEngine.DIALECT_CFML ? cfmlFlds : luceeFlds;
+	FunctionLib[] flds = cfmlFlds;
 
 	// merge all together (backward compatibility)
 	if (flds.length > 1) for (int i = 1; i < flds.length; i++) {
 	    overwrite(flds[0], flds[i]);
 	}
 	flds = new FunctionLib[] { flds[0] };
-	if (dialect == CFMLEngine.DIALECT_CFML) {
-	    cfmlFlds = flds;
-	    if (cfmlFlds != flds) combinedCFMLFLDs = null;// TODO improve check
-	}
-	else {
-	    luceeFlds = flds;
-	    if (luceeFlds != flds) combinedLuceeFLDs = null;// TODO improve check
-	}
-
+	cfmlFlds = flds;
 	if (fileFld == null) return;
 	this.fldFile = fileFld;
 

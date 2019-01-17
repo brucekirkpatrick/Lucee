@@ -288,10 +288,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	    ExecutorService executor = Executors.newWorkStealingPool(8);
 	    ArrayList<Future<Boolean>> futures=new ArrayList<>();
-//	    futures.add(executor.submit(()-> {
-//			createContextFiles(configDir, servletConfig, doNew);
-//		    return new Boolean(true);
-//	    }));
+	    futures.add(executor.submit(()-> {
+			createContextFiles(configDir, servletConfig, doNew);
+		    return new Boolean(true);
+	    }));
 	    final ConfigWebImpl configWeb = new ConfigWebImpl(factory, configServer, servletConfig, configDir, configFile);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory web before load");
 
@@ -406,7 +406,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (second(cw.getLoadTime()) > second(configFile.lastModified()) && !force) return;
 
 		Document doc = loadDocument(configFile);
-//		createContextFiles(configDir, null, doNew);
+		createContextFiles(configDir, null, doNew);
 		cw.reset();
 		load(cs, cw, doc, true, doNew);
 	    cs.doc=doc;
@@ -644,10 +644,10 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (LOG) SystemOut.printDate("loaded proxy");
 		loadRemoteClient(cs, config, doc, log);
 		if (LOG) SystemOut.printDate("loaded remote clients");
-		loadVideo(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded video");
-		loadFlex(cs, config, doc, log);
-		if (LOG) SystemOut.printDate("loaded flex");
+//		loadVideo(cs, config, doc, log);
+//		if (LOG) SystemOut.printDate("loaded video");
+//		loadFlex(cs, config, doc, log);
+//		if (LOG) SystemOut.printDate("loaded flex");
 		settings(config, log);
 		if (LOG) SystemOut.printDate("loaded settings2");
 		loadListener(cs, config, doc, log);
@@ -676,6 +676,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		int mode = config.getMode();
 		Document doc=config.doc;
 		Log log = config.getLog("application");
+
 		loadFilesystem(cs, config, doc, doNew, log); // load this before execute any code, what for example loadxtension does (json)
 		if (LOG) SystemOut.printDate("loaded filesystem");
 		loadTag(cs, config, doc, log); // load tlds
@@ -1227,210 +1228,212 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      * @throws IOException
      */
     private static void createContextFiles(Resource configDir, ServletConfig servletConfig, boolean doNew) throws IOException {
-	// NICE dies muss dynamisch erstellt werden, da hier der admin hinkommt
-	// und dieser sehr viele files haben wird
-	Resource contextDir = configDir.getRealResource("context");
-	if (!contextDir.exists()) contextDir.mkdirs();
+		Resource contextDir = configDir.getRealResource("context");
+	    Resource f = contextDir.getRealResource("Component." + COMPONENT_EXTENSION);
+	    if(f.exists()){
+	        return;
+	    }
+		if (!contextDir.exists()) contextDir.mkdirs();
+
+	    if (!f.exists()) createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
+
+
+	    Resource templatesDir = contextDir.getRealResource("templates");
+	    if (!templatesDir.exists()) templatesDir.mkdirs();
+
+	    Resource errorDir = templatesDir.getRealResource("error");
+	    if (!errorDir.exists()) errorDir.mkdirs();
+
+	    f = errorDir.getRealResource("error." + TEMPLATE_EXTENSION);
+	    if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error." + TEMPLATE_EXTENSION, f);
+
+//	    f = errorDir.getRealResource("error-neo." + TEMPLATE_EXTENSION);
+//	    if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error-neo." + TEMPLATE_EXTENSION, f);
+//
+//	    f = errorDir.getRealResource("error-public." + TEMPLATE_EXTENSION);
+//	    if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error-public." + TEMPLATE_EXTENSION, f);
 
 	// custom locale files
-	{
-	    Resource dir = configDir.getRealResource("locales");
-	    if (!dir.exists()) dir.mkdirs();
-	    Resource file = dir.getRealResource("pt-PT-date.df");
-	    if (!file.exists()) createFileFromResourceEL("/resource/locales/pt-PT-date.df", file);
-	}
-
-	// video
-	Resource videoDir = configDir.getRealResource("video");
-	if (!videoDir.exists()) videoDir.mkdirs();
-
-	Resource video = videoDir.getRealResource("video.xml");
-	if (!video.exists()) createFileFromResourceEL("/resource/video/video.xml", video);
-
-	// bin
-	Resource binDir = configDir.getRealResource("bin");
-	if (!binDir.exists()) binDir.mkdirs();
-
-	Resource ctDir = configDir.getRealResource("customtags");
-	if (!ctDir.exists()) ctDir.mkdirs();
-
-	// Jacob
-	if (SystemUtil.isWindows()) {
-	    String name = (SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "jacob-x64.dll" : "jacob-i586.dll";
-	    Resource jacob = binDir.getRealResource(name);
-	    if (!jacob.exists()) {
-		createFileFromResourceEL("/resource/bin/windows" + ((SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "64" : "32") + "/" + name, jacob);
-	    }
-	}
-
-	Resource storDir = configDir.getRealResource("storage");
-	if (!storDir.exists()) storDir.mkdirs();
-
-	Resource compDir = configDir.getRealResource("components");
-	if (!compDir.exists()) compDir.mkdirs();
-
-	// remove old cacerts files, they are now only in the server context
-	Resource secDir = configDir.getRealResource("security");
-	Resource f = null;
-	if (secDir.exists()) {
-	    f = secDir.getRealResource("cacerts");
-	    if (f.exists()) f.delete();
-
-	}
-	else secDir.mkdirs();
-	f = secDir.getRealResource("antisamy-basic.xml");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/security/antisamy-basic.xml", f);
-
-	// lucee-context
-	f = contextDir.getRealResource("lucee-context.lar");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-context.lar", f);
-	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-context.lar", f);
-
-	// lucee-admin
-	f = contextDir.getRealResource("lucee-admin.lar");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-admin.lar", f);
-	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-admin.lar", f);
-
-	// lucee-doc
-	f = contextDir.getRealResource("lucee-doc.lar");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-doc.lar", f);
-	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-doc.lar", f);
-
-	f = contextDir.getRealResource("component-dump." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/component-dump." + TEMPLATE_EXTENSION, f);
+//	{
+//	    Resource dir = configDir.getRealResource("locales");
+//	    if (!dir.exists()) dir.mkdirs();
+//	    Resource file = dir.getRealResource("pt-PT-date.df");
+//	    if (!file.exists()) createFileFromResourceEL("/resource/locales/pt-PT-date.df", file);
+//	}
+//
+//	// video
+//	Resource videoDir = configDir.getRealResource("video");
+//	if (!videoDir.exists()) videoDir.mkdirs();
+//
+//	Resource video = videoDir.getRealResource("video.xml");
+//	if (!video.exists()) createFileFromResourceEL("/resource/video/video.xml", video);
+//
+//	// bin
+//	Resource binDir = configDir.getRealResource("bin");
+//	if (!binDir.exists()) binDir.mkdirs();
+//
+//	Resource ctDir = configDir.getRealResource("customtags");
+//	if (!ctDir.exists()) ctDir.mkdirs();
+//
+//	// Jacob
+//	if (SystemUtil.isWindows()) {
+//	    String name = (SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "jacob-x64.dll" : "jacob-i586.dll";
+//	    Resource jacob = binDir.getRealResource(name);
+//	    if (!jacob.exists()) {
+//		createFileFromResourceEL("/resource/bin/windows" + ((SystemUtil.getJREArch() == SystemUtil.ARCH_64) ? "64" : "32") + "/" + name, jacob);
+//	    }
+//	}
+//
+//	Resource storDir = configDir.getRealResource("storage");
+//	if (!storDir.exists()) storDir.mkdirs();
+//
+//	Resource compDir = configDir.getRealResource("components");
+//	if (!compDir.exists()) compDir.mkdirs();
+//
+//	// remove old cacerts files, they are now only in the server context
+//	Resource secDir = configDir.getRealResource("security");
+//	if (secDir.exists()) {
+//	    f = secDir.getRealResource("cacerts");
+//	    if (f.exists()) f.delete();
+//
+//	}
+//	else secDir.mkdirs();
+//	f = secDir.getRealResource("antisamy-basic.xml");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/security/antisamy-basic.xml", f);
+//
+//	// lucee-context
+//	f = contextDir.getRealResource("lucee-context.lar");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-context.lar", f);
+//	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-context.lar", f);
+//
+//	// lucee-admin
+//	f = contextDir.getRealResource("lucee-admin.lar");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-admin.lar", f);
+//	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-admin.lar", f);
+//
+//	// lucee-doc
+//	f = contextDir.getRealResource("lucee-doc.lar");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-doc.lar", f);
+//	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-doc.lar", f);
+//
+//	f = contextDir.getRealResource("component-dump." + TEMPLATE_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/component-dump." + TEMPLATE_EXTENSION, f);
 
 	// Base Component
-	String badContent = "<cfcomponent displayname=\"Component\" hint=\"This is the Base Component\">\n</cfcomponent>";
-	String badVersion = "704b5bd8597be0743b0c99a644b65896";
-	f = contextDir.getRealResource("Component." + COMPONENT_EXTENSION);
+//	String badContent = "<cfcomponent displayname=\"Component\" hint=\"This is the Base Component\">\n</cfcomponent>";
+//	String badVersion = "704b5bd8597be0743b0c99a644b65896";
 
-	if (!f.exists()) createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
-	else if (doNew && badVersion.equals(ConfigWebUtil.createMD5FromResource(f))) {
-	    createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
-	}
-	else if (doNew && badContent.equals(createContentFromResource(f).trim())) {
-	    createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
-	}
+//	else if (doNew && badVersion.equals(ConfigWebUtil.createMD5FromResource(f))) {
+//	    createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
+//	}
+//	else if (doNew && badContent.equals(createContentFromResource(f).trim())) {
+//	    createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION, f);
+//	}
 
 	// Component.lucee
-	f = contextDir.getRealResource("Component." + COMPONENT_EXTENSION_LUCEE);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION_LUCEE, f);
+//	f = contextDir.getRealResource("Component." + COMPONENT_EXTENSION_LUCEE);
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/Component." + COMPONENT_EXTENSION_LUCEE, f);
 
-	f = contextDir.getRealResource(Constants.CFML_APPLICATION_EVENT_HANDLER);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/Application." + COMPONENT_EXTENSION, f);
+//	f = contextDir.getRealResource(Constants.CFML_APPLICATION_EVENT_HANDLER);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/Application." + COMPONENT_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("form." + TEMPLATE_EXTENSION);
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/form." + TEMPLATE_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("graph." + TEMPLATE_EXTENSION);
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/graph." + TEMPLATE_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("wddx." + TEMPLATE_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/wddx." + TEMPLATE_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("lucee-applet." + TEMPLATE_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/lucee-applet." + TEMPLATE_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("lucee-applet.jar");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-applet.jar", f);
+//
+//	// f=new BinaryFile(contextDir,"lucee_context.ra");
+//	// if(!f.exists())createFileFromResource("/resource/context/lucee_context.ra",f);
+//
+//	f = contextDir.getRealResource("admin." + TEMPLATE_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/admin." + TEMPLATE_EXTENSION, f);
+//
+//	// Video
+//	f = contextDir.getRealResource("swfobject.js");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js", f);
+//	f = contextDir.getRealResource("swfobject.js." + TEMPLATE_EXTENSION);
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js." + TEMPLATE_EXTENSION, f);
+//
+//	f = contextDir.getRealResource("mediaplayer.swf");
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf", f);
+//	f = contextDir.getRealResource("mediaplayer.swf." + TEMPLATE_EXTENSION);
+//	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf." + TEMPLATE_EXTENSION, f);
+//
+//	Resource adminDir = contextDir.getRealResource("admin");
+//	if (!adminDir.exists()) adminDir.mkdirs();
+//
+//	// Plugin
+//	Resource pluginDir = adminDir.getRealResource("plugin");
+//	if (!pluginDir.exists()) pluginDir.mkdirs();
+//
+//	f = pluginDir.getRealResource("Plugin." + COMPONENT_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Plugin." + COMPONENT_EXTENSION, f);
+//
+//	// Plugin Note
+//	Resource note = pluginDir.getRealResource("Note");
+//	if (!note.exists()) note.mkdirs();
+//
+//	f = note.getRealResource("language.xml");
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/language.xml", f);
+//
+//	f = note.getRealResource("overview." + TEMPLATE_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/overview." + TEMPLATE_EXTENSION, f);
+//
+//	f = note.getRealResource("Action." + COMPONENT_EXTENSION);
+//	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/Action." + COMPONENT_EXTENSION, f);
+//
+//	// gateway
+//	Resource componentsDir = configDir.getRealResource("components");
+//	if (!componentsDir.exists()) componentsDir.mkdirs();
+//
+//	Resource gwDir = componentsDir.getRealResource("lucee/extension/gateway/");
+//	create("/resource/context/gateway/", new String[] { "TaskGateway." + COMPONENT_EXTENSION, "DummyGateway." + COMPONENT_EXTENSION, "DirectoryWatcher." + COMPONENT_EXTENSION,
+//		"DirectoryWatcherListener." + COMPONENT_EXTENSION, "MailWatcher." + COMPONENT_EXTENSION, "MailWatcherListener." + COMPONENT_EXTENSION }, gwDir, doNew);
+//
+//	// resources/language
+//	Resource langDir = adminDir.getRealResource("resources/language");
+//	create("/resource/context/admin/resources/language/", new String[] { "en.xml", "de.xml" }, langDir, doNew);
+//
+//	// add Debug
+//	Resource debug = adminDir.getRealResource("debug");
+//	create("/resource/context/admin/debug/", new String[] { "Debug." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, debug, doNew);
+//
+//	// add Cache Drivers
+//	Resource cDir = adminDir.getRealResource("cdriver");
+//	create("/resource/context/admin/cdriver/", new String[] { "Cache." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, cDir, doNew);
+//
+//	// add DB Drivers types
+//	Resource dbDir = adminDir.getRealResource("dbdriver");
+//	Resource typesDir = dbDir.getRealResource("types");
+//	create("/resource/context/admin/dbdriver/types/", new String[] { "IDriver." + COMPONENT_EXTENSION, "Driver." + COMPONENT_EXTENSION, "IDatasource." + COMPONENT_EXTENSION,
+//		"IDriverSelector." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION }, typesDir, doNew);
+//
+//	// add Gateway Drivers
+//	Resource gDir = adminDir.getRealResource("gdriver");
+//	create("/resource/context/admin/gdriver/", new String[] { "Gateway." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, gDir, doNew);
+//
+//	// add Logging/appender
+//	Resource app = adminDir.getRealResource("logging/appender");
+//	create("/resource/context/admin/logging/appender/", new String[] { "Appender." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, app,
+//		doNew);
+//
+//	// Logging/layout
+//	Resource lay = adminDir.getRealResource("logging/layout");
+//	create("/resource/context/admin/logging/layout/", new String[] { "Layout." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, lay,
+//		doNew);
 
-	f = contextDir.getRealResource("form." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/form." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("graph." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/graph." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("wddx." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/wddx." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("lucee-applet." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/lucee-applet." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("lucee-applet.jar");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-applet.jar", f);
-
-	// f=new BinaryFile(contextDir,"lucee_context.ra");
-	// if(!f.exists())createFileFromResource("/resource/context/lucee_context.ra",f);
-
-	f = contextDir.getRealResource("admin." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/admin." + TEMPLATE_EXTENSION, f);
-
-	// Video
-	f = contextDir.getRealResource("swfobject.js");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js", f);
-	f = contextDir.getRealResource("swfobject.js." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/swfobject.js." + TEMPLATE_EXTENSION, f);
-
-	f = contextDir.getRealResource("mediaplayer.swf");
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf", f);
-	f = contextDir.getRealResource("mediaplayer.swf." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/video/mediaplayer.swf." + TEMPLATE_EXTENSION, f);
-
-	Resource adminDir = contextDir.getRealResource("admin");
-	if (!adminDir.exists()) adminDir.mkdirs();
-
-	// Plugin
-	Resource pluginDir = adminDir.getRealResource("plugin");
-	if (!pluginDir.exists()) pluginDir.mkdirs();
-
-	f = pluginDir.getRealResource("Plugin." + COMPONENT_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Plugin." + COMPONENT_EXTENSION, f);
-
-	// Plugin Note
-	Resource note = pluginDir.getRealResource("Note");
-	if (!note.exists()) note.mkdirs();
-
-	f = note.getRealResource("language.xml");
-	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/language.xml", f);
-
-	f = note.getRealResource("overview." + TEMPLATE_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/overview." + TEMPLATE_EXTENSION, f);
-
-	f = note.getRealResource("Action." + COMPONENT_EXTENSION);
-	if (!f.exists()) createFileFromResourceEL("/resource/context/admin/plugin/Note/Action." + COMPONENT_EXTENSION, f);
-
-	// gateway
-	Resource componentsDir = configDir.getRealResource("components");
-	if (!componentsDir.exists()) componentsDir.mkdirs();
-
-	Resource gwDir = componentsDir.getRealResource("lucee/extension/gateway/");
-	create("/resource/context/gateway/", new String[] { "TaskGateway." + COMPONENT_EXTENSION, "DummyGateway." + COMPONENT_EXTENSION, "DirectoryWatcher." + COMPONENT_EXTENSION,
-		"DirectoryWatcherListener." + COMPONENT_EXTENSION, "MailWatcher." + COMPONENT_EXTENSION, "MailWatcherListener." + COMPONENT_EXTENSION }, gwDir, doNew);
-
-	// resources/language
-	Resource langDir = adminDir.getRealResource("resources/language");
-	create("/resource/context/admin/resources/language/", new String[] { "en.xml", "de.xml" }, langDir, doNew);
-
-	// add Debug
-	Resource debug = adminDir.getRealResource("debug");
-	create("/resource/context/admin/debug/", new String[] { "Debug." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, debug, doNew);
-
-	// add Cache Drivers
-	Resource cDir = adminDir.getRealResource("cdriver");
-	create("/resource/context/admin/cdriver/", new String[] { "Cache." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, cDir, doNew);
-
-	// add DB Drivers types
-	Resource dbDir = adminDir.getRealResource("dbdriver");
-	Resource typesDir = dbDir.getRealResource("types");
-	create("/resource/context/admin/dbdriver/types/", new String[] { "IDriver." + COMPONENT_EXTENSION, "Driver." + COMPONENT_EXTENSION, "IDatasource." + COMPONENT_EXTENSION,
-		"IDriverSelector." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION }, typesDir, doNew);
-
-	// add Gateway Drivers
-	Resource gDir = adminDir.getRealResource("gdriver");
-	create("/resource/context/admin/gdriver/", new String[] { "Gateway." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, gDir, doNew);
-
-	// add Logging/appender
-	Resource app = adminDir.getRealResource("logging/appender");
-	create("/resource/context/admin/logging/appender/", new String[] { "Appender." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, app,
-		doNew);
-
-	// Logging/layout
-	Resource lay = adminDir.getRealResource("logging/layout");
-	create("/resource/context/admin/logging/layout/", new String[] { "Layout." + COMPONENT_EXTENSION, "Field." + COMPONENT_EXTENSION, "Group." + COMPONENT_EXTENSION }, lay,
-		doNew);
-
-	Resource templatesDir = contextDir.getRealResource("templates");
-	if (!templatesDir.exists()) templatesDir.mkdirs();
-
-	Resource errorDir = templatesDir.getRealResource("error");
-	if (!errorDir.exists()) errorDir.mkdirs();
-
-	f = errorDir.getRealResource("error." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error." + TEMPLATE_EXTENSION, f);
-
-	f = errorDir.getRealResource("error-neo." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error-neo." + TEMPLATE_EXTENSION, f);
-
-	f = errorDir.getRealResource("error-public." + TEMPLATE_EXTENSION);
-	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/templates/error/error-public." + TEMPLATE_EXTENSION, f);
-
-	Resource displayDir = templatesDir.getRealResource("display");
-	if (!displayDir.exists()) displayDir.mkdirs();
+//	Resource displayDir = templatesDir.getRealResource("display");
+//	if (!displayDir.exists()) displayDir.mkdirs();
 
     }
 
@@ -2899,37 +2902,37 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
      */
     private static void loadFilesystem(ConfigServerImpl configServer, ConfigImpl config, Document doc, boolean doNew, Log log) {
 	try {
-	    if (configServer != null) {
-			Resource src = configServer.getConfigDir().getRealResource("distribution");
-			Resource trg = config.getConfigDir().getRealResource("context/");
-			copyContextFiles(src, trg);
-	    }
+//	    if (configServer != null) {
+//			Resource src = configServer.getConfigDir().getRealResource("distribution");
+//			Resource trg = config.getConfigDir().getRealResource("context/");
+//			copyContextFiles(src, trg);
+//	    }
 	    Resource configDir = config.getConfigDir();
 
 	    boolean hasCS = configServer != null;
 
 	    String strAllowRealPath = null;
 	    String strDeployDirectory = null;
-	    String strFuncDirectory=null;
-	    String strTagDirectory=null;
+//	    String strFuncDirectory=null;
+//	    String strTagDirectory=null;
 
-	    Element fileSystem = getChildByName(doc.getDocumentElement(), "file-system");
-	    if (fileSystem == null) fileSystem = getChildByName(doc.getDocumentElement(), "filesystem");
+//	    Element fileSystem = getChildByName(doc.getDocumentElement(), "file-system");
+//	    if (fileSystem == null) fileSystem = getChildByName(doc.getDocumentElement(), "filesystem");
 
 	    // get library directories
-	    if (fileSystem != null) {
-			strAllowRealPath = getAttr(fileSystem, "allow-realpath");
-			strDeployDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("deploy-directory"));
-
-			strTagDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("tag-addional-directory"));
-			strFuncDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("function-addional-directory"));
-	    }
+//	    if (fileSystem != null) {
+//			strAllowRealPath = getAttr(fileSystem, "allow-realpath");
+//			strDeployDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("deploy-directory"));
+//
+//			strTagDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("tag-addional-directory"));
+//			strFuncDirectory = ConfigWebUtil.translateOldPath(fileSystem.getAttribute("function-addional-directory"));
+//	    }
 
 	    // set default directories if necessary
-	    String strDefaultFLDDirectory = "{lucee-config}/library/fld/";
-	    String strDefaultTLDDirectory = "{lucee-config}/library/tld/";
-	    String strDefaultFuncDirectory = "{lucee-config}/library/function/";
-	    String strDefaultTagDirectory = "{lucee-config}/library/tag/";
+//	    String strDefaultFLDDirectory = "{lucee-config}/library/fld/";
+//	    String strDefaultTLDDirectory = "{lucee-config}/library/tld/";
+//	    String strDefaultFuncDirectory = "{lucee-config}/library/function/";
+//	    String strDefaultTagDirectory = "{lucee-config}/library/tag/";
 
 	    // Deploy Dir
 	    Resource dd = ConfigWebUtil.getFile(configDir, strDeployDirectory, "cfclasses", configDir, FileUtil.TYPE_DIR, config);
@@ -2943,32 +2946,39 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    }
 	    else {
 			ConfigServerImpl cs = (ConfigServerImpl) config;
+			// wait for the tlds to be loaded
+			while(cs.cfmlCoreTLDs == null){
+				if(TagLibFactory.systemTLDs.length>0) {
+					cs.cfmlCoreTLDs = TagLibFactory.systemTLDs[CFMLEngine.DIALECT_CFML];
+				}
+				Thread.yield();
+			}
 			config.setTLDs(new TagLib[] { cs.cfmlCoreTLDs }, CFMLEngine.DIALECT_CFML);
 	    }
 
 	    // TLD Dir
-	    if (!StringUtil.isEmpty(strDefaultTLDDirectory)) {
-			Resource tld = ConfigWebUtil.getFile(config, configDir, strDefaultTLDDirectory, FileUtil.TYPE_DIR);
-			if (tld != null) config.setTldFile(tld, CFMLEngine.DIALECT_BOTH);
-	    }
+//	    if (!StringUtil.isEmpty(strDefaultTLDDirectory)) {
+//			Resource tld = ConfigWebUtil.getFile(config, configDir, strDefaultTLDDirectory, FileUtil.TYPE_DIR);
+//			if (tld != null) config.setTldFile(tld, CFMLEngine.DIALECT_BOTH);
+//	    }
 
 	    // Tag Directory
 	    List<Resource> listTags = new ArrayList<Resource>();
-		if (!StringUtil.isEmpty(strDefaultTagDirectory)) {
-			Resource dir = ConfigWebUtil.getFile(config, configDir, strDefaultTagDirectory, FileUtil.TYPE_DIR);
-			createTagFiles(config, configDir, dir, doNew);
-			if (dir != null) listTags.add(dir);
-		}
-		if (!StringUtil.isEmpty(strTagDirectory)) {
-			String[] arr = ListUtil.listToStringArray(strTagDirectory, ',');
-			for (String str : arr) {
-				str = str.trim();
-				if (StringUtil.isEmpty(str)) continue;
-				Resource dir = ConfigWebUtil.getFile(config, configDir, str, FileUtil.TYPE_DIR);
-				if (dir != null) listTags.add(dir);
-			}
-		}
-		config.setTagDirectory(listTags);
+//		if (!StringUtil.isEmpty(strDefaultTagDirectory)) {
+//			Resource dir = ConfigWebUtil.getFile(config, configDir, strDefaultTagDirectory, FileUtil.TYPE_DIR);
+//			createTagFiles(config, configDir, dir, doNew);
+//			if (dir != null) listTags.add(dir);
+//		}
+//		if (!StringUtil.isEmpty(strTagDirectory)) {
+//			String[] arr = ListUtil.listToStringArray(strTagDirectory, ',');
+//			for (String str : arr) {
+//				str = str.trim();
+//				if (StringUtil.isEmpty(str)) continue;
+//				Resource dir = ConfigWebUtil.getFile(config, configDir, str, FileUtil.TYPE_DIR);
+//				if (dir != null) listTags.add(dir);
+//			}
+//		}
+//		config.setTagDirectory(listTags);
 
 		// allow realpath
 		if (hasCS) {
@@ -2985,34 +2995,41 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			config.setFLDs(configServer.getFLDs(CFMLEngine.DIALECT_CFML), CFMLEngine.DIALECT_CFML);
 		} else {
 			ConfigServerImpl cs = (ConfigServerImpl) config;
+			// wait for the tlds to be loaded
+			while(cs.cfmlCoreFLDs == null){
+				if(FunctionLibFactory.systemFLDs.length>0) {
+					cs.cfmlCoreFLDs = FunctionLibFactory.systemFLDs[CFMLEngine.DIALECT_CFML];
+				}
+				Thread.yield();
+			}
 			config.setFLDs(new FunctionLib[]{cs.cfmlCoreFLDs}, CFMLEngine.DIALECT_CFML);
 		}
 
 		// FLDs
-		if (!StringUtil.isEmpty(strDefaultFLDDirectory)) {
-			Resource fld = ConfigWebUtil.getFile(config, configDir, strDefaultFLDDirectory, FileUtil.TYPE_DIR);
-			if (fld != null) config.setFldFile(fld, CFMLEngine.DIALECT_BOTH);
-		}
+//		if (!StringUtil.isEmpty(strDefaultFLDDirectory)) {
+//			Resource fld = ConfigWebUtil.getFile(config, configDir, strDefaultFLDDirectory, FileUtil.TYPE_DIR);
+//			if (fld != null) config.setFldFile(fld, CFMLEngine.DIALECT_BOTH);
+//		}
 
 		// Function files (CFML)
 		List<Resource> listFuncs = new ArrayList<Resource>();
-		if (!StringUtil.isEmpty(strDefaultFuncDirectory)) {
-			Resource dir = ConfigWebUtil.getFile(config, configDir, strDefaultFuncDirectory, FileUtil.TYPE_DIR);
-			createFunctionFiles(config, configDir, dir, doNew);
-			if (dir != null) listFuncs.add(dir);
-			// if (dir != null) config.setFunctionDirectory(dir);
-		}
-		if (!StringUtil.isEmpty(strFuncDirectory)) {
-			String[] arr = ListUtil.listToStringArray(strFuncDirectory, ',');
-			for (String str : arr) {
-				str = str.trim();
-				if (StringUtil.isEmpty(str)) continue;
-				Resource dir = ConfigWebUtil.getFile(config, configDir, str, FileUtil.TYPE_DIR);
-				if (dir != null) listFuncs.add(dir);
-				// if (dir != null) config.setFunctionDirectory(dir);
-			}
-		}
-	    config.setFunctionDirectory(listFuncs);
+//		if (!StringUtil.isEmpty(strDefaultFuncDirectory)) {
+//			Resource dir = ConfigWebUtil.getFile(config, configDir, strDefaultFuncDirectory, FileUtil.TYPE_DIR);
+//			createFunctionFiles(config, configDir, dir, doNew);
+//			if (dir != null) listFuncs.add(dir);
+//			// if (dir != null) config.setFunctionDirectory(dir);
+//		}
+//		if (!StringUtil.isEmpty(strFuncDirectory)) {
+//			String[] arr = ListUtil.listToStringArray(strFuncDirectory, ',');
+//			for (String str : arr) {
+//				str = str.trim();
+//				if (StringUtil.isEmpty(str)) continue;
+//				Resource dir = ConfigWebUtil.getFile(config, configDir, str, FileUtil.TYPE_DIR);
+//				if (dir != null) listFuncs.add(dir);
+//				// if (dir != null) config.setFunctionDirectory(dir);
+//			}
+//		}
+//	    config.setFunctionDirectory(listFuncs);
 	}
 	catch (Exception e) {
 	    log(config, log, e);

@@ -42,11 +42,6 @@
 	}
 </script>
 
-<cfscript>
-	var idx=0;
-	var isFirst=false;
-	var tc={};
-</cfscript>
 <cftry>
 <cfoutput>
 <table id="-lucee-err" cellpadding="4" cellspacing="1">
@@ -122,18 +117,16 @@
 	<tr>
 		<td class="label">Timestamp</td>
 		<td>
-			<cfscript>
-			variables.timestamp = now();
-			</cfscript>
-			#LsDateFormat( variables.timestamp, 'short' )# #LsTimeFormat( variables.timestamp, 'long' )#
+			<cfset timestamp = now()>
+			#LsDateFormat( timestamp, 'short' )# #LsTimeFormat( timestamp, 'long' )#
 		</td>
 	</tr>
 </table>
 <br>
 </cfoutput>
 
-	<cfcatch type="any">
+<cfcatch type="any">
 
-		<cfdump var="#catch#">
-	</cfcatch>
+	<cfdump var="#catch#">
+</cfcatch>
 </cftry>

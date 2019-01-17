@@ -325,7 +325,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 				// copy core
 
 				final File rc = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExt);
-				File rcPack200 = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExtPack);
+//				File rcPack200 = new File(getTempDirectory(), "tmp_" + System.currentTimeMillis() + "." + coreExtPack);
 				InputStream is = null;
 				OutputStream os = null;
 				try {
@@ -336,12 +336,12 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 						is = new TP().getClass().getResourceAsStream("/core/core." + coreExtPack);
 						isPack200 = true;
 					}
-					if (isPack200) {
-						errorList.add("copy /core/core." + rcPack200.getAbsolutePath());
-					} else {
+//					if (isPack200) {
+//						errorList.add("copy /core/core." + rcPack200.getAbsolutePath());
+//					} else {
 						errorList.add("copy /core/core." + rc.getAbsolutePath());
-					}
-					os = new BufferedOutputStream(new FileOutputStream(isPack200 ? rcPack200 : rc));
+//					}
+					os = new BufferedOutputStream(new FileOutputStream(rc));
 					copy(is, os);
 				} finally {
 					closeEL(is);
@@ -349,12 +349,12 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 				}
 
 				// unpack if necessary
-				if (isPack200) {
-					errorList.add("unpack" + rcPack200 + " to " + rc);
-					Pack200Util.pack2Jar(rcPack200, rc);
-					log(Logger.LOG_DEBUG, "unpack " + rcPack200 + " to " + rc);
-					rcPack200.delete();
-				}
+//				if (isPack200) {
+//					errorList.add("unpack" + rcPack200 + " to " + rc);
+//					Pack200Util.pack2Jar(rcPack200, rc);
+//					log(Logger.LOG_DEBUG, "unpack " + rcPack200 + " to " + rc);
+//					rcPack200.delete();
+//				}
 
 				CFMLServlet.logStartTime("CFMLEngineFactory initEngine after unpack lucee core lco");
 				errorList.add("Copy lucee core: " + getVersion(rc) + "." + coreExt);
@@ -386,8 +386,8 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 				log(Logger.LOG_DEBUG, "loaded engine:" + singelton);
 			}
 			version = singelton.getInfo().getVersion();
-			errorList.add("Loaded Lucee Version " + singelton.getInfo().getVersion());
-			log(Logger.LOG_DEBUG, "Loaded Lucee Version " + singelton.getInfo().getVersion());
+			errorList.add("Loaded Lucee Version " + version);
+			log(Logger.LOG_DEBUG, "Loaded Lucee Version " + version);
 		} catch (final InvocationTargetException e) {
 //	    e.getTargetException().printStackTrace();
 			throw new ServletException(e.getTargetException());
