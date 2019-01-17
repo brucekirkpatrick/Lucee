@@ -156,16 +156,16 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 			if (factory == null) {
 				factory = new CFMLEngineFactory(config);
 			}
-			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
+//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
 
 			// read init param from config
 			factory.readInitParam(config);
-			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
+//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
 
 			factory.initEngineIfNecessary();
-			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
+//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
 			singelton.addServletConfig(config);
-			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
+//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
 
 			// add listener for update
 			// factory.addListener(singelton);
@@ -295,7 +295,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		File patcheDir = null;
 		try {
 			patcheDir = getPatchDirectory();
-			log(Logger.LOG_DEBUG, "lucee-server-root:" + patcheDir.getParent());
+//			log(Logger.LOG_DEBUG, "lucee-server-root:" + patcheDir.getParent());
 		} catch (final IOException e) {
 			throw new ServletException(e);
 		}
@@ -316,7 +316,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		try {
 			// Load core version when no patch available
 			if (lucee == null) {
-				log(Logger.LOG_DEBUG, "Load Build in Core - 1");
+//				log(Logger.LOG_DEBUG, "Load Build in Core - 1");
 				//
 
 				final String coreExt = "lco";
@@ -374,16 +374,16 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 			} else {
 
 				errorList.add("Bundle Directory: " + getBundleDirectory());
-				log(Logger.LOG_DEBUG, "Bundle Directory: " + getBundleDirectory());
+//				log(Logger.LOG_DEBUG, "Bundle Directory: " + getBundleDirectory());
 				CFMLServlet.logStartTime("CFMLEngineFactory initEngine before loadBundles");
 				bundleCollection = BundleLoader.loadBundles(this, getFelixCacheDirectory(), getBundleDirectory(), lucee, bundleCollection);
 				CFMLServlet.logStartTime("CFMLEngineFactory initEngine after loadBundles");
 				// bundle=loadBundle(lucee);
 				errorList.add("loaded bundle:" + bundleCollection.core.getSymbolicName());
-				log(Logger.LOG_DEBUG, "loaded bundle:" + bundleCollection.core.getSymbolicName());
+//				log(Logger.LOG_DEBUG, "loaded bundle:" + bundleCollection.core.getSymbolicName());
 				setEngine(getEngine(bundleCollection));
 				errorList.add("loaded engine:" + singelton);
-				log(Logger.LOG_DEBUG, "loaded engine:" + singelton);
+//				log(Logger.LOG_DEBUG, "loaded engine:" + singelton);
 			}
 			version = singelton.getInfo().getVersion();
 			errorList.add("Loaded Lucee Version " + version);
@@ -405,10 +405,8 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 //		return;
 		}
 
-		CFMLServlet.logStartTime("CFMLEngineFactory initEngine before getUpdateType");
 		// check updates
 		String updateType = singelton.getUpdateType();
-		CFMLServlet.logStartTime("CFMLEngineFactory initEngine after getUpdateType");
 		if (updateType == null || updateType.length() == 0) updateType = "manuell"; // TODO should be manual?
 
 		if (updateType.equalsIgnoreCase("auto")) new UpdateChecker(this, null).start();

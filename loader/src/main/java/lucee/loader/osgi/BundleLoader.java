@@ -71,7 +71,7 @@ public class BundleLoader {
 
 		CFMLServlet.logStartTime("BundleLoader loadBundles begin");
 		engine = engFac;
-		engine.log(Logger.LOG_DEBUG, "Bundle jar directory:" + jarDirectory.getAbsolutePath());
+//		engine.log(Logger.LOG_DEBUG, "Bundle jar directory:" + jarDirectory.getAbsolutePath());
 		//jars[i].getAbsolutePath());
 
 		final JarFile jf = new JarFile(rc);// TODO this should work in any case, but we should still improve this code

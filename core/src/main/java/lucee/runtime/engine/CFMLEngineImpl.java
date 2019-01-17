@@ -278,7 +278,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	boolean disabled = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar(SystemUtil.SETTING_CONTROLLER_DISABLED, null), false);
 	if (!disabled) {
 	    // start the controller
-	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "Start CFML Controller");
+//	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "Start CFML Controller");
 	    controler.start();
 	}
 
@@ -288,7 +288,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	// copy bundled extension to local extension directory (if never done before)
 	if (installExtensions && updateInfo.updateType != XMLConfigFactory.NEW_NONE) {
 	    deployBundledExtension(cs);
-	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "copy bundled extension to local extension directory (if never done before)");
+//	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "copy bundled extension to local extension directory (if never done before)");
 	}
 	// required extensions
 
@@ -297,7 +297,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	if (installExtensions && (updateInfo.updateType == XMLConfigFactory.NEW_FRESH || updateInfo.updateType == XMLConfigFactory.NEW_FROM4)) {
 	    List<ExtensionDefintion> ext = info.getRequiredExtension();
 	    extensions = toSet(null, ext);
-	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "detected Extensions to install (new;" + updateInfo.getUpdateTypeAsString() + "):" + toList(extensions));
+//	    SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "detected Extensions to install (new;" + updateInfo.getUpdateTypeAsString() + "):" + toList(extensions));
 	}
 	// if we have an update we update the extension that re installed and we have an older version as
 	// defined in the manifest
@@ -360,7 +360,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	else if (configDir != null) XMLConfigFactory.updateRequiredExtension(this, configDir);
 
 	touchMonitor(cs);
-	SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "touched monitors");
+//	SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "touched monitors");
 	this.uptime = System.currentTimeMillis();
 	// this.config=config;
     }
@@ -778,16 +778,16 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     private CFMLFactoryImpl loadJSPFactory(ConfigServerImpl configServer, ServletConfig sg, int countExistingContextes) throws ServletException {
 	try {
-	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("load Context");
+//	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("load Context");
 	    // Load Config
 	    RefBoolean isCustomSetting = new RefBooleanImpl();
 	    Resource configDir = getConfigDirectory(sg, configServer, countExistingContextes, isCustomSetting);
-	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("got context directory");
+//	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("got context directory");
 
 	    CFMLFactoryImpl factory = new CFMLFactoryImpl(this, sg);
-	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("init factory");
+//	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("init factory");
 	    ConfigWebImpl config = XMLConfigWebFactory.newInstance(this, factory, configServer, configDir, isCustomSetting.toBooleanValue(), sg);
-	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("loaded config");
+//	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("loaded config");
 	    factory.setConfig(config);
 	    return factory;
 	}

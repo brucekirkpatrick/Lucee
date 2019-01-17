@@ -564,9 +564,6 @@ public abstract class ConfigImpl implements Config {
      */
     public TagLib[] getTLDs(int dialect) {
 
-        while(cfmlTlds.length==0){
-            Thread.yield();
-        }
 	return cfmlTlds;
     }
 

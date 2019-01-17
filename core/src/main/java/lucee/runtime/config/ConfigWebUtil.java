@@ -459,43 +459,46 @@ public final class ConfigWebUtil {
     }
 
     public static void checkGeneralReadAccess(ConfigImpl config, Password password) throws SecurityException {
-	SecurityManager sm = config.getSecurityManager();
-	short access = sm.getAccess(SecurityManager.TYPE_ACCESS_READ);
-	if (config instanceof ConfigServer) access = SecurityManager.ACCESS_PROTECTED;
-	if (access == SecurityManager.ACCESS_PROTECTED) {
-	    checkPassword(config, "read", password);
-	}
-	else if (access == SecurityManager.ACCESS_CLOSE) {
-	    throw new SecurityException("can't access, read access is disabled");
-	}
+    	return;
+//	SecurityManager sm = config.getSecurityManager();
+//	short access = sm.getAccess(SecurityManager.TYPE_ACCESS_READ);
+//	if (config instanceof ConfigServer) access = SecurityManager.ACCESS_PROTECTED;
+//	if (access == SecurityManager.ACCESS_PROTECTED) {
+//	    checkPassword(config, "read", password);
+//	}
+//	else if (access == SecurityManager.ACCESS_CLOSE) {
+//	    throw new SecurityException("can't access, read access is disabled");
+//	}
     }
 
     public static void checkGeneralWriteAccess(ConfigImpl config, Password password) throws SecurityException {
-	SecurityManager sm = config.getSecurityManager();
-	short access = sm.getAccess(SecurityManager.TYPE_ACCESS_WRITE);
-
-	if (config instanceof ConfigServer) access = SecurityManager.ACCESS_PROTECTED;
-	if (access == SecurityManager.ACCESS_PROTECTED) {
-	    checkPassword(config, "write", password);
-	}
-	else if (access == SecurityManager.ACCESS_CLOSE) {
-	    throw new SecurityException("can't access, write access is disabled");
-	}
+    	return;
+//	SecurityManager sm = config.getSecurityManager();
+//	short access = sm.getAccess(SecurityManager.TYPE_ACCESS_WRITE);
+//
+//	if (config instanceof ConfigServer) access = SecurityManager.ACCESS_PROTECTED;
+//	if (access == SecurityManager.ACCESS_PROTECTED) {
+//	    checkPassword(config, "write", password);
+//	}
+//	else if (access == SecurityManager.ACCESS_CLOSE) {
+//	    throw new SecurityException("can't access, write access is disabled");
+//	}
     }
 
     public static void checkPassword(ConfigImpl config, String type, Password password) throws SecurityException {
-	if (!config.hasPassword()) throw new SecurityException("can't access password protected information from the configuration, no password is defined for "
-		+ (config instanceof ConfigServer ? "the server context" : "this web context")); // TODO make the message more clear for someone using the admin indirectly in
-												 // source code by using ACF specific interfaces
-	if (!config.passwordEqual(password)) {
-	    if (StringUtil.isEmpty(password)) {
-		if (type == null) throw new SecurityException("Access is protected",
-			"to access the configuration without a password, you need to change the access to [open] in the Server Administrator");
-		throw new SecurityException(type + " access is protected",
-			"to access the configuration without a password, you need to change the " + type + " access to [open] in the Server Administrator");
-	    }
-	    throw new SecurityException("No access, password is invalid");
-	}
+    	return;
+//	if (!config.hasPassword()) throw new SecurityException("can't access password protected information from the configuration, no password is defined for "
+//		+ (config instanceof ConfigServer ? "the server context" : "this web context")); // TODO make the message more clear for someone using the admin indirectly in
+//												 // source code by using ACF specific interfaces
+//	if (!config.passwordEqual(password)) {
+//	    if (StringUtil.isEmpty(password)) {
+//		if (type == null) throw new SecurityException("Access is protected",
+//			"to access the configuration without a password, you need to change the access to [open] in the Server Administrator");
+//		throw new SecurityException(type + " access is protected",
+//			"to access the configuration without a password, you need to change the " + type + " access to [open] in the Server Administrator");
+//	    }
+//	    throw new SecurityException("No access, password is invalid");
+//	}
     }
 
     public static String createMD5FromResource(Resource resource) throws IOException {

@@ -23,7 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
+//import javax.imageio.ImageIO;
 
 /**
  * concrete captcha implementation
@@ -49,7 +49,8 @@ public final class Captcha extends AbstractCaptcha {
      * @throws IOException
      */
     public static void writeOut(BufferedImage image, OutputStream os, String format) throws IOException {
-	ImageIO.write(image, format, os);
+    	throw new RuntimeException("Not implemented");
+//	ImageIO.write(image, format, os);
 
     }
 

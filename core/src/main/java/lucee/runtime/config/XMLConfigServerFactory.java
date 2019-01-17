@@ -98,11 +98,11 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    }
 			CFMLServlet.logStartTime("XMLConfigServerFactory after iscli");
 		}
-		SystemOut.print(SystemUtil.getPrintWriter(SystemUtil.OUT), "===================================================================\n" + "SERVER CONTEXT\n"
-			+ "-------------------------------------------------------------------\n" + "- config:" + configDir + "\n" + "- loader-version:" + SystemUtil.getLoaderVersion()
-			+ "\n" + "- core-version:" + engine.getInfo().getVersion() + "\n" + "===================================================================\n"
-
-		);
+//		SystemOut.print(SystemUtil.getPrintWriter(SystemUtil.OUT), "===================================================================\n" + "SERVER CONTEXT\n"
+//			+ "-------------------------------------------------------------------\n" + "- config:" + configDir + "\n" + "- loader-version:" + SystemUtil.getLoaderVersion()
+//			+ "\n" + "- core-version:" + engine.getInfo().getVersion() + "\n" + "===================================================================\n"
+//
+//		);
 
 		int iDoNew = doNew(engine, configDir, false).updateType;
 		boolean doNew = iDoNew != NEW_NONE;
