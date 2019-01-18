@@ -1138,10 +1138,6 @@ public abstract class ConfigImpl implements Config {
     }
 
     protected void addTag(String nameSpace, String nameSpaceSeperator, String name, int dialect, ClassDefinition cd) {
-	if (dialect == CFMLEngine.DIALECT_BOTH) {
-	    addTag(nameSpace, nameSpaceSeperator, name, CFMLEngine.DIALECT_CFML, cd);
-	    return;
-	}
 
 	TagLib[] tlds =cfmlTlds;
 
@@ -1164,10 +1160,6 @@ public abstract class ConfigImpl implements Config {
      * @throws TagLibException
      */
     protected void setTldFile(Resource fileTld, int dialect) throws TagLibException {
-	if (dialect == CFMLEngine.DIALECT_BOTH) {
-	    setTldFile(fileTld, CFMLEngine.DIALECT_CFML);
-	    return;
-	}
 
         TagLib[] tlds =cfmlTlds;
 
@@ -1412,10 +1404,6 @@ public abstract class ConfigImpl implements Config {
     }
 
     protected void setFldFile(Resource fileFld, int dialect) throws FunctionLibException {
-	if (dialect == CFMLEngine.DIALECT_BOTH) {
-	    setFldFile(fileFld, CFMLEngine.DIALECT_CFML);
-	    return;
-	}
 
 	FunctionLib[] flds = cfmlFlds;
 

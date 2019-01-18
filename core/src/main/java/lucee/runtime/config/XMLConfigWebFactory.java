@@ -2825,7 +2825,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			nss = getAttr(tag, "namespace-seperator");
 			n = getAttr(tag, "name");
 			cd = getClassDefinition(tag, "", config.getIdentification());
-			config.addTag(ns, nss, n, CFMLEngine.DIALECT_BOTH, cd);
+			config.addTag(ns, nss, n, CFMLEngine.DIALECT_CFML, cd);
 		    }
 		}
 	    }
@@ -2948,6 +2948,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			while(cs.cfmlCoreTLDs == null){
 				if(TagLibFactory.systemTLDs.length>0) {
 					cs.cfmlCoreTLDs = TagLibFactory.systemTLDs[CFMLEngine.DIALECT_CFML];
+					break;
 				}
 				Thread.sleep(5);
 			}
@@ -2997,6 +2998,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			while(cs.cfmlCoreFLDs == null){
 				if(FunctionLibFactory.systemFLDs.length>0) {
 					cs.cfmlCoreFLDs = FunctionLibFactory.systemFLDs[CFMLEngine.DIALECT_CFML];
+					break;
 				}
 				Thread.sleep(5);
 			}

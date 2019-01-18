@@ -72,8 +72,8 @@ import lucee.runtime.video.VideoUtil;
 public interface CFMLEngine {
 
 //    public static final int DIALECT_LUCEE = 0;
-    public static final int DIALECT_CFML = 1;
-    public static final int DIALECT_BOTH = 3;
+    public static final int DIALECT_CFML = 0;
+//    public static final int DIALECT_BOTH = 3;
 
     /**
      * Field <code>CAN_UPDATE</code>

@@ -64,7 +64,7 @@ public final class FunctionLibFactory extends DefaultHandler {
     private StringBuilder content = new StringBuilder();
 
     private static Map<String, FunctionLib> hashLib = new HashMap<String, FunctionLib>();
-    public static FunctionLib[] systemFLDs = new FunctionLib[2];
+    public static FunctionLib[] systemFLDs = new FunctionLib[1];
     private final FunctionLib lib;
     private FunctionLibFunction function;
 

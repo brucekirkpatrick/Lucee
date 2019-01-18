@@ -114,15 +114,15 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 	    Resource configFile = configDir.getRealResource("lucee-server.xml");
 	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");
-	    futures2.add(executor.submit(()->{
-		    TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-		    return new Boolean(true);
-	    } ));
-
-	    futures2.add(executor.submit(()->{
-		    FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-		    return new Boolean(true);
-	    } ));
+//	    futures2.add(executor.submit(()->{
+//		    TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+//		    return new Boolean(true);
+//	    } ));
+//
+//	    futures2.add(executor.submit(()->{
+//		    FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+//		    return new Boolean(true);
+//	    } ));
 	    futures.add(executor.submit(()->{
 		    if (!configFile.exists()) {
 			    configFile.createFile(true);
@@ -184,18 +184,18 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 //		    return true;
 //	    } ));
 
-//	    TagLib tagLib=null;
-//	    FunctionLib functionLib=null;
+	    TagLib tagLib=null;
+	    FunctionLib functionLib=null;
 	    ConfigServerImpl configImpl=null;
-//	    futures.add(executor.submit(()->{
-//		    return TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-////		    return new Boolean(true);
-//	    } ));
-//
-//	    futures.add(executor.submit(()->{
-//	        return FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-////		    return new Boolean(true);
-//	    } ));
+	    futures.add(executor.submit(()->{
+		    return TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+//		    return new Boolean(true);
+	    } ));
+
+	    futures.add(executor.submit(()->{
+	        return FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+//		    return new Boolean(true);
+	    } ));
 
 
 
@@ -204,10 +204,10 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 			    Object obj=futures.get(i).get();
 			    if(obj instanceof Boolean){
 			    	continue;
-//			    }else if(obj instanceof TagLib) {
-//				    tagLib = (TagLib) obj;
-//			    }else if(obj instanceof FunctionLib) {
-//				    functionLib = (FunctionLib) obj;
+			    }else if(obj instanceof TagLib) {
+				    tagLib = (TagLib) obj;
+			    }else if(obj instanceof FunctionLib) {
+				    functionLib = (FunctionLib) obj;
 			    }else if(obj instanceof ConfigServerImpl){
 				    configImpl=(ConfigServerImpl) obj;
 			    }else{
@@ -218,8 +218,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    }
 	    }
 	    CFMLServlet.logStartTime("XMLConfigServerFactory after loading 4 threads");
-//	    configImpl.cfmlCoreTLDs=tagLib;
-//	    configImpl.cfmlCoreFLDs=functionLib;
+	    configImpl.cfmlCoreTLDs=tagLib;
+	    configImpl.cfmlCoreFLDs=functionLib;
 	    final ConfigServerImpl configImplTemp=configImpl;
 	    futures2.add(executor.submit(()-> {
 		    XMLConfigWebFactory.loadPart2(null, configImplTemp, false, doNew);
@@ -236,8 +236,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 			    throw new RuntimeException(e);
 		    }
 	    }
-	    configImpl.cfmlCoreFLDs=FunctionLibFactory.systemFLDs[CFMLEngine.DIALECT_CFML];
-	    configImpl.cfmlCoreTLDs=TagLibFactory.systemTLDs[CFMLEngine.DIALECT_CFML];
+//	    configImpl.cfmlCoreFLDs=FunctionLibFactory.systemFLDs[CFMLEngine.DIALECT_CFML];
+//	    configImpl.cfmlCoreTLDs=TagLibFactory.systemTLDs[CFMLEngine.DIALECT_CFML];
 	    executor.shutdown();
 	    CFMLServlet.logStartTime("XMLConfigServerFactory after load threads part 2");
 
