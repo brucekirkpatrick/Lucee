@@ -90,7 +90,7 @@ public class TagUtil {
 	    List<TagLib> allTlds = new ArrayList();
 	    // allTlds.addAll(Arrays.asList(cw.getTLDs(CFMLEngine.DIALECT_CFML)));
 	    // allTlds.addAll(Arrays.asList(cw.getTLDs(CFMLEngine.DIALECT_LUCEE)));
-	    allTlds.addAll(Arrays.asList(cw.getTLDs(CFMLEngine.DIALECT_BOTH)));
+	    allTlds.addAll(Arrays.asList(cw.getTLDs(CFMLEngine.DIALECT_CFML)));
 
 	    for (TagLib tld: allTlds) {
 		tlt = tld.getTag(tag.getClass());

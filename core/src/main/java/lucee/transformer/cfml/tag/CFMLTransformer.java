@@ -322,17 +322,6 @@ public final class CFMLTransformer {
 	}
     }
 
-    /**
-     * Liest den Body eines Tag ein. Kommentare, Tags und Literale inkl. Expressions. <br />
-     * EBNF:<br />
-     * <code>[comment] ("</" | "<" tag body | literal body);</code>
-     * 
-     * @param body CFXD Body Element dem der Inhalt zugeteilt werden soll.
-     * @param parseExpression Definiert ob Expressions innerhalb von Literalen uebersetzt werden sollen
-     *            oder nicht.
-     * @param transformer Expression Transfomer zum uebersetzten von Expression.
-     * @throws TemplateException
-     */
     public void body(Data data, Body body) throws TemplateException {
 	boolean parseLiteral = true;
 
@@ -402,22 +391,6 @@ public final class CFMLTransformer {
 	}
     }
 
-    /**
-     * Liest Literale Zeichenketten ein die sich innerhalb und auserhalb von tgas befinden, beim
-     * Einlesen wird unterschieden ob Expression geparsst werden muessen oder nicht, dies ist abhaengig,
-     * von der Definition des Tag in dem man sich allenfalls befindet, innerhalb der TLD.
-     * 
-     * @param parent uebergeordnetes Element.
-     * @param parseExpression Definiert on Expressions geparset werden sollen oder nicht.
-     * @param transformer Expression Transfomer zum uebersetzen der Expressions innerhalb des Literals.
-     * @throws TemplateException
-     * 
-     *             <br />
-     *             EBNF:<br />
-     *             <code>("<" | {?-"#"-"<"} "<" | {"#" expression "#"} "<" ) | ({?-"<"} "<")
-    		(* Welcher Teil der "oder" Bedingung ausgefuehrt wird, ist abhaengig ob die Tag-Lib vorgibt, 
-    		 dass Expression geparst werden sollen oder nicht. *)</code>
-     */
     private void literal(Data data, Body parent) throws TemplateException {
 	while (codeIsland && data.srcCode.isCurrent(AbstrCFMLScriptTransformer.TAG_ISLAND_INDICATOR)) {
 	    int start = data.srcCode.getPos();
@@ -554,17 +527,6 @@ public final class CFMLTransformer {
 	}
     }
 
-    /**
-     * Liest einen Tag ein, prueft hierbei ob das Tag innerhalb einer der geladenen Tag-Lib existiert,
-     * ansonsten wird ein Tag einfach als literal-string aufgenommen. <br />
-     * EBNF:<br />
-     * <code>name-space identifier spaces attributes ("/>" | ">" [body "</" identifier spaces ">"]);(* Ob dem Tag ein Body und ein End-Tag folgt ist abhaengig von Definition des body-content in Tag-Lib, gleices gilt fuer appendix *)</code>
-     * 
-     * @param parent uebergeornetes Tag
-     * @param parseExpression sollen Expresson innerhalb des Body geparste werden oder nicht.
-     * @return Gibt zurueck ob es sich um ein Tag as einer Tag-Lib handelte oder nicht.
-     * @throws TemplateException
-     */
     private boolean tag(Data data, Body parent) throws TemplateException {
 	boolean startingParseExpression = data.parseExpression;
 	ExprTransformer startingTransformer = data.transformer;

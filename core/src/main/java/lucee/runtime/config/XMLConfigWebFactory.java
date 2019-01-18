@@ -2684,7 +2684,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			nss = getAttr(tag, "namespace-seperator");
 			n = getAttr(tag, "name");
 			cd = getClassDefinition(tag, "", config.getIdentification());
-			config.addTag(ns, nss, n, CFMLEngine.DIALECT_BOTH, cd);
+			config.addTag(ns, nss, n, CFMLEngine.DIALECT_CFML, cd);
 		    }
 		}
 	    }
@@ -2839,7 +2839,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    // TLD Dir
 	    if (!StringUtil.isEmpty(strDefaultTLDDirectory)) {
 		Resource tld = ConfigWebUtil.getFile(config, configDir, strDefaultTLDDirectory, FileUtil.TYPE_DIR);
-		if (tld != null) config.setTldFile(tld, CFMLEngine.DIALECT_BOTH);
+		if (tld != null) config.setTldFile(tld, CFMLEngine.DIALECT_CFML);
 	    }
 
 	    // Tag Directory
@@ -2868,8 +2868,6 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setAllowRealPath(Caster.toBooleanValue(strAllowRealPath, true));
 	    }
 
-	    // FUNCTIONS
-
 	    // Init flds
 	    if (hasCS) {
 		config.setFLDs(ConfigImpl.duplicate(configServer.getFLDs(CFMLEngine.DIALECT_CFML), false), CFMLEngine.DIALECT_CFML);
@@ -2884,7 +2882,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	    // FLDs
 	    if (!StringUtil.isEmpty(strDefaultFLDDirectory)) {
 		Resource fld = ConfigWebUtil.getFile(config, configDir, strDefaultFLDDirectory, FileUtil.TYPE_DIR);
-		if (fld != null) config.setFldFile(fld, CFMLEngine.DIALECT_BOTH);
+		if (fld != null) config.setFldFile(fld, CFMLEngine.DIALECT_CFML);
 	    }
 
 	    // Function files (CFML)
