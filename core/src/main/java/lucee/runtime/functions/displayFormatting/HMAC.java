@@ -46,34 +46,39 @@ public class HMAC implements Function {
     }
 
     public static String call(PageContext pc, Object oMessage, Object oKey, String algorithm, String charset) throws PageException {
-	// charset
-	Charset cs;
-	if (StringUtil.isEmpty(charset, true)) cs = pc.getWebCharset();
-	else cs = CharsetUtil.toCharset(charset);
+		Charset cs;
+		byte[] msg;
+		byte[] key;
+		if (StringUtil.isEmpty(charset, true)){
+			msg = toBinary(oMessage);
+			key = toBinary(oKey);
+		}else{
+			cs = CharsetUtil.toCharset(charset);
+			msg = toBinary(oMessage, cs);
+			key = toBinary(oKey, cs);
+		}
+		if (StringUtil.isEmpty(algorithm, true)) algorithm = "HmacMD5";
 
-	// message
-	byte[] msg = toBinary(oMessage, cs);
-
-	// message
-	byte[] key = toBinary(oKey, cs);
-
-	// algorithm
-	if (StringUtil.isEmpty(algorithm, true)) algorithm = "HmacMD5";
-
-	SecretKey sk = new SecretKeySpec(key, algorithm);
-	try {
-	    Mac mac = Mac.getInstance(algorithm);
-	    mac.init(sk);
-	    mac.reset();
-	    mac.update(msg);
-	    msg = mac.doFinal();
-	    return MD5.stringify(msg).toUpperCase();
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
+		SecretKey sk = new SecretKeySpec(key, algorithm);
+		try {
+		    Mac mac = Mac.getInstance(algorithm);
+		    mac.init(sk);
+		    mac.reset();
+		    mac.update(msg);
+			msg = mac.doFinal();
+		    return MD5.stringify(msg).toUpperCase();
+		}
+		catch (Exception e) {
+		    throw Caster.toPageException(e);
+		}
     }
 
+	private static byte[] toBinary(Object obj) throws PageException {
+		if (Decision.isBinary(obj)) {
+			return Caster.toBinary(obj);
+		}
+		return Caster.toString(obj).getBytes();
+	}
     private static byte[] toBinary(Object obj, Charset cs) throws PageException {
 	if (Decision.isBinary(obj)) {
 	    return Caster.toBinary(obj);
