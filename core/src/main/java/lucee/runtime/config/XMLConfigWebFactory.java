@@ -292,7 +292,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		final ConfigWebImpl configWeb = new ConfigWebImpl(factory, configServer, servletConfig, configDir, configFile);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory web before load");
 
-		if(true){
+		if(false){
 			try {
 				load(configServer, configWeb, doc, false, doNew);
 				configWeb.doc = doc;
@@ -929,7 +929,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	}
 
 	private static void settings(ConfigImpl config, Log log) {
-		doCheckChangesInLibraries(config);
+//		doCheckChangesInLibraries(config);
 	}
 
 	private static void loadVersion(ConfigImpl config, Document doc, Log log) {
@@ -1235,8 +1235,8 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	if (!f.exists() || doNew) createFileFromResourceEL("/resource/context/lucee-doc.lar", f);
 //	else createFileFromResourceCheckSizeDiffEL("/resource/context/lucee-doc.lar", f);
 //
-//	f = contextDir.getRealResource("component-dump." + TEMPLATE_EXTENSION);
-//	if (!f.exists()) createFileFromResourceEL("/resource/context/component-dump." + TEMPLATE_EXTENSION, f);
+	f = contextDir.getRealResource("component-dump." + TEMPLATE_EXTENSION);
+	if (!f.exists()) createFileFromResourceEL("/resource/context/component-dump." + TEMPLATE_EXTENSION, f);
 
 		// Base Component
 //	String badContent = "<cfcomponent displayname=\"Component\" hint=\"This is the Base Component\">\n</cfcomponent>";
@@ -2802,6 +2802,31 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 			String strDefaultFuncDirectory = "{lucee-config}/library/function/";
 			String strDefaultTagDirectory = "{lucee-config}/library/tag/";
 
+//			if(hasCS) {
+//				Resource configDirServer=configServer.getConfigDir();
+//				Resource tldDir = configDirServer.getRealResource("context/library/tld");
+//				if(!tldDir.exists()) {
+//					try {
+//						tldDir.createDirectory(true);
+//					} catch (IOException e) {
+//						throw new RuntimeException(e);
+//					}
+//				}
+//				Resource f = tldDir.getRealResource("core-base.tld");
+//				if (!f.exists()) createFileFromResourceEL("/resource/tld/core-base.tld", f);
+//
+//				Resource fldDir = configDirServer.getRealResource("context/library/fld");
+//				if(!fldDir.exists()) {
+//					try {
+//						fldDir.createDirectory(true);
+//					} catch (IOException e) {
+//						throw new RuntimeException(e);
+//					}
+//				}
+//				f = fldDir.getRealResource("core-base.fld");
+//				if (!f.exists()) createFileFromResourceEL("/resource/fld/core-base.fld", f);
+//			}
+
 			// Deploy Dir
 			Resource dd = ConfigWebUtil.getFile(configDir, strDeployDirectory, "cfclasses", configDir, FileUtil.TYPE_DIR, config);
 			config.setDeployDirectory(dd);
@@ -2815,6 +2840,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 				ConfigServerImpl cs = (ConfigServerImpl) config;
 				config.setTLDs(new TagLib[]{cs.cfmlCoreTLDs}, CFMLEngine.DIALECT_CFML);
 			}
+
 
 			// TLD Dir
 			if (!StringUtil.isEmpty(strDefaultTLDDirectory)) {

@@ -44,7 +44,7 @@ public abstract class InterfacePageImpl extends InterfacePage implements PagePro
 	}
 
     @Override
-    public Object call(PageContext pc) throws PageException {
+    public Object call(PageContextImpl pc) throws PageException {
 	try {
 	    pc.setSilent();
 	    InterfaceImpl interf = null;
