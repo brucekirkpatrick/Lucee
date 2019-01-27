@@ -2969,7 +2969,7 @@ public final class XMLConfigAdmin {
 	// if(baseComponent.trim().length()>0)
 	scope.removeAttribute("base");
 	scope.setAttribute("base-cfml", baseComponentCFML);
-	scope.setAttribute("base-lucee", baseComponentLucee);
+//	scope.setAttribute("base-lucee", baseComponentLucee);
     }
 
     public void updateComponentDeepSearch(Boolean deepSearch) throws SecurityException {

@@ -154,11 +154,11 @@ Path placeholders:
         arguments:
 		lock-timeout   - 	define how long a request wait for a lock
 		case-sensitive	-	is http handled case-sensitive or not
-	 	-->
+	 	
     	<resource-provider 
     		scheme="s3"
     		class="lucee.commons.io.res.type.s3.S3ResourceProvider"
-    		arguments="lock-timeout:10000;"/>
+    		arguments="lock-timeout:10000;"/>-->
     		
     	<!--
     	this providers uses the jcifs library. see http://jcifs.samba.org/
@@ -243,7 +243,7 @@ Path placeholders:
 			define where lucee first look for a called cfml file.
 			for example when you define physical you can partiquel overwrite the archive.
  -->	
-		<mapping
+		<!--<mapping
 			readonly="yes"
 			virtual="/lucee-server/"
 			physical="{lucee-server}/context/"
@@ -260,19 +260,14 @@ Path placeholders:
 			primary="physical"
 			listener-mode="modern"
 			listener-type="curr2root"
-			inspect-template="once"/>
+			inspect-template="once"/>-->
 
 	</mappings>	
+	 
 	
-	<custom-tag>
-		<mapping
-			inspect-template="never"
-			physical="{lucee-config}/customtags/"/>
-	</custom-tag>
-	
-	<ext-tags>
+	<!--<ext-tags>
 		<ext-tag type="java" name="HelloWorld" class="lucee.cfx.example.HelloWorld"/>
-	</ext-tags>
+	</ext-tags>-->
 	
 	<!--
 	component:
@@ -284,11 +279,10 @@ Path placeholders:
 	-->
 	<component 
         base-cfml="/lucee/Component.cfc"
-		base-lucee="/lucee/Component.lucee"
 		data-member-default-access="public"
 		dump-template="/lucee/component-dump.cfm">
-  		<mapping virtual="/default" physical="{lucee-web}/components/" primary="physical" inspect-template="never"/>
-  		<mapping virtual="/default-server" physical="{lucee-server}/components/" primary="physical" inspect-template="never"/>
+  		<!--<mapping virtual="/default" physical="{lucee-web}/components/" primary="physical" inspect-template="never"/>
+  		<mapping virtual="/default-server" physical="{lucee-server}/components/" primary="physical" inspect-template="never"/>-->
 	</component>
 	
 	<!--
@@ -359,7 +353,7 @@ Path placeholders:
 			curr2root:	search the App... from current directory up to root. 
 	-->
 	<application
-		listener-type="mixed"
+		listener-type="modern"
 		listener-mode="curr2root"/>
 	
 	<update 
