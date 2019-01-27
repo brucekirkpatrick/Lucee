@@ -421,6 +421,9 @@ public final class MappingImpl implements Mapping {
     @Override
     @Deprecated
     public boolean isTrusted() {
+    	if(PageContextImpl.benchmarking){
+    		return true;
+	    }
 	return getInspectTemplate() == Config.INSPECT_NEVER;
     }
 
