@@ -124,16 +124,16 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 //		    return new Boolean(true);
 //	    } ));
 	    futures.add(executor.submit(()->{
-		    if (!configFile.exists()) {
-			    configFile.createFile(true);
-			    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
-			    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
-		    }
+//		    if (!configFile.exists()) {
+//			    configFile.createFile(true);
+//			    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
+//			    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
+//		    }
 
 //		    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
 		    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
 //		    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
-		    Document doc = loadDocumentCreateIfFails(configFile, "server");
+		    Document doc = null;//loadDocumentCreateIfFails(configFile, "server");
 		    config.doc=doc;
 		    futures2.add(executor.submit(()-> {
 			    XMLConfigWebFactory.load(null, config, doc, false, doNew);
@@ -262,14 +262,15 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
      */
     public static void reloadInstance(CFMLEngine engine, ConfigServerImpl configServer)
 	    throws SAXException, ClassException, PageException, IOException, TagLibException, FunctionLibException, BundleException {
-	Resource configFile = configServer.getConfigFile();
+		Resource configFile = configServer.getConfigFile();
 
-	if (configFile == null) return;
-	if (second(configServer.getLoadTime()) > second(configFile.lastModified())) return;
-	int iDoNew = doNew(engine, configServer.getConfigDir(), false).updateType;
-	boolean doNew = iDoNew != NEW_NONE;
+		if (configFile == null) return;
+		if (second(configServer.getLoadTime()) > second(configFile.lastModified())) return;
+		int iDoNew = doNew(engine, configServer.getConfigDir(), false).updateType;
+		boolean doNew = iDoNew != NEW_NONE;
 
-	load(configServer, loadDocument(configFile), true, doNew);
+//	load(configServer, loadDocument(configFile), true, doNew);
+	    load(configServer, null, true, doNew);
 
 
 //	((CFMLEngineImpl) ConfigWebUtil.getEngine(configServer)).onStart(configServer, true);
@@ -295,25 +296,25 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 	XMLConfigWebFactory.load(null, configServer, doc, isReload, doNew);
 
 
-	loadLabel(configServer, doc);
+//	loadLabel(configServer, doc);
     }
 
-    private static void loadLabel(ConfigServerImpl configServer, Document doc) {
-	Element el = getChildByName(doc.getDocumentElement(), "labels");
-	Element[] children = getChildren(el, "label");
-
-	Map<String, String> labels = new HashMap<String, String>();
-	if (children != null) for (int i = 0; i < children.length; i++) {
-	    el = children[i];
-
-	    String id = el.getAttribute("id");
-	    String name = el.getAttribute("name");
-	    if (id != null && name != null) {
-		labels.put(id, name);
-	    }
-	}
-	configServer.setLabels(labels);
-    }
+//    private static void loadLabel(ConfigServerImpl configServer, Document doc) {
+//	Element el = getChildByName(doc.getDocumentElement(), "labels");
+//	Element[] children = getChildren(el, "label");
+//
+//	Map<String, String> labels = new HashMap<String, String>();
+//	if (children != null) for (int i = 0; i < children.length; i++) {
+//	    el = children[i];
+//
+//	    String id = el.getAttribute("id");
+//	    String name = el.getAttribute("name");
+//	    if (id != null && name != null) {
+//		labels.put(id, name);
+//	    }
+//	}
+//	configServer.setLabels(labels);
+//    }
 
     private static void createContextFiles(Resource configDir, boolean doNew) {
 

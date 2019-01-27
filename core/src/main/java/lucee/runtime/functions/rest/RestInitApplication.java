@@ -83,14 +83,14 @@ public class RestInitApplication {
     }
 
     private static void update(PageContext pc, Resource dir, String virtual, Password webAdminPassword, boolean defaultMapping) throws PageException {
-	try {
-	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
-	    admin.updateRestMapping(virtual, dir.getAbsolutePath(), defaultMapping);
-	    admin.storeAndReload();
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
+//	try {
+//	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
+//	    admin.updateRestMapping(virtual, dir.getAbsolutePath(), defaultMapping);
+//	    admin.storeAndReload();
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
     }
 
 }

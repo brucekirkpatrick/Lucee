@@ -37,14 +37,15 @@ public class CacheRegionExists extends BIF {
     private static final long serialVersionUID = 5966166102856736134L;
 
     public static boolean call(PageContext pc, String cacheName, String strWebAdminPassword) throws PageException {
-	Password webAdminPassword = CacheUtil.getPassword(pc, strWebAdminPassword, false);
-	try {
-	    XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
-	    return adminConfig.cacheConnectionExists(cacheName);
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
+//	Password webAdminPassword = CacheUtil.getPassword(pc, strWebAdminPassword, false);
+//	try {
+//	    XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
+//	    return adminConfig.cacheConnectionExists(cacheName);
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
+	    return false;
     }
 
     public static boolean call(PageContext pc, String cacheName) throws PageException {

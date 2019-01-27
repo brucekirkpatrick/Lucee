@@ -177,81 +177,81 @@ public final class SecurityManagerImpl implements Cloneable, SecurityManager {
 
     }
 
-    /**
-     * translate a string access value (all,local,none,no,yes) to int type
-     * 
-     * @param accessValue
-     * @return return int access value (VALUE_ALL,VALUE_LOCAL,VALUE_NO,VALUE_NONE,VALUE_YES)
-     * @throws SecurityException
-     */
-    public static short toShortAccessValue(String accessValue) throws SecurityException {
-	accessValue = accessValue.trim().toLowerCase();
-	if (accessValue.equals("all")) return VALUE_ALL;
-	else if (accessValue.equals("local")) return VALUE_LOCAL;
-	else if (accessValue.equals("none")) return VALUE_NONE;
-	else if (accessValue.equals("no")) return VALUE_NO;
-	else if (accessValue.equals("yes")) return VALUE_YES;
-	else if (accessValue.equals("1")) return VALUE_1;
-	else if (accessValue.equals("2")) return VALUE_2;
-	else if (accessValue.equals("3")) return VALUE_3;
-	else if (accessValue.equals("4")) return VALUE_4;
-	else if (accessValue.equals("5")) return VALUE_5;
-	else if (accessValue.equals("6")) return VALUE_6;
-	else if (accessValue.equals("7")) return VALUE_7;
-	else if (accessValue.equals("8")) return VALUE_8;
-	else if (accessValue.equals("9")) return VALUE_9;
-	else if (accessValue.equals("10")) return VALUE_10;
-	else throw new SecurityException("invalid access value [" + accessValue + "]", "valid access values are [all,local,no,none,yes,1,...,10]");
-
-    }
-
-    public static short toShortAccessRWValue(String accessValue) throws SecurityException {
-	accessValue = accessValue.trim().toLowerCase();
-	if (accessValue.equals("open")) return ACCESS_OPEN;
-	else if (accessValue.equals("close")) return ACCESS_CLOSE;
-	else if (accessValue.equals("protected")) return ACCESS_PROTECTED;
-	else throw new SecurityException("invalid access value [" + accessValue + "]", "valid access values are [open,protected,close]");
-
-    }
-
-    /**
-     * translate a string access value (all,local,none,no,yes) to int type
-     * 
-     * @param accessValue
-     * @param defaultValue when accessValue is invlaid this value will be returned
-     * @return return int access value (VALUE_ALL,VALUE_LOCAL,VALUE_NO,VALUE_NONE,VALUE_YES)
-     */
-    public static short toShortAccessValue(String accessValue, short defaultValue) {
-	accessValue = accessValue.trim().toLowerCase();
-	if (accessValue.equals("no")) return VALUE_NO;
-	else if (accessValue.equals("yes")) return VALUE_YES;
-	else if (accessValue.equals("all")) return VALUE_ALL;
-	else if (accessValue.equals("local")) return VALUE_LOCAL;
-	else if (accessValue.equals("none")) return VALUE_NONE;
-	else if (accessValue.equals("1")) return VALUE_1;
-	else if (accessValue.equals("2")) return VALUE_2;
-	else if (accessValue.equals("3")) return VALUE_3;
-	else if (accessValue.equals("4")) return VALUE_4;
-	else if (accessValue.equals("5")) return VALUE_5;
-	else if (accessValue.equals("6")) return VALUE_6;
-	else if (accessValue.equals("7")) return VALUE_7;
-	else if (accessValue.equals("8")) return VALUE_8;
-	else if (accessValue.equals("9")) return VALUE_9;
-	else if (accessValue.equals("10")) return VALUE_10;
-	else if (accessValue.equals("0")) return VALUE_NO;
-	else if (accessValue.equals("-1")) return VALUE_YES;
-	else return defaultValue;
-
-    }
-
-    public static short toShortAccessRWValue(String accessValue, short defaultValue) {
-	accessValue = accessValue.trim().toLowerCase();
-	if (accessValue.equals("open")) return ACCESS_OPEN;
-	else if (accessValue.equals("close")) return ACCESS_CLOSE;
-	else if (accessValue.equals("protected")) return ACCESS_PROTECTED;
-	else return defaultValue;
-
-    }
+//    /**
+//     * translate a string access value (all,local,none,no,yes) to int type
+//     *
+//     * @param accessValue
+//     * @return return int access value (VALUE_ALL,VALUE_LOCAL,VALUE_NO,VALUE_NONE,VALUE_YES)
+//     * @throws SecurityException
+//     */
+//    public static short toShortAccessValue(String accessValue) throws SecurityException {
+//	accessValue = accessValue.trim().toLowerCase();
+//	if (accessValue.equals("all")) return VALUE_ALL;
+//	else if (accessValue.equals("local")) return VALUE_LOCAL;
+//	else if (accessValue.equals("none")) return VALUE_NONE;
+//	else if (accessValue.equals("no")) return VALUE_NO;
+//	else if (accessValue.equals("yes")) return VALUE_YES;
+//	else if (accessValue.equals("1")) return VALUE_1;
+//	else if (accessValue.equals("2")) return VALUE_2;
+//	else if (accessValue.equals("3")) return VALUE_3;
+//	else if (accessValue.equals("4")) return VALUE_4;
+//	else if (accessValue.equals("5")) return VALUE_5;
+//	else if (accessValue.equals("6")) return VALUE_6;
+//	else if (accessValue.equals("7")) return VALUE_7;
+//	else if (accessValue.equals("8")) return VALUE_8;
+//	else if (accessValue.equals("9")) return VALUE_9;
+//	else if (accessValue.equals("10")) return VALUE_10;
+//	else throw new SecurityException("invalid access value [" + accessValue + "]", "valid access values are [all,local,no,none,yes,1,...,10]");
+//
+//    }
+//
+//    public static short toShortAccessRWValue(String accessValue) throws SecurityException {
+//	accessValue = accessValue.trim().toLowerCase();
+//	if (accessValue.equals("open")) return ACCESS_OPEN;
+//	else if (accessValue.equals("close")) return ACCESS_CLOSE;
+//	else if (accessValue.equals("protected")) return ACCESS_PROTECTED;
+//	else throw new SecurityException("invalid access value [" + accessValue + "]", "valid access values are [open,protected,close]");
+//
+//    }
+//
+//    /**
+//     * translate a string access value (all,local,none,no,yes) to int type
+//     *
+//     * @param accessValue
+//     * @param defaultValue when accessValue is invlaid this value will be returned
+//     * @return return int access value (VALUE_ALL,VALUE_LOCAL,VALUE_NO,VALUE_NONE,VALUE_YES)
+//     */
+//    public static short toShortAccessValue(String accessValue, short defaultValue) {
+//	accessValue = accessValue.trim().toLowerCase();
+//	if (accessValue.equals("no")) return VALUE_NO;
+//	else if (accessValue.equals("yes")) return VALUE_YES;
+//	else if (accessValue.equals("all")) return VALUE_ALL;
+//	else if (accessValue.equals("local")) return VALUE_LOCAL;
+//	else if (accessValue.equals("none")) return VALUE_NONE;
+//	else if (accessValue.equals("1")) return VALUE_1;
+//	else if (accessValue.equals("2")) return VALUE_2;
+//	else if (accessValue.equals("3")) return VALUE_3;
+//	else if (accessValue.equals("4")) return VALUE_4;
+//	else if (accessValue.equals("5")) return VALUE_5;
+//	else if (accessValue.equals("6")) return VALUE_6;
+//	else if (accessValue.equals("7")) return VALUE_7;
+//	else if (accessValue.equals("8")) return VALUE_8;
+//	else if (accessValue.equals("9")) return VALUE_9;
+//	else if (accessValue.equals("10")) return VALUE_10;
+//	else if (accessValue.equals("0")) return VALUE_NO;
+//	else if (accessValue.equals("-1")) return VALUE_YES;
+//	else return defaultValue;
+//
+//    }
+//
+//    public static short toShortAccessRWValue(String accessValue, short defaultValue) {
+//	accessValue = accessValue.trim().toLowerCase();
+//	if (accessValue.equals("open")) return ACCESS_OPEN;
+//	else if (accessValue.equals("close")) return ACCESS_CLOSE;
+//	else if (accessValue.equals("protected")) return ACCESS_PROTECTED;
+//	else return defaultValue;
+//
+//    }
 
     /**
      * translate a short access value (all,local,none,no,yes) to String type

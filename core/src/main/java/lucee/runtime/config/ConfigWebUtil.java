@@ -417,15 +417,15 @@ public final class ConfigWebUtil {
 	return parent.mkdirs() && file.createNewFile();
     }
 
-    /**
-     * has access checks if config object has access to given type
-     * 
-     * @param config
-     * @param type
-     * @return has access
-     */
-    public static boolean hasAccess(Config config, int type) {
-    	return true;
+//    /**
+//     * has access checks if config object has access to given type
+//     *
+//     * @param config
+//     * @param type
+//     * @return has access
+//     */
+//    public static boolean hasAccess(Config config, int type) {
+//    	return true;
 
 //	boolean has = true;
 //	if (config instanceof ConfigWeb) {
@@ -441,7 +441,7 @@ public final class ConfigWebUtil {
 //	    has = securityManager.getAccess(type) != SecurityManager.VALUE_NO;
 //	}
 //	return has;
-    }
+//    }
 
     public static String translateOldPath(String path) {
 	if (path == null) return path;

@@ -85,6 +85,6 @@ public interface DataSourceService extends Service {
 
     public abstract boolean isJadoZoomLoaded();
 
-    public abstract void removeDatasource(String arg0) throws SQLException, SecurityException;
+//    public abstract void removeDatasource(String arg0) throws SQLException, SecurityException;
 
 }

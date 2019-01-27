@@ -42,21 +42,21 @@ public class RestDeleteApplication {
 	Resource dir = RestDeleteApplication.toResource(pc, dirPath);
 	ConfigWebImpl config = (ConfigWebImpl) pc.getConfig();
 
-	try {
-	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
-	    Mapping[] mappings = config.getRestMappings();
-	    Mapping mapping;
-	    for (int i = 0; i < mappings.length; i++) {
-		mapping = mappings[i];
-		if (RestUtil.isMatch(pc, mapping, dir)) {
-		    admin.removeRestMapping(mapping.getVirtual());
-		    admin.storeAndReload();
-		}
-	    }
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
+//	try {
+//	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
+//	    Mapping[] mappings = config.getRestMappings();
+//	    Mapping mapping;
+//	    for (int i = 0; i < mappings.length; i++) {
+//		mapping = mappings[i];
+//		if (RestUtil.isMatch(pc, mapping, dir)) {
+//		    admin.removeRestMapping(mapping.getVirtual());
+//		    admin.storeAndReload();
+//		}
+//	    }
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
 
 	return null;
     }

@@ -138,42 +138,42 @@ public abstract class XMLConfigFactory {
      * @throws SAXException
      * @throws IOException
      */
-    static Document loadDocument(Resource xmlFile) throws SAXException, IOException {
-	InputStream is = null;
-	try {
-	    return _loadDocument(is = IOUtil.toBufferedInputStream(xmlFile.getInputStream()));
-	}
-	finally {
-	    IOUtil.closeEL(is);
-	}
-    }
-
-    static Document loadDocumentCreateIfFails(Resource configFile, String type) throws SAXException, IOException {
-	try {
-	    InputStream is = null;
-	    try {
-		return _loadDocument(is = IOUtil.toBufferedInputStream(configFile.getInputStream()));
-	    }
-	    finally {
-		IOUtil.closeEL(is);
-	    }
-	}
-	catch (Exception e) {
-	    // rename buggy config files
-	    if (configFile.exists()) {
-		SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "config file " + configFile + " was not valid and has been replaced");
-		int count = 1;
-		Resource bugFile;
-		Resource configDir = configFile.getParentResource();
-		while ((bugFile = configDir.getRealResource("lucee-" + type + "." + (count++) + ".buggy")).exists()) {}
-		IOUtil.copy(configFile, bugFile);
-		configFile.delete();
-	    }
-	    createConfigFile(type, configFile);
-	    return loadDocument(configFile);
-	}
-
-    }
+//    static Document loadDocument(Resource xmlFile) throws SAXException, IOException {
+//	InputStream is = null;
+//	try {
+//	    return _loadDocument(is = IOUtil.toBufferedInputStream(xmlFile.getInputStream()));
+//	}
+//	finally {
+//	    IOUtil.closeEL(is);
+//	}
+//    }
+//
+//    static Document loadDocumentCreateIfFails(Resource configFile, String type) throws SAXException, IOException {
+//	try {
+//	    InputStream is = null;
+//	    try {
+//		return _loadDocument(is = IOUtil.toBufferedInputStream(configFile.getInputStream()));
+//	    }
+//	    finally {
+//		IOUtil.closeEL(is);
+//	    }
+//	}
+//	catch (Exception e) {
+//	    // rename buggy config files
+//	    if (configFile.exists()) {
+//		SystemOut.printDate(SystemUtil.getPrintWriter(SystemUtil.OUT), "config file " + configFile + " was not valid and has been replaced");
+//		int count = 1;
+//		Resource bugFile;
+//		Resource configDir = configFile.getParentResource();
+//		while ((bugFile = configDir.getRealResource("lucee-" + type + "." + (count++) + ".buggy")).exists()) {}
+//		IOUtil.copy(configFile, bugFile);
+//		configFile.delete();
+//	    }
+//	    createConfigFile(type, configFile);
+//	    return loadDocument(configFile);
+//	}
+//
+//    }
 
     /**
      * creates the Config File, if File not exist
@@ -182,10 +182,10 @@ public abstract class XMLConfigFactory {
      * @param configFile
      * @throws IOException
      */
-    static void createConfigFile(String xmlName, Resource configFile) throws IOException {
-	configFile.createFile(true);
-	createFileFromResource("/resource/config/" + xmlName + ".xml", configFile.getAbsoluteResource());
-    }
+//    static void createConfigFile(String xmlName, Resource configFile) throws IOException {
+//	configFile.createFile(true);
+//	createFileFromResource("/resource/config/" + xmlName + ".xml", configFile.getAbsoluteResource());
+//    }
 
     /**
      * load XML Document from XML File
@@ -195,11 +195,11 @@ public abstract class XMLConfigFactory {
      * @throws SAXException
      * @throws IOException
      */
-    private static Document _loadDocument(InputStream is) throws SAXException, IOException {
-	InputSource source = new InputSource(is);
-
-	return XMLUtil.parse(source, null, false);
-    }
+//    private static Document _loadDocument(InputStream is) throws SAXException, IOException {
+//	InputSource source = new InputSource(is);
+//
+//	return XMLUtil.parse(source, null, false);
+//    }
 
     /**
      * return first direct child Elements of a Element with given Name
@@ -208,56 +208,56 @@ public abstract class XMLConfigFactory {
      * @param nodeName
      * @return matching children
      */
-    static synchronized Element getChildByName(Node parent, String nodeName) {
-	return getChildByName(parent, nodeName, false);
-    }
-
-    static Element getChildByName(Node parent, String nodeName, boolean insertBefore) {
-	return getChildByName(parent, nodeName, insertBefore, false);
-    }
-
-    static Element getChildByName(Node parent, String nodeName, boolean insertBefore, boolean doNotCreate) {
-	if (parent == null) return null;
-	NodeList list = parent.getChildNodes();
-	int len = list.getLength();
-
-	for (int i = 0; i < len; i++) {
-	    Node node = list.item(i);
-
-	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() != null && node.getNodeName().equalsIgnoreCase(nodeName)) {
-		return (Element) node;
-	    }
-	}
-	if (doNotCreate) return null;
-
-	Element newEl = XMLUtil.getDocument(parent).createElement(nodeName);
-	if (insertBefore) parent.insertBefore(newEl, parent.getFirstChild());
-	else parent.appendChild(newEl);
-
-	return newEl;
-    }
-
-    /**
-     * return all direct child Elements of a Element with given Name
-     * 
-     * @param parent
-     * @param nodeName
-     * @return matching children
-     */
-    static synchronized Element[] getChildren(Node parent, String nodeName) {
-	if (parent == null) return new Element[0];
-	NodeList list = parent.getChildNodes();
-	int len = list.getLength();
-	ArrayList<Element> rtn = new ArrayList<Element>();
-
-	for (int i = 0; i < len; i++) {
-	    Node node = list.item(i);
-	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase(nodeName)) {
-		rtn.add((Element) node);
-	    }
-	}
-	return rtn.toArray(new Element[rtn.size()]);
-    }
+//    static synchronized Element getChildByName(Node parent, String nodeName) {
+//	return getChildByName(parent, nodeName, false);
+//    }
+//
+//    static Element getChildByName(Node parent, String nodeName, boolean insertBefore) {
+//	return getChildByName(parent, nodeName, insertBefore, false);
+//    }
+//
+//    static Element getChildByName(Node parent, String nodeName, boolean insertBefore, boolean doNotCreate) {
+//	if (parent == null) return null;
+//	NodeList list = parent.getChildNodes();
+//	int len = list.getLength();
+//
+//	for (int i = 0; i < len; i++) {
+//	    Node node = list.item(i);
+//
+//	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName() != null && node.getNodeName().equalsIgnoreCase(nodeName)) {
+//		return (Element) node;
+//	    }
+//	}
+//	if (doNotCreate) return null;
+//
+//	Element newEl = XMLUtil.getDocument(parent).createElement(nodeName);
+//	if (insertBefore) parent.insertBefore(newEl, parent.getFirstChild());
+//	else parent.appendChild(newEl);
+//
+//	return newEl;
+//    }
+//
+//    /**
+//     * return all direct child Elements of a Element with given Name
+//     *
+//     * @param parent
+//     * @param nodeName
+//     * @return matching children
+//     */
+//    static synchronized Element[] getChildren(Node parent, String nodeName) {
+//	if (parent == null) return new Element[0];
+//	NodeList list = parent.getChildNodes();
+//	int len = list.getLength();
+//	ArrayList<Element> rtn = new ArrayList<Element>();
+//
+//	for (int i = 0; i < len; i++) {
+//	    Node node = list.item(i);
+//	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase(nodeName)) {
+//		rtn.add((Element) node);
+//	    }
+//	}
+//	return rtn.toArray(new Element[rtn.size()]);
+//    }
 
     /**
      * creates a File and his content froma a resurce

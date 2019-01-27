@@ -180,17 +180,17 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 	return names;
     }
 
-    @Override
-    public void removeDatasource(String name) throws SQLException, SecurityException {
-	checkWriteAccess();
-	try {
-	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance(config(), null);
-	    admin.removeDataSource(name);
-	}
-	catch (Exception e) {
-	    // ignoriert wenn die db nicht existiert
-	}
-    }
+//    @Override
+//    public void removeDatasource(String name) throws SQLException, SecurityException {
+//	checkWriteAccess();
+//	try {
+//	    XMLConfigAdmin admin = XMLConfigAdmin.newInstance(config(), null);
+//	    admin.removeDataSource(name);
+//	}
+//	catch (Exception e) {
+//	    // ignoriert wenn die db nicht existiert
+//	}
+//    }
 
     @Override
     public boolean verifyDatasource(String name) throws SQLException, SecurityException {

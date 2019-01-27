@@ -34,6 +34,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import lucee.runtime.config.*;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 import org.w3c.dom.Element;
@@ -48,13 +49,6 @@ import lucee.commons.io.res.util.ResourceUtil;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.loader.util.Util;
-import lucee.runtime.config.Config;
-import lucee.runtime.config.ConfigImpl;
-import lucee.runtime.config.ConfigWeb;
-import lucee.runtime.config.ConfigWebUtil;
-import lucee.runtime.config.Constants;
-import lucee.runtime.config.DeployHandler;
-import lucee.runtime.config.XMLConfigAdmin;
 import lucee.runtime.db.ClassDefinition;
 import lucee.runtime.engine.ThreadLocalConfig;
 import lucee.runtime.engine.ThreadLocalPageContext;
@@ -186,6 +180,67 @@ public class RHExtension implements Serializable {
     private final Config config;
 
     public final boolean softLoaded;
+	public RHExtension(Config config, int index) throws PageException, IOException, BundleException {
+		this.config = config;
+
+		String fileName=StaticConfig.extensionFileName[index];
+		startBundles=StaticConfig.extensionStartBundles[index];
+		String coreVersion=StaticConfig.extensionCoreVersion[index];
+		String extensionId=StaticConfig.extensionID[index];
+		String extensionName=StaticConfig.extensionName[index];
+		String releaseType=StaticConfig.extensionReleaseType[index];
+
+
+		if (StringUtil.isEmpty(fileName)) throw new ApplicationException("missing attribute [file-name]");
+		extensionFile= getExtensionDir(config).getRealResource(fileName);
+		if (!extensionFile.exists()) throw new ApplicationException("Extension [" + fileName + "] was not found at [" + this.extensionFile + "]");
+//		try {
+
+			String label=extensionFile.getAbsolutePath();
+
+			boolean isWeb = config instanceof ConfigWeb;
+			type = isWeb ? "web" : "server";
+
+			Log logger = ((ConfigImpl) config).getLog("deploy");
+			Info info = ConfigWebUtil.getEngine(config).getInfo();
+
+			readSymbolicName(label, "");
+			readName(label, extensionName);
+			label = name;
+			readVersion(label, "5.3.2.16");
+			label += " : " + version;
+			readId(label, extensionId);
+			readReleaseType(label, releaseType, isWeb);
+			description = "";
+			trial = false;
+			image = "";
+			String cat = "";
+			readCategories(label, cat);
+			readCoreVersion(label, coreVersion, info);
+			readLoaderVersion(label, "");
+
+			readAMF(label, "", logger);
+			readResource(label, "", logger);
+			readSearch(label, "", logger);
+			readORM(label, "", logger);
+			readWebservice(label, "", logger);
+			readMonitor(label, "", logger);
+			readCache(label, "", logger);
+			readCacheHandler(label, "", logger);
+			readJDBC(label, "", logger);
+			readMapping(label, "", logger);
+			readEventGatewayInstances(label, "", logger);
+//			_softLoaded = true;
+//		}
+//		catch (InvalidVersion iv) {
+//			throw iv;
+//		}
+//		catch (ApplicationException ae) {
+//			init(toResource(config, el), false);
+//			_softLoaded = false;
+//		}
+		softLoaded = true;
+	}
 
     public RHExtension(Config config, Element el) throws PageException, IOException, BundleException {
 	this.config = config;

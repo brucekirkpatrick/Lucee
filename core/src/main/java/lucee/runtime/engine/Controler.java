@@ -211,12 +211,12 @@ public final class Controler extends Thread {
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
 	    }
-	    try {
-		XMLConfigAdmin.checkForChangesInConfigFile(configServer);
-	    }
-	    catch (Throwable t) {
-		ExceptionUtil.rethrowIfNecessary(t);
-	    }
+//	    try {
+//		XMLConfigAdmin.checkForChangesInConfigFile(configServer);
+//	    }
+//	    catch (Throwable t) {
+//		ExceptionUtil.rethrowIfNecessary(t);
+//	    }
 	}
 	// every hour
 	if (doHour) {
@@ -364,12 +364,12 @@ public final class Controler extends Thread {
 		    ExceptionUtil.rethrowIfNecessary(t);
 		}
 
-		try {
-		    XMLConfigAdmin.checkForChangesInConfigFile(config);
-		}
-		catch (Throwable t) {
-		    ExceptionUtil.rethrowIfNecessary(t);
-		}
+//		try {
+//		    XMLConfigAdmin.checkForChangesInConfigFile(config);
+//		}
+//		catch (Throwable t) {
+//		    ExceptionUtil.rethrowIfNecessary(t);
+//		}
 
 	    }
 	    // every hour

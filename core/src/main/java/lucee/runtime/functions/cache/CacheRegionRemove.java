@@ -44,14 +44,14 @@ public class CacheRegionRemove extends BIF {
 
     static String _call(PageContext pc, String cacheName, String strWebAdminPassword) throws PageException {
 	Password webAdminPassword = CacheUtil.getPassword(pc, strWebAdminPassword, false);
-	try {
-	    XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
-	    adminConfig.removeCacheConnection(cacheName);
-	    adminConfig.storeAndReload();
-	}
-	catch (Exception e) {
-	    throw Caster.toPageException(e);
-	}
+//	try {
+//	    XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
+//	    adminConfig.removeCacheConnection(cacheName);
+//	    adminConfig.storeAndReload();
+//	}
+//	catch (Exception e) {
+//	    throw Caster.toPageException(e);
+//	}
 	return null;
     }
 

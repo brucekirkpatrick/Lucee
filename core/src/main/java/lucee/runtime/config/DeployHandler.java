@@ -58,57 +58,57 @@ public class DeployHandler {
      * @param config
      */
     public static void deploy(Config config) {
-	if (!contextIsValid(config)) return;
-
-	synchronized (config) {
-	    Resource dir = config.getDeployDirectory();
-	    if (!dir.exists()) dir.mkdirs();
-
-	    Resource[] children = dir.listResources(ALL_EXT);
-	    Resource child;
-	    String ext;
-	    for (int i = 0; i < children.length; i++) {
-		child = children[i];
-		try {
-		    // Lucee archives
-		    ext = ResourceUtil.getExtension(child, null);
-		    if ("lar".equalsIgnoreCase(ext)) {
-			// deployArchive(config,child,true);
-			XMLConfigAdmin.updateArchive((ConfigImpl) config, child, true);
-		    }
-
-		    // Lucee Extensions
-		    else if ("lex".equalsIgnoreCase(ext)) XMLConfigAdmin._updateRHExtension((ConfigImpl) config, child, true);
-
-		    // Lucee core
-		    else if (config instanceof ConfigServer && "lco".equalsIgnoreCase(ext)) XMLConfigAdmin.updateCore((ConfigServerImpl) config, child, true);
-		}
-		catch (Throwable t) {
-		    ExceptionUtil.rethrowIfNecessary(t);
-		    Log log = config.getLog("deploy");
-		    log.error("Extension", t);
-		}
-	    }
-	}
+//	if (!contextIsValid(config)) return;
+//
+//	synchronized (config) {
+//	    Resource dir = config.getDeployDirectory();
+//	    if (!dir.exists()) dir.mkdirs();
+//
+//	    Resource[] children = dir.listResources(ALL_EXT);
+//	    Resource child;
+//	    String ext;
+//	    for (int i = 0; i < children.length; i++) {
+//		child = children[i];
+//		try {
+//		    // Lucee archives
+//		    ext = ResourceUtil.getExtension(child, null);
+//		    if ("lar".equalsIgnoreCase(ext)) {
+//			// deployArchive(config,child,true);
+//			XMLConfigAdmin.updateArchive((ConfigImpl) config, child, true);
+//		    }
+//
+//		    // Lucee Extensions
+//		    else if ("lex".equalsIgnoreCase(ext)) XMLConfigAdmin._updateRHExtension((ConfigImpl) config, child, true);
+//
+//		    // Lucee core
+//		    else if (config instanceof ConfigServer && "lco".equalsIgnoreCase(ext)) XMLConfigAdmin.updateCore((ConfigServerImpl) config, child, true);
+//		}
+//		catch (Throwable t) {
+//		    ExceptionUtil.rethrowIfNecessary(t);
+//		    Log log = config.getLog("deploy");
+//		    log.error("Extension", t);
+//		}
+//	    }
+//	}
     }
 
-    private static boolean contextIsValid(Config config) {
-	// this test is not very good but it works
-	ConfigWeb[] webs;
-	if (config instanceof ConfigWeb) webs = new ConfigWeb[] { ((ConfigWeb) config) };
-	else webs = ((ConfigServer) config).getConfigWebs();
-
-	for (int i = 0; i < webs.length; i++) {
-	    try {
-		ReqRspUtil.getRootPath(webs[i].getServletContext());
-	    }
-	    catch (Throwable t) {
-		ExceptionUtil.rethrowIfNecessary(t);
-		return false;
-	    }
-	}
-	return true;
-    }
+//    private static boolean contextIsValid(Config config) {
+//	// this test is not very good but it works
+//	ConfigWeb[] webs;
+//	if (config instanceof ConfigWeb) webs = new ConfigWeb[] { ((ConfigWeb) config) };
+//	else webs = ((ConfigServer) config).getConfigWebs();
+//
+//	for (int i = 0; i < webs.length; i++) {
+//	    try {
+//		ReqRspUtil.getRootPath(webs[i].getServletContext());
+//	    }
+//	    catch (Throwable t) {
+//		ExceptionUtil.rethrowIfNecessary(t);
+//		return false;
+//	    }
+//	}
+//	return true;
+//    }
 
     public static void moveToFailedFolder(Resource deployDirectory, Resource res) {
 	Resource dir = deployDirectory.getRealResource("failed-to-deploy");
@@ -151,8 +151,9 @@ public class DeployHandler {
      * install a extension based on the given id and version
      * 
      * @param config
-     * @param id the id of the extension
-     * @param version pass null if you don't need a specific version
+     * @param ed the id of the extension
+     * @param log pass null if you don't need a specific version
+     * @param reload
      * @return
      * @throws IOException
      * @throws PageException
