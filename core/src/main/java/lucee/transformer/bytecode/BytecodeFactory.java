@@ -307,19 +307,18 @@ public class BytecodeFactory extends FactoryBase {
     @Override
     public void registerKey(Context c, Expression name, boolean doUpperCase) throws TransformerException {
 	BytecodeContext bc = (BytecodeContext) c;
-	doUpperCase=true;
 	if (name instanceof Literal) {
 	    Literal l = (Literal) name;
 
 	    LitString ls = name instanceof LitString ? (LitString) l : c.getFactory().createLitString(l.getString());
 	    if (doUpperCase) {
-//		ls = ls.duplicate();
-		ls.upperCase();
+			ls = ls.duplicate();
+			ls.upperCase();
 	    }
 	    String key = KeyConstants.getFieldName(ls.getString());
 	    if (key != null) {
-		bc.getAdapter().getStatic(KEY_CONSTANTS, key, Types.COLLECTION_KEY);
-		return;
+			bc.getAdapter().getStatic(KEY_CONSTANTS, key, Types.COLLECTION_KEY);
+			return;
 	    }
 	    int index = bc.registerKey(ls);
 //		if(index>=10){
