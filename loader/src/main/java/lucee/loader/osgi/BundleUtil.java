@@ -95,12 +95,12 @@ public class BundleUtil {
 	    CFMLServlet.logStartTime("Bundle.start bundles loaded");
 	}
 	public static void start(final CFMLEngineFactory factory, final Bundle bundle, boolean async) throws BundleException {
-		final String fh = bundle.getHeaders().get("Fragment-Host");
-		if (!Util.isEmpty(fh)) {
-			factory.log(Logger.LOG_INFO, "do not start [" + bundle.getSymbolicName() + "], because this is a fragment bundle for [" + fh + "]");
-			return;
-		}
-		factory.log(Logger.LOG_INFO, "start bundle:" + bundle.getSymbolicName() + ":" + bundle.getVersion().toString());
+//		final String fh = bundle.getHeaders().get("Fragment-Host");
+//		if (!Util.isEmpty(fh)) {
+//			factory.log(Logger.LOG_INFO, "do not start [" + bundle.getSymbolicName() + "], because this is a fragment bundle for [" + fh + "]");
+//			return;
+//		}
+//		factory.log(Logger.LOG_INFO, "start bundle:" + bundle.getSymbolicName() + ":" + bundle.getVersion().toString());
 		start(bundle, async);
 	}
 
@@ -112,13 +112,13 @@ public class BundleUtil {
 	 * if (cu != null) { cu.start(bundle); return; }
 	 */
 
-	final String fh = bundle.getHeaders().get("Fragment-Host");
-	if (!Util.isEmpty(fh)) {
-	    factory.log(Logger.LOG_INFO, "do not start [" + bundle.getSymbolicName() + "], because this is a fragment bundle for [" + fh + "]");
-	    return;
-	}
-
-	factory.log(Logger.LOG_INFO, "start bundle:" + bundle.getSymbolicName() + ":" + bundle.getVersion().toString());
+//	final String fh = bundle.getHeaders().get("Fragment-Host");
+//	if (!Util.isEmpty(fh)) {
+//	    factory.log(Logger.LOG_INFO, "do not start [" + bundle.getSymbolicName() + "], because this is a fragment bundle for [" + fh + "]");
+//	    return;
+//	}
+//
+//	factory.log(Logger.LOG_INFO, "start bundle:" + bundle.getSymbolicName() + ":" + bundle.getVersion().toString());
 
 	start(bundle, false);
     }

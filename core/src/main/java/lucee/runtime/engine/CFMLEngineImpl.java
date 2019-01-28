@@ -61,6 +61,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import lucee.loader.servlet.CFMLServlet;
+import lucee.runtime.type.Collection;
+import lucee.runtime.type.util.KeyConstants;
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -252,10 +254,21 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	}
 	CFMLServlet.logStartTime("CFMLEngineImpl after getFelix");
 
+	    Thread loadKeyConstantsThread = new Thread(()->{
+		    Collection.Key k= KeyConstants._html;
+
+	    }, "loadKeyConstantsThread");
+	    loadKeyConstantsThread.start();
+
+	    Thread loadInfoImplThread = new Thread(()->{
 	// TODO: put in thread
 	this.info = new InfoImpl(bundleCollection == null ? null : bundleCollection.core);
 	Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader()); // MUST better location for this
 	    CFMLServlet.logStartTime("CFMLEngineImpl after InfoImpl");
+	    }, "loadInfoImplThread");
+
+	    loadInfoImplThread.start();
+
 
 	UpdateInfo updateInfo;
 	Resource configDir = null;
@@ -268,6 +281,19 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	catch (IOException e) {
 	    throw new PageRuntimeException(e);
 	}
+
+
+	    try {
+		    loadKeyConstantsThread.join();
+	    } catch (InterruptedException e) {
+		    throw new RuntimeException(e);
+	    }
+	    try {
+	        loadInfoImplThread.join();
+	    } catch (InterruptedException e) {
+		    throw new RuntimeException(e);
+	    }
+
 	CFMLEngineFactory.registerInstance((this));// patch, not really good but it works
 	ConfigServerImpl cs = getConfigServerImpl();
 
@@ -764,7 +790,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 		configServer = XMLConfigServerFactory.newInstance(this, initContextes, contextes, context);
 	    }
 	    catch (Exception e) {
-		SystemOut.printDate(e);
+			throw new RuntimeException(e);
 	    }
 		CFMLServlet.logStartTime("CFMLEngineImpl getConfigServerImpl after newInstance for the xml configServer");
 	}

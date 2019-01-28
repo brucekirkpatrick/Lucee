@@ -19,6 +19,7 @@
 package lucee.transformer.library.tag;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,7 +43,7 @@ import lucee.transformer.expression.Expression;
  * Die Klasse TagLibTagAttr repraesentiert ein einzelnes Attribute eines Tag und haelt saemtliche
  * Informationen zu diesem Attribut.
  */
-public final class TagLibTagAttr {
+public final class TagLibTagAttr implements Serializable {
 
     public static final short SCRIPT_SUPPORT_NONE = 0;
     public static final short SCRIPT_SUPPORT_OPTIONAL = 1;
@@ -66,7 +67,7 @@ public final class TagLibTagAttr {
     private String valueList;
     private char delimiter = ',';
     private Object[] values;
-    private Version introduced;
+    private String introduced;
 
     public TagLibTagAttr duplicate(TagLibTag tag) {
 	TagLibTagAttr tlta = new TagLibTagAttr(tag);
@@ -404,10 +405,10 @@ public final class TagLibTagAttr {
     }
 
     public void setIntroduced(String introduced) {
-	this.introduced = OSGiUtil.toVersion(introduced, null);
+	this.introduced = introduced;/*OSGiUtil.toVersion(introduced, null);*/
     }
 
-    public Version getIntroduced() {
+    public String getIntroduced() {
 	return introduced;
     }
 }

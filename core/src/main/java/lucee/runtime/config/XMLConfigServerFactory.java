@@ -18,10 +18,10 @@
  */
 package lucee.runtime.config;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import lucee.loader.servlet.CFMLServlet;
+import lucee.runtime.extension.RHExtension;
+import lucee.runtime.osgi.BundleInfo;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibFactory;
 import lucee.transformer.library.tag.TagLib;
@@ -109,8 +111,9 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		CFMLServlet.logStartTime("XMLConfigServerFactory after doNew");
 
 	    ArrayList<Future<Object>> futures=new ArrayList<>();
-	    ArrayList<Future<Boolean>> futures2=new ArrayList<>();
+	    ArrayList<Future<Object>> futures2=new ArrayList<>();
 	    ExecutorService executor = Executors.newWorkStealingPool(8);
+	    List<RHExtension> extensions = new ArrayList<RHExtension>();
 
 	    Resource configFile = configDir.getRealResource("lucee-server.xml");
 	    CFMLServlet.logStartTime("XMLConfigServerFactory before 4 threads");
@@ -127,76 +130,146 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
 		    Document doc = null;
 		    config.doc = doc;
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load0");
 		    XMLConfigWebFactory.load(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load1");
 		    XMLConfigWebFactory.load2(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load2");
 		    XMLConfigWebFactory.load3(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load3");
 		    XMLConfigWebFactory.load4(null, config, doc, false, doNew);
+
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load4");
 		    XMLConfigWebFactory.load5(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load5");
 		    XMLConfigWebFactory.load6(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load6");
 		    XMLConfigWebFactory.load7(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load7");
 		    XMLConfigWebFactory.load8(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load8");
 		    XMLConfigWebFactory.load9(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load9");
 		    XMLConfigWebFactory.load10(null, config, doc, false, doNew);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory load10");
+
+		    // TODO: temporarily disabled because the deploy process doesn't work, and they are not installed on windows
+//		    for (int i=0;i<StaticConfig.extensionName.length;i++) {
+//			    int index=i;
+//			    RHExtension rhe=null;
+//			    try {
+//				    rhe = new RHExtension(config, index);
+//
+//				    if (rhe.getStartBundles()) rhe.deployBundles(config);
+//				    extensions.add((RHExtension) rhe);
+//			    } catch (Exception e) {
+//				    throw new RuntimeException("Failed to load osgi extension #" + index);
+//			    }
+//		    }
+		    config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
 		    config.cfmlCoreTLDs =TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
 		    config.cfmlCoreFLDs =FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
 		    XMLConfigWebFactory.loadPart2(null, config, false, doNew);
 		    config.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
+		    CFMLServlet.logStartTime("XMLConfigServerFactory done");
 		    return config;
 
 	    }else {
-		    futures.add(executor.submit(() -> {
-			    //		    if (!configFile.exists()) {
-			    //			    configFile.createFile(true);
-			    //			    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
-			    //			    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
-			    //		    }
+		    TagLib tagLib = null;
+		    FunctionLib functionLib = null;
+		    ConfigServerImpl configImpl = null;
+		    boolean loadTag=false;
+		    Resource binTag = configDir.getRealResource("tagLibFactorySerialized.bin");
+		    if(binTag.exists()){
+			    futures.add(executor.submit(() -> {
+				    ObjectInputStream objectInputStream = new ObjectInputStream(binTag.getInputStream());
+				    try {
+					    return objectInputStream.readObject();
+				    } catch (IOException | ClassNotFoundException e) {
+					    throw new RuntimeException(e);
+				    } finally {
+					    objectInputStream.close();
+				    }
+			    }));
+		    }else {
+			    loadTag=true;
+			    futures.add(executor.submit(() -> {
+				    return TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+				    //		    return new Boolean(true);
+			    }));
+		    }
 
-			    //		    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
-			    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
-			    //		    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
-			    Document doc = null;//loadDocumentCreateIfFails(configFile, "server");
-			    config.doc = doc;
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load(null, config, doc, false, doNew);
-				    return new Boolean(true);
+		    boolean loadFunction=false;
+		    Resource binFunction = configDir.getRealResource("functionLibFactorySerialized.bin");
+		    if(binFunction.exists()){
+			    futures.add(executor.submit(() -> {
+				    ObjectInputStream objectInputStreamFunction = new ObjectInputStream(binFunction.getInputStream());
+				    try {
+					    return objectInputStreamFunction.readObject();
+				    } catch (IOException | ClassNotFoundException e) {
+					    throw new RuntimeException(e);
+				    } finally {
+					    objectInputStreamFunction.close();
+				    }
 			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load2(null, config, doc, false, doNew);
-				    return new Boolean(true);
+		    }else {
+			    loadFunction = true;
+			    futures.add(executor.submit(() -> {
+				    return FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
+				    //		    return new Boolean(true);
 			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load3(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load4(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load5(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load6(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load7(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load8(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load9(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    futures2.add(executor.submit(() -> {
-				    XMLConfigWebFactory.load10(null, config, doc, false, doNew);
-				    return new Boolean(true);
-			    }));
-			    return config;
+		    }
+
+//			    		    if (!configFile.exists()) {
+//			    			    configFile.createFile(true);
+//			    			    // InputStream in = new TextFile("").getClass().getResourceAsStream("/resource/config/server.xml");
+//			    			    createFileFromResource("/resource/config/server.xml", configFile.getAbsoluteResource(), "tpiasfap");
+//			    		    }
+
+//			    		    CFMLServlet.logStartTime("XMLConfigServerFactory after loadDocumentCreateIfFails");
+		    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
+		    //		    CFMLServlet.logStartTime("XMLConfigServerFactory after new ConfigServerImpl");
+		    Document doc = null;//loadDocumentCreateIfFails(configFile, "server");
+		    config.doc = doc;
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load2(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load3(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load4(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load5(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load6(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load7(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load8(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load9(null, config, doc, false, doNew);
+			    return new Boolean(true);
+		    }));
+		    futures2.add(executor.submit(() -> {
+			    XMLConfigWebFactory.load10(null, config, doc, false, doNew);
+			    return new Boolean(true);
 		    }));
 
 		    //	    futures.add(executor.submit(()->{
@@ -205,19 +278,22 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    //		    return true;
 		    //	    } ));
 
-		    TagLib tagLib = null;
-		    FunctionLib functionLib = null;
-		    ConfigServerImpl configImpl = null;
-		    futures.add(executor.submit(() -> {
-			    return TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-			    //		    return new Boolean(true);
-		    }));
 
-		    futures.add(executor.submit(() -> {
-			    return FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
-			    //		    return new Boolean(true);
-		    }));
-
+		    // TODO: temporarily disabled because the deploy process doesn't work, and they are not installed on windows
+//		    for (int i=0;i<StaticConfig.extensionName.length;i++) {
+//		    	int index=i;
+//			    futures2.add(executor.submit(() -> {
+//				    RHExtension rhe=null;
+//				    try {
+//					    rhe = new RHExtension(config, index);
+//
+//					    if (rhe.getStartBundles()) rhe.deployBundles(config);
+//					    return rhe;
+//				    } catch (Exception e) {
+//					    throw new RuntimeException("Failed to load osgi extension #" + index);
+//				    }
+//			    }));
+//		    }
 
 		    for (int i = 0; i < futures.size(); i++) {
 			    try {
@@ -228,8 +304,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 					    tagLib = (TagLib) obj;
 				    } else if (obj instanceof FunctionLib) {
 					    functionLib = (FunctionLib) obj;
-				    } else if (obj instanceof ConfigServerImpl) {
-					    configImpl = (ConfigServerImpl) obj;
+//				    } else if (obj instanceof ConfigServerImpl) {
+//					    configImpl = (ConfigServerImpl) obj;
 				    } else {
 					    throw new RuntimeException("Invalid return type for one of the futures");
 				    }
@@ -238,24 +314,51 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 			    }
 		    }
 		    CFMLServlet.logStartTime("XMLConfigServerFactory after loading 4 threads");
-		    configImpl.cfmlCoreTLDs = tagLib;
-		    configImpl.cfmlCoreFLDs = functionLib;
-		    final ConfigServerImpl configImplTemp = configImpl;
+		    config.cfmlCoreTLDs = tagLib;
+		    config.cfmlCoreFLDs = functionLib;
+//		    final ConfigServerImpl configImplTemp = configImpl;
 		    futures2.add(executor.submit(() -> {
-			    XMLConfigWebFactory.loadPart2(null, configImplTemp, false, doNew);
+			    XMLConfigWebFactory.loadPart2(null, config, false, doNew);
 			    return new Boolean(true);
 		    }));
-		    configImplTemp.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
+
+		    if(loadTag) {
+			    ObjectOutputStream objectOutputStream = new ObjectOutputStream(binTag.getOutputStream());
+			    try {
+				    objectOutputStream.writeObject(tagLib);
+			    } catch (IOException e) {
+				    throw new RuntimeException(e);
+			    } finally {
+				    objectOutputStream.close();
+			    }
+		    }
+
+		    if(loadFunction) {
+			    ObjectOutputStream objectOutputStream = new ObjectOutputStream(binFunction.getOutputStream());
+			    try {
+				    objectOutputStream.writeObject(functionLib);
+			    } catch (IOException e) {
+				    throw new RuntimeException(e);
+			    } finally {
+				    objectOutputStream.close();
+			    }
+		    }
+		    config.onlyFirstMatch = Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.mapping.first", null), false);
 		    for (int i = 0; i < futures2.size(); i++) {
 			    try {
-				    Boolean obj = futures2.get(i).get();
-				    if (!obj) {
+				    Object obj = futures2.get(i).get();
+				    if (obj instanceof Boolean) {
+					    continue;
+				    }else if(obj instanceof RHExtension) {
+					    extensions.add((RHExtension) obj);
+				    }else{
 					    throw new RuntimeException("Failed to load future: " + i + " in XMLConfigWebFactory");
 				    }
 			    } catch (InterruptedException | ExecutionException e) {
 				    throw new RuntimeException(e);
 			    }
 		    }
+		    config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
 		    executor.shutdown();
 		    CFMLServlet.logStartTime("XMLConfigServerFactory after load threads part 2");
 
@@ -263,7 +366,7 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    // this isn't needed:
 //	((CFMLEngineImpl) ConfigWebUtil.getEngine(config)).onStart(config, false);
 		    CFMLServlet.logStartTime("XMLConfigServerFactory end");
-		    return configImpl;
+		    return config;
 	    }
     }
 

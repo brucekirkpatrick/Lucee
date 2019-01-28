@@ -54,14 +54,14 @@ public class StaticConfig {
 	public static String fileSystemTLDDirectory="{lucee-config}/library/tld/";
 	public static String fileSystemDeployDirectory="{lucee-config}/cfclasses/";
 	public static String fileSystemFunctionDirectory="{lucee-config}/library/function/";
-	public static String fileSystemTempDirectory="{lucee-config}/temp/";
+	public static String fileSystemTempDirectory="/temp/";
 	public static String fileSystemTagDirectory="{lucee-config}/library/tag/";
 
 	public static String fileSystemWebFLDDirectory="{lucee-web}/library/fld/";
 	public static String fileSystemWebTLDDirectory="{lucee-web}/library/tld/";
 	public static String fileSystemWebDeployDirectory="{lucee-web}/cfclasses/";
 	public static String fileSystemWebFunctionDirectory="{lucee-web}/library/function/";
-	public static String fileSystemWebTempDirectory="{lucee-web}/temp/";
+	public static String fileSystemWebTempDirectory="/temp/";
 	public static String fileSystemWebTagDirectory="{lucee-web}/library/tag/";
 	// <resources>
 	public static String defaultResourceProviderClass="lucee.commons.io.res.type.file.FileResourceProvider";

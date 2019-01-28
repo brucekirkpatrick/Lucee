@@ -19,6 +19,7 @@
 package lucee.transformer.library.function;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -47,7 +48,7 @@ import lucee.transformer.library.tag.TagLib;
 /**
  * Eine FunctionLibFunction repraesentiert eine einzelne Funktion innerhalb einer FLD.
  */
-public final class FunctionLibFunction {
+public final class FunctionLibFunction implements Serializable {
 
     /**
      * Dynamischer Argument Typ
@@ -79,7 +80,7 @@ public final class FunctionLibFunction {
     private BIF bif;
     private String[] keywords;
     private ClassDefinition functionCD;
-    private Version introduced;
+    private String introduced;
     private final boolean core;
 
     /**
@@ -434,10 +435,10 @@ public final class FunctionLibFunction {
     }
 
     public void setIntroduced(String introduced) {
-	this.introduced = OSGiUtil.toVersion(introduced, null);
+	this.introduced =introduced;// OSGiUtil.toVersion(introduced, null);
     }
 
-    public Version getIntroduced() {
+    public String getIntroduced() {
 	return introduced;
     }
 }

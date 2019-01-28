@@ -19,6 +19,7 @@
 package lucee.transformer.library.tag;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import lucee.transformer.library.Lib;
  * Die Klasse TagLib repaesentiert eine Komplette TLD, mit ihrer Hilfe kann man alle Informationen,
  * zu einer TLD Abfragen.
  */
-public class TagLib implements Cloneable, Lib {
+public class TagLib implements Cloneable, Lib, Serializable {
 
     public static final short STATUS_IMPLEMENTED = 0;
     public static final short STATUS_DEPRECATED = 1;

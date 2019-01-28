@@ -118,7 +118,6 @@ public class BundleLoader {
 				BundleUtil.stop(felix, false);
 			}
 			felix = engFac.getFelix(cacheRootDir, config);
-			CFMLServlet.logStartTime("BundleLoader loadBundles after close all bundles");
 			final BundleContext bc = felix.getBundleContext();
 
 			// get bundle needed for that core

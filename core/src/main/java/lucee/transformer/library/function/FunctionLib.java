@@ -20,6 +20,7 @@
 package lucee.transformer.library.function;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import lucee.transformer.library.Lib;
  * Eine FunctionLib repraesentiert eine FLD, sie stellt Methoden zur Verfuegung um auf alle
  * Informationen die eine FLD bietet zuzugreifen.
  */
-public final class FunctionLib implements Lib {
+public final class FunctionLib implements Lib, Serializable {
 
     private HashMap<String, FunctionLibFunction> functions = new HashMap<String, FunctionLibFunction>();
     private String version = "";

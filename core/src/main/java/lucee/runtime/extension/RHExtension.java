@@ -194,9 +194,9 @@ public class RHExtension implements Serializable {
 		if (StringUtil.isEmpty(fileName)) throw new ApplicationException("missing attribute [file-name]");
 		extensionFile= getExtensionDir(config).getRealResource(fileName);
 		if (!extensionFile.exists()) throw new ApplicationException("Extension [" + fileName + "] was not found at [" + this.extensionFile + "]");
-//		try {
+		try {
 
-			String label=extensionFile.getAbsolutePath();
+			String label = extensionFile.getAbsolutePath();
 
 			boolean isWeb = config instanceof ConfigWeb;
 			type = isWeb ? "web" : "server";
@@ -239,6 +239,9 @@ public class RHExtension implements Serializable {
 //			init(toResource(config, el), false);
 //			_softLoaded = false;
 //		}
+		}catch(Exception e){
+			throw new RuntimeException("Invalid extension loading");
+		}
 		softLoaded = true;
 	}
 

@@ -18,11 +18,12 @@
  **/
 package lucee.transformer.library.tag;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import lucee.commons.lang.StringUtil;
 
-public final class TagLibTagScript {
+public final class TagLibTagScript implements Serializable {
 
     public static final short TYPE_NONE = 0;
     public static final short TYPE_SINGLE = 1;

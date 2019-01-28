@@ -19,6 +19,7 @@
 package lucee.transformer.library.tag;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ import lucee.transformer.library.ClassDefinitionImpl;
  * Die Klasse TagLibTag repaesentiert ein einzelne Tag Definition einer TagLib, beschreibt also alle
  * Informationen die man zum validieren eines Tags braucht.
  */
-public final class TagLibTag {
+public final class TagLibTag implements Serializable {
 
     public final static int ATTRIBUTE_TYPE_FIXED = 0;
     public final static int ATTRIBUTE_TYPE_DYNAMIC = 1;
@@ -118,8 +119,8 @@ public final class TagLibTag {
     private TagLibTagAttr singleAttr = UNDEFINED;
     private Object attrUndefinedValue;
     private String bundleName;
-    private Version bundleVersion;
-    private Version introduced;
+    private String bundleVersion;
+    private String introduced;
 
     public TagLibTag duplicate(boolean cloneAttributes) {
 	TagLibTag tlt = new TagLibTag(tagLib);
@@ -572,7 +573,7 @@ public final class TagLibTag {
 
     public void setBundleVersion(String bundleVersion) {
 	// TODO allow 1.0.0.0-2.0.0.0,3.0.0.0
-	this.bundleVersion = OSGiUtil.toVersion(bundleVersion.trim(), null);
+	this.bundleVersion = bundleVersion;//OSGiUtil.toVersion(bundleVersion.trim(), null);
     }
 
     /**
@@ -593,7 +594,7 @@ public final class TagLibTag {
      * Setzt die implementierende Klassendefinition des Evaluator. Diese Methode wird durch die Klasse
      * TagLibFactory verwendet.
      * 
-     * @param tteClass Klassendefinition der Evaluator-Implementation.
+     * @param tttClass Klassendefinition der Evaluator-Implementation.
      */
     public void setTTTClassDefinition(String tttClass, Identification id, Attributes attr) {
 	this.tttCD = ClassDefinitionImpl.toClassDefinition(tttClass, id, attr);
@@ -687,11 +688,6 @@ public final class TagLibTag {
 	}
     }
 
-    /**
-     * Setzt den Namen der Klasse welche einen AttributeEvaluator implementiert.
-     * 
-     * @param value Name der AttributeEvaluator Klassse
-     */
     public void setAttributeEvaluatorClassDefinition(String className, Identification id, Attributes attr) {
 	cdAttributeEvaluator = ClassDefinitionImpl.toClassDefinition(className, id, attr);
 	;
@@ -721,13 +717,6 @@ public final class TagLibTag {
 	this.hasDefaultValue = hasDefaultValue;
     }
 
-    /**
-     * return ASM Tag for this tag
-     * 
-     * @param line
-     * @return
-     * 
-     */
     public Tag getTag(Factory f, Position start, Position end) throws TagLibException {
 	if (StringUtil.isEmpty(tttCD)) return new TagOther(f, start, end);
 	try {
@@ -891,10 +880,10 @@ public final class TagLibTag {
     }
 
     public void setIntroduced(String introduced) {
-	this.introduced = OSGiUtil.toVersion(introduced, null);
+	this.introduced = introduced;//OSGiUtil.toVersion(introduced, null);
     }
 
-    public Version getIntroduced() {
+    public String getIntroduced() {
 	return introduced;
     }
 

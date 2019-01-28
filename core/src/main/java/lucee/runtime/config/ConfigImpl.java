@@ -246,7 +246,7 @@ public abstract class ConfigImpl implements Config {
     private boolean suppressContent = false;
     private boolean showVersion = false;
 
-    private Resource tempDirectory;
+    public Resource tempDirectory;
 //    private TimeSpan clientTimeout = new TimeSpanImpl(90, 0, 0, 0);
     private TimeSpan sessionTimeout = new TimeSpanImpl(0, 0, 30, 0);
     private TimeSpan applicationTimeout = new TimeSpanImpl(1, 0, 0, 0);

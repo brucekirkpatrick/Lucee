@@ -18,9 +18,7 @@
  */
 package lucee.transformer.library.tag;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -502,7 +500,8 @@ public final class TagLibFactory extends DefaultHandler {
 //	    TagLib lucee = cfml.duplicate(false);
 //	    systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(cfml, TLD_CFML, id).getLib();
 
-		systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(null, TLD_BASE, id).getLib();
+			systemTLDs[CFMLEngine.DIALECT_CFML] = new TagLibFactory(null, TLD_BASE, id).getLib();
+
 //		CFMLServlet.logStartTime("TagLibFactory after tag new cfml getLib");
 //	    systemTLDs[CFMLEngine.DIALECT_LUCEE] = new TagLibFactory(lucee, TLD_LUCEE, id).getLib();
 	}

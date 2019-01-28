@@ -19,6 +19,7 @@
 package lucee.transformer.library.function;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import org.osgi.framework.Version;
 
@@ -30,7 +31,7 @@ import lucee.transformer.library.tag.TagLib;
 /**
  * Eine FunctionLibFunctionArg repraesentiert ein einzelnes Argument einer Funktion.
  */
-public final class FunctionLibFunctionArg {
+public final class FunctionLibFunctionArg implements Serializable {
 
     private static final short UNDEFINED = -12553;
 
@@ -51,7 +52,7 @@ public final class FunctionLibFunctionArg {
     private boolean hidden;
     private short status = TagLib.STATUS_IMPLEMENTED;
     private short type = UNDEFINED;
-    private Version introduced;
+    private String introduced;
 
     /**
      * Geschuetzer Konstruktor ohne Argumente.
@@ -233,10 +234,10 @@ public final class FunctionLibFunctionArg {
     }
 
     public void setIntroduced(String introduced) {
-	this.introduced = OSGiUtil.toVersion(introduced, null);
+	this.introduced = introduced;// OSGiUtil.toVersion(introduced, null);
     }
 
-    public Version getIntroduced() {
+    public String getIntroduced() {
 	return introduced;
     }
 }
