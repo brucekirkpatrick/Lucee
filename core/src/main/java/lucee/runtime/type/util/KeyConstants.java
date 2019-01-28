@@ -950,8 +950,10 @@ public class KeyConstants {
     private static MapPro<String, Key> _____keys;
 
     public static String getFieldName(String key) {
-	init();
-	return _____keys.containsKey(key) ? "_" + key : null;
+        if (_____keys == null) {
+            init();
+        }
+        return _____keys.containsKey(key) ? "_" + key : null;
     }
 
     public static Key getKey(String key) {
