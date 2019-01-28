@@ -55,7 +55,14 @@ public class CFMLServlet extends AbsServlet {
     	CFMLServlet.logStartTime("CFMLServlet init start");
 	super.init(sg);
 	    CFMLServlet.logStartTime("CFMLServlet init Servlet init end");
-	engine = CFMLEngineFactory.getInstance(sg, this);
+	    Thread cfmlServletEngine=new Thread(()->{
+		    try {
+			    engine = CFMLEngineFactory.getInstance(sg, this);
+		    } catch (ServletException e) {
+			    throw new RuntimeException(e);
+		    }
+	    });
+	    cfmlServletEngine.start();
 	    CFMLServlet.logStartTime("CFMLServlet init CFML factory instance end");
     }
 
@@ -66,7 +73,10 @@ public class CFMLServlet extends AbsServlet {
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 	    CFMLServlet.logStartTime("CFMLServlet service start");
-	engine.serviceCFML(this, req, rsp);
+	    while(engine==null){
+	    	Thread.yield();
+	    }
+		engine.serviceCFML(this, req, rsp);
 	    CFMLServlet.logStartTime("CFMLServlet service end");
     }
 }
