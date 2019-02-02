@@ -578,7 +578,7 @@ public final class SystemUtil {
 	if (path == null) return null;
 	if (path.indexOf('{') != -1) {
 	    if ((path.indexOf("{web-context-label}")) != -1) {
-		String id = hash(sc);
+		String id = hash();
 
 		String label = labels.get(id);
 		if (StringUtil.isEmpty(label)) label = id;
@@ -598,26 +598,26 @@ public final class SystemUtil {
 
 		// Web Root
 		if (path.startsWith("{web-root")) {
-		    if (path.startsWith("}", 9)) path = frp.getResource(ReqRspUtil.getRootPath(sc)).getRealResource(path.substring(10)).toString();
-		    else if (path.startsWith("-dir}", 9)) path = frp.getResource(ReqRspUtil.getRootPath(sc)).getRealResource(path.substring(14)).toString();
-		    else if (path.startsWith("-directory}", 9)) path = frp.getResource(ReqRspUtil.getRootPath(sc)).getRealResource(path.substring(20)).toString();
+		    if (path.startsWith("}", 9)) path = frp.getResource(ReqRspUtil.getRootPath()).getRealResource(path.substring(10)).toString();
+		    else if (path.startsWith("-dir}", 9)) path = frp.getResource(ReqRspUtil.getRootPath()).getRealResource(path.substring(14)).toString();
+		    else if (path.startsWith("-directory}", 9)) path = frp.getResource(ReqRspUtil.getRootPath()).getRealResource(path.substring(20)).toString();
 
 		}
 		else path = SystemUtil.parsePlaceHolder(path);
 	    }
 
 	    if ((path.indexOf("{web-context-hash}")) != -1) {
-		String id = hash(sc);
+		String id = hash();
 		path = StringUtil.replace(path, "{web-context-hash}", id, false);
 	    }
 	}
 	return path;
     }
 
-    public static String hash(ServletContext sc) {
+    public static String hash() {
 	String id = null;
 	try {
-	    id = MD5.getDigestAsString(ReqRspUtil.getRootPath(sc));
+	    id = MD5.getDigestAsString(ReqRspUtil.getRootPath());
 	}
 	catch (IOException e) {}
 	return id;
@@ -699,7 +699,6 @@ public final class SystemUtil {
      * locks the object (synchronized) before calling notify
      * 
      * @param lock
-     * @param timeout
      * @throws InterruptedException
      */
     public static void notify(Object lock) {
@@ -712,7 +711,6 @@ public final class SystemUtil {
      * locks the object (synchronized) before calling notifyAll
      * 
      * @param lock
-     * @param timeout
      * @throws InterruptedException
      */
     public static void notifyAll(Object lock) {

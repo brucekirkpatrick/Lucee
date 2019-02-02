@@ -20,7 +20,6 @@ package lucee.runtime.net.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -41,8 +40,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
@@ -74,10 +73,10 @@ import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.util.EnumerationWrapper;
 
 /**
- * extends a existing {@link HttpServletRequest} with the possibility to reread the input as many
+ * extends a existing {@link HttpServletRequestDead} with the possibility to reread the input as many
  * you want.
  */
-public final class HTTPServletRequestWrap implements HttpServletRequest, Serializable {
+public final class HttpServletRequestDeadWrap implements HttpServletRequestDead, Serializable {
 
     private static final long serialVersionUID = 7286638632320246809L;
 
@@ -93,7 +92,7 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
     private String path_info;
     private String query_string;
     private boolean disconnected;
-    private final HttpServletRequest req;
+    private final RequestResponse req;
 
     private static class DisconnectData {
 	private Map<String, Object> attributes;
@@ -131,7 +130,7 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
      * @param req
      * @param max how many is possible to re read
      */
-    public HTTPServletRequestWrap(HttpServletRequest req) {
+    public HttpServletRequestDeadWrap(RequestResponse req) {
 	this.req = pure(req);
 	if ((servlet_path = attrAsString("javax.servlet.include.servlet_path")) != null) {
 	    request_uri = attrAsString("javax.servlet.include.request_uri");
@@ -154,10 +153,10 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
 	return res.toString();
     }
 
-    public static HttpServletRequest pure(HttpServletRequest req) {
-	HttpServletRequest req2;
-	while (req instanceof HTTPServletRequestWrap) {
-	    req2 = ((HTTPServletRequestWrap) req).getOriginalRequest();
+    public static HttpServletRequestDead pure(RequestResponse req) {
+	RequestResponse req2;
+	while (req instanceof HttpServletRequestDeadWrap) {
+	    req2 = ((HttpServletRequestDeadWrap) req).getOriginalRequest();
 	    if (req2 == req) break;
 	    req = req2;
 	}
@@ -349,7 +348,7 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
 	return IOUtil.toBufferedReader(IOUtil.getReader(getInputStream(), enc));
     }
 
-    public HttpServletRequest getOriginalRequest() {
+    public HttpServletRequestDead getOriginalRequest() {
 	if (disconnected) return null;
 	return req;
     }
@@ -809,7 +808,7 @@ public final class HTTPServletRequestWrap implements HttpServletRequest, Seriali
     }
 
     @Override
-    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+    public boolean authenticate(HttpServletResponseDead arg0) throws IOException, ServletException {
 	if (!disconnected) return req.authenticate(arg0);
 	throw new RuntimeException("not supported!");
     }

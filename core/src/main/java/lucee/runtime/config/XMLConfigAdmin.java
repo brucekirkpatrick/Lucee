@@ -2438,7 +2438,7 @@ public final class XMLConfigAdmin {
 //    /**
 //     * sets the scope cascading type
 //     *
-//     * @param type (ServletConfigImpl.SCOPE_XYZ)
+//     * @param type (ServletConfigDeadImpl.SCOPE_XYZ)
 //     * @throws SecurityException
 //     */
 //    public void updateScopeCascadingType(String type) throws SecurityException {
@@ -2458,7 +2458,7 @@ public final class XMLConfigAdmin {
 //    /**
 //     * sets the scope cascading type
 //     *
-//     * @param type (ServletConfigImpl.SCOPE_XYZ)
+//     * @param type (ServletConfigDeadImpl.SCOPE_XYZ)
 //     * @throws SecurityException
 //     */
 //    public void updateScopeCascadingType(short type) throws SecurityException {

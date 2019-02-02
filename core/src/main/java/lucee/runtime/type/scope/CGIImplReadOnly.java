@@ -27,7 +27,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.collection.HashMapPro;
 import lucee.commons.collection.MapPro;
@@ -92,7 +92,7 @@ public final class CGIImplReadOnly extends ReadOnlyStruct implements CGI, Script
 	catch (UnknownHostException uhe) {}
     }
 
-    private transient HttpServletRequest req;
+    private transient RequestResponse req;
     private boolean isInit;
     private transient Struct https;
     private transient Struct headers;
@@ -323,7 +323,7 @@ public final class CGIImplReadOnly extends ReadOnlyStruct implements CGI, Script
     @Override
     public void initialize(PageContext pc) {
 	isInit = true;
-	req = pc.getHttpServletRequest();
+	req = pc.getRequestResponse();
 
 	if (scriptProtected == ScriptProtected.UNDEFINED) {
 	    scriptProtected = ((pc.getApplicationContext().getScriptProtect() & ApplicationContext.SCRIPT_PROTECT_CGI) > 0) ? ScriptProtected.YES : ScriptProtected.NO;
@@ -364,7 +364,7 @@ public final class CGIImplReadOnly extends ReadOnlyStruct implements CGI, Script
 	scriptProtected = scriptProtecting ? ScriptProtected.YES : ScriptProtected.NO;
     }
 
-    public static String getDomain(HttpServletRequest req) { // DIFF 23
+    public static String getDomain(RequestResponse req) { // DIFF 23
 	StringBuffer sb = new StringBuffer();
 	sb.append(req.isSecure() ? "https://" : "http://");
 	sb.append(req.getServerName());

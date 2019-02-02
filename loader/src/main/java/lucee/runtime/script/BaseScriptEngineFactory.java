@@ -26,7 +26,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.servlet.ServletException;
 
-import lucee.cli.servlet.ServletConfigImpl;
+import lucee.cli.servlet.ServletConfigDeadImpl;
 import lucee.cli.servlet.ServletContextImpl;
 import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;
@@ -55,7 +55,7 @@ public abstract class BaseScriptEngineFactory implements ScriptEngineFactory {
 			final File root = new File("."); // working directory that the java command was called from
 
 			final ServletContextImpl servletContext = new ServletContextImpl(root, attributes, initParams, 1, 0);
-			final ServletConfigImpl servletConfig = new ServletConfigImpl(servletContext, servletName);
+			final ServletConfigDeadImpl ServletConfigDead = new ServletConfigDeadImpl(servletContext, servletName);
 			engine = CFMLEngineFactory.getInstance();
 			servletContext.setLogger(engine.getCFMLEngineFactory().getLogger());
 		}

@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponse;
+
 import javax.servlet.http.HttpSession;
 
 import lucee.commons.io.res.Resource;
@@ -242,14 +242,14 @@ public interface Creation {
 
     public Resource createResource(String path, boolean existing) throws PageException;
 
-    public abstract HttpServletRequest createHttpServletRequest(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies,
+    public abstract HttpServletRequestDead createHttpServletRequestDead(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies,
 	    Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, HttpSession session);
 
-    public abstract HttpServletResponse createHttpServletResponse(OutputStream io);
+    public abstract HttpServletResponseDead createHttpServletResponseDead(OutputStream io);
 
-    public abstract PageContext createPageContext(HttpServletRequest req, HttpServletResponse rsp, OutputStream out);
+    public abstract PageContext createPageContext(RequestResponse req, OutputStream out);
 
-    // FUTURE public ServletConfig createServletConfig(File root, Map<String, Object> attributes,
+    // FUTURE public ServletConfigDead createServletConfigDead(File root, Map<String, Object> attributes,
     // Map<String, String> params)
 
     /**

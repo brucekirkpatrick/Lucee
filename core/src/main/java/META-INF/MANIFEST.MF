@@ -12,7 +12,7 @@ Import-Package: coldfusion.xml.rpc,com.allaire.cfx,
  com.intergral.fusiondebug.server,com.sun.management,com.sun.mail.smtp,com.sun.net.ssl.internal.ssl,
  javax.el,javax.servlet,javax.servlet.jsp,javax.servlet.http,javax.script,javax.activation,
  javax.management,javax.naming,javax.naming.directory,javax.net.ssl,
- javax.sql,
+ javax.sql,com.jezhumble.javasysmon,
  org.osgi.framework
 Export-Package: coldfusion,
  coldfusion.image,

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import org.osgi.framework.BundleException;
 
@@ -397,7 +397,7 @@ public class GatewayEngineImpl implements GatewayEngine {
     }
 
     private Component getCFC(PageContextImpl pc, String requestURI) throws PageException {
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	try {
 	    String ext = ResourceUtil.getExtension(requestURI, "");
 	    ConfigWeb config = (ConfigWeb) ThreadLocalPageContext.getConfig(pc);

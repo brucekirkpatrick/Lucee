@@ -20,7 +20,7 @@ package lucee.runtime.rest;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+
 
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.util.ResourceUtil;
@@ -61,7 +61,7 @@ public class RestUtil {
 	    }
 	    catch (IOException e) {}
 	}
-	HttpServletResponse rsp = pc.getHttpServletResponse();
+	RequestResponse req = pc.getRequestResponse();
 	rsp.setHeader("Connection", "close"); // IE unter IIS6, Win2K3 und Resin
 	rsp.setStatus(status);
 

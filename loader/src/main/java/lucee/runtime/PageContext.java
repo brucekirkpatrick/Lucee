@@ -24,10 +24,11 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import lucee.cli.cli2.RequestResponse;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.Tag;
 
@@ -55,7 +56,7 @@ import lucee.runtime.util.VariableUtil;
  * functionality. for example you have the method getSession to get jsp compatible session object
  * (HTTPSession) and with sessionScope() you get CFML compatible session object (Struct,Scope).
  */
-public abstract class PageContext extends javax.servlet.jsp.PageContext {
+public abstract class PageContext {
 
     /**
      * returns matching scope
@@ -592,18 +593,12 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
     public abstract ConfigWeb getConfig();
 
     /**
-     * return HttpServletRequest, getRequest only returns ServletRequest
+     * return HttpServletRequestDead, getRequest only returns ServletRequest
      * 
-     * @return HttpServletRequest
+     * @return HttpServletRequestDead
      */
-    public abstract HttpServletRequest getHttpServletRequest();
+    public abstract RequestResponse getRequestResponse();
 
-    /**
-     * return HttpServletResponse, getResponse only returns ServletResponse
-     * 
-     * @return HttpServletResponse
-     */
-    public abstract HttpServletResponse getHttpServletResponse();
 
     public abstract OutputStream getResponseStream() throws IOException;
 
@@ -845,8 +840,10 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract void executeCFML(String realPath, boolean throwException, boolean onlyTopLevel) throws PageException;
 
-    public abstract void executeRest(String realPath, boolean throwException) throws PageException;
+//    public abstract void executeRest(String realPath, boolean throwException) throws PageException;
 
+    public abstract void initialize(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize, boolean autoFlush)
+            throws IOException, IllegalStateException, IllegalArgumentException;
     /**
      * Flush Content of buffer to the response stream of the Socket.
      */
@@ -1039,6 +1036,22 @@ public abstract class PageContext extends javax.servlet.jsp.PageContext {
      */
     public abstract void releaseBody(BodyTag bodyTag, int state);
 
+    public abstract void release();
+
+    public abstract Object getPage();
+    public abstract Exception getException();
+
+    public abstract void handlePageException(Exception e);
+    public abstract void handlePageException(Throwable t);
+
+    public abstract BodyContent pushBody();
+
+    public abstract JspWriter popBody();
+
+    public abstract void include(String realPath) throws IOException;
+    public abstract void forward(String realPath) throws IOException;
+    public abstract JspWriter getOut();
+    public abstract void include(String realPath, boolean flush) throws IOException;
     /**
      * @param type
      * @param name

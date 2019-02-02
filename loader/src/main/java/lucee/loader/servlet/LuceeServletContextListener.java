@@ -3,7 +3,7 @@ package lucee.loader.servlet;
 import java.util.Enumeration;
 import java.util.HashSet;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,7 +21,7 @@ public class LuceeServletContextListener implements ServletContextListener {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add exeServletContextEvent
-//	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "init"));
+//	    engine.addServletConfigDead(new LuceeServletContextListenerImpl(sce, "init"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();
@@ -33,14 +33,14 @@ public class LuceeServletContextListener implements ServletContextListener {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add addServletContextEvent
-//	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "release"));
+//	    engine.addServletConfigDead(new LuceeServletContextListenerImpl(sce, "release"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();
 	}
     }
 
-    public static class LuceeServletContextListenerImpl implements ServletConfig {
+    public static class LuceeServletContextListenerImpl implements ServletConfigDead {
 
 	private ServletContextEvent sce;
 	private String status;

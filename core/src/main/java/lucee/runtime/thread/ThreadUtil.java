@@ -21,8 +21,8 @@ package lucee.runtime.thread;
 import java.io.OutputStream;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.http.HttpSession;
 
 import lucee.commons.io.DevNullOutputStream;
@@ -34,9 +34,9 @@ import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigWeb;
-import lucee.runtime.net.http.HTTPServletRequestWrap;
-import lucee.runtime.net.http.HttpServletRequestDummy;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+
+import lucee.runtime.net.http.HttpServletDeadRequestDeadDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.type.Struct;
 
 public class ThreadUtil {
@@ -44,12 +44,12 @@ public class ThreadUtil {
     public static PageContextImpl clonePageContext(PageContext pc, OutputStream os, boolean stateless, boolean register2Thread, boolean register2RunningThreads) {
 	// TODO stateless
 	CFMLFactoryImpl factory = (CFMLFactoryImpl) pc.getConfig().getFactory();
-	HttpServletRequest req = new HTTPServletRequestWrap(cloneHttpServletRequest(pc));
-	HttpServletResponse rsp = createHttpServletResponse(os);
+	RequestResponse req = new HttpServletRequestDeadWrap(cloneHttpServletRequestDead(pc));
+	RequestResponse req = createHttpServletResponseDead(os);
 
 	// copy state
 	PageContextImpl pci = (PageContextImpl) pc;
-	PageContextImpl dest = factory.getPageContextImpl(factory.getServlet(), req, rsp, null, false, -1, false, register2Thread, true, pc.getRequestTimeout(),
+	PageContextImpl dest = factory.getPageContextImpl(factory.getServlet(), req, null, false, -1, false, register2Thread, true, pc.getRequestTimeout(),
 		register2RunningThreads, false, false);
 	pci.copyStateTo(dest);
 	return dest;
@@ -74,12 +74,12 @@ public class ThreadUtil {
     public static PageContextImpl createPageContext(ConfigWeb config, OutputStream os, String serverName, String requestURI, String queryString, Cookie[] cookies, Pair[] headers,
 	    byte[] body, Pair[] parameters, Struct attributes, boolean register, long timeout) {
 	CFMLFactory factory = config.getFactory();
-	HttpServletRequest req = new HttpServletRequestDummy(config.getRootDirectory(), serverName, requestURI, queryString, cookies, headers, parameters, attributes, null, body);
+	RequestResponse req = new HttpServletRequestDeadDummy(config.getRootDirectory(), serverName, requestURI, queryString, cookies, headers, parameters, attributes, null, body);
 
-	req = new HTTPServletRequestWrap(req);
-	HttpServletResponse rsp = createHttpServletResponse(os);
+	req = new HttpServletRequestDeadWrap(req);
+	RequestResponse req = createHttpServletResponseDead(os);
 
-	return (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, rsp, null, false, -1, false, register, timeout, false, false);
+	return (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, null, false, -1, false, register, timeout, false, false);
 
     }
 
@@ -102,29 +102,29 @@ public class ThreadUtil {
      */
     public static PageContextImpl createPageContext(CFMLFactory factory, Resource rootDirectory, OutputStream os, String serverName, String requestURI, String queryString,
 	    Cookie[] cookies, Pair[] headers, Pair[] parameters, Struct attributes, boolean register, long timeout) {
-	HttpServletRequest req = createHttpServletRequest(rootDirectory, serverName, requestURI, queryString, cookies, headers, parameters, attributes, null);
-	HttpServletResponse rsp = createHttpServletResponse(os);
+	RequestResponse req = createHttpServletRequestDead(rootDirectory, serverName, requestURI, queryString, cookies, headers, parameters, attributes, null);
+	RequestResponse req = createHttpServletResponseDead(os);
 
-	return (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, rsp, null, false, -1, false, register, timeout, false, false);
+	return (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, null, false, -1, false, register, timeout, false, false);
 
     }
 
-    public static HttpServletRequest createHttpServletRequest(Resource contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Pair[] headers,
+    public static HttpServletRequestDead createHttpServletRequestDead(Resource contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Pair[] headers,
 	    Pair[] parameters, Struct attributes, HttpSession session) {
-	return new HTTPServletRequestWrap(new HttpServletRequestDummy(contextRoot, serverName, scriptName, queryString, cookies, headers, parameters, attributes, null, null));
+	return new HttpServletRequestDeadWrap(new HttpServletRequestDeadDummy(contextRoot, serverName, scriptName, queryString, cookies, headers, parameters, attributes, null, null));
     }
 
-    public static HttpServletRequest cloneHttpServletRequest(PageContext pc) {
+    public static HttpServletRequestDead cloneHttpServletRequestDead(PageContext pc) {
 	Config config = pc.getConfig();
-	HttpServletRequest req = pc.getHttpServletRequest();
-	HttpServletRequestDummy dest = HttpServletRequestDummy.clone(config, config.getRootDirectory(), req);
+	RequestResponse req = pc.getRequestResponse();
+	HttpServletRequestDeadDummy dest = HttpServletRequestDeadDummy.clone(config, config.getRootDirectory(), req);
 	return dest;
     }
 
-    public static HttpServletResponse createHttpServletResponse(OutputStream os) {
+    public static HttpServletResponseDead createHttpServletResponseDead(OutputStream os) {
 	if (os == null) os = DevNullOutputStream.DEV_NULL_OUTPUT_STREAM;
 
-	HttpServletResponseDummy dest = new HttpServletResponseDummy(os);
+	HttpServletResponseDeadDummy dest = new HttpServletResponseDeadDummy(os);
 	return dest;
     }
 

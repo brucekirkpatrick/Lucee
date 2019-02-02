@@ -34,9 +34,11 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
 
+
+import lucee.cli.cli2.RequestResponse;
+import lucee.runtime.config.StaticConfig;
 import org.xml.sax.InputSource;
 
 import lucee.commons.io.CharsetUtil;
@@ -100,31 +102,31 @@ public final class ReqRspUtil {
      * 
      * @param req
      */
-    public static String self(HttpServletRequest req) {
+    public static String self(RequestResponse req) {
 	StringBuffer sb = new StringBuffer(req.getServletPath());
 	String qs = req.getQueryString();
 	if (!StringUtil.isEmpty(qs)) sb.append('?').append(qs);
 	return sb.toString();
     }
 
-    public static void setContentLength(HttpServletResponse rsp, int length) {
-	rsp.setContentLength(length);
+    public static void setContentLength(RequestResponse req, int length) {
+	req.setContentLength(length);
     }
 
-    public static void setContentLength(HttpServletResponse rsp, long length) {
+    public static void setContentLength(RequestResponse req, long length) {
 	if (length <= Integer.MAX_VALUE) {
-	    setContentLength(rsp, (int) length);
+	    setContentLength(req, (int) length);
 	}
 	else {
-	    rsp.addHeader("Content-Length", Caster.toString(length));
+	    req.addHeader("Content-Length", Caster.toString(length));
 	}
     }
 
-    public static void setContentType(HttpServletResponse rsp, String contentType) {
-	rsp.setContentType(contentType);
+    public static void setContentType(RequestResponse req, String contentType) {
+	req.setContentType(contentType);
     }
 
-    public static Cookie[] getCookies(HttpServletRequest req, Charset charset) {
+    public static Cookie[] getCookies(RequestResponse req, Charset charset) {
 	Cookie[] cookies = req.getCookies();
 
 	if (cookies != null) {
@@ -168,10 +170,10 @@ public final class ReqRspUtil {
 	return cookies;
     }
 
-    public static void setCharacterEncoding(HttpServletResponse rsp, String charset) {
+    public static void setCharacterEncoding(RequestResponse req, String charset) {
 	try {
-	    Method setCharacterEncoding = rsp.getClass().getMethod("setCharacterEncoding", new Class[0]);
-	    setCharacterEncoding.invoke(rsp, new Object[0]);
+	    Method setCharacterEncoding = req.getClass().getMethod("setCharacterEncoding", new Class[0]);
+	    setCharacterEncoding.invoke(req, new Object[0]);
 	}
 	catch (Throwable t) {
 	    ExceptionUtil.rethrowIfNecessary(t);
@@ -179,12 +181,12 @@ public final class ReqRspUtil {
 	}
     }
 
-    public static String getQueryString(HttpServletRequest req) {
+    public static String getQueryString(RequestResponse req) {
 	// String qs = req.getAttribute("javax.servlet.include.query_string");
 	return req.getQueryString();
     }
 
-    public static String getHeader(HttpServletRequest request, String name, String defaultValue) {
+    public static String getHeader(RequestResponse request, String name, String defaultValue) {
 	try {
 	    return request.getHeader(name);
 	}
@@ -196,7 +198,7 @@ public final class ReqRspUtil {
 
     public static String getHeaderIgnoreCase(PageContext pc, String name, String defaultValue) {
 	String charset = pc.getWebCharset().name();
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	Enumeration e = req.getHeaderNames();
 	String keyDecoded, key;
 	while (e.hasMoreElements()) {
@@ -210,7 +212,7 @@ public final class ReqRspUtil {
     public static List<String> getHeadersIgnoreCase(PageContext pc, String name) {
 
 	String charset = pc.getWebCharset().name();
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	Enumeration e = req.getHeaderNames();
 	List<String> rtn = new ArrayList<String>();
 	String keyDecoded, key;
@@ -224,7 +226,7 @@ public final class ReqRspUtil {
 	return rtn;
     }
 
-    public static String getScriptName(PageContext pc, HttpServletRequest req) {
+    public static String getScriptName(PageContext pc, RequestResponse req) {
 
 	String sn = StringUtil.emptyIfNull(req.getContextPath()) + StringUtil.emptyIfNull(req.getServletPath());
 
@@ -355,7 +357,7 @@ public final class ReqRspUtil {
 	return need;
     }
 
-    public static boolean isThis(HttpServletRequest req, String url) {
+    public static boolean isThis(RequestResponse req, String url) {
 	try {
 	    return isThis(req, HTTPUtil.toURL(url, true));
 	}
@@ -365,7 +367,7 @@ public final class ReqRspUtil {
 	}
     }
 
-    public static boolean isThis(HttpServletRequest req, URL url) {
+    public static boolean isThis(RequestResponse req, URL url) {
 	try {
 	    // Port
 	    int reqPort = req.getServerPort();
@@ -442,7 +444,7 @@ public final class ReqRspUtil {
      */
     public static Object getRequestBody(PageContext pc, boolean deserialized, Object defaultValue) {
 
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 
 	MimeType contentType = getContentType(pc);
 	String strContentType = contentType == MimeType.ALL ? null : contentType.toString();
@@ -487,10 +489,10 @@ public final class ReqRspUtil {
     /**
      * returns the full request URL
      *
-     * @param req - the HttpServletRequest
+     * @param req - the HttpServletRequestDead
      * @param includeQueryString - if true, the QueryString will be appended if one exists
      */
-    public static String getRequestURL(HttpServletRequest req, boolean includeQueryString) {
+    public static String getRequestURL(RequestResponse req, boolean includeQueryString) {
 
 	StringBuffer sb = req.getRequestURL();
 	int maxpos = sb.indexOf("/", 8);
@@ -510,16 +512,16 @@ public final class ReqRspUtil {
 	return sb.toString();
     }
 
-    public static String getRootPath(ServletContext sc) {
-
-	if (sc == null) throw new RuntimeException("cannot determinate webcontext root, because the ServletContext is null");
-
-	String root = sc.getRealPath("/");
-
-	if (root == null) throw new RuntimeException("cannot determinate webcontext root, the ServletContext from class [" + sc.getClass().getName()
-		+ "] is returning null for the method call sc.getRealPath(\"/\"), possibly due to configuration problem.");
-
-	return root;
+    public static String getRootPath() {
+		return "context";
+//	if (sc == null) throw new RuntimeException("cannot determinate webcontext root, because the ServletContext is null");
+//
+//	String root = sc.getRealPath("/");
+//
+//	if (root == null) throw new RuntimeException("cannot determinate webcontext root, the ServletContext from class [" + sc.getClass().getName()
+//		+ "] is returning null for the method call sc.getRealPath(\"/\"), possibly due to configuration problem.");
+//
+//	return root;
     }
 
     public static Object toObject(PageContext pc, byte[] data, int format, Charset charset, Object defaultValue) {
@@ -564,21 +566,14 @@ public final class ReqRspUtil {
 	return defaultValue;
     }
 
-    public static boolean identical(HttpServletRequest left, HttpServletRequest right) {
+    public static boolean identical(RequestResponse left, RequestResponse right) {
 
-	if (left == right) return true;
-	if (left instanceof HTTPServletRequestWrap) left = ((HTTPServletRequestWrap) left).getOriginalRequest();
-	if (right instanceof HTTPServletRequestWrap) right = ((HTTPServletRequestWrap) right).getOriginalRequest();
 	if (left == right) return true;
 	return false;
     }
 
-    public static Charset getCharacterEncoding(PageContext pc, ServletRequest req) {
-	return _getCharacterEncoding(pc, req.getCharacterEncoding());
-    }
-
-    public static Charset getCharacterEncoding(PageContext pc, ServletResponse rsp) {
-	return _getCharacterEncoding(pc, rsp.getCharacterEncoding());
+    public static Charset getCharacterEncoding(PageContext pc, RequestResponse req) {
+	return _getCharacterEncoding(pc, StaticConfig.compilerTemplateCharset);
     }
 
     private static Charset _getCharacterEncoding(PageContext pc, String ce) {
@@ -594,12 +589,12 @@ public final class ReqRspUtil {
 	return config.getWebCharset();
     }
 
-    public static void removeCookie(HttpServletResponse rsp, String name) {
+    public static void removeCookie(RequestResponse req, String name) {
 	javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(name, "");
 	cookie.setMaxAge(0);
 	cookie.setSecure(false);
 	cookie.setPath("/");
-	rsp.addCookie(cookie);
+	req.addCookie(cookie);
     }
 
     /**
@@ -609,9 +604,9 @@ public final class ReqRspUtil {
      * @param url
      * @return
      */
-    public static String encodeRedirectURLEL(HttpServletResponse rsp, String url) {
+    public static String encodeRedirectURLEL(RequestResponse req, String url) {
 	try {
-	    return rsp.encodeRedirectURL(url);
+	    return req.encodeRedirectURL(url);
 	}
 	catch (Throwable t) {
 	    ExceptionUtil.rethrowIfNecessary(t);
@@ -619,7 +614,7 @@ public final class ReqRspUtil {
 	}
     }
 
-    public static String getDomain(HttpServletRequest req) { // DIFF 23
+    public static String getDomain(RequestResponse req) { // DIFF 23
 	StringBuilder sb = new StringBuilder();
 	sb.append(req.isSecure() ? "https://" : "http://");
 	sb.append(req.getServerName());

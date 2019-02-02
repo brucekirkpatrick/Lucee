@@ -24,7 +24,7 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
 import lucee.runtime.functions.other.CreatePageContext;
 import lucee.runtime.listener.ApplicationContext;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
@@ -118,7 +118,7 @@ public class InternalRequest implements Function {
 	    exeTime = System.currentTimeMillis() - pc.getStartTime();
 	    // debugging=_pc.getDebugger().getDebuggingData(_pc).duplicate(false);
 
-	    HttpServletResponseDummy rsp = (HttpServletResponseDummy) _pc.getHttpServletResponse();
+	    HttpServletResponseDeadDummy rsp = (HttpServletResponseDeadDummy) _pc.getRequestResponse();
 
 	    // headers
 	    Collection.Key name;
@@ -194,7 +194,7 @@ public class InternalRequest implements Function {
 	    }
 	}
 
-	return ThreadUtil.createPageContext(pc.getConfig(), os, pc.getHttpServletRequest().getServerName(), template, sbQS.toString(), CreatePageContext.toCookies(cookies),
+	return ThreadUtil.createPageContext(pc.getConfig(), os, pc.getRequestResponse().getServerName(), template, sbQS.toString(), CreatePageContext.toCookies(cookies),
 		CreatePageContext.toPair(headers, true), body, CreatePageContext.toPair(new StructImpl(), true), CreatePageContext.castValuesToString(new StructImpl()), true, -1);
     }
 

@@ -21,7 +21,7 @@ package lucee.runtime.tag;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletResponse;
+
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.cache.CacheEntry;
@@ -182,7 +182,7 @@ public final class Cache extends BodyTagImpl {
 
     /*
      * private String getProtocol() { if(StringUtil.isEmpty(protocol)) { return pageContext.
-     * getHttpServletRequest().getScheme(); } return protocol; }
+     * getRequestResponse().getScheme(); } return protocol; }
      */
 
     /**
@@ -261,7 +261,7 @@ public final class Cache extends BodyTagImpl {
     }
 
     public int getPort() {
-	if (port <= 0) return pageContext.getHttpServletRequest().getServerPort();
+	if (port <= 0) return pageContext.getRequestResponse().getServerPort();
 	return port;
     }
 
@@ -337,14 +337,14 @@ public final class Cache extends BodyTagImpl {
 	// call via cfcache disable debugger output
 	if (pageContext.getConfig().debug()) pageContext.getDebugger().setOutput(false);
 
-	HttpServletResponse rsp = pageContext.getHttpServletResponse();
+	RequestResponse req = pageContext.getRequestResponse();
 
 	// generate cache resource matching request object
 	CacheItem ci = generateCacheResource(null, false);
 
 	// use cached resource
 	if (ci.isValid(timespan)) { // if(isOK(cacheResource)){
-	    if (pageContext.getHttpServletResponse().isCommitted()) return;
+	    if (pageContext.getRequestResponse().isCommitted()) return;
 
 	    OutputStream os = null;
 	    try {

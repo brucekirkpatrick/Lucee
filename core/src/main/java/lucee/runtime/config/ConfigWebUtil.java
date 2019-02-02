@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
@@ -306,7 +306,7 @@ public final class ConfigWebUtil {
 		else if (str.startsWith("-dir}", 5)) str = checkResult(str, config.getTempDirectory().getRealResource(str.substring(10)).toString());
 		else if (str.startsWith("-directory}", 5)) str = checkResult(str, config.getTempDirectory().getRealResource(str.substring(16)).toString());
 	    }
-	    else if (config instanceof ServletConfig) {
+	    else if (config instanceof ServletConfigDead) {
 		Map<String, String> labels = null;
 		// web
 		if (config instanceof ConfigWebImpl) {
@@ -316,7 +316,7 @@ public final class ConfigWebUtil {
 		else if (config instanceof ConfigServerImpl) {
 		    labels = ((ConfigServerImpl) config).getLabels();
 		}
-		if (labels != null) str = SystemUtil.parsePlaceHolder(str, ((ServletConfig) config).getServletContext(), labels);
+		if (labels != null) str = SystemUtil.parsePlaceHolder(str, ((ServletConfigDead) config).getServletContext(), labels);
 	    }
 	    else str = SystemUtil.parsePlaceHolder(str);
 
@@ -363,7 +363,7 @@ public final class ConfigWebUtil {
 
 	strDir = replacePlaceholder(strDir, config);
 	if (strDir != null && strDir.trim().length() > 0) {
-	    Resource res = sc == null ? null : _getExistingFile(config.getResource(ResourceUtil.merge(ReqRspUtil.getRootPath(sc), strDir)), type);
+	    Resource res = sc == null ? null : _getExistingFile(config.getResource(ResourceUtil.merge(ReqRspUtil.getRootPath(), strDir)), type);
 	    if (res != null) return res;
 
 	    res = _getExistingFile(config.getResource(strDir), type);

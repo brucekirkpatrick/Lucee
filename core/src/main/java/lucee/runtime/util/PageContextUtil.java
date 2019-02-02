@@ -23,15 +23,14 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.jsp.tagext.BodyContent;
 
-import lucee.cli.servlet.HTTPServletImpl;
+import lucee.cli.servlet.HTTPServletImplDead;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.loader.engine.CFMLEngine;
@@ -117,7 +116,7 @@ public class PageContextUtil {
 	return result;
     }
 
-    public static PageContext getPageContext(Config config, ServletConfig servletConfig, File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies,
+    public static PageContext getPageContext(Config config, ServletConfigDead ServletConfigDead, File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies,
 	    Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, boolean register, long timeout, boolean ignoreScopes) {
 	boolean callOnStart = ThreadLocalPageContext.callOnStart.get();
 	try {
@@ -139,42 +138,42 @@ public class PageContextUtil {
 	    if (attributes == null) attributes = new HashMap<String, Object>();
 
 	    // Request
-	    HttpServletRequest req = CreationImpl.getInstance(engine).createHttpServletRequest(contextRoot, host, scriptName, queryString, cookies, headers, parameters, attributes,
+	    RequestResponse req = CreationImpl.getInstance(engine).createHttpServletRequestDead(contextRoot, host, scriptName, queryString, cookies, headers, parameters, attributes,
 		    null);
 
 	    // Response
-	    HttpServletResponse rsp = CreationImpl.getInstance(engine).createHttpServletResponse(os);
+	    RequestResponse req = CreationImpl.getInstance(engine).createHttpServletResponseDead(os);
 
 	    if (config == null) config = ThreadLocalPageContext.getConfig();
 
 	    CFMLFactory factory = null;
-	    HttpServlet servlet;
+	    HttpServletDead servlet;
 	    if (config instanceof ConfigWeb) {
 		ConfigWeb cw = (ConfigWeb) config;
 		factory = cw.getFactory();
 		servlet = factory.getServlet();
 	    }
 	    else {
-//		if (servletConfig == null) {
+//		if (ServletConfigDead == null) {
 //
-//		    ServletConfig[] configs = engine.getServletConfigs();
+//		    ServletConfigDead[] configs = engine.getServletConfigDeads();
 //		    String rootDir = contextRoot.getAbsolutePath();
 //
-//		    for (ServletConfig conf: configs) {
+//		    for (ServletConfigDead conf: configs) {
 //			if (lucee.commons.io.SystemUtil.arePathsSame(rootDir, conf.getServletContext().getRealPath("/"))) {
-//			    servletConfig = conf;
+//			    ServletConfigDead = conf;
 //			    break;
 //			}
 //		    }
 //
-//		    if (servletConfig == null) servletConfig = configs[0];
+//		    if (ServletConfigDead == null) ServletConfigDead = configs[0];
 //		}
 
 		factory = engine.getCFMLFactory(req);
-		servlet = new HTTPServletImpl(servletConfig, servletConfig.getServletContext(), servletConfig.getServletName());
+		servlet = new HTTPServletImplDead(ServletConfigDead, ServletConfigDead.getServletContext(), ServletConfigDead.getServletName());
 	    }
 
-	    return factory.getLuceePageContext(servlet, req, rsp, null, false, -1, false, register, timeout, false, ignoreScopes);
+	    return factory.getLuceePageContext(servlet, req, null, false, -1, false, register, timeout, false, ignoreScopes);
 	}
 	finally {
 	    ThreadLocalPageContext.callOnStart.set(callOnStart);

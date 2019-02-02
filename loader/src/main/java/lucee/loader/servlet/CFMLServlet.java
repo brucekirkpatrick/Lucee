@@ -21,10 +21,10 @@ package lucee.loader.servlet;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponse;
+
 
 import lucee.loader.engine.CFMLEngineFactory;
 
@@ -48,10 +48,10 @@ public class CFMLServlet extends AbsServlet {
     private static final long serialVersionUID = -1878214660283329587L;
 
     /**
-     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
+     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfigDead)
      */
     @Override
-    public void init(final ServletConfig sg) throws ServletException {
+    public void init(final ServletConfigDead sg) throws ServletException {
     	CFMLServlet.logStartTime("CFMLServlet init start");
 	super.init(sg);
 	    CFMLServlet.logStartTime("CFMLServlet init Servlet init end");
@@ -63,11 +63,11 @@ public class CFMLServlet extends AbsServlet {
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServletDead#service(javax.servlet.http.HttpServletDeadRequestDead,
+     *      javax.servlet.http.HttpServletDeadResponseDead)
      */
     @Override
-    protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+    protected void service(final RequestResponse req) throws ServletException, IOException {
 	    CFMLServlet.logStartTime("CFMLServlet service start");
 	    while(engine==null){
 	    	Thread.yield();

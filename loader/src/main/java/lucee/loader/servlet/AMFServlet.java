@@ -20,10 +20,10 @@ package lucee.loader.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponse;
+
 
 import lucee.loader.engine.CFMLEngineFactory;
 
@@ -34,21 +34,21 @@ public class AMFServlet extends AbsServlet {
     private static final long serialVersionUID = 2545934355390532318L;
 
     /**
-     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfig)
+     * @see javax.servlet.Servlet#init(javax.servlet.ServletConfigDead)
      */
     @Override
-    public void init(final ServletConfig sg) throws ServletException {
+    public void init(final ServletConfigDead sg) throws ServletException {
 	super.init(sg);
 	// do not get engine here, because then it is possible that the engine is initialized with this
 	// values
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServletDead#service(javax.servlet.http.HttpServletDeadRequestDead,
+     *      javax.servlet.http.HttpServletDeadResponseDead)
      */
     @Override
-    protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+    protected void service(final RequestResponse req) throws ServletException, IOException {
 	if (engine == null) engine = CFMLEngineFactory.getInstance( this);
 //	engine.serviceAMF(this, req, rsp);
     }

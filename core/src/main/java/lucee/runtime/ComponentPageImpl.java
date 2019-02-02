@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.io.IOUtil;
@@ -38,7 +38,6 @@ import lucee.commons.lang.CFTypes;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.mimetype.MimeType;
-import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.component.StaticStruct;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebImpl;
@@ -123,7 +122,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	}
 	else strRemotePersisId = null;
 
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	// client
 	String client = Caster.toString(req.getAttribute("client"), null);
 	// call type (invocation, store-only)
@@ -164,9 +163,9 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    }
 
 	    // METHOD INVOCATION
-	    String qs = ReqRspUtil.getQueryString(pc.getHttpServletRequest());
+	    String qs = ReqRspUtil.getQueryString(pc.getRequestResponse());
 	    if (pc.getBasePageSource() == this.getPageSource() && pc.getConfig().debug()) pc.getDebugger().setOutput(false);
-	    boolean isPost = pc.getHttpServletRequest().getMethod().equalsIgnoreCase("POST");
+	    boolean isPost = pc.getRequestResponse().getMethod().equalsIgnoreCase("POST");
 
 //	    boolean suppressContent = pc.getRequestDialect() == CFMLEngine.DIALECT_LUCEE || ((PageContextImpl) pc).getSuppressContent();
 //	    if (suppressContent)
@@ -273,7 +272,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     }
 
     private void callRest(PageContext pc, Component component, String path, Result result, boolean suppressContent) throws IOException, ConverterException {
-	String method = pc.getHttpServletRequest().getMethod();
+	String method = pc.getRequestResponse().getMethod();
 	String[] subPath = result.getPath();
 	Struct cMeta;
 	try {
@@ -453,7 +452,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	Struct sct = result.getCustomResponse();
 	boolean hasContent = false;
 	if (sct != null) {
-	    HttpServletResponse rsp = pc.getHttpServletResponse();
+	    RequestResponse req = pc.getRequestResponse();
 	    // status
 	    int status = Caster.toIntValue(sct.get(KeyConstants._status, Constants.DOUBLE_ZERO), 0);
 	    if (status > 0) rsp.setStatus(status);
@@ -495,7 +494,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    props.format = result.getFormat();
 	    Charset cs = getCharset(pc);
 	    if (result.hasFormatExtension()) {
-		// setFormat(pc.getHttpServletResponse(), props.format,cs);
+		// setFormat(pc.getRequestResponse(), props.format,cs);
 		_writeOut(pc, props, null, rtn, cs, true);
 	    }
 	    else {
@@ -503,7 +502,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 		    int f = MimeType.toFormat(best, -1);
 		    if (f != -1) {
 			props.format = f;
-			// setFormat(pc.getHttpServletResponse(), f,cs);
+			// setFormat(pc.getRequestResponse(), f,cs);
 			_writeOut(pc, props, null, rtn, cs, true);
 		    }
 		    else {
@@ -555,7 +554,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     }
 
     private static void writeOut(PageContext pc, Object obj, MimeType mt, BinaryConverter converter) throws ConverterException, IOException {
-	ReqRspUtil.setContentType(pc.getHttpServletResponse(), mt.toString());
+	ReqRspUtil.setContentType(pc.getRequestResponse(), mt.toString());
 
 	OutputStream os = null;
 	try {
@@ -567,7 +566,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     }
 
     public static boolean isSoap(PageContext pc) {
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	InputStream is = null;
 	try {
 	    is = req.getInputStream();
@@ -605,10 +604,10 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    Object queryFormat = url.get(KeyConstants._queryFormat, null);
 
 	    if (args == null) {
-		args = pc.getHttpServletRequest().getAttribute("argumentCollection");
+		args = pc.getRequestResponse().getAttribute("argumentCollection");
 	    }
 	    if (StringUtil.isEmpty(strArgCollFormat)) {
-		strArgCollFormat = Caster.toString(pc.getHttpServletRequest().getAttribute("argumentCollectionFormat"), null);
+		strArgCollFormat = Caster.toString(pc.getRequestResponse().getAttribute("argumentCollectionFormat"), null);
 	    }
 
 	    // content-type
@@ -620,7 +619,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 
 	    Props props = getProps(pc, o, urlReturnFormat, headerReturnFormat);
 	    // if(!props.output)
-	    setFormat(pc.getHttpServletResponse(), props.format, cs);
+	    setFormat(pc.getRequestResponse(), props.format, cs);
 
 	    Object rtn = null;
 	    try {
@@ -680,7 +679,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    }
 	    // convert result
 	    if (rtn != null) {
-		if (pc.getHttpServletRequest().getHeader("AMF-Forward") != null) {
+		if (pc.getRequestResponse().getHeader("AMF-Forward") != null) {
 		    pc.variablesScope().setEL("AMF-Forward", rtn);
 		}
 		else {
@@ -695,7 +694,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	}
     }
 
-    private static void setFormat(HttpServletResponse rsp, int format, Charset charset) {
+    private static void setFormat(RequestResponse req, int format, Charset charset) {
 	String strCS;
 	if (charset == null) strCS = "";
 	else strCS = "; charset=" + charset.displayName();
@@ -778,7 +777,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	}
 	// function does no real cast, only check it
 	else rtn = Caster.castTo(pc, (short) props.type, props.strType, rtn);
-	if (setFormat) setFormat(pc.getHttpServletResponse(), props.format, cs);
+	if (setFormat) setFormat(pc.getRequestResponse(), props.format, cs);
 
 	// WDDX
 	if (UDF.RETURN_FORMAT_WDDX == props.format) {
@@ -939,7 +938,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	OutputStream os = null;
 	try {
 	    os = pc.getResponseStream();
-	    setFormat(pc.getHttpServletResponse(), format, cs);
+	    setFormat(pc.getRequestResponse(), format, cs);
 	    IOUtil.copy(is, os, false, false);
 
 	}
@@ -951,7 +950,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
     }
 
     private Charset getCharset(PageContext pc) {
-	HttpServletResponse rsp = pc.getHttpServletResponse();
+	RequestResponse req = pc.getRequestResponse();
 	Charset cs = ReqRspUtil.getCharacterEncoding(pc, rsp);
 	if (cs == null) cs = pc.getWebCharset();
 	return cs;
@@ -966,7 +965,7 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	    Resource input = ResourceUtil.toResourceExisting(pc, wsdl);
 	    try {
 		os = pc.getResponseStream();
-		ReqRspUtil.setContentType(pc.getHttpServletResponse(), "text/xml; charset=utf-8");
+		ReqRspUtil.setContentType(pc.getRequestResponse(), "text/xml; charset=utf-8");
 		IOUtil.copy(input, os, false);
 
 	    }
@@ -978,12 +977,12 @@ public abstract class ComponentPageImpl extends ComponentPage implements PagePro
 	}
 	// create a wsdl file
 	else {
-	    ((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().getWSServer(pc).doGet(pc, pc.getHttpServletRequest(), pc.getHttpServletResponse(), component);
+	    ((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().getWSServer(pc).doGet(pc, pc.getRequestResponse(), pc.getRequestResponse(), component);
 	}
     }
 
     private void callWebservice(PageContext pc, Component component) throws IOException, ServletException, PageException {
-	((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().getWSServer(pc).doPost(pc, pc.getHttpServletRequest(), pc.getHttpServletResponse(), component);
+	((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().getWSServer(pc).doPost(pc, pc.getRequestResponse(), pc.getRequestResponse(), component);
     }
 
     /**

@@ -18,7 +18,7 @@
  **/
 package lucee.runtime.functions.rest;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ApplicationException;
@@ -27,7 +27,7 @@ import lucee.runtime.type.Struct;
 
 public class RestSetResponse {
     public static String call(PageContext pc, Struct rsp) throws ApplicationException {
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 
 	Result result = (Result) req.getAttribute("rest-result");
 	if (result == null) throw new ApplicationException("not inside a REST Request");

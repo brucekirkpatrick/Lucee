@@ -20,15 +20,15 @@ package lucee.cli.servlet;
 
 import java.util.Enumeration;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 
-public class ServletConfigImpl implements ServletConfig {
+public class ServletConfigDeadImpl  {
 
     private final String servletName;
     private final ServletContext context;
 
-    public ServletConfigImpl(final ServletContextImpl context, final String servletName) {
+    public ServletConfigDeadImpl(final ServletContextImpl context, final String servletName) {
 	this.servletName = servletName;
 	this.context = context;
     }

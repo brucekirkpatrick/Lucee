@@ -42,8 +42,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
@@ -66,7 +66,7 @@ import lucee.runtime.type.dt.DateTimeImpl;
 import lucee.runtime.type.it.ItAsEnum;
 import lucee.runtime.util.EnumerationWrapper;
 
-public final class HttpServletRequestDummy implements HttpServletRequest, Serializable {
+public final class HttpServletRequestDeadDummy implements HttpServletRequestDead, Serializable {
 
     private Cookie[] cookies;
 
@@ -126,7 +126,7 @@ public final class HttpServletRequestDummy implements HttpServletRequest, Serial
      * @param pairs
      * @param cookiess
      */
-    public HttpServletRequestDummy(Resource contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Pair[] headers, Pair[] parameters,
+    public HttpServletRequestDeadDummy(Resource contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Pair[] headers, Pair[] parameters,
 	    Struct attributes, HttpSession session, byte[] inputData) {
 	this.serverName = serverName;
 	requestURI = scriptName;
@@ -144,7 +144,7 @@ public final class HttpServletRequestDummy implements HttpServletRequest, Serial
     /**
      * constructor of the class
      * 
-     * @throws PageException / public HttpServletRequestDummy(String serverName, String
+     * @throws PageException / public HttpServletRequestDeadDummy(String serverName, String
      *             scriptName,Struct queryString) throws PageException { this.serverName=serverName;
      *             requestURI=scriptName;
      * 
@@ -689,14 +689,14 @@ public final class HttpServletRequestDummy implements HttpServletRequest, Serial
 	this.session = session;
     }
 
-    public static HttpServletRequestDummy clone(Config config, Resource rootDirectory, HttpServletRequest req) {
+    public static HttpServletRequestDeadDummy clone(Config config, Resource rootDirectory, RequestResponse req) {
 	byte[] inputData = null;
 	try {
 	    inputData = IOUtil.toBytes(req.getInputStream(), true, null);
 	}
 	catch (IOException e) {}
 
-	HttpServletRequestDummy dest = new HttpServletRequestDummy(rootDirectory, req.getServerName(), req.getRequestURI(), req.getQueryString(),
+	HttpServletRequestDeadDummy dest = new HttpServletRequestDeadDummy(rootDirectory, req.getServerName(), req.getRequestURI(), req.getQueryString(),
 		HttpUtil.cloneCookies(config, req), HttpUtil.cloneHeaders(req), HttpUtil.cloneParameters(req), HttpUtil.getAttributesAsStruct(req), getSessionEL(req), inputData);
 
 	try {
@@ -722,7 +722,7 @@ public final class HttpServletRequestDummy implements HttpServletRequest, Serial
 	return dest;
     }
 
-    private static HttpSession getSessionEL(HttpServletRequest req) {
+    private static HttpSession getSessionEL(RequestResponse req) {
 	try {
 	    return req.getSession();
 	}
@@ -797,7 +797,7 @@ public final class HttpServletRequestDummy implements HttpServletRequest, Serial
     }
 
     @Override
-    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+    public boolean authenticate(HttpServletResponseDead arg0) throws IOException, ServletException {
 	throw new RuntimeException("not supported!");
     }
 

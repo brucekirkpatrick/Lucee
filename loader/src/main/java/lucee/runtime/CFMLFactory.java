@@ -21,9 +21,9 @@ package lucee.runtime;
 import java.net.URL;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponse;
+
 import javax.servlet.jsp.JspFactory;
 
 import lucee.loader.engine.CFMLEngine;
@@ -40,26 +40,6 @@ public abstract class CFMLFactory {
      */
     public abstract void resetPageContext();
 
-    /**
-     * similar to getPageContext Method but return the concrete implementation of the Lucee PageCOntext
-     * and take the HTTP Version of the Servlet Objects
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @param errorPageURL
-     * @param needsSession
-     * @param bufferSize
-     * @param autoflush
-     * @return return the pageContext
-     * @deprecated use instead <code>getLuceePageContext(HttpServlet servlet,
-    		HttpServletRequest req, HttpServletResponse rsp,
-    		String errorPageURL, boolean needsSession, int bufferSize,
-    		boolean autoflush,boolean register)</code>
-     */
-    @Deprecated
-    public abstract PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
-	    boolean autoflush);
 
     /**
      * similar to getPageContext Method but return the concrete implementation of the Lucee PageCOntext
@@ -77,7 +57,7 @@ public abstract class CFMLFactory {
      *            from the context is used
      * @return return the PageContext
      */
-    public abstract PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
+    public abstract PageContext getLuceePageContext(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize,
 	    boolean autoflush, boolean register, long timeout, boolean register2RunningThreads, boolean ignoreScopes);
 
     /**

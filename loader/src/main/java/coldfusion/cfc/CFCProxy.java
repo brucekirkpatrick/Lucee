@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponse;
+
 
 import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;
@@ -116,12 +116,12 @@ public class CFCProxy {
 	return _invoke(methodName, args, null, null, null);
     }
 
-    public final Object invoke(final String methodName, final Object args[], final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+    public final Object invoke(final String methodName, final Object args[], final RequestResponse request, final HttpServletResponseDead response) throws Throwable {
 	if (invokeDirectly) return _invoke(methodName, args);
 	return _invoke(methodName, args, request, response, null);
     }
 
-    public final Object invoke(final String methodName, final Object args[], final HttpServletRequest request, final HttpServletResponse response, final OutputStream out)
+    public final Object invoke(final String methodName, final Object args[], final RequestResponse request, final HttpServletResponseDead response, final OutputStream out)
 	    throws Throwable {
 	if (invokeDirectly) return _invoke(methodName, args);
 	return _invoke(methodName, args, request, response, out);
@@ -138,7 +138,7 @@ public class CFCProxy {
 	return cfc.call(pc, methodName, args);
     }
 
-    private Object _invoke(final String methodName, final Object[] args, HttpServletRequest req, HttpServletResponse rsp, OutputStream out) throws PageException {
+    private Object _invoke(final String methodName, final Object[] args, RequestResponse req, OutputStream out) throws PageException {
 	final CFMLEngine engine = CFMLEngineFactory.getInstance();
 	final Creation creator = engine.getCreationUtil();
 	final PageContext originalPC = engine.getThreadPageContext();
@@ -149,11 +149,11 @@ public class CFCProxy {
 	// no Request
 	if (req == null)
 	    // TODO new File
-	    req = creator.createHttpServletRequest(new File("."), "Lucee", "/", "", null, null, null, null, null);
+	    req = creator.createHttpServletRequestDead(new File("."), "Lucee", "/", "", null, null, null, null, null);
 	// noRespone
-	if (rsp == null) rsp = creator.createHttpServletResponse(out);
+	if (rsp == null) rsp = creator.createHttpServletResponseDead(out);
 
-	final PageContext pc = creator.createPageContext(req, rsp, out);
+	final PageContext pc = creator.createPageContext(req, out);
 	try {
 	    engine.registerThreadPageContext(pc);
 	    initCFC(pc);

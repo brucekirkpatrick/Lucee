@@ -18,7 +18,7 @@
  **/
 package lucee.runtime.tag;
 
-import javax.servlet.http.HttpServletResponse;
+
 
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.lang.CharSet;
@@ -115,7 +115,7 @@ public final class Header extends TagImpl {
     @Override
     public int doStartTag() throws PageException {
 
-	HttpServletResponse rsp = pageContext.getHttpServletResponse();
+	RequestResponse req = pageContext.getRequestResponse();
 	if (rsp.isCommitted()) throw new TemplateException("can't assign value to header, header is already committed");
 
 	// set name value

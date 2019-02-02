@@ -23,14 +23,13 @@ import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+
+import lucee.cli.cli2.RequestResponse;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
 import lucee.runtime.cache.legacy.CacheItem;
-import lucee.runtime.net.http.HttpServletResponseWrap;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
 
@@ -42,7 +41,7 @@ public class CFMLWriterImpl extends CFMLWriter {
     private static final int BUFFER_SIZE = 100000;
     // private static final String VERSIONj = Info.getVersionAsString();
     private OutputStream out;
-    private HttpServletResponse response;
+    private RequestResponse req;
     private boolean flushed;
     private StringBuilder htmlHead;
     private StringBuilder htmlBody;
@@ -52,24 +51,25 @@ public class CFMLWriterImpl extends CFMLWriter {
     private boolean showVersion;
     private boolean contentLength;
     private CacheItem cacheItem;
-    private HttpServletRequest request;
+    private RequestResponse request;
     private Boolean _allowCompression;
     private PageContext pc;
     private String version;
 
     /**
      * constructor of the class
-     * 
-     * @param response Response Object
+     *
+     * @param pc
+     * @param request Response Object
      * @param bufferSize buffer Size
      * @param autoFlush do auto flush Content
      */
-    public CFMLWriterImpl(PageContext pc, HttpServletRequest request, HttpServletResponse response, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
-	    boolean contentLength) {
+    public CFMLWriterImpl(PageContext pc, RequestResponse request, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
+                          boolean contentLength) {
 	super(bufferSize, autoFlush);
 	this.pc = pc;
 	this.request = request;
-	this.response = response;
+	this.req = req;
 	this.autoFlush = autoFlush;
 	this.bufferSize = bufferSize;
 	this.closeConn = closeConn;
@@ -82,8 +82,8 @@ public class CFMLWriterImpl extends CFMLWriter {
     /*
      * * constructor of the class
      * 
-     * @param response Response Object / public JspWriterImpl(HttpServletResponse response) {
-     * this(response, BUFFER_SIZE, false); }
+     * @param req Response Object / public JspWriterImpl(HttpServletResponseDead req) {
+     * this(req, BUFFER_SIZE, false); }
      */
 
     private void _check() throws IOException {
@@ -98,7 +98,7 @@ public class CFMLWriterImpl extends CFMLWriter {
     protected void initOut() throws IOException {
 	if (out == null) {
 	    out = getOutputStream(false);
-	    // out=response.getWriter();
+	    // out=req.getWriter();
 	}
     }
 
@@ -283,12 +283,12 @@ public class CFMLWriterImpl extends CFMLWriter {
      */
     protected final void flushBuffer(boolean closeConn) throws IOException {
 	if (!flushed && closeConn) {
-	    response.setHeader("connection", "close");
-	    // if(showVersion)response.setHeader(Constants.NAME+"-Version", version);
+	    req.setHeader("connection", "close");
+	    // if(showVersion)req.setHeader(Constants.NAME+"-Version", version);
 
 	}
 	initOut();
-	byte[] barr = _toString(true).getBytes(ReqRspUtil.getCharacterEncoding(null, response));
+	byte[] barr = _toString(true).getBytes(ReqRspUtil.getCharacterEncoding(null, req));
 
 	if (cacheItem != null && cacheItem.isValid()) {
 	    cacheItem.store(barr, flushed);
@@ -361,30 +361,30 @@ public class CFMLWriterImpl extends CFMLWriter {
      */
     @Override
     public void close() throws IOException {
-	if (response == null || closed) return;
+	if (req == null || closed) return;
 	// boolean closeConn=true;
 	if (out == null) {
-	    if (response.isCommitted()) {
+	    if (req.isCommitted()) {
 		closed = true;
 		return;
 	    }
 	    // print.out(_toString());
-	    byte[] barr = _toString(true).getBytes(ReqRspUtil.getCharacterEncoding(null, response));
+	    byte[] barr = _toString(true).getBytes(ReqRspUtil.getCharacterEncoding(null, req));
 
 	    if (cacheItem != null) {
 		cacheItem.store(barr, false);
 		// writeCache(barr,false);
 	    }
 
-	    if (closeConn) response.setHeader("connection", "close");
-	    // if(showVersion)response.setHeader(Constants.NAME+"-Version", version);
+	    if (closeConn) req.setHeader("connection", "close");
+	    // if(showVersion)req.setHeader(Constants.NAME+"-Version", version);
 	    boolean allowCompression;
 	    if (barr.length <= 512) allowCompression = false;
 	    else if (_allowCompression != null) allowCompression = _allowCompression.booleanValue();
 	    else allowCompression = ((PageContextImpl) pc).getAllowCompression();
 	    out = getOutputStream(allowCompression);
 
-	    if (contentLength && !(out instanceof GZIPOutputStream)) ReqRspUtil.setContentLength(response, barr.length);
+	    if (contentLength && !(out instanceof GZIPOutputStream)) ReqRspUtil.setContentLength(req, barr.length);
 
 	    out.write(barr);
 	    out.flush();
@@ -406,15 +406,15 @@ public class CFMLWriterImpl extends CFMLWriter {
 
 	    String encodings = ReqRspUtil.getHeader(request, "Accept-Encoding", "");
 	    if (encodings.indexOf("gzip") != -1) {
-		boolean inline = HttpServletResponseWrap.get();
+		boolean inline = req.get();
 		if (!inline) {
-		    ServletOutputStream os = response.getOutputStream();
-		    response.setHeader("Content-Encoding", "gzip");
+		    ServletOutputStream os = req.getOutputStream();
+		    req.setHeader("Content-Encoding", "gzip");
 		    return new GZIPOutputStream(os);
 		}
 	    }
 	}
-	return response.getOutputStream();
+	return req.getOutputStream();
     }
 
     /*

@@ -20,7 +20,7 @@ package lucee.runtime.tag;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+
 
 import lucee.commons.lang.StringUtil;
 import lucee.commons.net.HTTPUtil;
@@ -95,7 +95,7 @@ public final class Location extends TagImpl {
 	catch (IOException e) {
 	    throw Caster.toPageException(e);
 	}
-	HttpServletResponse rsp = pageContext.getHttpServletResponse();
+	RequestResponse req = pageContext.getRequestResponse();
 
 	url = HTTPUtil.encode(url);
 

@@ -49,8 +49,8 @@ import lucee.runtime.config.Constants;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageServletException;
-import lucee.runtime.net.http.HTTPServletRequestWrap;
-import lucee.runtime.net.http.HttpServletResponseWrap;
+
+import lucee.runtime.net.http.HttpServletDeadResponseDeadWrap;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.type.util.ListUtil;
 
@@ -403,13 +403,13 @@ public final class HTTPUtil {
 	realPath = HTTPUtil.optimizeRealPath(pc, realPath);
 
 	try {
-	    pc.getHttpServletRequest().setAttribute("lucee.forward.request_uri", realPath);
+	    pc.getRequestResponse().setAttribute("lucee.forward.request_uri", realPath);
 
 	    RequestDispatcher disp = context.getRequestDispatcher(realPath);
 	    if (disp == null) throw new PageServletException(new ApplicationException("Page " + realPath + " not found"));
 
 	    // populateRequestAttributes();
-	    disp.forward(removeWrap(pc.getHttpServletRequest()), pc.getHttpServletResponse());
+	    disp.forward(removeWrap(pc.getRequestResponse()), pc.getRequestResponse());
 	}
 	finally {
 	    ThreadLocalPageContext.register(pc);
@@ -417,18 +417,18 @@ public final class HTTPUtil {
     }
 
     public static ServletRequest removeWrap(ServletRequest req) {
-	while (req instanceof HTTPServletRequestWrap)
-	    return ((HTTPServletRequestWrap) req).getOriginalRequest();
+	while (req instanceof HttpServletRequestDeadWrap)
+	    return ((HttpServletRequestDeadWrap) req).getOriginalRequest();
 	return req;
     }
 
     public static void include(PageContext pc, String realPath) throws ServletException, IOException {
-	include(pc, pc.getHttpServletRequest(), pc.getHttpServletResponse(), realPath);
+	include(pc, pc.getRequestResponse(), pc.getRequestResponse(), realPath);
     }
 
     public static void include(PageContext pc, ServletRequest req, ServletResponse rsp, String realPath) throws ServletException, IOException {
 	realPath = optimizeRealPath(pc, realPath);
-	boolean inline = HttpServletResponseWrap.get();
+	boolean inline = HttpServletResponseDeadWrap.get();
 	// print.out(rsp+":"+pc.getResponse());
 	RequestDispatcher disp = getRequestDispatcher(pc, realPath);
 
@@ -440,8 +440,8 @@ public final class HTTPUtil {
 
 	try {
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    HttpServletResponseWrap hsrw = new HttpServletResponseWrap(pc.getHttpServletResponse(), baos);
-	    HttpServletResponseWrap.set(true);
+	    HttpServletResponseDeadWrap hsrw = new HttpServletResponseDeadWrap(pc.getRequestResponse(), baos);
+	    HttpServletResponseDeadWrap.set(true);
 
 	    // RequestDispatcher disp = getRequestDispatcher(pc,realPath);
 
@@ -450,7 +450,7 @@ public final class HTTPUtil {
 	    pc.write(IOUtil.toString(baos.toByteArray(), ReqRspUtil.getCharacterEncoding(pc, hsrw)));
 	}
 	finally {
-	    HttpServletResponseWrap.release();
+	    HttpServletResponseDeadWrap.release();
 	    ThreadLocalPageContext.register(pc);
 	}
     }

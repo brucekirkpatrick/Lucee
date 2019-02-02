@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 
 public final class RequestDispatcherDummy implements RequestDispatcher {
 
-    public RequestDispatcherDummy(HttpServletRequestDummy dummy) {}
+    public RequestDispatcherDummy(HttpServletRequestDeadDummy dummy) {}
 
     @Override
     public void forward(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {

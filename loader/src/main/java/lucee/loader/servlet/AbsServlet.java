@@ -18,7 +18,7 @@
 package lucee.loader.servlet;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+
 
 import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;

@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
@@ -38,7 +38,7 @@ class CacheItemFS extends CacheItem {
     private final Resource res, directory;
     private String name;
 
-    public CacheItemFS(PageContext pc, HttpServletRequest req, String id, String key, boolean useId, Resource dir) throws IOException {
+    public CacheItemFS(PageContext pc, RequestResponse req, String id, String key, boolean useId, Resource dir) throws IOException {
 	super(pc, req, id, key, useId);
 	// directory
 	directory = dir != null ? dir : getDirectory(pc);

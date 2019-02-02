@@ -32,7 +32,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,17 +48,15 @@ import java.util.zip.ZipInputStream;
 
 import javax.script.ScriptEngineFactory;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import coreLoad.RequestResponseImpl;
+import lucee.cli.cli2.RequestResponse;
 import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.util.KeyConstants;
@@ -69,7 +66,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 import lucee.Info;
-import lucee.cli.servlet.HTTPServletImpl;
 import lucee.commons.collection.MapFactory;
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.io.DevNullOutputStream;
@@ -106,7 +102,6 @@ import lucee.runtime.ComponentPageImpl;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
 import lucee.runtime.PageSource;
-import lucee.runtime.PageSourceImpl;
 import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
@@ -134,9 +129,6 @@ import lucee.runtime.extension.RHExtension;
 import lucee.runtime.functions.other.CreateUniqueId;
 import lucee.runtime.instrumentation.InstrumentationFactory;
 import lucee.runtime.jsr223.ScriptEngineFactoryImpl;
-import lucee.runtime.net.http.HTTPServletRequestWrap;
-import lucee.runtime.net.http.HttpServletRequestDummy;
-import lucee.runtime.net.http.HttpServletResponseDummy;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.CastImpl;
 import lucee.runtime.op.Caster;
@@ -190,7 +182,6 @@ public final class CFMLEngineImpl implements CFMLEngine {
     private final ControllerStateImpl controlerState = new ControllerStateImpl(true);
     private boolean allowRequestTimeout = true;
     private Monitor monitor;
-    private List<ServletConfig> servletConfigs = new ArrayList<ServletConfig>();
     private long uptime;
     private InfoImpl info;
 
@@ -649,8 +640,8 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
 //    @Override
-//    public void addServletConfig(ServletConfig config) throws ServletException {
-//	    CFMLServlet.logStartTime("CFMLServlet addServletConfig start");
+//    public void addServletConfigDead(ServletConfigDead config) throws ServletException {
+//	    CFMLServlet.logStartTime("CFMLServlet addServletConfigDead start");
 //	if (PageSourceImpl.logAccessDirectory == null) {
 //	    String str = config.getInitParameter("lucee-log-access-directory");
 //	    if (!StringUtil.isEmpty(str)) {
@@ -688,7 +679,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 //	    addEventListener(config.getServletContext());
 //	}
 //
-//	servletConfigs.add(config);
+//	ServletConfigDeads.add(config);
 //	String real = ReqRspUtil.getRootPath(config.getServletContext());
 //	if (!initContextes.containsKey(real)) {
 //		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory start");
@@ -802,17 +793,17 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	return frp.getResource(factory.getResourceRoot().getAbsolutePath()).getRealResource("context");
     }
 
-    private CFMLFactoryImpl loadJSPFactory(ConfigServerImpl configServer, ServletConfig sg, int countExistingContextes) throws ServletException {
+    private CFMLFactoryImpl loadJSPFactory(ConfigServerImpl configServer, int countExistingContextes) throws ServletException {
 	try {
 //	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("load Context");
 	    // Load Config
 	    RefBoolean isCustomSetting = new RefBooleanImpl();
-	    Resource configDir = getConfigDirectory(sg, configServer, countExistingContextes, isCustomSetting);
+	    Resource configDir = getConfigDirectory(configServer, countExistingContextes, isCustomSetting);
 //	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("got context directory");
 
-	    CFMLFactoryImpl factory = new CFMLFactoryImpl(this, sg);
+	    CFMLFactoryImpl factory = new CFMLFactoryImpl(this);
 //	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("init factory");
-	    ConfigWebImpl config = XMLConfigWebFactory.newInstance(this, factory, configServer, configDir, isCustomSetting.toBooleanValue(), sg);
+	    ConfigWebImpl config = XMLConfigWebFactory.newInstance(this, factory, configServer, configDir, isCustomSetting.toBooleanValue());
 //	    if (XMLConfigWebFactory.LOG) SystemOut.printDate("loaded config");
 	    factory.setConfig(config);
 	    return factory;
@@ -827,25 +818,15 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     /**
      * loads Configuration File from System, from init Parameter from web.xml
-     * 
-     * @param sg
+     *
      * @param configServer
      * @param countExistingContextes
      * @return return path to directory
      */
-    private Resource getConfigDirectory(ServletConfig sg, ConfigServerImpl configServer, int countExistingContextes, RefBoolean isCustomSetting) throws PageServletException {
+    private Resource getConfigDirectory(ConfigServerImpl configServer, int countExistingContextes, RefBoolean isCustomSetting) throws PageServletException {
 	isCustomSetting.setValue(true);
-	ServletContext sc = sg.getServletContext();
-	String strConfig = sg.getInitParameter("configuration");
-	if (StringUtil.isEmpty(strConfig)) strConfig = sg.getInitParameter("lucee-web-directory");
-	if (StringUtil.isEmpty(strConfig)) strConfig = System.getProperty("lucee.web.dir");
-
-	if (StringUtil.isEmpty(strConfig)) {
-	    isCustomSetting.setValue(false);
-	    strConfig = "{web-root-directory}/WEB-INF/lucee/";
-	}
-	// only for backward compatibility
-	else if (strConfig.startsWith("/WEB-INF/lucee/")) strConfig = "{web-root-directory}" + strConfig;
+    isCustomSetting.setValue(false);
+    String strConfig = "{web-root-directory}/WEB-INF/lucee/";
 
 	strConfig = StringUtil.removeQuotes(strConfig, true);
 
@@ -855,10 +836,10 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    System.err.println(text);
 	    throw new PageServletException(new ApplicationException(text));
 	}
-	strConfig = SystemUtil.parsePlaceHolder(strConfig, sc, configServer.getLabels());
+	strConfig = SystemUtil.parsePlaceHolder(strConfig, configServer.getLabels());
 
 	ResourceProvider frp = ResourcesImpl.getFileResourceProvider();
-	Resource root = frp.getResource(ReqRspUtil.getRootPath(sc));
+	Resource root = frp.getResource(ReqRspUtil.getRootPath());
 	Resource res;
 	Resource configDir = ResourceUtil.createResource(res = root.getRealResource(strConfig), FileUtil.LEVEL_PARENT_FILE, FileUtil.TYPE_DIR);
 
@@ -990,7 +971,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public CFMLFactory getCFMLFactory(HttpServletRequest req) throws ServletException {
+    public CFMLFactory getCFMLFactory(RequestResponse req) {
 //	ServletContext srvContext = srvConfig.getServletContext();
 
 	String real = ReqRspUtil.getRootPath(srvContext);
@@ -1021,22 +1002,22 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException {
-	_service(servlet, req, rsp, Request.TYPE_LUCEE);
+    public void service(RequestResponse req) throws IOException {
+	_service(servlet, req, Request.TYPE_LUCEE);
     }
 
     @Override
-    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException {
-	_service(servlet, req, rsp, Request.TYPE_CFML);
+    public void serviceCFML(RequestResponse req) throws IOException {
+	_service(servlet, req, Request.TYPE_CFML);
     }
 
     @Override
-    public void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-	_service(servlet, new HTTPServletRequestWrap(req), rsp, Request.TYPE_REST);
+    public void serviceRest(RequestResponse req) throws ServletException, IOException {
+	_service(servlet, new HttpServletRequestDeadWrap(req), rsp, Request.TYPE_REST);
     }
 
-    private void _service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, short type) throws ServletException, IOException {
-	CFMLFactoryImpl factory = (CFMLFactoryImpl) getCFMLFactory(servlet.getServletConfig(), req);
+    private void _service(RequestResponse req, short type) throws ServletException, IOException {
+	CFMLFactoryImpl factory = (CFMLFactoryImpl) getCFMLFactory(servlet.getServletConfigDead(), req);
 	    CFMLServlet.logStartTime("CFMLEngineImpl _service begin");
 	// is Lucee dialect enabled?
 	if (type == Request.TYPE_LUCEE) {
@@ -1050,7 +1031,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	    }
 	}
 	boolean exeReqAsync = exeRequestAsync();
-	PageContextImpl pc = factory.getPageContextImpl(servlet, req, rsp, null, false, -1, false, !exeReqAsync, false, -1, true, false, false);
+	PageContextImpl pc = factory.getPageContextImpl(servlet, req, null, false, -1, false, !exeReqAsync, false, -1, true, false, false);
 	    CFMLServlet.logStartTime("CFMLEngineImpl _service after create PageContextImpl");
 	try {
 	    Request r = new Request(pc, type);
@@ -1105,9 +1086,9 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public void serviceFile(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-	req = new HTTPServletRequestWrap(req);
-	CFMLFactory factory = getCFMLFactory(servlet.getServletConfig(), req);
+    public void serviceFile(RequestResponse req) throws ServletException, IOException {
+	req = new HttpServletRequestDeadWrap(req);
+	CFMLFactory factory = getCFMLFactory(servlet.getServletConfigDead(), req);
 	ConfigWeb config = factory.getConfig();
 	PageSource ps = config.getPageSourceExisting(null, null, req.getServletPath(), false, true, true, false);
 	// Resource res = ((ConfigWebImpl)config).getPhysicalResourceExistingX(null, null,
@@ -1171,11 +1152,11 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
+    public void serviceAMF(RequestResponse req) throws ServletException, IOException {
 	throw new ServletException("AMFServlet is no longer supported, use BrokerServlet instead.");
-	// req=new HTTPServletRequestWrap(req);
-	// getCFMLFactory(servlet.getServletConfig(), req).getConfig().getAMFEngine().service(servlet,new
-	// HTTPServletRequestWrap(req),rsp);
+	// req=new HttpServletRequestDeadWrap(req);
+	// getCFMLFactory(servlet.getServletConfigDead(), req).getConfig().getAMFEngine().service(servlet,new
+	// HttpServletRequestDeadWrap(req),rsp);
     }
 
     @Override
@@ -1407,8 +1388,8 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     @Override
     public void cli(Map<String, String> config) throws IOException, JspException {
-//	ServletContext servletContext = servletConfig.getServletContext();
-//	HTTPServletImpl servlet = new HTTPServletImpl(servletConfig, servletContext, servletConfig.getServletName());
+//	ServletContext servletContext = ServletConfigDead.getServletContext();
+//	HTTPServletImplDead servlet = new HTTPServletImplDead(ServletConfigDead, servletContext, ServletConfigDead.getServletName());
 
 	// webroot
 	String strWebroot = config.get("webroot");
@@ -1460,9 +1441,9 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	StructImpl attributes = new StructImpl();
 	ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-	HttpServletRequestDummy req = new HttpServletRequestDummy(root, serverName, uri.getPath(), uri.getQuery(), cookies, headers, parameters, attributes, null, null);
+	HttpServletRequestDeadDummy req = new HttpServletRequestDeadDummy(root, serverName, uri.getPath(), uri.getQuery(), cookies, headers, parameters, attributes, null, null);
 	req.setProtocol("CLI/1.0");
-	HttpServletResponse rsp = new HttpServletResponseDummy(os);
+	RequestResponse req = new HttpServletResponseDeadDummy(os);
 
 //	serviceCFML(servlet, req, rsp);
 	System.out.println("serviceCFML commented out");
@@ -1471,8 +1452,8 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
 //    @Override
-//    public ServletConfig[] getServletConfigs() {
-//	return servletConfigs.toArray(new ServletConfig[servletConfigs.size()]);
+//    public ServletConfigDead[] getServletConfigDeads() {
+//	return ServletConfigDeads.toArray(new ServletConfigDead[ServletConfigDeads.size()]);
 //    }
 
     @Override
@@ -1649,7 +1630,7 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
 		    File root = new File(config.getRootDirectory().getAbsolutePath());
 		    CreationImpl cr = (CreationImpl) CreationImpl.getInstance(engine);
-		    ServletConfig sc = cr.createServletConfig(root, null, null);
+		    ServletConfigDead sc = cr.createServletConfigDead(root, null, null);
 		    pc = PageContextUtil.getPageContext(config, sc, root, "localhost", requestURI, queryString, new Cookie[0], headers, null, attrs,
 			    DevNullOutputStream.DEV_NULL_OUTPUT_STREAM, true, Long.MAX_VALUE,
 			    Caster.toBooleanValue(SystemUtil.getSystemPropOrEnvVar("lucee.ignore.scopes", null), false));

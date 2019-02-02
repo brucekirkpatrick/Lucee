@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.collection.HashMapPro;
 import lucee.commons.collection.MapFactory;
@@ -66,7 +66,6 @@ import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.NullSupportHelper;
-import lucee.runtime.debug.DebugEntryTemplate;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.dump.DumpRow;
@@ -1571,7 +1570,7 @@ public final class ComponentImpl extends StructSupport implements Externalizable
 	Class<?> skeleton = comp.getJavaAccessClass(pc, new RefBooleanImpl(false), ((ConfigImpl) pc.getConfig()).getExecutionLogEnabled(), false, false, supressWSBeforeArg);
 	if (skeleton != null) sct.set(KeyConstants._skeleton, skeleton);
 
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	try {
 	    String path = ContractPath.call(pc, ps.getDisplayPath()); // MUST better impl !!!
 	    sct.set("remoteAddress", "" + new URL(req.getScheme(), req.getServerName(), req.getServerPort(), req.getContextPath() + path + "?wsdl"));

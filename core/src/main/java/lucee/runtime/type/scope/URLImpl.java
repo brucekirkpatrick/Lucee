@@ -69,7 +69,7 @@ public final class URLImpl extends ScopeSupport implements URL, ScriptProtected 
 
 	try {
 	    super.initialize(pc);
-	    raw = setFromQueryString(ReqRspUtil.getQueryString(pc.getHttpServletRequest()));
+	    raw = setFromQueryString(ReqRspUtil.getQueryString(pc.getRequestResponse()));
 
 	    fillDecoded(raw, encoding, isScriptProtected(), pc.getApplicationContext().getSameFieldAsArray(SCOPE_URL));
 

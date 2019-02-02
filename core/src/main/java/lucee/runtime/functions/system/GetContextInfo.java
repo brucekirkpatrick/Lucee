@@ -16,7 +16,7 @@ public final class GetContextInfo extends BIF {
 
     public static Struct call(PageContext pc) throws PageException {
 	Struct data = new StructImpl();
-	data.set("flushed", pc.getHttpServletResponse().isCommitted());
+	data.set("flushed", pc.getRequestResponse().isCommitted());
 	return data;
     }
 

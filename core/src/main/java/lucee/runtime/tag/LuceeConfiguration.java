@@ -36,7 +36,7 @@ public final class LuceeConfiguration extends BodyTagImpl implements DynamicAttr
 	pageContext.getDebugger().setOutput(false);
 
 	// set 404
-	pageContext.getHttpServletResponse().setStatus(404);
+	pageContext.getRequestResponse().setStatus(404);
 
 	// reset response buffer
 	pageContext.clear();

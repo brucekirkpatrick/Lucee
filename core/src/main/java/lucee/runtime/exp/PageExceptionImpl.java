@@ -333,11 +333,11 @@ public abstract class PageExceptionImpl extends PageException {
 	struct.setEL("HTTPReferer", pc.cgiScope().get("HTTP_REFERER", ""));
 	struct.setEL("mailto", ep.getMailto());
 	struct.setEL(KeyConstants._message, getMessage());
-	struct.setEL("QueryString", StringUtil.emptyIfNull(pc.getHttpServletRequest().getQueryString()));
+	struct.setEL("QueryString", StringUtil.emptyIfNull(pc.getRequestResponse().getQueryString()));
 	struct.setEL("RemoteAddress", pc.cgiScope().get("REMOTE_ADDR", ""));
 	struct.setEL("RootCause", getCatchBlock(pc));
 	struct.setEL("StackTrace", getStackTraceAsString());
-	struct.setEL(KeyConstants._template, pc.getHttpServletRequest().getServletPath());
+	struct.setEL(KeyConstants._template, pc.getRequestResponse().getServletPath());
 
 	struct.setEL(KeyConstants._Detail, getDetail());
 	struct.setEL("ErrorCode", getErrorCode());

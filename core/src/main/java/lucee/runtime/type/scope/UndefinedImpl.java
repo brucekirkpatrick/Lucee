@@ -74,7 +74,7 @@ public final class UndefinedImpl extends StructSupport implements Undefined {
      * 
      * @param pc
      * @param type type of the undefined scope
-     *            (ServletConfigImpl.SCOPE_STRICT;ServletConfigImpl.SCOPE_SMALL;ServletConfigImpl.SCOPE_STANDART)
+     *            (ServletConfigDeadImpl.SCOPE_STRICT;ServletConfigDeadImpl.SCOPE_SMALL;ServletConfigDeadImpl.SCOPE_STANDART)
      */
     public UndefinedImpl(PageContextImpl pc, short type) {
 	this.type = type;

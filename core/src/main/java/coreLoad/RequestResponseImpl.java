@@ -1,6 +1,8 @@
 package coreLoad;
 
-public class RequestResponse {
+import lucee.cli.cli2.RequestResponse;
+
+public class RequestResponseImpl implements RequestResponse {
 	public String host="localhost";
 	public void write(String s){
 		System.out.println(s);

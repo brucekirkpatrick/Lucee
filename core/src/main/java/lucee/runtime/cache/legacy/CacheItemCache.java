@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.cache.Cache;
@@ -41,7 +41,7 @@ public class CacheItemCache extends CacheItem {
     private TimeSpan timespan;
     private String lcFileName;
 
-    public CacheItemCache(PageContext pc, HttpServletRequest req, String id, String key, boolean useId, Cache cache, TimeSpan timespan) {
+    public CacheItemCache(PageContext pc, RequestResponse req, String id, String key, boolean useId, Cache cache, TimeSpan timespan) {
 	super(pc, req, id, key, useId);
 	this.cache = cache;
 	this.timespan = timespan;

@@ -24,7 +24,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.log.Log;
@@ -38,18 +38,15 @@ import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.Abort;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.net.http.HttpUtil;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
-import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
-import lucee.runtime.type.scope.Argument;
-import lucee.runtime.type.scope.ArgumentThreadImpl;
 import lucee.runtime.type.scope.Local;
 import lucee.runtime.type.scope.LocalImpl;
 import lucee.runtime.type.scope.Threads;
@@ -126,7 +123,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 	}
 	else {
 	    this.template = page.getPageSource().getRealpathWithVirtual();
-	    HttpServletRequest req = parent.getHttpServletRequest();
+	    RequestResponse req = parent.getRequestResponse();
 	    serverName = req.getServerName();
 	    queryString = ReqRspUtil.getQueryString(req);
 	    cookies = SerializableCookie.toSerializableCookie(ReqRspUtil.getCookies(req, parent.getWebCharset()));
@@ -177,7 +174,7 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 	    pc.setCurrentThreadScope(new ThreadsImpl(this));
 	    pc.setThread(Thread.currentThread());
 
-	    // String encodings = pc.getHttpServletRequest().getHeader("Accept-Encoding");
+	    // String encodings = pc.getRequestResponse().getHeader("Accept-Encoding");
 
 	    Undefined undefined = pc.us();
 
@@ -222,8 +219,8 @@ public class ChildThreadImpl extends ChildThread implements Serializable {
 //		undefined.setMode(oldMode);
 //		pc.getScopeFactory().recycle(pc, newLocal);
 
-		if (pc.getHttpServletResponse() instanceof HttpServletResponseDummy) {
-		    HttpServletResponseDummy rsp = (HttpServletResponseDummy) pc.getHttpServletResponse();
+		if (pc.getRequestResponse() instanceof HttpServletResponseDeadDummy) {
+		    HttpServletResponseDeadDummy rsp = (HttpServletResponseDeadDummy) pc.getRequestResponse();
 		    pc.flush();
 		    contentType = rsp.getContentType();
 		    Pair<String, Object>[] _headers = rsp.getHeaders();

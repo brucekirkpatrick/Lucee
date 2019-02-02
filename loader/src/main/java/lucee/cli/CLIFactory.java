@@ -32,7 +32,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
-//import lucee.cli.servlet.ServletConfigImpl;
+//import lucee.cli.servlet.ServletConfigDeadImpl;
 //import lucee.cli.servlet.ServletContextImpl;
 
 public class CLIFactory extends Thread {

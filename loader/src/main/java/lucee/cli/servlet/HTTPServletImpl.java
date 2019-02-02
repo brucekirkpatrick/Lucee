@@ -18,28 +18,28 @@
  **/
 package lucee.cli.servlet;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 
-public class HTTPServletImpl extends HttpServlet {
+import javax.servlet.ServletContext;
+
+
+public class HTTPServletImplDead extends HttpServlet {
     private static final long serialVersionUID = 3270816399105433603L;
 
-    private final ServletConfig config;
+    private final ServletConfigDead config;
     private final ServletContext context;
     private final String servletName;
 
-    public HTTPServletImpl(final ServletConfig config, final ServletContext context, final String servletName) {
+    public HTTPServletImplDead(final ServletConfigDead config, final ServletContext context, final String servletName) {
 	this.config = config;
 	this.context = context;
 	this.servletName = servletName;
     }
 
     /**
-     * @see javax.servlet.GenericServlet#getServletConfig()
+     * @see javax.servlet.GenericServlet#getServletConfigDead()
      */
     @Override
-    public ServletConfig getServletConfig() {
+    public ServletConfigDead getServletConfigDead() {
 	return config;
     }
 

@@ -26,13 +26,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.http.HttpSession;
 
-import lucee.cli.servlet.ServletConfigImpl;
+import lucee.cli.servlet.ServletConfigDeadImpl;
 import lucee.cli.servlet.ServletContextImpl;
 import lucee.commons.date.DateTimeUtil;
 import lucee.commons.io.res.Resource;
@@ -75,8 +75,8 @@ import lucee.runtime.functions.other.CreateUUID;
 import lucee.runtime.functions.struct.StructNew;
 import lucee.runtime.functions.system.ContractPath;
 import lucee.runtime.listener.ApplicationListener;
-import lucee.runtime.net.http.HttpServletRequestDummy;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadRequestDeadDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.spooler.ExecutionPlan;
 import lucee.runtime.spooler.SpoolerTask;
 import lucee.runtime.spooler.remote.RemoteClientTask;
@@ -98,8 +98,6 @@ import lucee.runtime.type.dt.Time;
 import lucee.runtime.type.dt.TimeImpl;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.dt.TimeSpanImpl;
-import lucee.runtime.type.scope.ClusterEntry;
-import lucee.runtime.type.scope.ClusterEntryImpl;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ListUtil;
 import lucee.runtime.util.Creation;
@@ -237,7 +235,7 @@ public final class CreationImpl implements Creation, Serializable {
     }
 
     @Override
-    public HttpServletRequest createHttpServletRequest(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers,
+    public HttpServletRequestDead createHttpServletRequestDead(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers,
 	    Map<String, String> parameters, Map<String, Object> attributes, HttpSession session) {
 
 	// header
@@ -263,34 +261,34 @@ public final class CreationImpl implements Creation, Serializable {
 	    }
 	}
 
-	return new HttpServletRequestDummy(ResourceUtil.toResource(contextRoot), serverName, scriptName, queryString, cookies, _headers, _parameters,
+	return new HttpServletRequestDeadDummy(ResourceUtil.toResource(contextRoot), serverName, scriptName, queryString, cookies, _headers, _parameters,
 		Caster.toStruct(attributes, null), session, null);
     }
 
     @Override
-    public HttpServletResponse createHttpServletResponse(OutputStream io) {
-	return new HttpServletResponseDummy(io); // do not change, flex extension is depending on this
+    public HttpServletResponseDead createHttpServletResponseDead(OutputStream io) {
+	return new HttpServletResponseDeadDummy(io); // do not change, flex extension is depending on this
     }
 
     // FUTURE add to interface
-    public ServletConfig createServletConfig(File root, Map<String, Object> attributes, Map<String, String> params) {
+    public ServletConfigDead createServletConfigDead(File root, Map<String, Object> attributes, Map<String, String> params) {
 	final String servletName = "";
 	if (attributes == null) attributes = new HashMap<String, Object>();
 	if (params == null) params = new HashMap<String, String>();
 	if (root == null) root = new File("."); // working directory that the java command was called from
 
 	final ServletContextImpl servletContext = new ServletContextImpl(root, attributes, params, 1, 0);
-	final ServletConfigImpl servletConfig = new ServletConfigImpl(servletContext, servletName);
-	return servletConfig;
+	final ServletConfigDeadImpl ServletConfigDead = new ServletConfigDeadImpl(servletContext, servletName);
+	return ServletConfigDead;
     }
 
     @Override
-    public PageContext createPageContext(HttpServletRequest req, HttpServletResponse rsp, OutputStream out) {
+    public PageContext createPageContext(RequestResponse req, OutputStream out) {
 	Config config = ThreadLocalPageContext.getConfig();
 	if (!(config instanceof ConfigWeb)) throw new RuntimeException("need a web context to create a PageContext");
 	CFMLFactory factory = ((ConfigWeb) config).getFactory();
 
-	return (PageContext) factory.getPageContext(factory.getServlet(), req, rsp, null, false, -1, false);
+	return (PageContext) factory.getPageContext(factory.getServlet(), req, null, false, -1, false);
     }
 
     @Override

@@ -23,7 +23,7 @@ package lucee.runtime.functions.other;
 
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
@@ -46,7 +46,7 @@ public final class GetHTTPRequestData implements Function {
 
 	Struct sct = new StructImpl();
 	Struct headers = new StructImpl();
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	String charset = pc.getWebCharset().name();
 	// headers
 	Enumeration e = req.getHeaderNames();

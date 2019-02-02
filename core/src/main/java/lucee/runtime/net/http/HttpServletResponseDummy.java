@@ -29,7 +29,7 @@ import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.lang.Pair;
@@ -40,7 +40,7 @@ import lucee.runtime.type.dt.DateTimeImpl;
 /**
  * 
  */
-public final class HttpServletResponseDummy implements HttpServletResponse, Serializable {
+public final class HttpServletResponseDeadDummy implements HttpServletResponseDead, Serializable {
 
     private Cookie[] cookies = new Cookie[0];
     private Pair<String, Object>[] headers = new Pair[0];
@@ -59,11 +59,11 @@ public final class HttpServletResponseDummy implements HttpServletResponse, Seri
     /**
      * Constructor of the class
      */
-    public HttpServletResponseDummy() {
+    public HttpServletResponseDeadDummy() {
 	this(DevNullOutputStream.DEV_NULL_OUTPUT_STREAM);
     }
 
-    public HttpServletResponseDummy(OutputStream out) {
+    public HttpServletResponseDeadDummy(OutputStream out) {
 	this.out = out;
     }
 

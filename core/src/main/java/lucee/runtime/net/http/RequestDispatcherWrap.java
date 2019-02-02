@@ -32,9 +32,9 @@ import lucee.runtime.engine.ThreadLocalPageContext;
 public class RequestDispatcherWrap implements RequestDispatcher {
 
     private String realPath;
-    private HTTPServletRequestWrap req;
+    private HttpServletRequestDeadWrap req;
 
-    public RequestDispatcherWrap(HTTPServletRequestWrap req, String realPath) {
+    public RequestDispatcherWrap(HttpServletRequestDeadWrap req, String realPath) {
 	this.realPath = realPath;
 	this.req = req;
     }
@@ -66,6 +66,6 @@ public class RequestDispatcherWrap implements RequestDispatcher {
 	    this.req.getOriginalRequestDispatcher(realPath).include(req, rsp);
 	    return;
 	}
-	HTTPUtil.include(pc, req, rsp, realPath);
+	HTTPUtil.include(pc, req, realPath);
     }
 }

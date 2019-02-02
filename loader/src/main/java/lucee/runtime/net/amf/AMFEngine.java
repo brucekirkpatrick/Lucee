@@ -20,9 +20,9 @@ package lucee.runtime.net.amf;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponse;
+
 
 import lucee.runtime.config.ConfigWeb;
 
@@ -46,5 +46,5 @@ public interface AMFEngine {
      *
      * @throws IOException
      */
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+    public void service(RequestResponse req) throws IOException;
 }

@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.SystemUtil;
 import lucee.commons.io.res.Resource;
@@ -135,7 +135,7 @@ public final class GetUsageData implements Function {
 		// Request
 		row = req.addRow();
 		req.setAt(KeyConstants._web, row, web.getLabel());
-		req.setAt(KeyConstants._uri, row, getPath(_pc.getHttpServletRequest()));
+		req.setAt(KeyConstants._uri, row, getPath(_pc.getRequestResponse()));
 		req.setAt(START_TIME, row, new DateTimeImpl(pc.getStartTime(), false));
 		req.setAt(KeyConstants._timeout, row, new Double(pc.getRequestTimeout()));
 
@@ -285,11 +285,11 @@ public final class GetUsageData implements Function {
 	return new long[] { elements, size };
     }
 
-    public static String getScriptName(HttpServletRequest req) {
+    public static String getScriptName(RequestResponse req) {
 	return emptyIfNull(req.getContextPath()) + emptyIfNull(req.getServletPath());
     }
 
-    public static String getPath(HttpServletRequest req) {
+    public static String getPath(RequestResponse req) {
 	String qs = emptyIfNull(req.getQueryString());
 	if (qs.length() > 0) qs = "?" + qs;
 

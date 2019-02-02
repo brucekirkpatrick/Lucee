@@ -23,7 +23,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.lang.Pair;
@@ -41,7 +41,7 @@ public class HttpUtil {
      * @param req
      * @return
      */
-    public static Pair<String, String>[] cloneHeaders(HttpServletRequest req) {
+    public static Pair<String, String>[] cloneHeaders(RequestResponse req) {
 	List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
 	Enumeration<String> e = req.getHeaderNames(), ee;
 	String name;
@@ -55,7 +55,7 @@ public class HttpUtil {
 	return (Pair<String, String>[]) headers.toArray(new Pair[headers.size()]);
     }
 
-    public static Struct getAttributesAsStruct(HttpServletRequest req) {
+    public static Struct getAttributesAsStruct(RequestResponse req) {
 	Struct attributes = new StructImpl();
 	Enumeration e = req.getAttributeNames();
 	String name;
@@ -66,7 +66,7 @@ public class HttpUtil {
 	return attributes;
     }
 
-    public static Pair<String, Object>[] getAttributes(HttpServletRequest req) {
+    public static Pair<String, Object>[] getAttributes(RequestResponse req) {
 	List<Pair<String, Object>> attributes = new ArrayList<Pair<String, Object>>();
 	Enumeration e = req.getAttributeNames();
 	String name;
@@ -77,7 +77,7 @@ public class HttpUtil {
 	return attributes.toArray(new Pair[attributes.size()]);
     }
 
-    public static Pair<String, String>[] cloneParameters(HttpServletRequest req) {
+    public static Pair<String, String>[] cloneParameters(RequestResponse req) {
 	List<Pair<String, String>> parameters = new ArrayList<Pair<String, String>>();
 	Enumeration e = req.getParameterNames();
 	String[] values;
@@ -89,8 +89,8 @@ public class HttpUtil {
 	    if (values == null && ReqRspUtil.needEncoding(name, false)) values = req.getParameterValues(ReqRspUtil.encode(name, ReqRspUtil.getCharacterEncoding(null, req)));
 	    if (values == null) {
 		PageContext pc = ThreadLocalPageContext.get();
-		if (pc != null && ReqRspUtil.identical(pc.getHttpServletRequest(), req)) {
-		    values = HTTPServletRequestWrap.getParameterValues(ThreadLocalPageContext.get(), name);
+		if (pc != null && ReqRspUtil.identical(pc.getRequestResponse(), req)) {
+		    values = HttpServletRequestDeadWrap.getParameterValues(ThreadLocalPageContext.get(), name);
 		}
 	    }
 	    if (values != null) for (int i = 0; i < values.length; i++) {
@@ -100,7 +100,7 @@ public class HttpUtil {
 	return parameters.toArray(new Pair[parameters.size()]);
     }
 
-    public static Cookie[] cloneCookies(Config config, HttpServletRequest req) {
+    public static Cookie[] cloneCookies(Config config, RequestResponse req) {
 	Cookie[] src = ReqRspUtil.getCookies(req, CharsetUtil.getWebCharset());
 	if (src == null) return new Cookie[0];
 

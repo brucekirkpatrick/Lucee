@@ -40,7 +40,7 @@ import java.util.TimeZone;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.jsp.tagext.Tag;
 
 import org.osgi.framework.Bundle;
@@ -1508,8 +1508,8 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	    CFMLEngineImpl engine = (CFMLEngineImpl) cs.getCFMLEngine();
 	    Struct srv = new StructImpl(), params;
 
-	    ServletConfig[] configs = engine.getServletConfigs();
-	    ServletConfig sc;
+	    ServletConfigDead[] configs = engine.getServletConfigDeads();
+	    ServletConfigDead sc;
 	    Enumeration e;
 	    String name, value;
 	    for (int i = 0; i < configs.length; i++) {
@@ -2343,7 +2343,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 	    qry.setAt("TagContext", row, PageExceptionImpl.getTagContext(pc.getConfig(), st));
 
 	    qry.setAt("label", row, factory.getLabel());
-	    qry.setAt("RootPath", row, ReqRspUtil.getRootPath(((ConfigWebImpl) configWeb).getServletContext()));
+	    qry.setAt("RootPath", row, ReqRspUtil.getRootPath());
 	    qry.setAt("ConfigFile", row, configWeb.getConfigFile().getAbsolutePath());
 	    if (factory.getURL() != null) qry.setAt("url", row, factory.getURL().toExternalForm());
 

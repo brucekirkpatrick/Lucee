@@ -27,14 +27,15 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.script.ScriptEngineFactory;
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponse;
+
 import javax.servlet.jsp.JspException;
 
+import lucee.cli.cli2.RequestResponse;
 import org.osgi.framework.BundleContext;
 
 import lucee.Info;
@@ -84,27 +85,27 @@ public class CFMLEngineWrapper implements CFMLEngine {
 
 
     @Override
-    public void service(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws IOException {
-	engine.service(servlet, req, rsp);
+    public void service(final RequestResponse req) throws IOException {
+	engine.service(req);
     }
 
     @Override
-    public void serviceCFML(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws IOException {
-	engine.serviceCFML(servlet, req, rsp);
+    public void serviceCFML(final RequestResponse req) throws IOException {
+	engine.serviceCFML(req);
     }
 
 //    @Override
-//    public void serviceAMF(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//    public void serviceAMF(final RequestResponse req) throws ServletException, IOException {
 //	engine.serviceAMF(servlet, req, rsp);
 //    }
 //
 //    @Override
-//    public void serviceFile(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//    public void serviceFile(final RequestResponse req) throws ServletException, IOException {
 //	engine.serviceFile(servlet, req, rsp);
 //    }
 //
 //    @Override
-//    public void serviceRest(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//    public void serviceRest(final RequestResponse req) throws ServletException, IOException {
 //	engine.serviceRest(servlet, req, rsp);
 //    }
 
@@ -196,7 +197,7 @@ public class CFMLEngineWrapper implements CFMLEngine {
     }
 
     @Override
-    public CFMLFactory getCFMLFactory(final HttpServletRequest req) {
+    public CFMLFactory getCFMLFactory(final RequestResponse req) {
 	return engine.getCFMLFactory(req);
     }
 
@@ -314,8 +315,8 @@ public class CFMLEngineWrapper implements CFMLEngine {
     }
 
 //    @Override
-//    public ServletConfig[] getServletConfigs() {
-//	return engine.getServletConfigs();
+//    public ServletConfigDead[] getServletConfigDeads() {
+//	return engine.getServletConfigDeads();
 //    }
 
     @Override

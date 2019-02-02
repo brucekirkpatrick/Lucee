@@ -29,7 +29,7 @@ import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.type.Struct;
@@ -82,7 +82,7 @@ public class UDFCaller2<P> implements Callable<Data<P>> {
 	}
 	finally {
 	    try {
-		HttpServletResponseDummy rsp = (HttpServletResponseDummy) pc.getHttpServletResponse();
+		HttpServletResponseDeadDummy rsp = (HttpServletResponseDeadDummy) pc.getRequestResponse();
 
 		Charset cs = ReqRspUtil.getCharacterEncoding(pc, rsp);
 		// if(enc==null) enc="ISO-8859-1";

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -29,7 +29,7 @@ public class LuceeFilter implements Filter {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add exeFilter
-//	    engine.addServletConfig(new LuceeFilterImpl(request, response, chain, "filter"));
+//	    engine.addServletConfigDead(new LuceeFilterImpl(request, response, chain, "filter"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();
@@ -41,7 +41,7 @@ public class LuceeFilter implements Filter {
 
     }
 
-    public static class LuceeFilterImpl implements ServletConfig {
+    public static class LuceeFilterImpl implements ServletConfigDead {
 
 	private ServletRequest request;
 	private ServletResponse response;

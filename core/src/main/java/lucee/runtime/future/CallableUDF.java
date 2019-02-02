@@ -2,7 +2,7 @@ package lucee.runtime.future;
 
 import java.util.concurrent.Callable;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.lang.Pair;
@@ -32,7 +32,7 @@ public class CallableUDF implements Callable<Object> {
 
     public CallableUDF(PageContext parent, UDF udf, Object arg) {
 	// this.template=page.getPageSource().getRealpathWithVirtual();
-	HttpServletRequest req = parent.getHttpServletRequest();
+	RequestResponse req = parent.getRequestResponse();
 	serverName = req.getServerName();
 	queryString = ReqRspUtil.getQueryString(req);
 	cookies = SerializableCookie.toSerializableCookie(ReqRspUtil.getCookies(req, parent.getWebCharset()));

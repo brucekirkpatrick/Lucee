@@ -55,9 +55,9 @@ public abstract class InterfacePageImpl extends InterfacePage implements PagePro
 		pc.unsetSilent();
 	    }
 
-	    String qs = ReqRspUtil.getQueryString(pc.getHttpServletRequest());
+	    String qs = ReqRspUtil.getQueryString(pc.getRequestResponse());
 	    if (pc.getBasePageSource() == this.getPageSource() && pc.getConfig().debug()) pc.getDebugger().setOutput(false);
-	    boolean isPost = pc.getHttpServletRequest().getMethod().equalsIgnoreCase("POST");
+	    boolean isPost = pc.getRequestResponse().getMethod().equalsIgnoreCase("POST");
 
 	    // POST
 	    if (isPost) {

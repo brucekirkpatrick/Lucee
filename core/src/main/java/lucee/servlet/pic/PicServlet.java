@@ -24,9 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponseImpl;
+
 
 import lucee.commons.io.IOUtil;
 import lucee.runtime.net.http.ReqRspUtil;
@@ -47,11 +47,11 @@ public final class PicServlet extends HttpServlet {
     /**
      * Interpretiert den Script-Name und laedt das entsprechende Bild aus den internen Resourcen.
      * 
-     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
-     *      javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServletDead#service(javax.servlet.http.HttpServletDeadRequestDead,
+     *      javax.servlet.http.HttpServletDeadResponseDead)
      */
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
+    protected void service(RequestResponse req) throws ServletException, IOException {
 	// get out Stream
 
 	// pic

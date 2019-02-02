@@ -51,7 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.servlet.ServletConfig;
+
 
 import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.crypt.BlowfishEasy;
@@ -213,11 +213,11 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	private static final int DEFAULT_MAX_CONNECTION = 100;
 
 	/**
-	 * creates a new ServletConfig Impl Object
+	 * creates a new ServletConfigDead Impl Object
 	 *
 	 * @param configServer
 	 * @param configDir
-	 * @param servletConfig
+	 * @param ServletConfigDead
 	 * @return new Instance
 	 * @throws SAXException
 	 * @throws ClassNotFoundException
@@ -229,13 +229,12 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	 * @throws BundleException
 	 */
 
-	public static ConfigWebImpl newInstance(CFMLEngine engine, CFMLFactoryImpl factory, ConfigServerImpl configServer, Resource configDir, boolean isConfigDirACustomSetting,
-	                                        ServletConfig servletConfig)
+	public static ConfigWebImpl newInstance(CFMLEngine engine, CFMLFactoryImpl factory, ConfigServerImpl configServer, Resource configDir, boolean isConfigDirACustomSetting)
 			throws PageException {
 
 
 		CFMLServlet.logStartTime("XMLConfigWebFactory web begin");
-		String hash = SystemUtil.hash(servletConfig.getServletContext());
+		String hash = SystemUtil.hash(ServletConfigDead.getServletContext());
 		Map<String, String> labels = configServer.getLabels();
 		String label = null;
 		if (labels != null) {
@@ -259,7 +258,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //	SystemOut.print(SystemUtil.getPrintWriter(SystemUtil.OUT),
 //		"===================================================================\n" + "WEB CONTEXT (" + label + ")\n"
 //			+ "-------------------------------------------------------------------\n" + "- config:" + configDir + (isConfigDirACustomSetting ? " (custom setting)" : "")
-//			+ "\n" + "- webroot:" + ReqRspUtil.getRootPath(servletConfig.getServletContext()) + "\n" + "- hash:" + hash + "\n" + "- label:" + label + "\n"
+//			+ "\n" + "- webroot:" + ReqRspUtil.getRootPath(ServletConfigDead.getServletContext()) + "\n" + "- hash:" + hash + "\n" + "- label:" + label + "\n"
 //			+ "===================================================================\n"
 //
 //	);
@@ -269,7 +268,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		Resource configFile = configDir.getRealResource("lucee-web.xml." + TEMPLATE_EXTENSION);
 
-		String strPath = servletConfig.getServletContext().getRealPath("/WEB-INF");
+		String strPath = ServletConfigDead.getServletContext().getRealPath("/WEB-INF");
 		Resource path = ResourcesImpl.getFileResourceProvider().getResource(strPath);
 
 		// get config file
@@ -289,7 +288,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		ExecutorService executor = Executors.newWorkStealingPool(8);
 		ArrayList<Future<Boolean>> futures = new ArrayList<>();
-		final ConfigWebImpl configWeb = new ConfigWebImpl(factory, configServer, servletConfig, configDir, configFile);
+		final ConfigWebImpl configWeb = new ConfigWebImpl(factory, configServer, ServletConfigDead, configDir, configFile);
 //	    CFMLServlet.logStartTime("XMLConfigWebFactory web before load");
 
 		if(false){
@@ -307,7 +306,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 				load9(configServer, configWeb, doc, true, doNew);
 				load10(configServer, configWeb, doc, true, doNew);
 				loadPart2(configServer, configWeb, false, doNew);
-				createContextFiles(configDir, servletConfig, doNew);
+				createContextFiles(configDir, ServletConfigDead, doNew);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -362,7 +361,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 				return new Boolean(true);
 			}));
 			futures.add(executor.submit(() -> {
-				createContextFiles(configDir, servletConfig, doNew);
+				createContextFiles(configDir, ServletConfigDead, doNew);
 				return new Boolean(true);
 			}));
 
@@ -1167,7 +1166,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	 * @throws IOException
 	 * @throws IOException
 	 */
-	private static void createContextFiles(Resource configDir, ServletConfig servletConfig, boolean doNew) throws IOException {
+	private static void createContextFiles(Resource configDir, ServletConfigDead ServletConfigDead, boolean doNew) throws IOException {
 		Resource contextDir = configDir.getRealResource("context");
 		Resource f = contextDir.getRealResource("Component." + COMPONENT_EXTENSION);
 		if (f.exists()) {
@@ -1378,7 +1377,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 	}
 
-	private static void createContextFilesPost(Resource configDir, ConfigImpl config, ServletConfig servletConfig, boolean isEventGatewayContext, boolean doNew) {
+	private static void createContextFilesPost(Resource configDir, ConfigImpl config, ServletConfigDead ServletConfigDead, boolean isEventGatewayContext, boolean doNew) {
 //	Resource contextDir = configDir.getRealResource("context");
 //	if (!contextDir.exists()) contextDir.mkdirs();
 //

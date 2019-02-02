@@ -270,7 +270,7 @@ public final class DebuggerImpl implements Debugger {
      */
     public static lucee.runtime.config.DebugEntry getDebugEntry(PageContext pc) {
 
-	String addr = pc.getHttpServletRequest().getRemoteAddr();
+	String addr = pc.getRequestResponse().getRemoteAddr();
 	lucee.runtime.config.DebugEntry debugEntry = ((ConfigImpl) pc.getConfig()).getDebugEntry(addr, null);
 	return debugEntry;
     }

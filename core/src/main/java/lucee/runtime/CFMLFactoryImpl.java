@@ -28,19 +28,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspEngineInfo;
 
 import lucee.aprint;
-import lucee.cli.servlet.HTTPServletImpl;
+import lucee.cli.servlet.HTTPServletImplDead;
 import lucee.commons.io.SystemUtil;
 import lucee.commons.io.log.Log;
 import lucee.commons.io.res.util.ResourceUtil;
@@ -54,7 +54,6 @@ import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.Constants;
 import lucee.runtime.engine.CFMLEngineImpl;
-import lucee.runtime.engine.JspEngineInfoImpl;
 import lucee.runtime.engine.MonitorState;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
@@ -67,7 +66,6 @@ import lucee.runtime.type.ArrayImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.dt.DateTimeImpl;
-import lucee.runtime.type.scope.JetendoImpl;
 import lucee.runtime.type.scope.LocalNotSupportedScope;
 import lucee.runtime.type.scope.ScopeContext;
 import lucee.runtime.type.util.ArrayUtil;
@@ -82,7 +80,6 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 
     private static final long MAX_AGE = 5 * 60000; // 5 minutes
     private static final int MAX_SIZE = 10000;
-    private static JspEngineInfo info = new JspEngineInfoImpl("1.0");
     private ConfigWebImpl config;
     ConcurrentLinkedDeque<PageContextImpl> pcs = new ConcurrentLinkedDeque<PageContextImpl>();
     private final Map<Integer, PageContextImpl> runningPcs = new ConcurrentHashMap<Integer, PageContextImpl>();
@@ -90,17 +87,14 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 
     int idCounter = 1;
     private ScopeContext scopeContext = new ScopeContext(this);
-    private HttpServlet _servlet;
     private URL url = null;
     private CFMLEngineImpl engine;
     private ArrayList<String> cfmlExtensions;
 //    private ArrayList<String> luceeExtensions;
-    private ServletConfig servletConfig;
 
-    public CFMLFactoryImpl(CFMLEngineImpl engine, ServletConfig sg) {
+    public CFMLFactoryImpl(CFMLEngineImpl engine) {
 	this.engine = engine;
 	if (engine == null) aprint.ds();
-	this.servletConfig = sg;
 		CFMLServlet.logStartTime("CFMLFactoryImpl created");
     }
 
@@ -120,27 +114,27 @@ public final class CFMLFactoryImpl extends CFMLFactory {
     @Override
     public javax.servlet.jsp.PageContext getPageContext(Servlet servlet, ServletRequest req, ServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
 	    boolean autoflush) {
-	return getPageContextImpl((HttpServlet) servlet, (HttpServletRequest) req, (HttpServletResponse) rsp, errorPageURL, needsSession, bufferSize, autoflush, true, false, -1,
+	return getPageContextImpl((HttpServlet) servlet, (HttpServletRequestDead) req, (HttpServletResponseDead) rsp, errorPageURL, needsSession, bufferSize, autoflush, true, false, -1,
 		true, false, false);
     }
 
     @Override
     @Deprecated
-    public PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
-	    boolean autoflush) {
+    public PageContext getLuceePageContext(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize,
+                                           boolean autoflush) {
 	// runningCount++;
-	return getPageContextImpl(servlet, req, rsp, errorPageURL, needsSession, bufferSize, autoflush, true, false, -1, true, false, false);
+	return getPageContextImpl(servlet, req, errorPageURL, needsSession, bufferSize, autoflush, true, false, -1, true, false, false);
     }
 
     @Override
-    public PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
-	    boolean autoflush, boolean register, long timeout, boolean register2RunningThreads, boolean ignoreScopes) {
+    public PageContext getLuceePageContext(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize,
+                                           boolean autoflush, boolean register, long timeout, boolean register2RunningThreads, boolean ignoreScopes) {
 	// runningCount++;
-	return getPageContextImpl(servlet, req, rsp, errorPageURL, needsSession, bufferSize, autoflush, register, false, timeout, register2RunningThreads, ignoreScopes, false);
+	return getPageContextImpl(servlet, req, errorPageURL, needsSession, bufferSize, autoflush, register, false, timeout, register2RunningThreads, ignoreScopes, false);
     }
 
-    public PageContextImpl getPageContextImpl(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
-	    boolean autoflush, boolean register2Thread, boolean isChild, long timeout, boolean register2RunningThreads, boolean ignoreScopes, boolean createNew) {
+    public PageContextImpl getPageContextImpl(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize,
+                                              boolean autoflush, boolean register2Thread, boolean isChild, long timeout, boolean register2RunningThreads, boolean ignoreScopes, boolean createNew) {
 	PageContextImpl pc;
 
 	if (createNew || pcs.isEmpty()) {
@@ -165,7 +159,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	this._servlet = servlet;
 	if (register2Thread) ThreadLocalPageContext.register(pc);
 
-	pc.initialize(servlet, req, rsp, errorPageURL, needsSession, bufferSize, autoflush, isChild, ignoreScopes);
+	pc.initialize(servlet, req, errorPageURL, needsSession, bufferSize, autoflush, isChild, ignoreScopes);
 	return pc;
     }
 
@@ -387,7 +381,7 @@ public final class CFMLFactoryImpl extends CFMLFactory {
      */
     @Override
     public HttpServlet getServlet() {
-	if (_servlet == null) _servlet = new HTTPServletImpl(servletConfig, servletConfig.getServletContext(), servletConfig.getServletName());
+	if (_servlet == null) _servlet = new HTTPServletImplDead(ServletConfigDead, ServletConfigDead.getServletContext(), ServletConfigDead.getServletName());
 	;
 	return _servlet;
     }

@@ -20,7 +20,7 @@ package lucee.runtime.rest;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.lang.mimetype.MimeType;
 import lucee.runtime.PageContext;
@@ -56,7 +56,7 @@ public class RestRequestListener implements RequestListener {
     @Override
     public PageSource execute(PageContext pc, PageSource requestedPage) throws PageException {
 	result = mapping.getResult(pc, path, matrix, format, hasFormatExtension, accept, contentType, defaultValue);
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	req.setAttribute("client", "lucee-rest-1-0");
 	req.setAttribute("rest-path", path);
 	req.setAttribute("rest-result", result);

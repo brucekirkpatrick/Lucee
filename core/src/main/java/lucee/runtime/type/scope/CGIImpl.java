@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
@@ -94,7 +94,7 @@ public final class CGIImpl extends StructSupport implements CGI, ScriptProtected
 	catch (UnknownHostException uhe) {}
     }
 
-    private transient HttpServletRequest req;
+    private transient RequestResponse req;
     private boolean isInit;
     private Struct internal;
     private Map<Collection.Key, Collection.Key> aliases;
@@ -112,7 +112,7 @@ public final class CGIImpl extends StructSupport implements CGI, ScriptProtected
     @Override
     public void initialize(PageContext pc) {
 	isInit = true;
-	req = pc.getHttpServletRequest();
+	req = pc.getRequestResponse();
 
 	if (scriptProtected == ScriptProtected.UNDEFINED) {
 	    scriptProtected = ((pc.getApplicationContext().getScriptProtect() & ApplicationContext.SCRIPT_PROTECT_CGI) > 0) ? ScriptProtected.YES : ScriptProtected.NO;

@@ -63,7 +63,7 @@ import lucee.transformer.library.tag.TagLibException;
 public final class XMLConfigServerFactory extends XMLConfigFactory {
 
     /**
-     * creates a new ServletConfig Impl Object
+     * creates a new ServletConfigDead Impl Object
      * 
      * @param engine
      * @param initContextes

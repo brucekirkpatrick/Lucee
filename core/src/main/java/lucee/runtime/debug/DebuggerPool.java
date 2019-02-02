@@ -43,7 +43,7 @@ public class DebuggerPool {
     }
 
     public void store(PageContext pc, Debugger debugger) {
-	if (ReqRspUtil.getScriptName(pc, pc.getHttpServletRequest()).indexOf("/lucee/") == 0) return;
+	if (ReqRspUtil.getScriptName(pc, pc.getRequestResponse()).indexOf("/lucee/") == 0) return;
 	if(!pc.urlFormScope().containsKey(_lucee_debug)){
 		return; // don't store debug info unless ?LUCEEDEBUG=1 exists
 	}

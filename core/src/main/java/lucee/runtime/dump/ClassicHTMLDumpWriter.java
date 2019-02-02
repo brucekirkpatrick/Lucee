@@ -99,7 +99,7 @@ public class ClassicHTMLDumpWriter implements DumpWriter {
 	    String contextPath = "";
 	    pc = ThreadLocalPageContext.get(pc);
 	    if (pc != null) {
-		contextPath = pc.getHttpServletRequest().getContextPath();
+		contextPath = pc.getRequestResponse().getContextPath();
 		if (contextPath == null) contextPath = "";
 	    }
 

@@ -130,7 +130,7 @@ public final class ResourceLockImpl implements ResourceLock {
 			    }
 			}
 			if (pc != null) {
-			    add = " The file is locked by a request on the following URL " + ReqRspUtil.getRequestURL(pc.getHttpServletRequest(), true) + ", that request started "
+			    add = " The file is locked by a request on the following URL " + ReqRspUtil.getRequestURL(pc.getRequestResponse(), true) + ", that request started "
 				    + (System.currentTimeMillis() - pc.getStartTime()) + "ms ago.";
 			}
 

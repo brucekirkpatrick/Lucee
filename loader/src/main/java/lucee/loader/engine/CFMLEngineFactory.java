@@ -40,7 +40,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -161,8 +161,8 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
 			factory.initEngineIfNecessary();
 //			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
-//			singelton.addServletConfig(config);
-//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
+//			singelton.addServletConfigDead(config);
+//			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfigDead");
 
 			// add listener for update
 			// factory.addListener(singelton);
@@ -179,7 +179,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 //	 */
 //	public static CFMLEngine getInstance() throws RuntimeException {
 //		if (singelton != null) return singelton;
-//		throw new RuntimeException("engine is not initialized, you must first call getInstance(ServletConfig)");
+//		throw new RuntimeException("engine is not initialized, you must first call getInstance(ServletConfigDead)");
 //	}
 
 	public static void registerInstance(final CFMLEngine engine) {
@@ -206,8 +206,8 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
 		factory.initEngineIfNecessary();
 		CFMLServlet.logStartTime("CFMLEngineFactory initEngine end");
-//		singelton.addServletConfig(config);
-//		CFMLServlet.logStartTime("CFMLEngineFactory addServletConfig end");
+//		singelton.addServletConfigDead(config);
+//		CFMLServlet.logStartTime("CFMLEngineFactory addServletConfigDead end");
 
 		// make the FDController visible for the FDClient
 		FDControllerFactory.makeVisible();

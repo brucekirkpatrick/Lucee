@@ -27,10 +27,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.runtime.PageContextImpl;
-import lucee.runtime.engine.CFMLEngineImpl;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -119,7 +118,7 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 	super.initialize(pc);
 
 
-	String contentType = pc.getHttpServletRequest().getContentType();
+	String contentType = pc.getRequestResponse().getContentType();
 
 	if (contentType == null){
 		((PageContextImpl) pc).allowRequestTimeout(true);
@@ -173,9 +172,9 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
 
 	ServletFileUpload upload = new ServletFileUpload(factory);
 	upload.setHeaderEncoding(encoding);
-	// ServletRequestContext c = new ServletRequestContext(pc.getHttpServletRequest());
+	// ServletRequestContext c = new ServletRequestContext(pc.getRequestResponse());
 
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	ServletRequestContext context = new ServletRequestContext(req) {
 	    @Override
 	    public String getCharacterEncoding() {
@@ -235,7 +234,7 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
      * upload.setHeaderEncoding(getEncoding());
      * 
      * //FileUpload fileUpload=new FileUpload(new DiskFileItemFactory(0,tempDir)); java.util.List list;
-     * try { list = upload.parseRequest(pc.getHttpServletRequest()); raw=new
+     * try { list = upload.parseRequest(pc.getRequestResponse()); raw=new
      * ByteNameValuePair[list.size()];
      * 
      * for(int i=0;i<raw.length;i++) { DiskFileItem val=(DiskFileItem) list.get(i);
@@ -261,7 +260,7 @@ public final class FormImpl extends ScopeSupport implements Form, ScriptProtecte
     private void initializeUrlEncodedOrTextPlain(PageContext pc, char delimiter, boolean scriptProteced) {
 	BufferedReader reader = null;
 	try {
-	    reader = pc.getHttpServletRequest().getReader();
+	    reader = pc.getRequestResponse().getReader();
 	    raw = setFrom___(IOUtil.toString(reader, false), delimiter);
 	    fillDecoded(raw, encoding, scriptProteced, pc.getApplicationContext().getSameFieldAsArray(SCOPE_FORM));
 	}

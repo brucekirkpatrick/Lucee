@@ -20,9 +20,10 @@ package lucee.runtime.writer;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
 
+
+import lucee.cli.cli2.RequestResponse;
 import lucee.runtime.PageContext;
 
 /**
@@ -60,13 +61,13 @@ public final class CFMLWriterWSPref extends CFMLWriterImpl implements WhiteSpace
     /**
      * constructor of the class
      * 
-     * @param rsp
+     * @param req
      * @param bufferSize
      * @param autoFlush
      */
-    public CFMLWriterWSPref(PageContext pc, HttpServletRequest req, HttpServletResponse rsp, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
-	    boolean contentLength) {
-	super(pc, req, rsp, bufferSize, autoFlush, closeConn, showVersion, contentLength);
+    public CFMLWriterWSPref(PageContext pc, RequestResponse req, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
+                            boolean contentLength) {
+	super(pc, req, bufferSize, autoFlush, closeConn, showVersion, contentLength);
 	depths = new int[EXCLUDE_TAGS.length];
     }
 

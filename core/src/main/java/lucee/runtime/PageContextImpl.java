@@ -38,14 +38,14 @@ import java.util.TimeZone;
 
 import javax.el.ELContext;
 import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -56,6 +56,7 @@ import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TryCatchFinally;
 
+import lucee.cli.cli2.RequestResponse;
 import lucee.commons.db.DBUtil;
 import lucee.commons.io.BodyContentStack;
 import lucee.commons.io.CharsetUtil;
@@ -131,14 +132,11 @@ import lucee.runtime.listener.ApplicationContextSupport;
 import lucee.runtime.listener.ApplicationListener;
 import lucee.runtime.listener.ClassicApplicationContext;
 import lucee.runtime.listener.JavaSettingsImpl;
-import lucee.runtime.listener.ModernAppListener;
 import lucee.runtime.listener.ModernAppListenerException;
-import lucee.runtime.listener.SessionCookieData;
-import lucee.runtime.listener.SessionCookieDataImpl;
 import lucee.runtime.monitor.RequestMonitor;
 import lucee.runtime.monitor.RequestMonitorPro;
 import lucee.runtime.net.ftp.FTPPoolImpl;
-import lucee.runtime.net.http.HTTPServletRequestWrap;
+
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.net.mail.ServerImpl;
 import lucee.runtime.op.Caster;
@@ -160,7 +158,6 @@ import lucee.runtime.thread.ThreadUtil;
 import lucee.runtime.thread.ThreadsImpl;
 import lucee.runtime.type.*;
 import lucee.runtime.type.Collection.Key;
-import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.it.ItAsEnum;
 import lucee.runtime.type.ref.Reference;
 import lucee.runtime.type.ref.VariableReference;
@@ -168,7 +165,6 @@ import lucee.runtime.type.scope.*;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
-import lucee.runtime.util.PageContextUtil;
 import lucee.runtime.util.VariableUtil;
 import lucee.runtime.util.VariableUtilImpl;
 import lucee.runtime.writer.BodyContentUtil;
@@ -199,9 +195,7 @@ public final class PageContextImpl extends PageContext {
      */
     protected long executionTime = 0;
 
-    private HTTPServletRequestWrap req;
-    private HttpServletResponse rsp;
-    private HttpServlet servlet;
+    private RequestResponse req;
 
     private JspWriter writer;
     private JspWriter forceWriter;
@@ -324,13 +318,12 @@ public final class PageContextImpl extends PageContext {
      * @param scopeContext
      * @param config Configuration of the CFML Container
      * @param id identity of the pageContext
-     * @param servlet
      */
-    public PageContextImpl(ScopeContext scopeContext, ConfigWebImpl config, int id, HttpServlet servlet, boolean jsr223) {
+    public PageContextImpl(ScopeContext scopeContext, ConfigWebImpl config, int id, boolean jsr223) {
 	// must be first because is used after
 	    CFMLServlet.logStartTime("PageContextImpl created");
 	tagHandlerPool = config.getTagHandlerPool();
-	this.servlet = servlet;
+//	this.servlet = servlet;
 
 	bodyContentStack = new BodyContentStack();
 	devNull = bodyContentStack.getDevNullBodyContent();
@@ -348,7 +341,7 @@ public final class PageContextImpl extends PageContext {
     }
 
     public boolean isInitialized() {
-	return rsp != null;
+	return req != null;
     }
 
     /**
@@ -377,24 +370,22 @@ public final class PageContextImpl extends PageContext {
     }
 
     @Override
-    public void initialize(Servlet servlet, ServletRequest req, ServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize, boolean autoFlush)
+    public void initialize(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize, boolean autoFlush)
 	    throws IOException, IllegalStateException, IllegalArgumentException {
-	initialize((HttpServlet) servlet, (HttpServletRequest) req, (HttpServletResponse) rsp, errorPageURL, needsSession, bufferSize, autoFlush, false, false);
+	initialize(req, errorPageURL, needsSession, bufferSize, autoFlush, false, false);
     }
 
     /**
      * initialize a existing page context
-     * 
-     * @param servlet
+     *
      * @param req
-     * @param rsp
      * @param errorPageURL
      * @param needsSession
      * @param bufferSize
      * @param autoFlush
      */
-    public PageContextImpl initialize(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
-	    boolean autoFlush, boolean isChild, boolean ignoreScopes) {
+    public PageContextImpl initialize(RequestResponse req, String errorPageURL, boolean needsSession, int bufferSize,
+                                      boolean autoFlush, boolean isChild, boolean ignoreScopes) {
 	    CFMLServlet.logStartTime("PageContextImpl initialize start");
 	parent = null;
 	root = null;
@@ -403,7 +394,7 @@ public final class PageContextImpl extends PageContext {
 	appListenerType = ApplicationListener.TYPE_NONE;
 	this.ignoreScopes = ignoreScopes;
 
-	ReqRspUtil.setContentType(rsp, "text/html; charset=" + config.getWebCharset().name());
+	ReqRspUtil.setContentType(req, "text/html; charset=" + config.getWebCharset().name());
 	this.isChild = isChild;
 
 	applicationContext = defaultApplicationContext;
@@ -412,22 +403,19 @@ public final class PageContextImpl extends PageContext {
 	startTime = System.currentTimeMillis();
 	thread = Thread.currentThread();
 
-	this.req = new HTTPServletRequestWrap(req);
-	this.rsp = rsp;
-	this.servlet = servlet;
 	cgi.initialize(this);
 
 
 	    // Writers
 	if (config.debugLogOutput()) {
-	    CFMLWriter w = config.getCFMLWriter(this, req, rsp);
+	    CFMLWriter w = config.getCFMLWriter(this, req);
 	    w.setAllowCompression(false);
 	    DebugCFMLWriter dcw = new DebugCFMLWriter(w);
 	    bodyContentStack.init(dcw);
 	    debugger.setOutputLog(dcw);
 	}
 	else {
-	    bodyContentStack.init(config.getCFMLWriter(this, req, rsp));
+	    bodyContentStack.init(config.getCFMLWriter(this, req));
 	}
 
 	writer = bodyContentStack.getWriter();
@@ -556,9 +544,9 @@ public final class PageContextImpl extends PageContext {
 
 	// Scopes
 	if (hasFamily) {
-	    if (hasFamily && !isChild) {
-		req.disconnect(this);
-	    }
+//	    if (hasFamily && !isChild) {
+//		req.disconnect(this);
+//	    }
 	    close();
 	    base = null;
 	    if (children != null) children.clear();
@@ -638,8 +626,6 @@ public final class PageContextImpl extends PageContext {
 
 	// Req/Rsp
 	req = null;
-	rsp = null;
-	servlet = null;
 
 	// Writer
 	writer = null;
@@ -1087,7 +1073,7 @@ public final class PageContextImpl extends PageContext {
 	other.undefined = new UndefinedImpl(other, (short) other.undefined.getType());
 
 	// writers
-	other.bodyContentStack.init(config.getCFMLWriter(this, other.req, other.rsp));
+	other.bodyContentStack.init(config.getCFMLWriter(this, other.req));
 	// other.bodyContentStack.init(other.req,other.rsp,other.config.isSuppressWhitespace(),other.config.closeConnection(),
 	// other.config.isShowVersion(),config.contentLength(),config.allowCompression());
 	other.writer = other.bodyContentStack.getWriter();
@@ -1136,7 +1122,7 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public Resource getRootTemplateDirectory() {
-	return config.getResource(ReqRspUtil.getRootPath(servlet.getServletContext()));
+	return config.getResource(ReqRspUtil.getRootPath());
     }
 
     @Override
@@ -1823,158 +1809,158 @@ public final class PageContextImpl extends PageContext {
 	throw new CasterException(value, Query.class);
     }
 
-    @Override
-    public void setAttribute(String name, Object value) {
-	try {
-	    if (value == null) removeVariable(name);
-	    else setVariable(name, value);
-	}
-	catch (PageException e) {}
-    }
-
-    @Override
-    public void setAttribute(String name, Object value, int scope) {
-	switch (scope) {
-	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
-	    if (value == null) getServletContext().removeAttribute(name);
-	    else getServletContext().setAttribute(name, value);
-	    break;
-	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
-	    setAttribute(name, value);
-	    break;
-	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
-	    if (value == null) req.removeAttribute(name);
-	    else setAttribute(name, value);
-	    break;
-	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
-	    HttpSession s = req.getSession(true);
-	    if (value == null) s.removeAttribute(name);
-	    else s.setAttribute(name, value);
-	    break;
-	}
-    }
-
-    @Override
-    public Object getAttribute(String name) {
-	try {
-	    return getVariable(name);
-	}
-	catch (PageException e) {
-	    return null;
-	}
-    }
-
-    @Override
-    public Object getAttribute(String name, int scope) {
-	switch (scope) {
-	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
-	    return getServletContext().getAttribute(name);
-	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
-	    return getAttribute(name);
-	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
-	    return req.getAttribute(name);
-	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
-	    HttpSession s = req.getSession();
-	    if (s != null) return s.getAttribute(name);
-	    break;
-	}
-	return null;
-    }
-
-    @Override
-    public Object findAttribute(String name) {
-	// page
-	Object value = getAttribute(name);
-	if (value != null) return value;
-	// request
-	value = req.getAttribute(name);
-	if (value != null) return value;
-	// session
-	HttpSession s = req.getSession();
-	value = s != null ? s.getAttribute(name) : null;
-	if (value != null) return value;
-	// application
-	value = getServletContext().getAttribute(name);
-	if (value != null) return value;
-
-	return null;
-    }
-
-    @Override
-    public void removeAttribute(String name) {
-	setAttribute(name, null);
-    }
-
-    @Override
-    public void removeAttribute(String name, int scope) {
-	setAttribute(name, null, scope);
-    }
-
-    @Override
-    public int getAttributesScope(String name) {
-	// page
-	if (getAttribute(name) != null) return PageContext.PAGE_SCOPE;
-	// request
-	if (req.getAttribute(name) != null) return PageContext.REQUEST_SCOPE;
-	// session
-	HttpSession s = req.getSession();
-	if (s != null && s.getAttribute(name) != null) return PageContext.SESSION_SCOPE;
-	// application
-	if (getServletContext().getAttribute(name) != null) return PageContext.APPLICATION_SCOPE;
-
-	return 0;
-    }
-
-    @Override
-    public Enumeration<String> getAttributeNamesInScope(int scope) {
-
-	switch (scope) {
-	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
-	    return getServletContext().getAttributeNames();
-	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
-	    return ItAsEnum.toStringEnumeration(variablesScope().keyIterator());
-	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
-	    return req.getAttributeNames();
-	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
-	    return req.getSession(true).getAttributeNames();
-	}
-	return null;
-    }
+//    @Override
+//    public void setAttribute(String name, Object value) {
+//	try {
+//	    if (value == null) removeVariable(name);
+//	    else setVariable(name, value);
+//	}
+//	catch (PageException e) {}
+//    }
+//
+//    @Override
+//    public void setAttribute(String name, Object value, int scope) {
+//	switch (scope) {
+//	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
+//	    if (value == null) getServletContext().removeAttribute(name);
+//	    else getServletContext().setAttribute(name, value);
+//	    break;
+//	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
+//	    setAttribute(name, value);
+//	    break;
+//	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
+//	    if (value == null) req.removeAttribute(name);
+//	    else setAttribute(name, value);
+//	    break;
+//	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
+//	    HttpSession s = req.getSession(true);
+//	    if (value == null) s.removeAttribute(name);
+//	    else s.setAttribute(name, value);
+//	    break;
+//	}
+//    }
+//
+//    @Override
+//    public Object getAttribute(String name) {
+//	try {
+//	    return getVariable(name);
+//	}
+//	catch (PageException e) {
+//	    return null;
+//	}
+//    }
+//
+//    @Override
+//    public Object getAttribute(String name, int scope) {
+//	switch (scope) {
+//	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
+//	    return getServletContext().getAttribute(name);
+//	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
+//	    return getAttribute(name);
+//	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
+//	    return req.getAttribute(name);
+//	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
+//	    HttpSession s = req.getSession();
+//	    if (s != null) return s.getAttribute(name);
+//	    break;
+//	}
+//	return null;
+//    }
+//
+//    @Override
+//    public Object findAttribute(String name) {
+//	// page
+//	Object value = getAttribute(name);
+//	if (value != null) return value;
+//	// request
+//	value = req.getAttribute(name);
+//	if (value != null) return value;
+//	// session
+//	HttpSession s = req.getSession();
+//	value = s != null ? s.getAttribute(name) : null;
+//	if (value != null) return value;
+//	// application
+//	value = getServletContext().getAttribute(name);
+//	if (value != null) return value;
+//
+//	return null;
+//    }
+//
+//    @Override
+//    public void removeAttribute(String name) {
+//	setAttribute(name, null);
+//    }
+//
+//    @Override
+//    public void removeAttribute(String name, int scope) {
+//	setAttribute(name, null, scope);
+//    }
+//
+//    @Override
+//    public int getAttributesScope(String name) {
+//	// page
+//	if (getAttribute(name) != null) return PageContext.PAGE_SCOPE;
+//	// request
+//	if (req.getAttribute(name) != null) return PageContext.REQUEST_SCOPE;
+//	// session
+//	HttpSession s = req.getSession();
+//	if (s != null && s.getAttribute(name) != null) return PageContext.SESSION_SCOPE;
+//	// application
+//	if (getServletContext().getAttribute(name) != null) return PageContext.APPLICATION_SCOPE;
+//
+//	return 0;
+//    }
+//
+//    @Override
+//    public Enumeration<String> getAttributeNamesInScope(int scope) {
+//
+//	switch (scope) {
+//	case javax.servlet.jsp.PageContext.APPLICATION_SCOPE:
+//	    return getServletContext().getAttributeNames();
+//	case javax.servlet.jsp.PageContext.PAGE_SCOPE:
+//	    return ItAsEnum.toStringEnumeration(variablesScope().keyIterator());
+//	case javax.servlet.jsp.PageContext.REQUEST_SCOPE:
+//	    return req.getAttributeNames();
+//	case javax.servlet.jsp.PageContext.SESSION_SCOPE:
+//	    return req.getSession(true).getAttributeNames();
+//	}
+//	return null;
+//    }
 
     @Override
     public JspWriter getOut() {
 	return forceWriter;
     }
+//
+//    @Override
+//    public HttpSession getSession() {
+//	return getRequestResponse().getSession();
+//    }
 
-    @Override
-    public HttpSession getSession() {
-	return getHttpServletRequest().getSession();
-    }
-
-    @Override
+//    @Override
     public Object getPage() {
 	return variablesScope();
     }
 
-    @Override
-    public ServletRequest getRequest() {
-	return getHttpServletRequest();
-    }
+//    @Override
+//    public ServletRequest getRequest() {
+//	return getRequestResponse();
+//    }
 
     @Override
-    public HttpServletRequest getHttpServletRequest() {
+    public RequestResponse getRequestResponse() {
 	return req;
     }
 
-    @Override
-    public ServletResponse getResponse() {
-	return rsp;
-    }
-
-    @Override
-    public HttpServletResponse getHttpServletResponse() {
-	return rsp;
-    }
+//    @Override
+//    public ServletResponse getResponse() {
+//	return rsp;
+//    }
+//
+//    @Override
+//    public HttpServletResponseDead getRequestResponse() {
+//	return rsp;
+//    }
 
     @Override
     public OutputStream getResponseStream() throws IOException {
@@ -1987,15 +1973,15 @@ public final class PageContextImpl extends PageContext {
 	return exception;
     }
 
-    @Override
-    public ServletConfig getServletConfig() {
-	return config;
-    }
+//    @Override
+//    public ServletConfigDead getServletConfigDead() {
+//	return config;
+//    }
 
-    @Override
-    public ServletContext getServletContext() {
-	return servlet.getServletContext();
-    }
+//    @Override
+//    public ServletContext getServletContext() {
+//	return servlet.getServletContext();
+//    }
 
     private static String repl(String haystack, String needle, String replacement) {
 	StringBuilder regex = new StringBuilder("#[\\s]*error[\\s]*\\.[\\s]*");
@@ -2029,17 +2015,17 @@ public final class PageContextImpl extends PageContext {
 	    int statusCode = getStatusCode(pe);
 
 	    // prepare response
-	    if (rsp != null) {
+	    if (req != null) {
 		// content-type
-		Charset cs = ReqRspUtil.getCharacterEncoding(this, rsp);
-		if (cs == null) ReqRspUtil.setContentType(rsp, "text/html");
-		else ReqRspUtil.setContentType(rsp, "text/html; charset=" + cs.name());
+		Charset cs = ReqRspUtil.getCharacterEncoding(this, req);
+		if (cs == null) ReqRspUtil.setContentType(req, "text/html");
+		else ReqRspUtil.setContentType(req, "text/html; charset=" + cs.name());
 
 		// expose error message in header
-		if (rsp != null && pe.getExposeMessage()) rsp.setHeader("exception-message", StringUtil.emptyIfNull(pe.getMessage()).replace('\n', ' '));
+		if (req != null && pe.getExposeMessage()) req.setHeader("exception-message", StringUtil.emptyIfNull(pe.getMessage()).replace('\n', ' '));
 
 		// status code
-		if (getConfig().getErrorStatusCode()) rsp.setStatus(statusCode);
+		if (getConfig().getErrorStatusCode()) req.setStatus(statusCode);
 	    }
 
 	    ErrorPage ep = errorPagePool.getErrorPage(pe, ErrorPageImpl.TYPE_EXCEPTION);
@@ -2144,7 +2130,7 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public void setHeader(String name, String value) {
-	rsp.setHeader(name, value);
+	req.setHeader(name, value);
     }
 
     @Override
@@ -2234,191 +2220,6 @@ public final class PageContextImpl extends PageContext {
     @Override
     public Debugger getDebugger() {
 	return debugger;
-    }
-
-    @Override
-    public void executeRest(String realPath, boolean throwExcpetion) throws PageException {
-	initallog();
-
-	ApplicationListener listener = null;// config.get ApplicationListener();
-	try {
-	    String pathInfo = req.getPathInfo();
-
-	    // charset
-	    try {
-		String charset = HTTPUtil.splitMimeTypeAndCharset(req.getContentType(), new String[] { "", "" })[1];
-		if (StringUtil.isEmpty(charset)) charset = getWebCharset().name();
-		java.net.URL reqURL = new java.net.URL(req.getRequestURL().toString());
-		String path = ReqRspUtil.decode(reqURL.getPath(), charset, true);
-		String srvPath = req.getServletPath();
-		if (path.startsWith(srvPath)) {
-		    pathInfo = path.substring(srvPath.length());
-		}
-	    }
-	    catch (Exception e) {}
-
-	    // Service mapping
-	    if (StringUtil.isEmpty(pathInfo) || pathInfo.equals("/")) {// ToDo
-		// list available services (if enabled in admin)
-		if (config.getRestList()) {
-		    try {
-			HttpServletRequest _req = getHttpServletRequest();
-			write("Available sevice mappings are:<ul>");
-			lucee.runtime.rest.Mapping[] mappings = config.getRestMappings();
-			lucee.runtime.rest.Mapping _mapping;
-			String path;
-			for (int i = 0; i < mappings.length; i++) {
-			    _mapping = mappings[i];
-			    Resource p = _mapping.getPhysical();
-			    path = _req.getContextPath() + ReqRspUtil.getScriptName(this, _req) + _mapping.getVirtual();
-			    write("<li " + (p == null || !p.isDirectory() ? " style=\"color:red\"" : "") + ">" + path + "</li>");
-
-			}
-			write("</ul>");
-
-		    }
-		    catch (IOException e) {
-			throw Caster.toPageException(e);
-		    }
-		}
-		else RestUtil.setStatus(this, 404, null);
-		return;
-	    }
-
-	    // check for matrix
-	    int index;
-	    String entry;
-	    Struct matrix = new StructImpl();
-	    while ((index = pathInfo.lastIndexOf(';')) != -1) {
-		entry = pathInfo.substring(index + 1);
-		pathInfo = pathInfo.substring(0, index);
-		if (StringUtil.isEmpty(entry, true)) continue;
-
-		index = entry.indexOf('=');
-		if (index != -1) matrix.setEL(KeyImpl.init(entry.substring(0, index).trim()), entry.substring(index + 1).trim());
-		else matrix.setEL(KeyImpl.init(entry.trim()), "");
-	    }
-
-	    // get accept
-	    List<MimeType> accept = ReqRspUtil.getAccept(this);
-	    MimeType contentType = ReqRspUtil.getContentType(this);
-
-	    // check for format extension
-	    // int format = getApplicationContext().getRestSettings().getReturnFormat();
-	    int format;
-	    boolean hasFormatExtension = false;
-	    if (StringUtil.endsWithIgnoreCase(pathInfo, ".json")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_JSON;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_JSON);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".wddx")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_WDDX;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_WDDX);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".cfml")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDF.RETURN_FORMAT_SERIALIZE;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_CFML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".serialize")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 10);
-		format = UDF.RETURN_FORMAT_SERIALIZE;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_CFML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".xml")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 4);
-		format = UDF.RETURN_FORMAT_XML;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_XML);
-		hasFormatExtension = true;
-	    }
-	    else if (StringUtil.endsWithIgnoreCase(pathInfo, ".java")) {
-		pathInfo = pathInfo.substring(0, pathInfo.length() - 5);
-		format = UDFPlus.RETURN_FORMAT_JAVA;
-		accept.clear();
-		accept.add(MimeType.APPLICATION_JAVA);
-		hasFormatExtension = true;
-	    }
-	    else {
-		format = getApplicationContext() == null ? null : getApplicationContext().getRestSettings().getReturnFormat();
-		// MimeType mt=MimeType.toMimetype(format);
-		// if(mt!=null)accept.add(mt);
-	    }
-
-	    if (accept.size() == 0) accept.add(MimeType.ALL);
-
-	    // loop all mappings
-	    // lucee.runtime.rest.Result result = null;//config.getRestSource(pathInfo, null);
-	    RestRequestListener rl = null;
-	    lucee.runtime.rest.Mapping[] restMappings = config.getRestMappings();
-	    lucee.runtime.rest.Mapping m, mapping = null, defaultMapping = null;
-	    // String callerPath=null;
-	    if (restMappings != null) for (int i = 0; i < restMappings.length; i++) {
-		m = restMappings[i];
-		if (m.isDefault()) defaultMapping = m;
-		if (pathInfo.startsWith(m.getVirtualWithSlash(), 0) && m.getPhysical() != null) {
-		    mapping = m;
-		    // result =
-		    // m.getResult(this,callerPath=pathInfo.substring(m.getVirtual().length()),format,matrix,null);
-		    rl = new RestRequestListener(m, pathInfo.substring(m.getVirtual().length()), matrix, format, hasFormatExtension, accept, contentType, null);
-		    break;
-		}
-	    }
-
-	    // default mapping
-	    if (mapping == null && defaultMapping != null && defaultMapping.getPhysical() != null) {
-		mapping = defaultMapping;
-		// result = mapping.getResult(this,callerPath=pathInfo,format,matrix,null);
-		rl = new RestRequestListener(mapping, pathInfo, matrix, format, hasFormatExtension, accept, contentType, null);
-	    }
-
-	    // base = PageSourceImpl.best(config.getPageSources(this,null,realPath,true,false,true));
-
-	    if (mapping == null || mapping.getPhysical() == null) {
-		RestUtil.setStatus(this, 404, "no rest service for [" + pathInfo + "] found");
-		getConfig().getLog("rest").error("REST", "no rest service for [" + pathInfo + "] found");
-	    }
-	    else {
-		base = config.toPageSource(null, mapping.getPhysical(), null);
-		listener = ((MappingImpl) base.getMapping()).getApplicationListener();
-		listener.onRequest(this, base, rl);
-	    }
-
-	}
-	catch (Throwable t) {
-	    ExceptionUtil.rethrowIfNecessary(t);
-	    PageException pe = Caster.toPageException(t);
-	    if (!Abort.isSilentAbort(pe)) {
-		log(true);
-		if (fdEnabled) {
-		    FDSignal.signal(pe, false);
-		}
-		if (listener == null) {
-		    if (base == null) listener = config.getApplicationListener();
-		    else listener = ((MappingImpl) base.getMapping()).getApplicationListener();
-		}
-		listener.onError(this, pe);
-	    }
-	    else log(false);
-
-	    if (throwExcpetion) throw pe;
-	}
-	finally {
-	    if (enablecfoutputonly > 0) {
-		setCFOutputOnly((short) 0);
-	    }
-	    base = null;
-	}
     }
 
     @Override
@@ -2560,13 +2361,13 @@ public final class PageContextImpl extends PageContext {
     }
 
     @Override
-    public void include(String realPath) throws ServletException, IOException {
-	HTTPUtil.include(this, realPath);
+    public void include(String realPath) throws IOException {
+//	HTTPUtil.include(this, realPath);
     }
 
     @Override
-    public void forward(String realPath) throws ServletException, IOException {
-	HTTPUtil.forward(this, realPath);
+    public void forward(String realPath) throws IOException {
+//	HTTPUtil.forward(this, realPath);
     }
 
     @Override
@@ -2608,18 +2409,11 @@ public final class PageContextImpl extends PageContext {
 
     @Override
     public String getURLToken() {
-	if (getConfig().getSessionType() == Config.SESSION_TYPE_JEE) {
-	    HttpSession s = getSession();
-	    return "CFID=" + getCFID() + "&CFTOKEN=" + getCFToken() + "&jsessionid=" + (s != null ? getSession().getId() : "");
-	}
-	return "CFID=" + getCFID() + "&CFTOKEN=" + getCFToken();
+    	return "";
     }
 
     @Override
     public String getJSessionId() {
-	if (getConfig().getSessionType() == Config.SESSION_TYPE_JEE) {
-	    return getSession().getId();
-	}
 	return null;
     }
 
@@ -2662,7 +2456,7 @@ public final class PageContextImpl extends PageContext {
 		Charset charset = getWebCharset();
 
 		// check if we have multiple cookies with the name "cfid" and a other one is valid
-		javax.servlet.http.Cookie[] cookies = getHttpServletRequest().getCookies();
+		javax.servlet.http.Cookie[] cookies = getRequestResponse().getCookies();
 		String name, value;
 		if (cookies != null) {
 		    for (int i = 0; i < cookies.length; i++) {
@@ -2671,13 +2465,13 @@ public final class PageContextImpl extends PageContext {
 			if ("cfid".equalsIgnoreCase(name)) {
 			    value = ReqRspUtil.decode(cookies[i].getValue(), charset.name(), false);
 			    if (Decision.isGUIdSimple(value)) oCfid = value;
-			    ReqRspUtil.removeCookie(getHttpServletResponse(), name);
+			    ReqRspUtil.removeCookie(getRequestResponse(), name);
 			}
 			// CFToken
 			else if ("cftoken".equalsIgnoreCase(name)) {
 			    value = ReqRspUtil.decode(cookies[i].getValue(), charset.name(), false);
 			    if (isValidCfToken(value)) oCftoken = value;
-			    ReqRspUtil.removeCookie(getHttpServletResponse(), name);
+			    ReqRspUtil.removeCookie(getRequestResponse(), name);
 			}
 		    }
 		}
@@ -2792,15 +2586,15 @@ public final class PageContextImpl extends PageContext {
     public void setLocale(Locale locale) {
 	if (getApplicationContext() != null) getApplicationContext().setLocale(locale);
 	this.locale = locale;
-	HttpServletResponse rsp = getHttpServletResponse();
+	RequestResponse req = getRequestResponse();
 
-	Charset charEnc = ReqRspUtil.getCharacterEncoding(this, rsp);
-	rsp.setLocale(locale);
+	Charset charEnc = ReqRspUtil.getCharacterEncoding(this, req);
+	req.setLocale(locale);
 	if (charEnc.equals(CharsetUtil.UTF8)) {
-	    ReqRspUtil.setContentType(rsp, "text/html; charset=UTF-8");
+	    ReqRspUtil.setContentType(req, "text/html; charset=UTF-8");
 	}
-	else if (!charEnc.equals(ReqRspUtil.getCharacterEncoding(this, rsp))) {
-	    ReqRspUtil.setContentType(rsp, "text/html; charset=" + charEnc);
+	else if (!charEnc.equals(ReqRspUtil.getCharacterEncoding(this, req))) {
+	    ReqRspUtil.setContentType(req, "text/html; charset=" + charEnc);
 	}
     }
 
@@ -2832,7 +2626,7 @@ public final class PageContextImpl extends PageContext {
 	parentTag = currentTag;
 	currentTag = tagHandlerPool.use(tagClassName, tagBundleName, tagBundleVersion, getConfig().getIdentification());
 	if (currentTag == parentTag) throw new ApplicationException("");
-	currentTag.setPageContext(this);
+//	currentTag.setPageContext(this);
 	currentTag.setParent(parentTag);
 	if (currentTag instanceof TagImpl) ((TagImpl) currentTag).setSourceTemplate(template);
 
@@ -3190,9 +2984,9 @@ public final class PageContextImpl extends PageContext {
 	compile(PageSourceImpl.best(getRelativePageSources(realPath)));
     }
 
-    public HttpServlet getServlet() {
-	return servlet;
-    }
+//    public HttpServlet getServlet() {
+//	return servlet;
+//    }
 
     @Override
     public lucee.runtime.Component loadComponent(String compPath) throws PageException {
@@ -3636,25 +3430,25 @@ public final class PageContextImpl extends PageContext {
     }
 
     @Override
-    public void include(String realPath, boolean flush) throws ServletException, IOException {
+    public void include(String realPath, boolean flush) throws IOException {
 	include(realPath);
 	if (flush) flush();
     }
 
-    @Override
-    public ExpressionEvaluator getExpressionEvaluator() {
-	throw new RuntimeException("not supported!");
-    }
-
-    @Override
-    public VariableResolver getVariableResolver() {
-	throw new RuntimeException("not supported!");
-    }
-
-    @Override
-    public ELContext getELContext() {
-	throw new RuntimeException("not supported!");
-    }
+//    @Override
+//    public ExpressionEvaluator getExpressionEvaluator() {
+//	throw new RuntimeException("not supported!");
+//    }
+//
+//    @Override
+//    public VariableResolver getVariableResolver() {
+//	throw new RuntimeException("not supported!");
+//    }
+//
+//    @Override
+//    public ELContext getELContext() {
+//	throw new RuntimeException("not supported!");
+//    }
 
     @Override
     public boolean ignoreScopes() {

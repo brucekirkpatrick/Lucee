@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 
 import lucee.commons.date.DateTimeUtil;
 import lucee.commons.lang.ExceptionUtil;
@@ -57,7 +57,7 @@ public final class CookieImpl extends ScopeSupport implements Cookie, ScriptProt
 
     public static final int NEVER = 946626690;
 
-    private HttpServletResponse rsp;
+    private RequestResponse req;
     private int scriptProtected = ScriptProtected.UNDEFINED;
     private Map<String, String> raw = new HashMap<String, String>();
     private String charset;
@@ -290,8 +290,8 @@ public final class CookieImpl extends ScopeSupport implements Cookie, ScriptProt
 	}
 	super.initialize(pc);
 
-	HttpServletRequest req = pc.getHttpServletRequest();
-	this.rsp = pc.getHttpServletResponse();
+	RequestResponse req = pc.getRequestResponse();
+	this.rsp = pc.getRequestResponse();
 	javax.servlet.http.Cookie[] cookies = ReqRspUtil.getCookies(req, pc.getWebCharset());
 	for (int i = 0; i < cookies.length; i++) {
 	    set(config, cookies[i]);

@@ -18,11 +18,11 @@
  **/
 package lucee.runtime.config;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+
 import javax.servlet.jsp.JspWriter;
 
+import lucee.cli.cli2.RequestResponse;
 import lucee.commons.io.res.Resource;
 import lucee.runtime.CFMLFactory;
 import lucee.runtime.PageContext;
@@ -35,7 +35,7 @@ import lucee.runtime.search.SearchEngine;
 /**
  * Web Context
  */
-public interface ConfigWeb extends Config, ServletConfig {
+public interface ConfigWeb extends Config  {
 
     /**
      * @return lockmanager
@@ -69,7 +69,7 @@ public interface ConfigWeb extends Config, ServletConfig {
 
     public boolean getSuppressWSBeforeArg();
 
-    public JspWriter getWriter(PageContext pc, HttpServletRequest req, HttpServletResponse rsp);
+    public JspWriter getWriter(PageContext pc, RequestResponse req);
 
     public AMFEngine getAMFEngine();
 }

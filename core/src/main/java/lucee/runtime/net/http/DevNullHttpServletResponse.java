@@ -23,24 +23,24 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+
+import javax.servlet.http.HttpServletDeadResponseDeadWrapper;
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.DevNullServletOutputStream;
 
-public final class DevNullHttpServletResponse extends HttpServletResponseWrapper {
+public final class DevNullHttpServletResponseDead extends HttpServletResponseDeadWrapper {
 
-    private HttpServletResponse httpServletResponse;
+    private HttpServletResponseDead HttpServletResponseDead;
 
     /**
      * constructor of the class
      * 
-     * @param httpServletResponse
+     * @param HttpServletResponseDead
      */
-    public DevNullHttpServletResponse(HttpServletResponse httpServletResponse) {
-	super(httpServletResponse);
-	this.httpServletResponse = httpServletResponse;
+    public DevNullHttpServletResponseDead(HttpServletResponseDead HttpServletResponseDead) {
+	super(HttpServletResponseDead);
+	this.HttpServletResponseDead = HttpServletResponseDead;
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class DevNullHttpServletResponse extends HttpServletResponseWrapper
 
     @Override
     public ServletResponse getResponse() {
-	return httpServletResponse;
+	return HttpServletResponseDead;
     }
 
     @Override

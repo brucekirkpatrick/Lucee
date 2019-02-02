@@ -14,7 +14,7 @@ import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.scope.ScopeContext;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.File;
@@ -53,7 +53,7 @@ public class Main {
 		int idCounter=1;
 
 		pc = new PageContextImpl(scopeContext, null, idCounter++, null, false);
-		RequestResponse requestResponse=new RequestResponse();
+		RequestResponse requestResponse=new RequestResponseImpl();
 		pc.initialize(null, null, null, "/error.cfm", false, 4096, true, false, false);
 		//RequestResponse requestResponse, String errorPageURL, boolean needsSession, int bufferSize,	boolean autoFlush, boolean isChild, boolean ignoreScopes
 //			pc=(PageContextImpl) getPageContext(null, null, root, "localhost", "/index.cfm", "", null, null, null, null, System.out, false, Long.MAX_VALUE,
@@ -70,11 +70,11 @@ public class Main {
 
 
 		pc.executeCFML(servletPath, true, true);
-		// pc.getHttpServletRequest().getServletPath()
+		// pc.getRequestResponse().getServletPath()
 
 	}
 
-	public static PageContext getPageContext(Config config, ServletConfig servletConfig, File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, boolean register, long timeout, boolean ignoreScopes) throws ServletException {
+	public static PageContext getPageContext(Config config, ServletConfigDead ServletConfigDead, File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, boolean register, long timeout, boolean ignoreScopes) throws ServletException {
 		boolean callOnStart = (Boolean)ThreadLocalPageContext.callOnStart.get();
 
 		PageContext var33;
@@ -108,8 +108,8 @@ public class Main {
 				attributes = new HashMap();
 			}
 
-//			HttpServletRequest req = CreationImpl.getInstance(engine).createHttpServletRequest(contextRoot, host, scriptName, queryString, cookies, (Map)headers, (Map)parameters, (Map)attributes, (HttpSession)null);
-//			HttpServletResponse rsp = CreationImpl.getInstance(engine).createHttpServletResponse(os);
+//			RequestResponse req = CreationImpl.getInstance(engine).createHttpServletRequestDead(contextRoot, host, scriptName, queryString, cookies, (Map)headers, (Map)parameters, (Map)attributes, (HttpSession)null);
+//			RequestResponse req = CreationImpl.getInstance(engine).createHttpServletResponseDead(os);
 			if (config == null) {
 				config = ThreadLocalPageContext.getConfig();
 			}
@@ -121,31 +121,31 @@ public class Main {
 				factory = cw.getFactory();
 //				servlet = factory.getServlet();
 			} else {
-//				if (servletConfig == null) {
-//					ServletConfig[] configs = engine.getServletConfigs();
+//				if (ServletConfigDead == null) {
+//					ServletConfigDead[] configs = engine.getServletConfigDeads();
 //					String rootDir = contextRoot.getAbsolutePath();
-//					ServletConfig[] var23 = configs;
+//					ServletConfigDead[] var23 = configs;
 //					int var24 = configs.length;
 //
 //					for(int var25 = 0; var25 < var24; ++var25) {
-//						ServletConfig conf = var23[var25];
+//						ServletConfigDead conf = var23[var25];
 //						if (SystemUtil.arePathsSame(rootDir, conf.getServletContext().getRealPath("/"))) {
-//							servletConfig = conf;
+//							ServletConfigDead = conf;
 //							break;
 //						}
 //					}
 //
-//					if (servletConfig == null) {
-//						servletConfig = configs[0];
+//					if (ServletConfigDead == null) {
+//						ServletConfigDead = configs[0];
 //					}
 //				}
 
-//				factory = engine.getCFMLFactory(servletConfig, req);
-//				servlet = new HTTPServletImpl(servletConfig, servletConfig.getServletContext(), servletConfig.getServletName());
+//				factory = engine.getCFMLFactory(ServletConfigDead, req);
+//				servlet = new HTTPServletImplDead(ServletConfigDead, ServletConfigDead.getServletContext(), ServletConfigDead.getServletName());
 			}
 //			ConfigWebImpl config=new ConfigWebImpl();
 //			new PageContextImpl( config, int id, boolean jsr223);
-//			var33 = factory.getLuceePageContext((HttpServlet)servlet, req, rsp, (String)null, false, -1, false, register, timeout, false, ignoreScopes);
+//			var33 = factory.getLuceePageContext((HttpServlet)servlet, req, (String)null, false, -1, false, register, timeout, false, ignoreScopes);
 		} finally {
 			ThreadLocalPageContext.callOnStart.set(callOnStart);
 		}

@@ -30,7 +30,7 @@ public final class ServletOutputStreamDummy extends ServletOutputStream {
 
     private OutputStream os;
 
-    // private HttpServletResponseDummy rsp;
+    // private HttpServletResponseDeadDummy rsp;
     // private ByteArrayOutputStream baos;
 
     public ServletOutputStreamDummy(OutputStream os) {

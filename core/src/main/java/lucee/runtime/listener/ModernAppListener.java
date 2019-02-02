@@ -53,8 +53,8 @@ import lucee.runtime.exp.MissingIncludeException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.PostContentAbort;
 import lucee.runtime.interpreter.JSONExpressionInterpreter;
-import lucee.runtime.net.http.HttpServletRequestDummy;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadRequestDeadDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Decision;
@@ -164,7 +164,7 @@ public class ModernAppListener extends AppListenerSupport {
 		    Object queryFormat = url.removeEL(KeyConstants._queryFormat);
 
 		    if (args == null) {
-			args = pc.getHttpServletRequest().getAttribute("argumentCollection");
+			args = pc.getRequestResponse().getAttribute("argumentCollection");
 		    }
 
 		    if (args instanceof String) {
@@ -197,7 +197,7 @@ public class ModernAppListener extends AppListenerSupport {
 		    Object rtn = call(app, pci, ON_CFCREQUEST, new Object[] { requestedPage.getComponentName(), method, args }, true);
 
 		    if (rtn != null) {
-			if (pc.getHttpServletRequest().getHeader("AMF-Forward") != null) {
+			if (pc.getRequestResponse().getHeader("AMF-Forward") != null) {
 			    pc.variablesScope().setEL("AMF-Forward", rtn);
 			}
 			else {
@@ -369,16 +369,16 @@ public class ModernAppListener extends AppListenerSupport {
 	String path = app.getPageSource().getRealpathWithVirtual();
 
 	// Request
-	HttpServletRequestDummy req = new HttpServletRequestDummy(root, "localhost", path, "", null, null, null, null, null, null);
+	HttpServletRequestDeadDummy req = new HttpServletRequestDeadDummy(root, "localhost", path, "", null, null, null, null, null, null);
 	if (!StringUtil.isEmpty(cfid)) req.setCookies(new Cookie[] { new Cookie("cfid", cfid), new Cookie("cftoken", "0") });
 
 	// Response
 	OutputStream os = DevNullOutputStream.DEV_NULL_OUTPUT_STREAM;
 
-	HttpServletResponseDummy rsp = new HttpServletResponseDummy(os);
+	HttpServletResponseDeadDummy rsp = new HttpServletResponseDeadDummy(os);
 
 	// PageContext
-	PageContextImpl pc = (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, rsp, null, false, -1, false, register, timeout, true, false);
+	PageContextImpl pc = (PageContextImpl) factory.getLuceePageContext(factory.getServlet(), req, null, false, -1, false, register, timeout, true, false);
 
 	// ApplicationContext
 	ClassicApplicationContext ap = new ClassicApplicationContext(factory.getConfig(), applicationName, false,

@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 
 import lucee.commons.collection.LinkedHashMapMaxSize;
@@ -127,7 +127,7 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
     TagLib cfmlCoreTLDs;
     FunctionLib cfmlCoreFLDs;
 
-    private ServletConfig srvConfig;
+    private ServletConfigDead srvConfig;
 
     /**
      * @param engine
@@ -209,7 +209,7 @@ public final class ConfigServerImpl extends ConfigImpl implements ConfigServer {
 	Iterator<String> it = initContextes.keySet().iterator();
 	while (it.hasNext()) {
 	    ConfigWebImpl cw = ((CFMLFactoryImpl) initContextes.get(it.next())).getConfigWebImpl();
-	    if (ReqRspUtil.getRootPath(cw.getServletContext()).equals(realpath)) return cw;
+	    if (ReqRspUtil.getRootPath().equals(realpath)) return cw;
 	}
 	return null;
     }

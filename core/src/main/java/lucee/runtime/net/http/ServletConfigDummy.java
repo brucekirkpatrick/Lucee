@@ -20,10 +20,10 @@ package lucee.runtime.net.http;
 
 import java.util.Enumeration;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
 
-public class ServletConfigDummy implements ServletConfig {
+public class ServletConfigDeadDummy implements ServletConfigDead {
 
     private String servletName;
     private ServletContext context;
@@ -35,7 +35,7 @@ public class ServletConfigDummy implements ServletConfig {
      * @param attrs
      * @param servletName
      */
-    public ServletConfigDummy(ServletContextDummy context, String servletName) {
+    public ServletConfigDeadDummy(ServletContextDummy context, String servletName) {
 	this.servletName = servletName;
 	this.context = context;
     }

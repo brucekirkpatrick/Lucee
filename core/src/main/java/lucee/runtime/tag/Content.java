@@ -27,9 +27,10 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
 
+
+import lucee.cli.cli2.RequestResponse;
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.util.ResourceUtil;
@@ -164,7 +165,7 @@ public final class Content extends BodyTagImpl {
 	if (content == null && !StringUtil.isEmpty(strFile)) file = ResourceUtil.toResourceExisting(pageContext, strFile);
 
 	// get response object
-	HttpServletResponse rsp = pageContext.getHttpServletResponse();
+	RequestResponse req = pageContext.getRequestResponse();
 
 	// check committed
 	if (rsp.isCommitted()) throw new ApplicationException("content is already flushed", "you can't rewrite head of response after part of the page is flushed");
@@ -275,7 +276,7 @@ public final class Content extends BodyTagImpl {
     public void hasBody(boolean hasBody) {}
 
     private Range[] getRanges() {
-	HttpServletRequest req = pageContext.getHttpServletRequest();
+	RequestResponse req = pageContext.getRequestResponse();
 	Enumeration names = req.getHeaderNames();
 
 	if (names == null) return null;

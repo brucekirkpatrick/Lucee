@@ -30,12 +30,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 import javax.servlet.jsp.JspWriter;
 
+import lucee.cli.cli2.RequestResponse;
 import org.apache.commons.collections4.map.ReferenceMap;
 import org.osgi.framework.BundleException;
 import org.xml.sax.SAXException;
@@ -51,7 +52,6 @@ import lucee.commons.lang.StringUtil;
 import lucee.commons.lang.SystemOut;
 import lucee.commons.lock.KeyLock;
 import lucee.commons.lock.KeyLockImpl;
-import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.CFMLFactory;
 import lucee.runtime.CFMLFactoryImpl;
 import lucee.runtime.CIPage;
@@ -91,7 +91,6 @@ import lucee.runtime.search.SearchEngine;
 import lucee.runtime.security.SecurityManager;
 import lucee.runtime.security.SecurityManagerImpl;
 import lucee.runtime.tag.TagHandlerPool;
-import lucee.runtime.type.scope.Cluster;
 import lucee.runtime.writer.CFMLWriter;
 import lucee.runtime.writer.CFMLWriterImpl;
 import lucee.runtime.writer.CFMLWriterWS;
@@ -100,9 +99,9 @@ import lucee.runtime.writer.CFMLWriterWSPref;
 /**
  * Web Context
  */
-public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, ConfigWeb {
+public final class ConfigWebImpl extends ConfigImpl implements ConfigWeb {
 
-    private final ServletConfig config;
+//    private final ServletConfigDead config;
     private final ConfigServerImpl configServer;
     private SecurityManager securityManager;
     private static final LockManager lockManager = LockManagerImpl.getInstance(false);
@@ -126,22 +125,21 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 
     /**
      * constructor of the class
-     * 
+     *
+     * @param factory
      * @param configServer
-     * @param config
      * @param configDir
      * @param configFile
-     * @param cloneServer
      */
-    ConfigWebImpl(CFMLFactoryImpl factory, ConfigServerImpl configServer, ServletConfig config, Resource configDir, Resource configFile) {
+    ConfigWebImpl(CFMLFactoryImpl factory, ConfigServerImpl configServer, Resource configDir, Resource configFile) {
 	super(configDir, configFile);
 	this.configServer = configServer;
-	this.config = config;
+//	this.config = config;
 	this.factory = factory;
 	factory.setConfig(this);
 	ResourceProvider frp = ResourcesImpl.getFileResourceProvider();
 
-	this.rootDir = frp.getResource(ReqRspUtil.getRootPath(config.getServletContext()));
+	this.rootDir = frp.getResource(ReqRspUtil.getRootPath());
 
 	// Fix for tomcat
 	if (this.rootDir.getName().equals(".") || this.rootDir.getName().equals("..")) this.rootDir = this.rootDir.getParentResource();
@@ -149,7 +147,7 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 
 	public ConfigWebImpl(Resource configDir, Resource configFile) {
 		super(configDir, configFile);
-		config=null;
+//		config=null;
 		configServer=null;
 		factory=null;
 	}
@@ -164,25 +162,25 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	baseComponentPageLucee = null;
     }
 
-    @Override
-    public String getServletName() {
-	return config.getServletName();
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-	return config.getServletContext();
-    }
-
-    @Override
-    public String getInitParameter(String name) {
-	return config.getInitParameter(name);
-    }
-
-    @Override
-    public Enumeration getInitParameterNames() {
-	return config.getInitParameterNames();
-    }
+//    @Override
+//    public String getServletName() {
+//	return config.getServletName();
+//    }
+//
+//    @Override
+//    public ServletContext getServletContext() {
+//	return config.getServletContext();
+//    }
+//
+//    @Override
+//    public String getInitParameter(String name) {
+//	return config.getInitParameter(name);
+//    }
+//
+//    @Override
+//    public Enumeration getInitParameterNames() {
+//	return config.getInitParameterNames();
+//    }
 
     protected ConfigServerImpl getConfigServerImpl() {
 	return configServer;
@@ -518,15 +516,15 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	return configServer.allowRequestTimeout();
     }
 
-    public CFMLWriter getCFMLWriter(PageContext pc, HttpServletRequest req, HttpServletResponse rsp) {
-	if (writerType == CFML_WRITER_WS) return new CFMLWriterWS(pc, req, rsp, -1, false, closeConnection(), isShowVersion(), contentLength());
-	else if (writerType == CFML_WRITER_REFULAR) return new CFMLWriterImpl(pc, req, rsp, -1, false, closeConnection(), isShowVersion(), contentLength());
-	else return new CFMLWriterWSPref(pc, req, rsp, -1, false, closeConnection(), isShowVersion(), contentLength());
+    public CFMLWriter getCFMLWriter(PageContext pc, RequestResponse req) {
+	if (writerType == CFML_WRITER_WS) return new CFMLWriterWS(pc, req, -1, false, closeConnection(), isShowVersion(), contentLength());
+	else if (writerType == CFML_WRITER_REFULAR) return new CFMLWriterImpl(pc, req, -1, false, closeConnection(), isShowVersion(), contentLength());
+	else return new CFMLWriterWSPref(pc, req, -1, false, closeConnection(), isShowVersion(), contentLength());
     }
 
     @Override
-    public JspWriter getWriter(PageContext pc, HttpServletRequest req, HttpServletResponse rsp) {
-	return getCFMLWriter(pc, req, rsp);
+    public JspWriter getWriter(PageContext pc, RequestResponse req) {
+	return getCFMLWriter(pc, req);
     }
 
     public ActionMonitorCollector getActionMonitorCollector() {

@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import coreLoad.RequestResponseImpl;
+import javax.servlet.http.HttpServletDeadRequestDeadWrapper;
 
-public final class DevNullHttpServletRequest extends HttpServletRequestWrapper {
+public final class DevNullHttpServletRequestDead extends HttpServletRequestDeadWrapper {
 
     private ByteArrayInputStream barr;
 
-    public DevNullHttpServletRequest(HttpServletRequest req) {
+    public DevNullHttpServletRequestDead(RequestResponse req) {
 	super(req);
 	barr = new ByteArrayInputStream(new byte[] {});
     }

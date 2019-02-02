@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
@@ -52,7 +52,7 @@ public class ResourceExecutionLog extends ExecutionLogSupport {
 	this.pc = pc;
 
 	// header
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 
 	header = new StringBuffer();
 	createHeader(header, "context-path", req.getContextPath());

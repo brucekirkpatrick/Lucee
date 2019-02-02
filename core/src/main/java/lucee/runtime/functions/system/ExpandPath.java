@@ -48,7 +48,7 @@ public final class ExpandPath implements Function {
 	ConfigWeb config = pc.getConfig();
 	relPath = prettifyPath(pc, relPath);
 
-	String contextPath = pc.getHttpServletRequest().getContextPath();
+	String contextPath = pc.getRequestResponse().getContextPath();
 	if (!StringUtil.isEmpty(contextPath) && relPath.startsWith(contextPath + "/")) {
 	    boolean sws = StringUtil.startsWith(relPath, '/');
 	    relPath = relPath.substring(contextPath.length());
@@ -103,7 +103,7 @@ public final class ExpandPath implements Function {
 	if (res.isAbsolute()) return toReturnValue(relPath, res);
 
 	PageSource ps = pc.getBasePageSource();
-	res = ps == null ? ResourceUtil.getCanonicalResourceEL(ResourceUtil.toResourceExisting(pc.getConfig(), ReqRspUtil.getRootPath(pc.getServletContext())))
+	res = ps == null ? ResourceUtil.getCanonicalResourceEL(ResourceUtil.toResourceExisting(pc.getConfig(), ReqRspUtil.getRootPath()))
 		: ResourceUtil.getResource(pc, ps);
 
 	if (!res.isDirectory()) res = res.getParentResource();

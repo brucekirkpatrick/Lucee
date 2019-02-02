@@ -415,7 +415,7 @@ public final class Form extends BodyTagImpl {
     }
 
     private int _doStartTag() throws PageException, IOException {
-	String contextPath = pageContext.getHttpServletRequest().getContextPath();
+	String contextPath = pageContext.getRequestResponse().getContextPath();
 	if (contextPath == null) contextPath = "";
 	if (archive == null) {
 	    archive = contextPath + DEFAULT_ARCHIVE;
@@ -427,7 +427,7 @@ public final class Form extends BodyTagImpl {
 	}
 	attributes.setEL(KeyConstants._name, name);
 
-	if (action == null) action = ReqRspUtil.self(pageContext.getHttpServletRequest());
+	if (action == null) action = ReqRspUtil.self(pageContext.getRequestResponse());
 	attributes.setEL(KeyConstants._action, action);
 
 	String suffix = StringUtil.isEmpty(name) ? "" + count : StringUtil.toVariableName(name);

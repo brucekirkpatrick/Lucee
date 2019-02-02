@@ -3,9 +3,9 @@ package lucee.runtime.net.amf;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import coreLoad.RequestResponseImpl;
+
 
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.exp.ApplicationException;
@@ -31,7 +31,7 @@ public class AMFEngineDummy implements AMFEngine {
     }
 
     @Override
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException {
+    public void service(RequestResponse req) throws IOException {
 	throw notInstalledEL();
     }
 

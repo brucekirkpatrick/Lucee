@@ -718,7 +718,7 @@ public class ModernApplicationContext extends ApplicationContextSupport {
 	// has defined a web charset
 	if (cs != null) {
 	    if (!cs.equals(config.getWebCharset())) {
-		ReqRspUtil.setContentType(pc.getHttpServletResponse(), "text/html; charset=" + cs.name());
+		ReqRspUtil.setContentType(pc.getRequestResponse(), "text/html; charset=" + cs.name());
 	    }
 	}
 

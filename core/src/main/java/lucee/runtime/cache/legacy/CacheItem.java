@@ -21,7 +21,7 @@ package lucee.runtime.cache.legacy;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.cache.Cache;
 import lucee.commons.io.res.Resource;
@@ -36,13 +36,13 @@ public abstract class CacheItem {
     protected final String fileName;
 
     public static CacheItem getInstance(PageContext pc, String id, String key, boolean useId, Resource dir, String cacheName, TimeSpan timespan) throws IOException {
-	HttpServletRequest req = pc.getHttpServletRequest();
+	RequestResponse req = pc.getRequestResponse();
 	Cache cache = CacheUtil.getCache(pc, cacheName, Config.CACHE_TYPE_TEMPLATE, null);
 	if (cache != null) return new CacheItemCache(pc, req, id, key, useId, cache, timespan);
 	return new CacheItemFS(pc, req, id, key, useId, dir);
     }
 
-    public CacheItem(PageContext pc, HttpServletRequest req, String id, String key, boolean useId) {
+    public CacheItem(PageContext pc, RequestResponse req, String id, String key, boolean useId) {
 
 	// raw
 	String filename = req.getServletPath();

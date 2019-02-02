@@ -26,8 +26,8 @@ import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+
+import javax.servlet.http.HttpServletDeadResponseDeadWrapper;
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.lang.Pair;
@@ -38,7 +38,7 @@ import lucee.runtime.type.dt.DateTimeImpl;
 /**
  * 
  */
-public final class HttpServletResponseWrap extends HttpServletResponseWrapper implements HttpServletResponse, Serializable {
+public final class HttpServletResponseDeadWrap extends HttpServletResponseDeadWrapper implements HttpServletResponseDead, Serializable {
 
     private Cookie[] cookies = new Cookie[0];
     private Pair[] headers = new Pair[0];
@@ -73,11 +73,11 @@ public final class HttpServletResponseWrap extends HttpServletResponseWrapper im
     /**
      * Constructor of the class
      */
-    public HttpServletResponseWrap(HttpServletResponse rsp) {
+    public HttpServletResponseDeadWrap(RequestResponse req) {
 	this(rsp, DevNullOutputStream.DEV_NULL_OUTPUT_STREAM);
     }
 
-    public HttpServletResponseWrap(HttpServletResponse rsp, OutputStream out) {
+    public HttpServletResponseDeadWrap(RequestResponse req, OutputStream out) {
 	super(rsp);
 	this.out = out;
     }

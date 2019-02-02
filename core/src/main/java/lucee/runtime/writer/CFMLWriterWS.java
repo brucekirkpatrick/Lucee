@@ -20,9 +20,10 @@ package lucee.runtime.writer;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
 
+
+import lucee.cli.cli2.RequestResponse;
 import lucee.runtime.PageContext;
 
 /**
@@ -47,9 +48,9 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
      * @param bufferSize
      * @param autoFlush
      */
-    public CFMLWriterWS(PageContext pc, HttpServletRequest req, HttpServletResponse rsp, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
-	    boolean contentLength) {
-	super(pc, req, rsp, bufferSize, autoFlush, closeConn, showVersion, contentLength);
+    public CFMLWriterWS(PageContext pc, RequestResponse req, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
+                        boolean contentLength) {
+	super(pc, req, bufferSize, autoFlush, closeConn, showVersion, contentLength);
     }
 
     /**

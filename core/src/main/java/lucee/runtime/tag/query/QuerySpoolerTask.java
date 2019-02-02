@@ -1,6 +1,6 @@
 package lucee.runtime.tag.query;
 
-import javax.servlet.http.HttpServletRequest;
+import coreLoad.RequestResponseImpl;
 
 import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.SystemUtil.TemplateLine;
@@ -19,7 +19,7 @@ import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.Abort;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.net.http.HttpServletResponseDummy;
+import lucee.runtime.net.http.HttpServletDeadResponseDeadDummy;
 import lucee.runtime.net.http.HttpUtil;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
@@ -69,7 +69,7 @@ public class QuerySpoolerTask extends SpoolerTaskSupport {
 	this.relPathwV = ps.getRealpathWithVirtual();
 	Mapping m = ps.getMapping();
 	this.mapping = m instanceof MappingImpl ? ((MappingImpl) m).toSerMapping() : null;
-	HttpServletRequest req = parent.getHttpServletRequest();
+	RequestResponse req = parent.getRequestResponse();
 	serverName = req.getServerName();
 	queryString = ReqRspUtil.getQueryString(req);
 	cookies = SerializableCookie.toSerializableCookie(ReqRspUtil.getCookies(req, parent.getWebCharset()));
@@ -125,8 +125,8 @@ public class QuerySpoolerTask extends SpoolerTaskSupport {
 		}
 	    }
 	    finally {
-		if (pc.getHttpServletResponse() instanceof HttpServletResponseDummy) {
-		    // HttpServletResponseDummy rsp=(HttpServletResponseDummy) pc.getHttpServletResponse();
+		if (pc.getRequestResponse() instanceof HttpServletResponseDeadDummy) {
+		    // HttpServletResponseDeadDummy rsp=(HttpServletResponseDeadDummy) pc.getRequestResponse();
 		    pc.flush();
 		    /*
 		     * contentType=rsp.getContentType(); Pair<String,Object>[] _headers = rsp.getHeaders();

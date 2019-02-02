@@ -2,8 +2,8 @@ package lucee.runtime.net.rpc.ref;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import coreLoad.RequestResponseImpl;
+
 
 import lucee.runtime.Component;
 import lucee.runtime.PageContext;
@@ -29,9 +29,9 @@ public class WSServerReflector implements WSServer {
     }
 
     @Override
-    public void doGet(PageContext pc, HttpServletRequest request, HttpServletResponse response, Component component) throws PageException {
+    public void doGet(PageContext pc, RequestResponse request, Component component) throws PageException {
 	try {
-	    if (doGet == null) doGet = clazz.getMethod("doGet", new Class[] { PageContext.class, HttpServletRequest.class, HttpServletResponse.class, Component.class });
+	    if (doGet == null) doGet = clazz.getMethod("doGet", new Class[] { PageContext.class, HttpServletRequestDead.class, HttpServletResponseDead.class, Component.class });
 	    doGet.invoke(obj, new Object[] { pc, request, response, component });
 	}
 	catch (Exception e) {
@@ -40,9 +40,9 @@ public class WSServerReflector implements WSServer {
     }
 
     @Override
-    public void doPost(PageContext pc, HttpServletRequest req, HttpServletResponse res, Component component) throws PageException {
+    public void doPost(PageContext pc, RequestResponse req, HttpServletResponseDead res, Component component) throws PageException {
 	try {
-	    if (doPost == null) doPost = clazz.getMethod("doPost", new Class[] { PageContext.class, HttpServletRequest.class, HttpServletResponse.class, Component.class });
+	    if (doPost == null) doPost = clazz.getMethod("doPost", new Class[] { PageContext.class, HttpServletRequestDead.class, HttpServletResponseDead.class, Component.class });
 	    doPost.invoke(obj, new Object[] { pc, req, res, component });
 	}
 	catch (Exception e) {

@@ -28,11 +28,10 @@ import java.util.TimeZone;
 
 import javax.script.ScriptEngineFactory;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
+import lucee.cli.cli2.RequestResponse;
+
+import javax.servlet.jsp.JspException;
 import org.osgi.framework.BundleContext;
 
 import lucee.Info;
@@ -85,28 +84,24 @@ public interface CFMLEngine {
 //    public static int CAN_RESTART_ALL = CAN_RESTART;
 //    public static int CAN_RESTART_CONTEXT = 2;
 //
-//    public abstract CFMLFactory getCFMLFactory(HttpServletRequest req);
-
+//    public abstract CFMLFactory getCFMLFactory(RequestResponse req);
+    public abstract CFMLFactory getCFMLFactory(RequestResponse req);
 
     /**
      * method to invoke the engine for a regular Lucee call
-     * 
-     * @param servlet
+     *
      * @param req
-     * @param rsp
      * @throws IOException
      */
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+    public void service(RequestResponse req) throws IOException;
 
     /**
      * method to invoke the engine for CFML
-     * 
-     * @param servlet
+     *
      * @param req
-     * @param rsp
      * @throws IOException
      */
-    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+    public void serviceCFML(RequestResponse req) throws IOException;
 
 //    /**
 //     * method to invoke the engine for AMF
@@ -117,7 +112,7 @@ public interface CFMLEngine {
 //     * @throws ServletException
 //     * @throws IOException
 //     */
-//    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+//    public void serviceAMF(RequestResponse req) throws IOException;
 //
 //    /**
 //     * method to invoke the engine for a simple file
@@ -128,7 +123,7 @@ public interface CFMLEngine {
 //     * @throws ServletException
 //     * @throws IOException
 //     */
-//    public void serviceFile(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+//    public void serviceFile(RequestResponse req) throws IOException;
 
 //    /**
 //     * method to invoke the engine for a Rest Requests
@@ -139,7 +134,7 @@ public interface CFMLEngine {
 //     * @throws ServletException
 //     * @throws IOException
 //     */
-//    public abstract void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+//    public abstract void serviceRest(RequestResponse req) throws IOException;
 
     public Info getInfo();
 

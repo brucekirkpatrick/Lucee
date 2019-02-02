@@ -90,7 +90,7 @@ public final class Login extends BodyTagImpl {
 		return EVAL_BODY_INCLUDE;
 	    }
 	    // Header
-	    String strAuth = pageContext.getHttpServletRequest().getHeader("authorization");
+	    String strAuth = pageContext.getRequestResponse().getHeader("authorization");
 	    if (strAuth != null) {
 		int pos = strAuth.indexOf(' ');
 		if (pos != -1) {

@@ -30,7 +30,7 @@ public final class GetAuthUser implements Function {
     public static String call(PageContext pc) throws PageException {
 	Credential remoteUser = pc.getRemoteUser();
 	if (remoteUser == null) {
-	    String user = pc.getHttpServletRequest().getRemoteUser();
+	    String user = pc.getRequestResponse().getRemoteUser();
 	    if (user != null) {
 		return user;
 	    }
