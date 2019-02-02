@@ -33,7 +33,7 @@ import lucee.runtime.config.ConfigWeb;
  * implements a JSP Factory, this class procduce JSP Compatible PageContext Object this object holds
  * also the must interfaces to coldfusion specified functionality
  */
-public abstract class CFMLFactory extends JspFactory {
+public abstract class CFMLFactory {
 
     /**
      * reset the PageContexes

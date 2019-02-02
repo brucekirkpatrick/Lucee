@@ -32,12 +32,7 @@ public abstract class AbsServlet extends HttpServlet implements EngineChangeList
 
     @Override
     public void onUpdate() {
-	try {
 	    // make sure that config is registered
-	    engine = CFMLEngineFactory.getInstance(getServletConfig(), this);
-	}
-	catch (final ServletException e) {
-
-	}
+	    engine = CFMLEngineFactory.getInstance( this);
     }
 }

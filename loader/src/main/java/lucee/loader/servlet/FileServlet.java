@@ -39,7 +39,7 @@ public class FileServlet extends AbsServlet {
     @Override
     public void init(final ServletConfig sg) throws ServletException {
 	super.init(sg);
-	engine = CFMLEngineFactory.getInstance(sg, this);
+	engine = CFMLEngineFactory.getInstance(this);
     }
 
     /**
@@ -48,6 +48,6 @@ public class FileServlet extends AbsServlet {
      */
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceFile(this, req, rsp);
+//	engine.serviceFile(this, req, rsp);
     }
 }

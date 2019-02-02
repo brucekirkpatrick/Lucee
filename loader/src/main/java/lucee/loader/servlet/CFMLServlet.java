@@ -56,11 +56,7 @@ public class CFMLServlet extends AbsServlet {
 	super.init(sg);
 	    CFMLServlet.logStartTime("CFMLServlet init Servlet init end");
 	    Thread cfmlServletEngine=new Thread(()->{
-		    try {
-			    engine = CFMLEngineFactory.getInstance(sg, this);
-		    } catch (ServletException e) {
-			    throw new RuntimeException(e);
-		    }
+			    engine = CFMLEngineFactory.getInstance(this);
 	    });
 	    cfmlServletEngine.start();
 	    CFMLServlet.logStartTime("CFMLServlet init CFML factory instance end");

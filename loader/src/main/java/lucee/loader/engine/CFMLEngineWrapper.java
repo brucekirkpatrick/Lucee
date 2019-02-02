@@ -82,35 +82,31 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	this.engine = engine;
     }
 
-    @Override
-    public void addServletConfig(final ServletConfig config) throws ServletException {
-	engine.addServletConfig(config);
-    }
 
     @Override
-    public void service(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+    public void service(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws IOException {
 	engine.service(servlet, req, rsp);
     }
 
     @Override
-    public void serviceCFML(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+    public void serviceCFML(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws IOException {
 	engine.serviceCFML(servlet, req, rsp);
     }
 
-    @Override
-    public void serviceAMF(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceAMF(servlet, req, rsp);
-    }
-
-    @Override
-    public void serviceFile(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceFile(servlet, req, rsp);
-    }
-
-    @Override
-    public void serviceRest(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceRest(servlet, req, rsp);
-    }
+//    @Override
+//    public void serviceAMF(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//	engine.serviceAMF(servlet, req, rsp);
+//    }
+//
+//    @Override
+//    public void serviceFile(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//	engine.serviceFile(servlet, req, rsp);
+//    }
+//
+//    @Override
+//    public void serviceRest(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
+//	engine.serviceRest(servlet, req, rsp);
+//    }
 
     @Override
     public String getVersion() {
@@ -200,8 +196,8 @@ public class CFMLEngineWrapper implements CFMLEngine {
     }
 
     @Override
-    public CFMLFactory getCFMLFactory(final ServletConfig srvConfig, final HttpServletRequest req) throws ServletException {
-	return engine.getCFMLFactory(srvConfig, req);
+    public CFMLFactory getCFMLFactory(final HttpServletRequest req) {
+	return engine.getCFMLFactory(req);
     }
 
     @Override
@@ -264,8 +260,8 @@ public class CFMLEngineWrapper implements CFMLEngine {
     }
 
     @Override
-    public void cli(final Map<String, String> config, final ServletConfig servletConfig) throws IOException, JspException, ServletException {
-	engine.cli(config, servletConfig);
+    public void cli(final Map<String, String> config) throws IOException, JspException {
+	engine.cli(config);
     }
 
     @Override
@@ -317,10 +313,10 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	return engine.getTagEngineFactory(dialect);
     }
 
-    @Override
-    public ServletConfig[] getServletConfigs() {
-	return engine.getServletConfigs();
-    }
+//    @Override
+//    public ServletConfig[] getServletConfigs() {
+//	return engine.getServletConfigs();
+//    }
 
     @Override
     public ListUtil getListUtil() {
@@ -345,7 +341,7 @@ public class CFMLEngineWrapper implements CFMLEngine {
     @Override
     public PageContext createPageContext(final File contextRoot, final String host, final String scriptName, final String queryString, final Cookie[] cookies,
 	    final Map<String, Object> headers, final Map<String, String> parameters, final Map<String, Object> attributes, final OutputStream os, final long timeout,
-	    final boolean register) throws ServletException {
+	    final boolean register) {
 	return engine.createPageContext(contextRoot, host, scriptName, queryString, cookies, headers, parameters, attributes, os, timeout, register);
     }
 
@@ -355,7 +351,7 @@ public class CFMLEngineWrapper implements CFMLEngine {
     }
 
     @Override
-    public ConfigWeb createConfig(final File contextRoot, final String host, final String scriptName) throws ServletException {
+    public ConfigWeb createConfig(final File contextRoot, final String host, final String scriptName) {
 	return engine.createConfig(contextRoot, host, scriptName);
     }
 

@@ -25,11 +25,11 @@ public class LuceeFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add exeFilter
-	    engine.addServletConfig(new LuceeFilterImpl(request, response, chain, "filter"));
+//	    engine.addServletConfig(new LuceeFilterImpl(request, response, chain, "filter"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();

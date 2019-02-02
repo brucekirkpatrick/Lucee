@@ -104,14 +104,12 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 
 	private final LoggerImpl logger;
 
-	protected ServletConfig config;
 
 	/**
 	 * Constructor of the class
 	 */
-	protected CFMLEngineFactory(final ServletConfig config) {
+	protected CFMLEngineFactory() {
 		File logFile = null;
-		this.config = config;
 		try {
 			logFile = new File(getResourceRoot(), "context/logs/felix.log");
 			if (logFile.isFile()) {
@@ -139,10 +137,9 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	 *
 	 * @param config
 	 * @return Singelton Instance of the Factory
-	 * @throws ServletException
 	 */
 	final static Object mutex = new Object();
-	public static CFMLEngine getInstance(final ServletConfig config) throws ServletException {
+	public static CFMLEngine getInstance() {
 
 		CFMLServlet.logStartTime("CFMLEngineFactory getInstance begin");
 		if (singelton != null) {
@@ -154,17 +151,17 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		synchronized(mutex) {
 
 			if (factory == null) {
-				factory = new CFMLEngineFactory(config);
+				factory = new CFMLEngineFactory();
 			}
 //			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after new factory");
 
 			// read init param from config
-			factory.readInitParam(config);
+			factory.readInitParam();
 //			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after readInitParam");
 
 			factory.initEngineIfNecessary();
 //			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after initEngineIfNecessary");
-			singelton.addServletConfig(config);
+//			singelton.addServletConfig(config);
 //			CFMLServlet.logStartTime("CFMLEngineFactory getInstance after addServletConfig");
 
 			// add listener for update
@@ -173,17 +170,17 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		return singelton;
 	}
 
-	/**
-	 * returns instance of this factory (singelton = always the same instance) do auto update when
-	 * changes occur
-	 *
-	 * @return Singelton Instance of the Factory
-	 * @throws RuntimeException
-	 */
-	public static CFMLEngine getInstance() throws RuntimeException {
-		if (singelton != null) return singelton;
-		throw new RuntimeException("engine is not initialized, you must first call getInstance(ServletConfig)");
-	}
+//	/**
+//	 * returns instance of this factory (singelton = always the same instance) do auto update when
+//	 * changes occur
+//	 *
+//	 * @return Singelton Instance of the Factory
+//	 * @throws RuntimeException
+//	 */
+//	public static CFMLEngine getInstance() throws RuntimeException {
+//		if (singelton != null) return singelton;
+//		throw new RuntimeException("engine is not initialized, you must first call getInstance(ServletConfig)");
+//	}
 
 	public static void registerInstance(final CFMLEngine engine) {
 		if (engine instanceof CFMLEngineWrapper) throw new RuntimeException("that should not happen!");
@@ -193,26 +190,24 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	/**
 	 * returns instance of this factory (singelton always the same instance)
 	 *
-	 * @param config
 	 * @param listener
 	 * @return Singelton Instance of the Factory
-	 * @throws ServletException
 	 */
-	public static CFMLEngine getInstance(final ServletConfig config, final EngineChangeListener listener) throws ServletException {
-		getInstance(config);
+	public static CFMLEngine getInstance(final EngineChangeListener listener) {
+		getInstance();
 
 		CFMLServlet.logStartTime("CFMLEngineFactory getInstance(config) end");
 		// add listener for update
 		factory.addListener(listener);
 
 		// read init param from config
-		factory.readInitParam(config);
+		factory.readInitParam();
 		CFMLServlet.logStartTime("CFMLEngineFactory readInitParam end");
 
 		factory.initEngineIfNecessary();
 		CFMLServlet.logStartTime("CFMLEngineFactory initEngine end");
-		singelton.addServletConfig(config);
-		CFMLServlet.logStartTime("CFMLEngineFactory addServletConfig end");
+//		singelton.addServletConfig(config);
+//		CFMLServlet.logStartTime("CFMLEngineFactory addServletConfig end");
 
 		// make the FDController visible for the FDClient
 		FDControllerFactory.makeVisible();
@@ -220,14 +215,14 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		return singelton;
 	}
 
-	void readInitParam(final ServletConfig config) {
+	void readInitParam() {
 		if (luceeServerRoot != null) return;
-
-		String initParam = config.getInitParameter("lucee-server-directory");
-		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server-root");
-		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server-dir");
-		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server");
-		if (Util.isEmpty(initParam)) initParam = System.getProperty("lucee.server.dir");
+		String initParam = "";//"C:/ServerData/Lucee5/lucee-server/";//config.getInitParameter("lucee-server-directory");
+//		String initParam = config.getInitParameter("lucee-server-directory");
+//		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server-root");
+//		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server-dir");
+//		if (Util.isEmpty(initParam)) initParam = config.getInitParameter("lucee-server");
+//		if (Util.isEmpty(initParam)) initParam = System.getProperty("lucee.server.dir");
 
 		initParam = parsePlaceHolder(removeQuotes(initParam, true));
 		try {
@@ -257,10 +252,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		if (!listeners.contains(listener)) listeners.add(listener);
 	}
 
-	/**
-	 * @throws ServletException
-	 */
-	private void initEngineIfNecessary() throws ServletException {
+	private void initEngineIfNecessary() {
 		if (singelton == null) initEngine();
 	}
 
@@ -286,7 +278,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		CFMLServlet.logStartTime("CFMLEngineFactory shutdownFelix after stop");
 	}
 
-	private void initEngine() throws ServletException {
+	private void initEngine() {
 		CFMLServlet.logStartTime("CFMLEngineFactory initEngine begin");
 		final Version coreVersion = VersionInfo.getIntVersion();
 		final long coreCreated = VersionInfo.getCreateTime();
@@ -297,7 +289,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 			patcheDir = getPatchDirectory();
 //			log(Logger.LOG_DEBUG, "lucee-server-root:" + patcheDir.getParent());
 		} catch (final IOException e) {
-			throw new ServletException(e);
+			throw new RuntimeException(e);
 		}
 
 		final File[] patches = PATCH_ENABLED ? patcheDir.listFiles(new ExtensionFilter(new String[]{".lco"})) : null;
@@ -390,7 +382,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 			log(Logger.LOG_DEBUG, "Loaded Lucee Version " + version);
 		} catch (final InvocationTargetException e) {
 //	    e.getTargetException().printStackTrace();
-			throw new ServletException(e.getTargetException());
+			throw new RuntimeException(e.getTargetException());
 		} catch (final Exception e) {
 //		for(String s:errorList) {
 //			System.out.println(s);
@@ -623,7 +615,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	private synchronized boolean _restart() throws ServletException {
+	private synchronized boolean _restart() {
 		if (singelton != null) singelton.reset();
 
 		initEngine();
@@ -1141,7 +1133,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		return true;
 	}
 
-	private boolean removeLatestUpdate() throws IOException, ServletException {
+	private boolean removeLatestUpdate() throws IOException {
 		final File patchDir = getPatchDirectory();
 		final File[] patches = patchDir.listFiles(new ExtensionFilter(new String[]{".lco"}));
 		File patch = null;
@@ -1154,7 +1146,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		return true;
 	}
 
-	public String[] getInstalledPatches() throws ServletException, IOException {
+	public String[] getInstalledPatches() throws IOException {
 		final File patchDir = getPatchDirectory();
 		final File[] patches = patchDir.listFiles(new ExtensionFilter(new String[]{".lco"}));
 
@@ -1229,7 +1221,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 	private File _getResourceRoot() throws IOException {
 
 		// custom configuration
-		if (luceeServerRoot == null) readInitParam(config);
+		if (luceeServerRoot == null) readInitParam();
 		if (luceeServerRoot != null) return luceeServerRoot;
 
 		File lbd = getDirectoryByPropOrEnv("lucee.base.dir"); // directory defined by the caller

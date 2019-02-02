@@ -21,7 +21,7 @@ public class LuceeServletContextListener implements ServletContextListener {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add exeServletContextEvent
-	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "init"));
+//	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "init"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();
@@ -33,7 +33,7 @@ public class LuceeServletContextListener implements ServletContextListener {
 	try {
 	    CFMLEngine engine = CFMLEngineFactory.getInstance();
 	    // FUTURE add addServletContextEvent
-	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "release"));
+//	    engine.addServletConfig(new LuceeServletContextListenerImpl(sce, "release"));
 	}
 	catch (Exception se) {
 	    se.printStackTrace();

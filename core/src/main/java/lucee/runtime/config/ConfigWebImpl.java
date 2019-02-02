@@ -147,7 +147,14 @@ public final class ConfigWebImpl extends ConfigImpl implements ServletConfig, Co
 	if (this.rootDir.getName().equals(".") || this.rootDir.getName().equals("..")) this.rootDir = this.rootDir.getParentResource();
     }
 
-    @Override
+	public ConfigWebImpl(Resource configDir, Resource configFile) {
+		super(configDir, configFile);
+		config=null;
+		configServer=null;
+		factory=null;
+	}
+
+	@Override
     public void reset() {
 	super.reset();
 	factory.resetPageContext();

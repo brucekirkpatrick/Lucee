@@ -39,7 +39,7 @@ public class RestServlet extends AbsServlet {
     @Override
     public void init(final ServletConfig sg) throws ServletException {
 	super.init(sg);
-	engine = CFMLEngineFactory.getInstance(sg, this);
+	engine = CFMLEngineFactory.getInstance(this);
     }
 
     /**
@@ -48,6 +48,6 @@ public class RestServlet extends AbsServlet {
      */
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
-	engine.serviceRest(this, req, rsp);
+//	engine.serviceRest(this, req, rsp);
     }
 }

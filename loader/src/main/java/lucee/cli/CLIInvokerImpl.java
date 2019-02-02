@@ -32,7 +32,7 @@ import lucee.loader.engine.CFMLEngineFactory;
 
 public class CLIInvokerImpl implements CLIInvoker {
 
-    private final ServletConfigImpl servletConfig;
+//    private final ServletConfigImpl servletConfig;
     private final CFMLEngine engine;
     private long lastAccess;
 
@@ -51,8 +51,8 @@ public class CLIInvokerImpl implements CLIInvoker {
 	else initParams.put("lucee-server-directory", new File(root, "WEB-INF").getAbsolutePath());
 
 	final ServletContextImpl servletContext = new ServletContextImpl(root, attributes, initParams, 1, 0);
-	servletConfig = new ServletConfigImpl(servletContext, servletName);
-	engine = CFMLEngineFactory.getInstance(servletConfig);
+//	servletConfig = new ServletConfigImpl(servletContext, servletName);
+	engine = CFMLEngineFactory.getInstance();
 	servletContext.setLogger(engine.getCFMLEngineFactory().getLogger());
     }
 
@@ -61,7 +61,7 @@ public class CLIInvokerImpl implements CLIInvoker {
 
 	try {
 
-	    engine.cli(config, servletConfig);
+	    engine.cli(config);
 	    lastAccess = System.currentTimeMillis();
 	}
 	catch (final Throwable t) {

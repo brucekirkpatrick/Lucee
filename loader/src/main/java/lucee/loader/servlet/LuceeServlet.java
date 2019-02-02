@@ -39,7 +39,7 @@ public class LuceeServlet extends AbsServlet {
     @Override
     public void init(final ServletConfig sg) throws ServletException {
 	super.init(sg);
-	engine = CFMLEngineFactory.getInstance(sg, this);
+	engine = CFMLEngineFactory.getInstance( this);
     }
 
     /**

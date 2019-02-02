@@ -648,31 +648,31 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	throw new ServletException("CFML Engine is not loaded");
     }
 
-    @Override
-    public void addServletConfig(ServletConfig config) throws ServletException {
-	    CFMLServlet.logStartTime("CFMLServlet addServletConfig start");
-	if (PageSourceImpl.logAccessDirectory == null) {
-	    String str = config.getInitParameter("lucee-log-access-directory");
-	    if (!StringUtil.isEmpty(str)) {
-		File file = new File(str.trim());
-		file.mkdirs();
-		if (file.isDirectory()) {
-		    PageSourceImpl.logAccessDirectory = file;
-		}
-	    }
-	}
+//    @Override
+//    public void addServletConfig(ServletConfig config) throws ServletException {
+//	    CFMLServlet.logStartTime("CFMLServlet addServletConfig start");
+//	if (PageSourceImpl.logAccessDirectory == null) {
+//	    String str = config.getInitParameter("lucee-log-access-directory");
+//	    if (!StringUtil.isEmpty(str)) {
+//		File file = new File(str.trim());
+//		file.mkdirs();
+//		if (file.isDirectory()) {
+//		    PageSourceImpl.logAccessDirectory = file;
+//		}
+//	    }
+//	}
 
-	// FUTURE remove and add a new method for it (search:FUTURE add exeServletContextEvent)
-	if ("LuceeServletContextListener".equals(config.getServletName())) {
-	    try {
-		String status = config.getInitParameter("status");
-		if ("release".equalsIgnoreCase(status)) reset();
-	    }
-	    catch (Exception e) {
-		SystemOut.printDate(e);
-	    }
-	    return;
-	}
+//	// FUTURE remove and add a new method for it (search:FUTURE add exeServletContextEvent)
+//	if ("LuceeServletContextListener".equals(config.getServletName())) {
+//	    try {
+//		String status = config.getInitParameter("status");
+//		if ("release".equalsIgnoreCase(status)) reset();
+//	    }
+//	    catch (Exception e) {
+//		SystemOut.printDate(e);
+//	    }
+//	    return;
+//	}
 
 	// FUTURE remove and add a new method for it (search:FUTURE add exeFilter)
 	/*
@@ -684,20 +684,20 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	 */
 
 	// add EventListener
-	if (scl == null) {
-	    addEventListener(config.getServletContext());
-	}
-
-	servletConfigs.add(config);
-	String real = ReqRspUtil.getRootPath(config.getServletContext());
-	if (!initContextes.containsKey(real)) {
-		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory start");
-	    CFMLFactory jspFactory = loadJSPFactory(getConfigServerImpl(), config, initContextes.size());
-		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory end");
-	    initContextes.put(real, jspFactory);
-		CFMLServlet.logStartTime("CFMLServlet init context(s) end");
-	}
-    }
+//	if (scl == null) {
+//	    addEventListener(config.getServletContext());
+//	}
+//
+//	servletConfigs.add(config);
+//	String real = ReqRspUtil.getRootPath(config.getServletContext());
+//	if (!initContextes.containsKey(real)) {
+//		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory start");
+//	    CFMLFactory jspFactory = loadJSPFactory(getConfigServerImpl(), config, initContextes.size());
+//		CFMLServlet.logStartTime("CFMLServlet loadJSPFactory end");
+//	    initContextes.put(real, jspFactory);
+//		CFMLServlet.logStartTime("CFMLServlet init context(s) end");
+//	}
+//    }
 
     private void filter(ServletRequest req, ServletResponse rsp, FilterChain fc) {
 	// TODO get filter defined in Config
@@ -990,8 +990,8 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public CFMLFactory getCFMLFactory(ServletConfig srvConfig, HttpServletRequest req) throws ServletException {
-	ServletContext srvContext = srvConfig.getServletContext();
+    public CFMLFactory getCFMLFactory(HttpServletRequest req) throws ServletException {
+//	ServletContext srvContext = srvConfig.getServletContext();
 
 	String real = ReqRspUtil.getRootPath(srvContext);
 	ConfigServerImpl cs = getConfigServerImpl();
@@ -1021,12 +1021,12 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
+    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException {
 	_service(servlet, req, rsp, Request.TYPE_LUCEE);
     }
 
     @Override
-    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
+    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException {
 	_service(servlet, req, rsp, Request.TYPE_CFML);
     }
 
@@ -1406,9 +1406,9 @@ public final class CFMLEngineImpl implements CFMLEngine {
     }
 
     @Override
-    public void cli(Map<String, String> config, ServletConfig servletConfig) throws IOException, JspException, ServletException {
-	ServletContext servletContext = servletConfig.getServletContext();
-	HTTPServletImpl servlet = new HTTPServletImpl(servletConfig, servletContext, servletConfig.getServletName());
+    public void cli(Map<String, String> config) throws IOException, JspException {
+//	ServletContext servletContext = servletConfig.getServletContext();
+//	HTTPServletImpl servlet = new HTTPServletImpl(servletConfig, servletContext, servletConfig.getServletName());
 
 	// webroot
 	String strWebroot = config.get("webroot");
@@ -1464,15 +1464,16 @@ public final class CFMLEngineImpl implements CFMLEngine {
 	req.setProtocol("CLI/1.0");
 	HttpServletResponse rsp = new HttpServletResponseDummy(os);
 
-	serviceCFML(servlet, req, rsp);
+//	serviceCFML(servlet, req, rsp);
+	System.out.println("serviceCFML commented out");
 	String res = os.toString(ReqRspUtil.getCharacterEncoding(null, rsp).name());
 	System.out.println(res);
     }
 
-    @Override
-    public ServletConfig[] getServletConfigs() {
-	return servletConfigs.toArray(new ServletConfig[servletConfigs.size()]);
-    }
+//    @Override
+//    public ServletConfig[] getServletConfigs() {
+//	return servletConfigs.toArray(new ServletConfig[servletConfigs.size()]);
+//    }
 
     @Override
     public long uptime() {
@@ -1539,13 +1540,13 @@ public final class CFMLEngineImpl implements CFMLEngine {
 
     @Override
     public PageContext createPageContext(File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers,
-	    Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, long timeout, boolean register) throws ServletException {
+	    Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, long timeout, boolean register) {
 	// FUTURE add first 2 arguments to interface
 	return PageContextUtil.getPageContext(null, null, contextRoot, host, scriptName, queryString, cookies, headers, parameters, attributes, os, register, timeout, false);
     }
 
     @Override
-    public ConfigWeb createConfig(File contextRoot, String host, String scriptName) throws ServletException {
+    public ConfigWeb createConfig(File contextRoot, String host, String scriptName)  {
 	// TODO do a mored rect approach
 	PageContext pc = null;
 	try {

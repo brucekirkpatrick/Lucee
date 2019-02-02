@@ -118,8 +118,7 @@ public class PageContextUtil {
     }
 
     public static PageContext getPageContext(Config config, ServletConfig servletConfig, File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies,
-	    Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, boolean register, long timeout, boolean ignoreScopes)
-	    throws ServletException {
+	    Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, boolean register, long timeout, boolean ignoreScopes) {
 	boolean callOnStart = ThreadLocalPageContext.callOnStart.get();
 	try {
 	    ThreadLocalPageContext.callOnStart.set(false);
@@ -133,7 +132,7 @@ public class PageContextUtil {
 	    catch (Throwable t) {
 		ExceptionUtil.rethrowIfNecessary(t);
 	    }
-	    if (engine == null) throw new ServletException("there is no ServletContext");
+	    if (engine == null) throw new RuntimeException("there is no ServletContext");
 
 	    if (headers == null) headers = new HashMap<String, Object>();
 	    if (parameters == null) parameters = new HashMap<String, String>();
@@ -156,22 +155,22 @@ public class PageContextUtil {
 		servlet = factory.getServlet();
 	    }
 	    else {
-		if (servletConfig == null) {
+//		if (servletConfig == null) {
+//
+//		    ServletConfig[] configs = engine.getServletConfigs();
+//		    String rootDir = contextRoot.getAbsolutePath();
+//
+//		    for (ServletConfig conf: configs) {
+//			if (lucee.commons.io.SystemUtil.arePathsSame(rootDir, conf.getServletContext().getRealPath("/"))) {
+//			    servletConfig = conf;
+//			    break;
+//			}
+//		    }
+//
+//		    if (servletConfig == null) servletConfig = configs[0];
+//		}
 
-		    ServletConfig[] configs = engine.getServletConfigs();
-		    String rootDir = contextRoot.getAbsolutePath();
-
-		    for (ServletConfig conf: configs) {
-			if (lucee.commons.io.SystemUtil.arePathsSame(rootDir, conf.getServletContext().getRealPath("/"))) {
-			    servletConfig = conf;
-			    break;
-			}
-		    }
-
-		    if (servletConfig == null) servletConfig = configs[0];
-		}
-
-		factory = engine.getCFMLFactory(servletConfig, req);
+		factory = engine.getCFMLFactory(req);
 		servlet = new HTTPServletImpl(servletConfig, servletConfig.getServletContext(), servletConfig.getServletName());
 	    }
 

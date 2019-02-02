@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.script.ScriptEngineFactory;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -80,22 +78,15 @@ public interface CFMLEngine {
      */
     public static int CAN_UPDATE = 0;
 
-    /**
-     * Field <code>CAN_RESTART</code>
-     */
-    public static int CAN_RESTART = 1;
-    public static int CAN_RESTART_ALL = CAN_RESTART;
-    public static int CAN_RESTART_CONTEXT = 2;
+//    /**
+//     * Field <code>CAN_RESTART</code>
+//     */
+//    public static int CAN_RESTART = 1;
+//    public static int CAN_RESTART_ALL = CAN_RESTART;
+//    public static int CAN_RESTART_CONTEXT = 2;
+//
+//    public abstract CFMLFactory getCFMLFactory(HttpServletRequest req);
 
-    public abstract CFMLFactory getCFMLFactory(ServletConfig srvConfig, HttpServletRequest req) throws ServletException;
-
-    /**
-     * adds a servlet config
-     * 
-     * @param config
-     * @throws ServletException
-     */
-    public abstract void addServletConfig(ServletConfig config) throws ServletException;
 
     /**
      * method to invoke the engine for a regular Lucee call
@@ -103,11 +94,9 @@ public interface CFMLEngine {
      * @param servlet
      * @param req
      * @param rsp
-     * @throws ServletException
      * @throws IOException
-     * @throws ServletException
      */
-    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException;
+    public void service(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
 
     /**
      * method to invoke the engine for CFML
@@ -115,44 +104,42 @@ public interface CFMLEngine {
      * @param servlet
      * @param req
      * @param rsp
-     * @throws ServletException
      * @throws IOException
-     * @throws ServletException
      */
-    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException;
+    public void serviceCFML(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
 
-    /**
-     * method to invoke the engine for AMF
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     */
-    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
+//    /**
+//     * method to invoke the engine for AMF
+//     *
+//     * @param servlet
+//     * @param req
+//     * @param rsp
+//     * @throws ServletException
+//     * @throws IOException
+//     */
+//    public void serviceAMF(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
+//
+//    /**
+//     * method to invoke the engine for a simple file
+//     *
+//     * @param servlet
+//     * @param req
+//     * @param rsp
+//     * @throws ServletException
+//     * @throws IOException
+//     */
+//    public void serviceFile(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
 
-    /**
-     * method to invoke the engine for a simple file
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     */
-    public void serviceFile(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
-
-    /**
-     * method to invoke the engine for a Rest Requests
-     * 
-     * @param servlet
-     * @param req
-     * @param rsp
-     * @throws ServletException
-     * @throws IOException
-     */
-    public abstract void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException;
+//    /**
+//     * method to invoke the engine for a Rest Requests
+//     *
+//     * @param servlet
+//     * @param req
+//     * @param rsp
+//     * @throws ServletException
+//     * @throws IOException
+//     */
+//    public abstract void serviceRest(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp) throws IOException;
 
     public Info getInfo();
 
@@ -309,10 +296,9 @@ public interface CFMLEngine {
      * create and register a PageContext, use releasePageContext when done
      * 
      * @return PageContext Object created
-     * @throws ServletException
      */
     public PageContext createPageContext(File contextRoot, String host, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers,
-	    Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, long timeout, boolean register) throws ServletException;
+	    Map<String, String> parameters, Map<String, Object> attributes, OutputStream os, long timeout, boolean register);
 
     /**
      * 
@@ -321,13 +307,13 @@ public interface CFMLEngine {
      */
     public void releasePageContext(PageContext pc, boolean unregister);
 
-    public ConfigWeb createConfig(File contextRoot, String host, String scriptName) throws ServletException;
+    public ConfigWeb createConfig(File contextRoot, String host, String scriptName);
 
     public VideoUtil getVideoUtil();
 
     public ZipUtil getZipUtil();
 
-    public abstract void cli(Map<String, String> config, ServletConfig servletConfig) throws IOException, JspException, ServletException;
+    public abstract void cli(Map<String, String> config) throws IOException, JspException;
 
     public abstract void registerThreadPageContext(PageContext pc);
 
@@ -337,7 +323,6 @@ public interface CFMLEngine {
 
     public long uptime();
 
-    public ServletConfig[] getServletConfigs();
 
     /*
      * get the OSGi Bundle of the core
