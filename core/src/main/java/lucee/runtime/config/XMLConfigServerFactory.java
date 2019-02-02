@@ -154,18 +154,18 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 		    CFMLServlet.logStartTime("XMLConfigServerFactory load10");
 
 		    // TODO: temporarily disabled because the deploy process doesn't work, and they are not installed on windows
-//		    for (int i=0;i<StaticConfig.extensionName.length;i++) {
-//			    int index=i;
-//			    RHExtension rhe=null;
-//			    try {
-//				    rhe = new RHExtension(config, index);
-//
-//				    if (rhe.getStartBundles()) rhe.deployBundles(config);
-//				    extensions.add((RHExtension) rhe);
-//			    } catch (Exception e) {
-//				    throw new RuntimeException("Failed to load osgi extension #" + index);
-//			    }
-//		    }
+		    for (int i=0;i<StaticConfig.extensionName.length;i++) {
+			    int index=i;
+			    RHExtension rhe=null;
+			    try {
+				    rhe = new RHExtension(config, index);
+
+				    if (rhe.getStartBundles()) rhe.deployBundles(config);
+				    extensions.add((RHExtension) rhe);
+			    } catch (Exception e) {
+				    throw new RuntimeException("Failed to load osgi extension #" + index);
+			    }
+		    }
 		    config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
 		    config.cfmlCoreTLDs =TagLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
 		    config.cfmlCoreFLDs =FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
@@ -280,20 +280,21 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 
 
 		    // TODO: temporarily disabled because the deploy process doesn't work, and they are not installed on windows
-//		    for (int i=0;i<StaticConfig.extensionName.length;i++) {
-//		    	int index=i;
-//			    futures2.add(executor.submit(() -> {
-//				    RHExtension rhe=null;
-//				    try {
-//					    rhe = new RHExtension(config, index);
-//
-//					    if (rhe.getStartBundles()) rhe.deployBundles(config);
-//					    return rhe;
-//				    } catch (Exception e) {
-//					    throw new RuntimeException("Failed to load osgi extension #" + index);
-//				    }
-//			    }));
-//		    }
+		    futures2.add(executor.submit(() -> {
+			    RHExtension[] arrExtension=new RHExtension[StaticConfig.extensionName.length];
+			    for (int i=0;i<StaticConfig.extensionName.length;i++) {
+				    RHExtension rhe = null;
+				    try {
+					    rhe = new RHExtension(config, i);
+
+					    if (rhe.getStartBundles()) rhe.deployBundles(config);
+					    arrExtension[i]=rhe;
+				    } catch (Exception e) {
+					    throw new RuntimeException("Failed to load osgi extension #" + i);
+				    }
+			    }
+			    return arrExtension;
+		    }));
 
 		    for (int i = 0; i < futures.size(); i++) {
 			    try {
@@ -349,8 +350,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 				    Object obj = futures2.get(i).get();
 				    if (obj instanceof Boolean) {
 					    continue;
-				    }else if(obj instanceof RHExtension) {
-					    extensions.add((RHExtension) obj);
+				    }else if(obj instanceof RHExtension[]) {
+					    config.setExtensions((RHExtension[]) obj);
 				    }else{
 					    throw new RuntimeException("Failed to load future: " + i + " in XMLConfigWebFactory");
 				    }
@@ -358,7 +359,6 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 				    throw new RuntimeException(e);
 			    }
 		    }
-		    config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
 		    executor.shutdown();
 		    CFMLServlet.logStartTime("XMLConfigServerFactory after load threads part 2");
 

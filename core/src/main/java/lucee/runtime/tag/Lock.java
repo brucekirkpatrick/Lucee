@@ -296,7 +296,7 @@ public final class Lock extends BodyTagTryCatchFinallyImpl {
     private void _release(PageContext pc, long exe) {
 	ActiveLock al = ((PageContextImpl) pc).releaseActiveLock();
 	// listener
-	((ConfigWebImpl) pc.getConfig()).getActionMonitorCollector().log(pageContext, "lock", "Lock", exe, al.name + ":" + al.timeoutInMillis);
+//	((ConfigWebImpl) pc.getConfig()).getActionMonitorCollector().log(pageContext, "lock", "Lock", exe, al.name + ":" + al.timeoutInMillis);
 
     }
 

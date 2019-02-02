@@ -901,7 +901,7 @@ public final class SMTPClient implements Serializable {
 	props.put("tos", this.tos);
 	props.put("username", this.username);
 	props.put("xmailer", this.xmailer);
-	((ConfigWebImpl) config).getActionMonitorCollector().log(config, "mail", "Mail", exe, props);
+//	((ConfigWebImpl) config).getActionMonitorCollector().log(config, "mail", "Mail", exe, props);
 
     }
 

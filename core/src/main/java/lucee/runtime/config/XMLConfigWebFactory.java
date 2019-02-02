@@ -314,6 +314,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		}else {
 
+			configWeb.setExtensions(configServer.getExtensions());
 			futures.add(executor.submit(() -> {
 				load(configServer, configWeb, doc, false, doNew);
 				configWeb.doc = doc;
@@ -677,11 +678,11 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		if (config instanceof ConfigWeb) ConfigWebUtil.deployWeb(cs, (ConfigWeb) config, false);
 //		CFMLServlet.logStartTime("XMLConfigWebFactory load2 after deployWeb");
 
-//		try {
-//			ConfigWebUtil.loadLib(cs, config);
-//		} catch (Exception e) {
-//			log(config, log, e);
-//		}
+		try {
+			ConfigWebUtil.loadLib(cs, config);
+		} catch (Exception e) {
+			log(config, log, e);
+		}
 //		CFMLServlet.logStartTime("XMLConfigWebFactory load9 after loadLib");
 	}
 
@@ -3815,29 +3816,29 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 	 * @param log
 	 */
 	private static void loadExtensionBundles(ConfigServerImpl cs, ConfigImpl config, Document doc, Log log) {
-		try {
-//			Element parent = getChildByName(doc.getDocumentElement(), "extensions");
-//			Element[] children = getChildren(parent, "rhextension");
-			String strBundles;
-			List<RHExtension> extensions = new ArrayList<RHExtension>();
-
-			RHExtension rhe;
-			for (int i=0;i<StaticConfig.extensionName.length;i++) {
-				BundleInfo[] bfsq;
-				try {
-					rhe = new RHExtension(config, i);
-
-					if (rhe.getStartBundles()) rhe.deployBundles(config);
-					extensions.add(rhe);
-				} catch (Exception e) {
-					log.error("load-extension", e);
-					continue;
-				}
-			}
-			config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
-		} catch (Exception e) {
-			log(config, log, e);
-		}
+//		try {
+////			Element parent = getChildByName(doc.getDocumentElement(), "extensions");
+////			Element[] children = getChildren(parent, "rhextension");
+//			String strBundles;
+//			List<RHExtension> extensions = new ArrayList<RHExtension>();
+//
+//			RHExtension rhe;
+//			for (int i=0;i<StaticConfig.extensionName.length;i++) {
+//				BundleInfo[] bfsq;
+//				try {
+//					rhe = new RHExtension(config, i);
+//
+//					if (rhe.getStartBundles()) rhe.deployBundles(config);
+//					extensions.add(rhe);
+//				} catch (Exception e) {
+//					log.error("load-extension", e);
+//					continue;
+//				}
+//			}
+//			config.setExtensions(extensions.toArray(new RHExtension[extensions.size()]));
+//		} catch (Exception e) {
+//			log(config, log, e);
+//		}
 	}
 
 //	private static void loadExtensions(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {

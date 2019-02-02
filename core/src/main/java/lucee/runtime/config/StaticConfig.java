@@ -199,32 +199,32 @@ public class StaticConfig {
 	// <rhextension>
 	// mariadb is not in the list below because we install it manually instead
 	public static String[] extensionName=new String[]{
-		"Image extension",
+//		"Image extension",
 		"ReloadLuceeExtension extension",
 		"ScryptEncrypt extension"
 	};
 	public static String[] extensionFileName=new String[]{
-		"rsbclp29cssd.lex",
+//		"rsbclp29cssd.lex",
 		"1cdazsrfl31sl.lex",
 		"9nus900n160j.lex"
 	};
 	public static String[] extensionID=new String[]{
-		"B737ABC4-D43F-4D91-8E8E973E37C40D1B",
+//		"B737ABC4-D43F-4D91-8E8E973E37C40D1B",
 		"B8E98794-20C7-4604-8DF43FDB06535014",
 		"EA788F94-59AF-4059-A76511AC6B016595"
 	};
 	public static String[] extensionCoreVersion=new String[]{
-		"5.3.2.16",
+//		"5.3.2.16",
 		"5.3.2.16",
 		"5.3.2.16"
 	};
 	public static boolean[] extensionStartBundles=new boolean[]{
-		false,
+//		false,
 		true,
 		true
 	};
 	public static String[] extensionReleaseType=new String[]{
-		"all",
+//		"all",
 		"all",
 		"all"
 	};
