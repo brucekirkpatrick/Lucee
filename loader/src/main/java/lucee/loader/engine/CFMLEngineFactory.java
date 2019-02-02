@@ -478,7 +478,7 @@ public class CFMLEngineFactory extends CFMLEngineFactorySupport {
 		// Default storage clean if not set above
 //		final String storageClean = (String) config.get(Constants.FRAMEWORK_STORAGE_CLEAN);
 //		if (Util.isEmpty(storageClean))
-			config.put(Constants.FRAMEWORK_STORAGE_CLEAN, "none");//Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+			config.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT); //"none");//
 
 		// parent classLoader
 		final String parentClassLoader = (String) config.get(Constants.FRAMEWORK_BUNDLE_PARENT);
