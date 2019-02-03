@@ -207,11 +207,11 @@ public final class Admin extends TagImpl implements DynamicAttributes {
     private static final Collection.Key TEMPLATES = KeyConstants._templates;
     private static final Collection.Key STR = KeyConstants._str;
     private static final Collection.Key DO_STATUS_CODE = KeyImpl.intern("doStatusCode");
-//    private static final Collection.Key LABEL = KeyConstants._label;
+    private static final Collection.Key LABEL = KeyConstants._label;
     private static final Collection.Key FILE_ACCESS = KeyImpl.intern("file_access");
-//    private static final Collection.Key IP_RANGE = KeyImpl.intern("ipRange");
-//    private static final Collection.Key CUSTOM = KeyConstants._custom;
-//    private static final Collection.Key READONLY = KeyImpl.intern("readOnly");
+    private static final Collection.Key IP_RANGE = KeyImpl.intern("ipRange");
+    private static final Collection.Key CUSTOM = KeyConstants._custom;
+    private static final Collection.Key READONLY = KeyImpl.intern("readOnly");
     private static final Collection.Key LOG_ENABLED = KeyImpl.intern("logEnabled");
     private static final Collection.Key CLASS = KeyConstants._class;
 
@@ -580,6 +580,7 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 //	}
 //	else
 		if (check("getinfo", ACCESS_FREE) && check2(ACCESS_READ)) doGetInfo();
+		else if (check("getDebugEntry", ACCESS_FREE)) doGetDebugEntry();
 	else if (check("surveillance", ACCESS_FREE) && check2(ACCESS_READ)) doSurveillance();
 //	else if (check("getRegional", ACCESS_FREE) && check2(ACCESS_READ)) doGetRegional();
 //	else if (check("isMonitorEnabled", ACCESS_NOT_WHEN_WEB) && check2(ACCESS_READ)) doIsMonitorEnabled();
@@ -666,7 +667,6 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 //	else if (check("getJavaCfxTags", ACCESS_FREE) && check2(ACCESS_READ)) doGetJavaCFXTags();
 //	else if (check("getDebug", ACCESS_FREE) && check2(ACCESS_READ)) doGetDebug();
 //	else if (check("getSecurity", ACCESS_FREE) && check2(ACCESS_READ)) doGetSecurity();
-//	else if (check("getDebugEntry", ACCESS_FREE)) doGetDebugEntry();
 //	else if (check("getError", ACCESS_FREE) && check2(ACCESS_READ)) doGetError();
 //	else if (check("verifyremoteclient", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyRemoteClient();
 //	else if (check("verifyDatasource", ACCESS_FREE) && check2(ACCESS_READ)) doVerifyDatasource();
@@ -1734,24 +1734,24 @@ public final class Admin extends TagImpl implements DynamicAttributes {
 //	adminSync.broadcast(attributes, config);
 //    }
 
-//    private void doGetDebugEntry() throws PageException {
-//	DebugEntry[] entries = config.getDebugEntries();
-//
-//	String rtn = getString("admin", action, "returnVariable");
-//	lucee.runtime.type.Query qry = new QueryImpl(new Collection.Key[] { KeyConstants._id, LABEL, IP_RANGE, READONLY, KeyConstants._type, CUSTOM }, entries.length, rtn);
-//	pageContext.setVariable(rtn, qry);
-//	DebugEntry de;
-//	for (int i = 0; i < entries.length; i++) {
-//	    int row = i + 1;
-//	    de = entries[i];
-//	    qry.setAtEL(KeyConstants._id, row, de.getId());
-//	    qry.setAtEL(LABEL, row, de.getLabel());
-//	    qry.setAtEL(IP_RANGE, row, de.getIpRangeAsString());
-//	    qry.setAtEL(KeyConstants._type, row, de.getType());
-//	    qry.setAtEL(READONLY, row, Caster.toBoolean(de.isReadOnly()));
-//	    qry.setAtEL(CUSTOM, row, de.getCustom());
-//	}
-//    }
+    private void doGetDebugEntry() throws PageException {
+	DebugEntry[] entries = config.getDebugEntries();
+
+	String rtn = getString("admin", action, "returnVariable");
+	lucee.runtime.type.Query qry = new QueryImpl(new Collection.Key[] { KeyConstants._id, LABEL, IP_RANGE, READONLY, KeyConstants._type, CUSTOM }, entries.length, rtn);
+	pageContext.setVariable(rtn, qry);
+	DebugEntry de;
+	for (int i = 0; i < entries.length; i++) {
+	    int row = i + 1;
+	    de = entries[i];
+	    qry.setAtEL(KeyConstants._id, row, de.getId());
+	    qry.setAtEL(LABEL, row, de.getLabel());
+	    qry.setAtEL(IP_RANGE, row, de.getIpRangeAsString());
+	    qry.setAtEL(KeyConstants._type, row, de.getType());
+	    qry.setAtEL(READONLY, row, Caster.toBoolean(de.isReadOnly()));
+	    qry.setAtEL(CUSTOM, row, de.getCustom());
+	}
+    }
 
 //    private void doUpdateError() throws PageException {
 //

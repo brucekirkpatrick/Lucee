@@ -762,7 +762,7 @@ public final class Query extends BodyTagTryCatchFinallyImpl {
 	    }
 
 	    // listener
-//	    ((ConfigWebImpl) pageContext.getConfig()).getActionMonitorCollector().log(pageContext, "query", "Query", exe, queryResult);
+	    ((ConfigWebImpl) pageContext.getConfig()).getActionMonitorCollector().log(pageContext, "query", "Query", exe, queryResult);
 	    if (data.listener != null) {
 		Struct args = createArgStruct(data, strSQL, tl);
 		if (setResult) args.set("result", queryResult);

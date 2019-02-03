@@ -699,7 +699,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		loadQueue(cs, config, doc, log);
 //		CFMLServlet.logStartTime("XMLConfigWebFactory load10 after loadQueue");
 		// if(LOG) SystemOut.printDate("loaded queue");
-//		loadMonitors(cs, config, doc, log);
+		loadMonitors(cs, config, doc, log);
 		// if(LOG) SystemOut.printDate("loaded monitors");
 //		loadLogin(cs, config, doc, log);
 		// if(LOG) SystemOut.printDate("loaded login");
@@ -3596,24 +3596,24 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setMailServers(servers.toArray(new Server[servers.size()]));
 	}
 
-//	private static void loadMonitors(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-//		try {
-//			// only load in server context
-//			if (configServer != null) return;
-//
-//			configServer = (ConfigServerImpl) config;
-//
+	private static void loadMonitors(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
+		try {
+			// only load in server context
+			if (configServer != null) return;
+
+			configServer = (ConfigServerImpl) config;
+
 //			Element parent = getChildByName(doc.getDocumentElement(), "monitoring");
 //			Boolean enabled = Caster.toBoolean(getAttr(parent, "enabled"), null);
 //			if (enabled != null) configServer.setMonitoringEnabled(enabled.booleanValue());
-//			// SystemOut.printDate(config.getOutWriter(), "monitoring is " + (enabled ? "enabled" :
-//			// "disabled"));
-//
+			// SystemOut.printDate(config.getOutWriter(), "monitoring is " + (enabled ? "enabled" :
+			// "disabled"));
+
 //			Element[] children = getChildren(parent, "monitor");
-//
-//			java.util.List<IntervallMonitor> intervalls = new ArrayList<IntervallMonitor>();
-//			java.util.List<RequestMonitor> requests = new ArrayList<RequestMonitor>();
-//			java.util.List<MonitorTemp> actions = new ArrayList<MonitorTemp>();
+
+			java.util.List<IntervallMonitor> intervalls = new ArrayList<IntervallMonitor>();
+			java.util.List<RequestMonitor> requests = new ArrayList<RequestMonitor>();
+			java.util.List<MonitorTemp> actions = new ArrayList<MonitorTemp>();
 //			String strType, name;
 //			ClassDefinition cd;
 //			boolean _log, async;
@@ -3661,16 +3661,16 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //				}
 //
 //			}
-//			configServer.setRequestMonitors(requests.toArray(new RequestMonitor[requests.size()]));
-//			configServer.setIntervallMonitors(intervalls.toArray(new IntervallMonitor[intervalls.size()]));
-//			ActionMonitorCollector actionMonitorCollector = ActionMonitorFatory.getActionMonitorCollector(configServer, actions.toArray(new MonitorTemp[actions.size()]));
-//			configServer.setActionMonitorCollector(actionMonitorCollector);
-//
-//			((CFMLEngineImpl) configServer.getCFMLEngine()).touchMonitor(configServer);
-//		} catch (Exception e) {
-//			log(config, log, e);
-//		}
-//	}
+			configServer.setRequestMonitors(requests.toArray(new RequestMonitor[requests.size()]));
+			configServer.setIntervallMonitors(intervalls.toArray(new IntervallMonitor[intervalls.size()]));
+			ActionMonitorCollector actionMonitorCollector = ActionMonitorFatory.getActionMonitorCollector(configServer, actions.toArray(new MonitorTemp[actions.size()]));
+			configServer.setActionMonitorCollector(actionMonitorCollector);
+
+			((CFMLEngineImpl) configServer.getCFMLEngine()).touchMonitor(configServer);
+		} catch (Exception e) {
+			log(config, log, e);
+		}
+	}
 
 //	/**
 //	 * @param configServer
@@ -3739,12 +3739,12 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 
 		// debug options
 		int options = 0;
-		if(StaticConfig.debugDatabase==1) options += ConfigImpl.DEBUG_DATABASE;
-		if (StaticConfig.debugException==1) options += ConfigImpl.DEBUG_EXCEPTION;
-		if (StaticConfig.debugDump==1) options += ConfigImpl.DEBUG_DUMP;
-		if (StaticConfig.debugTracing==1) options += ConfigImpl.DEBUG_TRACING;
-		if (StaticConfig.debugTimer==1) options += ConfigImpl.DEBUG_TIMER;
-		if (StaticConfig.debugQueryUsage==1) options += ConfigImpl.DEBUG_QUERY_USAGE;
+		if(StaticConfig.debugDatabase==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_DATABASE;
+		if (StaticConfig.debugException==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_EXCEPTION;
+		if (StaticConfig.debugDump==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_DUMP;
+		if (StaticConfig.debugTracing==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_TRACING;
+		if (StaticConfig.debugTimer==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_TIMER;
+		if (StaticConfig.debugQueryUsage==ConfigImpl.CLIENT_BOOLEAN_TRUE) options += ConfigImpl.DEBUG_QUERY_USAGE;
 		config.setDebugMaxRecordsLogged(StaticConfig.debugMaxRecords);
 		config.setDebugOptions(options);
 	}
