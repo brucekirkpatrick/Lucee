@@ -393,6 +393,8 @@
     <echots message="compile core"/>
     <!-- set the loader as classpath -->
     <path id="classpath">
+        <!--this links java-cli-test to lucee core-->
+        <pathelement location="C:\Users\Bruce\IdeaProjects\java-cli-test\target\classes" />
       <pathelement location="${temp}/loader" />
       <pathelement path="${dependencies}"/>
     </path>

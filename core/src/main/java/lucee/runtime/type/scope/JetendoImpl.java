@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static lucee.loader.servlet.CFMLServlet.startEngineTime;
 import static lucee.runtime.Component.ACCESS_PRIVATE;
+import com.jetendo.MyClass;
 
 /**
  * Server Scope
@@ -49,7 +50,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public static Component template=null;
     public static UDFPlus templateSetTag=null;
     public static UDFImpl templateGetString=null;
-
+    public static MyClass myClass;
 
     /*
     TODO: many cfcs and java static instances cached here
@@ -68,7 +69,15 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
 
     public PageContextImpl pageContext;
 
+    public Double getMyClassStatic(){
+//        return 1.0D;
+        myClass=new MyClass();
+        return myClass.getNum();
+//        return MyClass.staticField;
+    }
     public Boolean memberBoolFunc(){
+
+
         return memberBool2;
     }
     public static Boolean memberBoolFuncStatic(){
