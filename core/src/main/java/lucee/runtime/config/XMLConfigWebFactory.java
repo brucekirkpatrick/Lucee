@@ -665,7 +665,7 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		// if(LOG) SystemOut.printDate("loaded setting");
 //		loadProxy(cs, config, doc, log);
 		// if(LOG) SystemOut.printDate("loaded proxy");
-//		loadRemoteClient(cs, config, doc, log);
+		loadRemoteClient(cs, config, doc, log);
 		// if(LOG) SystemOut.printDate("loaded remote clients");
 //		loadVideo(cs, config, doc, log);
 //		// if(LOG) SystemOut.printDate("loaded video");
@@ -3266,17 +3266,17 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 		config.setDevelopMode(false);
 	}
 
-//	private static void loadRemoteClient(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
-//		try {
+	private static void loadRemoteClient(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
+		try {
 //			boolean hasAccess = ConfigWebUtil.hasAccess(config, SecurityManagerImpl.TYPE_REMOTE);
-//
-//			// SNSN
-//			// RemoteClientUsage
-//
-//			// boolean hasCS=configServer!=null;
+
+			// SNSN
+			// RemoteClientUsage
+
+			// boolean hasCS=configServer!=null;
 //			Element _clients = getChildByName(doc.getDocumentElement(), "remote-clients");
-//
-//			// usage
+
+			// usage
 //			String strUsage = getAttr(_clients, "usage");
 //			Struct sct;
 //			if (!StringUtil.isEmpty(strUsage))
@@ -3290,16 +3290,17 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //				}
 //			}
 //			config.setRemoteClientUsage(sct);
-//
-//			// max-threads
+
+			// max-threads
 //			int maxThreads = Caster.toIntValue(getAttr(_clients, "max-threads"), -1);
 //			if (maxThreads < 1 && configServer != null) {
 //				SpoolerEngineImpl engine = (SpoolerEngineImpl) configServer.getSpoolerEngine();
 //				if (engine != null) maxThreads = engine.getMaxThreads();
 //			}
-//			if (maxThreads < 1) maxThreads = 20;
-//
-//			// directory
+//			if (maxThreads < 1)
+//			int maxThreads = 20;
+
+			// directory
 //			String strDir = SystemUtil.getSystemPropOrEnvVar("lucee.task.directory", null);
 //			if (StringUtil.isEmpty(strDir)) strDir = _clients.getAttribute("directory");
 //			Resource file = ConfigWebUtil.getFile(config.getRootDirectory(), strDir, "client-task", config.getConfigDir(), FileUtil.TYPE_DIR, config);
@@ -3347,24 +3348,25 @@ public final class XMLConfigWebFactory extends XMLConfigFactory {
 //			}
 //			if (list.size() > 0) config.setRemoteClients(list.toArray(new RemoteClient[list.size()]));
 //			else config.setRemoteClients(new RemoteClient[0]);
-//
-//			// init spooler engine
-//			Resource dir = config.getRemoteClientDirectory();
-//			if (dir != null && !dir.exists()) dir.mkdirs();
-//			if (config.getSpoolerEngine() == null) {
-//				config.setSpoolerEngine(new SpoolerEngineImpl(config, dir, "Remote Client Spooler", config.getLog("remoteclient"), maxThreads));
-//			} else {
-//				SpoolerEngineImpl engine = (SpoolerEngineImpl) config.getSpoolerEngine();
-//				engine.setConfig(config);
-//				engine.setLog(config.getLog("remoteclient"));
-//				engine.setPersisDirectory(dir);
-//				engine.setMaxThreads(maxThreads);
-//
-//			}
-//		} catch (Exception e) {
-//			log(config, log, e);
-//		}
-//	}
+
+			int maxThreads = 20;
+			// init spooler engine
+			Resource dir = config.getRemoteClientDirectory();
+			if (dir != null && !dir.exists()) dir.mkdirs();
+			if (config.getSpoolerEngine() == null) {
+				config.setSpoolerEngine(new SpoolerEngineImpl(config, dir, "Remote Client Spooler", config.getLog("remoteclient"), maxThreads));
+			} else {
+				SpoolerEngineImpl engine = (SpoolerEngineImpl) config.getSpoolerEngine();
+				engine.setConfig(config);
+				engine.setLog(config.getLog("remoteclient"));
+				engine.setPersisDirectory(dir);
+				engine.setMaxThreads(maxThreads);
+
+			}
+		} catch (Exception e) {
+			log(config, log, e);
+		}
+	}
 
 	private static void loadSystem(ConfigServerImpl configServer, ConfigImpl config, Document doc, Log log) {
 
