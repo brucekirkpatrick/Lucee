@@ -293,12 +293,12 @@ public final class Controler extends Thread {
 		}
 		ThreadLocalConfig.register(config);
 
-		try {
-		    ((SchedulerImpl) ((ConfigWebImpl) config).getScheduler()).startIfNecessary();
-		}
-		catch (Exception e) {
-		    SystemOut.printDate(e);
-		}
+//		try {
+//		    ((SchedulerImpl) ((ConfigWebImpl) config).getScheduler()).startIfNecessary();
+//		}
+//		catch (Exception e) {
+//		    SystemOut.printDate(e);
+//		}
 
 		// double check templates
 		try {
