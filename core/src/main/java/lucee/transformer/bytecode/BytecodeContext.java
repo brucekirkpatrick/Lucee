@@ -24,8 +24,11 @@ import java.util.List;
 import java.util.Stack;
 
 import lucee.runtime.type.Collection;
+import lucee.runtime.type.KeyImpl;
+import lucee.transformer.bytecode.fieldContainer.Field100;
 import lucee.transformer.bytecode.util.Types;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
@@ -64,6 +67,11 @@ public class BytecodeContext implements Context {
     private static long _id = 0;
 
     private HashMap<Collection.Key, Integer> localMap=new HashMap<>();
+	private HashMap<Collection.Key, String> localFieldMap=new HashMap<>();
+	int localFieldIndex=0;
+	boolean fieldClassLoaded=false;
+	Collection.Key fieldClazzKey=new KeyImpl("__Field100");
+	public Type fieldClazzType = Type.getType(Field100.class);
     public int getLocalIndex(Collection.Key key, Type type, boolean createIfMissing){
     	int localInteger=localMap.getOrDefault(key, -1);
     	if(localInteger==-1 && createIfMissing){
@@ -72,6 +80,30 @@ public class BytecodeContext implements Context {
 	    }
     	return localInteger;
     }
+	public String getLocalField(Collection.Key key, boolean createIfMissing){
+		String localFieldName=localFieldMap.getOrDefault(key, null);
+		if(localFieldName==null && createIfMissing){
+			localFieldIndex++;
+			localFieldName="field"+localFieldIndex;
+			localFieldMap.put(key, localFieldName);
+		}
+		return localFieldName;
+	}
+	public void loadFieldClass(){
+		int localIndex=getLocalIndex(fieldClazzKey, fieldClazzType, true);
+    	if(fieldClassLoaded){
+    		adapter.loadLocal(localIndex, fieldClazzType);
+    	    return;
+	    }
+
+		// localFieldClass
+		adapter.newInstance(fieldClazzType);
+    	adapter.dup();
+		fieldClassLoaded=true;
+		adapter.visitMethodInsn(Opcodes.INVOKESPECIAL, "lucee/transformer/bytecode/fieldContainer/Field100", "<init>", "()V", false);
+		adapter.storeLocal(localIndex);
+		adapter.loadLocal(localIndex, fieldClazzType);
+	}
 
     private synchronized static String id() {
 	if (_id < 0) _id = 0;

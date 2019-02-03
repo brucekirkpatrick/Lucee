@@ -713,12 +713,19 @@ public class VariableImpl extends ExpressionBase implements Variable {
 		Field field = getField(clazz, memberName);
 		if (field == null) {
 			// gets the value from a local variable if the scope didn't have the field
-			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
-			if(localIndex==-1){
-				throw new RuntimeException("There is no field or local that is named: " + memberName + " in " + clazz.getCanonicalName());
-			}
-			adapter.loadLocal(localIndex);
+			// new method using empty field class
+			bc.loadFieldClass();
+			String localFieldName=bc.getLocalField(new KeyImpl(memberName), true);
+			adapter.getField(bc.fieldClazzType, localFieldName, Types.OBJECT);
 			return Types.OBJECT;
+
+			// old method using java locals
+//			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, false);
+//			if(localIndex==-1){
+//				throw new RuntimeException("There is no field or local that is named: " + memberName + " in " + clazz.getCanonicalName());
+//			}
+//			adapter.loadLocal(localIndex);
+//			return Types.OBJECT;
 		}
 		// verify field is accessible
 		int modifiers = field.getModifiers();

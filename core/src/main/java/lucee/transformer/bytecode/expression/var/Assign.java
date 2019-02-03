@@ -19,12 +19,10 @@
 package lucee.transformer.bytecode.expression.var;
 
 import lucee.runtime.tag.define.Define;
-import lucee.runtime.tag.define.DefineType;
 import lucee.runtime.tag.define.DefineTypeMatch;
 import lucee.runtime.type.KeyImpl;
 import lucee.runtime.type.scope.JetendoImpl;
-import lucee.runtime.type.scope.ServerImpl;
-import lucee.transformer.bytecode.reflection.ASMProxyFactory;
+import lucee.transformer.bytecode.fieldContainer.Field100;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -225,13 +223,25 @@ public static void getValueOf(GeneratorAdapter adapter, Class<?> rtn) {
 		Field field = getField(clazz, memberName);
 		if (field == null) {
 			// creates a local variable if the scope didn't have the field
-			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
-//			value.writeOut(bc, MODE_VALUE);
-			value.writeOut(bc, MODE_REF);
+			// new method based on empty field classes
+			bc.loadFieldClass();
 			adapter.dup();
-			adapter.storeLocal(localIndex);
-//			throw new RuntimeException("There is no field named: " + memberName + " in " + clazz.getCanonicalName());
-			return Types.OBJECT;
+
+			value.writeOut(bc, MODE_REF);
+//			getValueOf(adapter, fieldClazz);
+//			adapter.checkCast(Types.OBJECT);
+//			adapter.dup();
+			String localFieldName=bc.getLocalField(new KeyImpl(memberName), true);
+			adapter.putField(bc.fieldClazzType, localFieldName, Types.OBJECT);
+//			adapter.getField(bc.fieldClazzType, localFieldName, Types.OBJECT);
+			return Types.VOID;//OBJECT;
+
+			// old method based on java locals
+//			int localIndex=bc.getLocalIndex(new KeyImpl(memberName), Types.OBJECT, true);
+//			value.writeOut(bc, MODE_REF);
+//			adapter.dup();
+//			adapter.storeLocal(localIndex);
+//			return Types.OBJECT;
 		}
 		// verify field is accessible
 		int modifiers = field.getModifiers();

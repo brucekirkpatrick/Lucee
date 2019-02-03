@@ -92,6 +92,8 @@ public final class VariableInterpreter {
 //	    return "cluster";
 	case Scope.SCOPE_LOCAL:
 	    return "local";
+	case Scope.SCOPE_JETENDO:
+		return "jetendo";
 	}
 	return null;
     }
