@@ -19,6 +19,7 @@ target/*
 *.cfc.hbm.xml
 /cache
 WEB-INF
+jar-resources-bundles/bundles/javaclitest-*
 
 
 .classpath

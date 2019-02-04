@@ -18,6 +18,7 @@
  */
 package lucee.runtime.type.scope;
 
+import com.jetendo.http.server.AIOHTTPServer;
 import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.Component;
 import lucee.runtime.ComponentImpl;
@@ -27,9 +28,9 @@ import lucee.runtime.component.Member;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.functions.other.CreateObject;
 import lucee.runtime.type.*;
 
+import java.io.IOException;
 import java.lang.invoke.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -38,12 +39,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static lucee.loader.servlet.CFMLServlet.startEngineTime;
 import static lucee.runtime.Component.ACCESS_PRIVATE;
+import static lucee.runtime.Component.ACCESS_REMOTE;
+
 import com.jetendo.MyClass;
 
 /**
  * Server Scope
  */
-public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedScope {
+public final class JetendoImpl extends ScopeSupport  implements Jetendo, SharedScope {
 
     private static final long serialVersionUID = -6965340514668753444L;
     /* real jetendo fields */
@@ -51,6 +54,11 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public static UDFPlus templateSetTag=null;
     public static UDFImpl templateGetString=null;
     public static MyClass myClass;
+
+    public static Component webServerTestComponent=null;
+    public static UDFImpl webServerTestComponentIndex=null;
+
+    public static AIOHTTPServer webServer;
 
     /*
     TODO: many cfcs and java static instances cached here
@@ -64,22 +72,13 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public Boolean memberBool2=true;
     public boolean memberBool3=true;
     public static Double loopIndex=1.0D;
-    public static ConcurrentHashMap<String, Object> memberMap=new ConcurrentHashMap<>();
+//    public static ConcurrentHashMap<String, Object> memberMap=new ConcurrentHashMap<>();
     public static String memberString="jetendo scope works";
 
-    public PageContextImpl pageContext;
+    public static PageContextImpl pageContext;
 
-    public Double getMyClassStatic(){
-//        return 1.0D;
-        myClass=new MyClass();
-        return myClass.getNum();
-//        return MyClass.staticField;
-    }
-    public Boolean memberBoolFunc(){
+    static boolean componentsLoaded=false;
 
-
-        return memberBool2;
-    }
     public static Boolean memberBoolFuncStatic(){
         return memberBool;
     }
@@ -92,6 +91,67 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     private static Field[] fields;
     public JetendoImpl(){
         super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
+    }
+    public Object reloadCFML(){
+        try {
+            webServerTestComponent=pageContext.loadComponent("zcorerootmapping.webServerTest");
+            webServerTestComponentIndex=(UDFImpl) webServerTestComponent.getMember(ACCESS_REMOTE, new KeyImpl("index"), false, false);
+        } catch (PageException e) {
+            throw new RuntimeException(e);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+        componentsLoaded=true;
+        return true;
+    }
+    Collection.Key indexKey=new KeyImpl("index");
+    public Object callCFMLFunction() {
+        if(!componentsLoaded){
+            reloadCFML();
+        }
+        try {
+            return webServerTestComponentIndex._callSimple2(pageContext, indexKey, null, null, false);
+        }catch(PageException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Boolean startWebServer(){
+        if(webServer==null) {
+            webServer = new AIOHTTPServer();
+            webServer.setJetendo(this);
+        }
+        Boolean result=false;
+        try {
+            result=webServer.startServer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+    public Boolean stopWebServer(){
+        Boolean result=false;
+        if(webServer==null){
+            return true;
+        }
+        try {
+            result=webServer.stopServer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public Double getMyClassStatic(){
+//        return 1.0D;
+        myClass=new MyClass();
+        return myClass.getNum();
+//        return MyClass.staticField;
+    }
+    public Boolean memberBoolFunc(){
+
+
+        return memberBool2;
     }
 
     public Object resetLuceeStartTime(){
@@ -109,17 +169,21 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         sb.append((System.currentTimeMillis()-startEngineTime)+"ms total time to restart lucee and run CFML code again");
         return sb.toString();
     }
-    /**
-     * constructor of the server scope
-     *
-     * @param pc
-     */
-    public JetendoImpl(PageContext pc, boolean jsr223) {
-        super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
-        reload(pc, jsr223);
-        pageContext=(PageContextImpl) pc;
-        fields=this.getClass().getDeclaredFields();
-    }
+//    /**
+//     * constructor of the server scope
+//     *
+//     * @param pc
+//     */
+//    public JetendoImpl() {
+//        super("jetendo", SCOPE_JETENDO, Struct.TYPE_REGULAR);
+//        try {
+//            // copy pagecontext so nothing ever releases it.
+//            pageContext=(PageContextImpl) pc.copyPageContext();
+//        } catch (PageException e) {
+//            throw new RuntimeException(e);
+//        }
+//        reload(pageContext);
+//    }
     public Object reloadComponents(){
         try {
             template=pageContext.loadComponent("zcorerootmapping.com.zos.template");
@@ -182,7 +246,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public CFCFunction getFunction(Object component, String functionName) {
         return getFunction(component, KeyImpl.init(functionName));
     }
-    public CFCFunction getFunction(Object component, Key calledName){
+    public CFCFunction getFunction(Object component, Collection.Key calledName){
         ComponentImpl componentImpl;
         if(component instanceof ComponentImpl) {
              componentImpl = (ComponentImpl) component;
@@ -225,7 +289,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         return mh;
     }
 
-    Key getStringKey=new KeyImpl("getString");
+    Collection.Key getStringKey=new KeyImpl("getString");
     public Object getString() throws PageException {
 //        return tag+value;
         return templateGetString._callSimple(pageContext, getStringKey, null, null);
@@ -253,7 +317,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         }
         return null;
     }
-    public static Object getObject(Object obj, Key key){
+    public static Object getObject(Object obj, Collection.Key key){
         if(obj instanceof Map){
             return ((Map)obj).get(key.toString());
         }
@@ -274,7 +338,7 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
         }
         return null;
     }
-    public static Object putObject(Object obj, Key key, Object value){
+    public static Object putObject(Object obj, Collection.Key key, Object value){
         if(obj instanceof Map){
             return ((Map)obj).put(key.toString(), value);
         }
@@ -289,7 +353,10 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     public static Integer intValue(Double value){
         return value.intValue();
     }
-    public static Field getField(String name){
+    public Field getField(String name){
+        if(fields==null){
+            fields=this.getClass().getDeclaredFields();
+        }
         for(Field f:fields){
             if(f.getName().equalsIgnoreCase(name)){
                 //stuff.
@@ -308,10 +375,6 @@ public final class JetendoImpl extends ScopeSupport implements Jetendo, SharedSc
     }
 
     public void reload(PageContext pc) {
-        reload(pc, false);
-    }
-
-    public void reload(PageContext pc, Boolean jsr223) {
         // TODO: good place to load all the components and such
     }
 

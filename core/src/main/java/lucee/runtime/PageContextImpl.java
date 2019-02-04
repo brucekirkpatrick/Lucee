@@ -274,7 +274,7 @@ public final class PageContextImpl extends PageContext {
     private PageSource base;
 
     private ApplicationContextSupport applicationContext;
-    private final ApplicationContextSupport defaultApplicationContext;
+    private ApplicationContextSupport defaultApplicationContext;
 
     private ScopeFactory scopeFactory = new ScopeFactory();
 
@@ -329,22 +329,21 @@ public final class PageContextImpl extends PageContext {
     public PageContextImpl(ScopeContext scopeContext, ConfigWebImpl config, int id, HttpServlet servlet, boolean jsr223) {
 	// must be first because is used after
 	    CFMLServlet.logStartTime("PageContextImpl created");
-	tagHandlerPool = config.getTagHandlerPool();
-	this.servlet = servlet;
+		tagHandlerPool = config.getTagHandlerPool();
+		this.servlet = servlet;
 
-	bodyContentStack = new BodyContentStack();
-	devNull = bodyContentStack.getDevNullBodyContent();
+		bodyContentStack = new BodyContentStack();
+		devNull = bodyContentStack.getDevNullBodyContent();
 
-	this.config = config;
-	manager = new DatasourceManagerImpl(config);
+		this.config = config;
+		manager = new DatasourceManagerImpl(config);
 
-	this.scopeContext = scopeContext;
-	undefined = new UndefinedImpl(this, getScopeCascadingType());
-	server = ScopeContext.getServerScope(this, jsr223);
-	jetendo= new JetendoImpl(this, jsr223);
-	defaultApplicationContext = new ClassicApplicationContext(config, "", true, null);
-
-	this.id = id;
+		this.scopeContext = scopeContext;
+		undefined = new UndefinedImpl(this, getScopeCascadingType());
+		server = ScopeContext.getServerScope(this, jsr223);
+		jetendo=new JetendoImpl();
+	    defaultApplicationContext = new ClassicApplicationContext(config, "", true, null);
+		this.id = id;
     }
 
     public boolean isInitialized() {
@@ -406,16 +405,16 @@ public final class PageContextImpl extends PageContext {
 	ReqRspUtil.setContentType(rsp, "text/html; charset=" + config.getWebCharset().name());
 	this.isChild = isChild;
 
-	applicationContext = defaultApplicationContext;
+	    applicationContext = defaultApplicationContext;
 //	setFullNullSupport();
 
-	startTime = System.currentTimeMillis();
-	thread = Thread.currentThread();
+	    startTime = System.currentTimeMillis();
+	    thread = Thread.currentThread();
 
-	this.req = new HTTPServletRequestWrap(req);
-	this.rsp = rsp;
-	this.servlet = servlet;
-	cgi.initialize(this);
+	    this.req = new HTTPServletRequestWrap(req);
+	    this.rsp = rsp;
+	    this.servlet = servlet;
+	    cgi.initialize(this);
 
 
 	    // Writers
@@ -435,7 +434,7 @@ public final class PageContextImpl extends PageContext {
 
 	// Scopes
 	server = ScopeContext.getServerScope(this, ignoreScopes);
-	jetendo= new JetendoImpl(this, ignoreScopes);
+	jetendo= new JetendoImpl();
 	if (hasFamily) {
 	    variablesRoot = new VariablesImpl();
 	    variables = variablesRoot;
@@ -3780,6 +3779,7 @@ public final class PageContextImpl extends PageContext {
 		other._url = _url;
 		other._form = _form;
 		other.variables = variables;
+		other.jetendo=jetendo;
 		other.application=application;
 		other.cgi = cgi;
 //		other.cgiRW=cgiRW;

@@ -155,6 +155,10 @@ public final class CFMLFactoryImpl extends CFMLFactory {
 	    }
 	}
 	if (pc == null) pc = new PageContextImpl(scopeContext, config, idCounter++, servlet, ignoreScopes);
+	if(JetendoImpl.pageContext==null) {
+		JetendoImpl.pageContext = new PageContextImpl(scopeContext, config, idCounter++, servlet, ignoreScopes);
+		JetendoImpl.pageContext.initialize(servlet, req, rsp, errorPageURL, needsSession, bufferSize, autoflush, isChild, ignoreScopes);
+	}
 
 	if (timeout > 0) pc.setRequestTimeout(timeout);
 	if (register2RunningThreads) {
