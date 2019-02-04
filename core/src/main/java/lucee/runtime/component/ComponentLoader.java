@@ -111,7 +111,7 @@ public class ComponentLoader {
 	    if (cfc instanceof ComponentImpl && currPS.equals(cfc.getPageSource())) {
 		importDefintions = ((ComponentImpl) cfc)._getImportDefintions();
 	    }
-	    else if ((currP = currPS.loadPage(pc, forceReload, null)) != null) {
+	    else if ((currP = currPS.loadPage(pc, false, null)) != null) {
 		importDefintions = currP.getImportDefintions();
 	    }
 	}
