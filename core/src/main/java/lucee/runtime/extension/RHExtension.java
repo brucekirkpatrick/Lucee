@@ -740,7 +740,7 @@ public class RHExtension implements Serializable {
     }
 
     private static Resource getExtensionFile(Config config, Resource ext, String id, String name, String version) {
-	String fileName = toHash(id, name, version, ResourceUtil.getExtension(ext, "lex"));
+	String fileName =name+".lex";// toHash(id, name, version, ResourceUtil.getExtension(ext, "lex"));
 	// String
 	// fileName=HashUtil.create64BitHashAsString(id+version,Character.MAX_RADIX)+"."+ResourceUtil.getExtension(ext,
 	// "lex");

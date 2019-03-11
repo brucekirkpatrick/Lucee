@@ -205,8 +205,8 @@ public class StaticConfig {
 	};
 	public static String[] extensionFileName=new String[]{
 //		"rsbclp29cssd.lex",
-		"1cdazsrfl31sl.lex",
-		"9nus900n160j.lex"
+		"ReloadLuceeExtension extension.lex",//"1cdazsrfl31sl.lex", // ReloadLuceeExtension
+		"ScryptEncrypt extension.lex", //"9nus900n160j.lex" // ScryptEncrypt
 	};
 	public static String[] extensionID=new String[]{
 //		"B737ABC4-D43F-4D91-8E8E973E37C40D1B",
@@ -249,6 +249,8 @@ public class StaticConfig {
 		"/var/jetendo-server/jetendo/database-upgrade",
 		"/var/jetendo-server/backup",
 		"/var/jetendo-server/lucee/tomcat/lucee-server/context",
+			"/zbackup/backup",
+			"/zbackup/jetendo",
 		"/zbackup2/backup",
 		"/zbackup2/jetendo",
 		"/zbackup3/jetendo",
