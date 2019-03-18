@@ -5946,7 +5946,7 @@ You can find a list of all available timezones in the Lucee administrator (Setti
 	<!-- Empty -->
 	<function>
 		<name>Empty</name>
-		<class>lucee.runtime.functions.decision.Empty</class>
+		<class>lucee.runtime.functions.decision.IsEmpty</class>
 		<keywords>decision</keywords>
 		<description>return true if a value is "empty".
 			The following things are considered to be empty:
