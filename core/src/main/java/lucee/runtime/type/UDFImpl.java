@@ -429,8 +429,10 @@ public class UDFImpl extends MemberSupport implements UDFPlus, Externalizable {
 			if (ps != null) pci.pathList.add(ps);
 			pci.udfs.add(this);
 			try {
-				if(pageCache==null){
-					pageCache=properties.getPage(pci);
+				if(pageCache==null) {
+					pageCache = properties.getPage(pci);
+				}
+				if(implementationUdfCall==null){
 					implementationUdfCall=(ImplementationUdfCall) pageCache;
 				}
 				if(propertiesImpl.arguments.length>0) {
