@@ -506,6 +506,13 @@
 			<rtexprvalue>true</rtexprvalue>
 			<description>if set to true, Lucee url encodes the given name and value if necessary.</description>
 		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>samesite</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Valid values are Lax, Strict and None.  If you specify None, you must also specify Secure attribute</description>
+		</attribute>
 	</tag>
 	<!-- DBInfo -->
 	<tag>

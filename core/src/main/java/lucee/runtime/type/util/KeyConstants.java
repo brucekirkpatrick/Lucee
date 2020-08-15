@@ -797,6 +797,7 @@ public class KeyConstants {
     public static final Key _domain = KeyImpl._const("domain");
     public static final Key _preservecase = KeyImpl._const("preservecase");
     public static final Key _encode = KeyImpl._const("encode");
+    public static final Key _samesite = KeyImpl._const("samesite");
     public static final Key _encodevalue = KeyImpl._const("encodevalue");
     public static final Key _each = KeyImpl._const("each");
     public static final Key _member = KeyImpl._const("member");

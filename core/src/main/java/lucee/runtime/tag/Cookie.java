@@ -51,6 +51,7 @@ public final class Cookie extends TagImpl {
     /**  */
     private String path = "/";
 
+	private String samesite = "";
     /**
      * Schedules the expiration of a cookie variable. Can be specified as a date (as in, 10/09/97),
      ** number of days (as in, 10, 100), "Now", or "Never". Using Now effectively deletes the cookie from
@@ -72,6 +73,7 @@ public final class Cookie extends TagImpl {
 	value = "";
 	domain = null;
 	path = "/";
+	samesite="";
 	expires = null;
 	name = null;
 	httponly = false;
@@ -97,6 +99,15 @@ public final class Cookie extends TagImpl {
     public void setValue(String value) {
 	this.value = value;
     }
+
+	/**
+	 * set the value samesite
+	 *
+	 * @param samesite value to set
+	 **/
+	public void setSamesite(String samesite) {
+		this.samesite = samesite;
+	}
 
     /**
      * set the value domain
@@ -195,7 +206,7 @@ public final class Cookie extends TagImpl {
     public int doStartTag() throws PageException {
 	Key key = KeyImpl.getInstance(name);
 	throwIfInternalName(key);
-	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, preservecase, encode);
+	pageContext.cookieScope().setCookie(key, value, expires, secure, path, domain, httponly, preservecase, encode, samesite);
 	return SKIP_BODY;
     }
 

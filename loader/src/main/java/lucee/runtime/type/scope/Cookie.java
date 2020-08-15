@@ -83,10 +83,11 @@ public interface Cookie extends Scope, UserScope {
      *            Note that the browser must have httponly compatibility.
      * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
+     * @param samesite Valid values are Lax, Strict and None.  If you specify None, you must also specify Secure attribute
      * @throws PageException
      */
     public abstract void setCookie(Collection.Key name, Object value, Object expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
-	    boolean encode) throws PageException;
+	    boolean encode, String samesite) throws PageException;
 
     /**
      * set a cookie value
@@ -101,10 +102,11 @@ public interface Cookie extends Scope, UserScope {
      *            Note that the browser must have httponly compatibility.
      * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
+     * @param samesite Valid values are Lax, Strict and None.  If you specify None, you must also specify Secure attribute
      * @throws PageException
      */
     public abstract void setCookie(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
-	    boolean encode) throws PageException;
+	    boolean encode, String samesite) throws PageException;
 
     /**
      * set a cookie value
@@ -119,8 +121,8 @@ public interface Cookie extends Scope, UserScope {
      *            Note that the browser must have httponly compatibility.
      * @param preserveCase if true, keep the case of the name as it is
      * @param encode if true, url encode the name and the value
+     * @param samesite Valid values are Lax, Strict and None.  If you specify None, you must also specify Secure attribute
      */
     public abstract void setCookieEL(Collection.Key name, Object value, int expires, boolean secure, String path, String domain, boolean httpOnly, boolean preserveCase,
-	    boolean encode);
-
+	    boolean encode, String samesite);
 }
