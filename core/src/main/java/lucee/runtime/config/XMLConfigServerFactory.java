@@ -126,7 +126,8 @@ public final class XMLConfigServerFactory extends XMLConfigFactory {
 //		    FunctionLibFactory.loadFromSystem(CFMLEngine.DIALECT_CFML, null);
 //		    return new Boolean(true);
 //	    } ));
-	    if(false){
+	    if(true){
+	    	// single threaded startup
 		    ConfigServerImpl config = new ConfigServerImpl(engine, initContextes, contextes, configDir, configFile);
 		    Document doc = null;
 		    config.doc = doc;

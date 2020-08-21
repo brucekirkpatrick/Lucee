@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lucee.loader.engine.CFMLEngineFactory;
+import lucee.runtime.util.LoaderLog;
 
 /**
  */
@@ -43,7 +44,9 @@ public class CFMLServlet extends AbsServlet {
 	}
 	public static ArrayList<StartTimeEvent> startTimes=new ArrayList<>();
 	public static void logStartTime(String message){
-		startTimes.add(new StartTimeEvent(message+"\n"));
+		StartTimeEvent ste=new StartTimeEvent(message+"\n");
+		startTimes.add(ste);
+		LoaderLog.log(ste.time+": "+message);
 	}
     private static final long serialVersionUID = -1878214660283329587L;
 

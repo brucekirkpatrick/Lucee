@@ -67,7 +67,7 @@ public class BundleLoader {
 			throws IOException, BundleException {
 		if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1) System.err.println(rc.getName());
 
-		executor=Executors.newWorkStealingPool(8);
+//		executor=Executors.newWorkStealingPool(8);
 
 		CFMLServlet.logStartTime("BundleLoader loadBundles begin");
 		engine = engFac;
@@ -137,13 +137,27 @@ public class BundleLoader {
 			// deploys bundled bundles to bundle directory
 			// deployBundledBundles(jarDirectory, availableBundles);
 
-			// Add Required Bundles
+			// Add Required Bundle Fragments
 			Entry<String, String> e;
 			File f;
 			String id;
+			final List<Bundle> fragments = new ArrayList<Bundle>();
+			Iterator<Entry<String, String>> it = requiredBundleFragments.entrySet().iterator();
+			while (it.hasNext()) {
+				e = it.next();
+				id = e.getKey() + "|" + e.getValue();
+				f = availableBundles.get(id);
+
+				if (f == null)
+					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
+				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
+			}
+
+			// Add Required Bundles
 			final List<Bundle> bundles = new ArrayList<Bundle>();
-			Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
+			it = requiredBundles.entrySet().iterator();
 			ArrayList<Future<Bundle>> futures=new ArrayList<>();
+
 			while (it.hasNext()) {
 				e = it.next();
 				id = e.getKey() + "|" + e.getValue();
@@ -156,45 +170,43 @@ public class BundleLoader {
 					 * RuntimeException(sb.toString());
 					 */
 				}
-				if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+				if (f == null) {
+					f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+				}
 				if (bc != null) {
 //					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
 //					bundles.add(tempBundle);
 					final File fTemp=f;
-					futures.add(executor.submit(()-> BundleUtil.addBundle(engFac, bc, fTemp, null)));
+					CFMLServlet.logStartTime("BundleLoader addBundle: "+id);
+					BundleUtil.addBundle(engFac, bc, fTemp, null);
+//					futures.add(executor.submit(()-> BundleUtil.addBundle(engFac, bc, fTemp, null)));
 				}
 			}
 
-			// Add Required Bundle Fragments
-			final List<Bundle> fragments = new ArrayList<Bundle>();
-			it = requiredBundleFragments.entrySet().iterator();
-			while (it.hasNext()) {
-				e = it.next();
-				id = e.getKey() + "|" + e.getValue();
-				f = availableBundles.get(id);
-
-				if (f == null)
-					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
-				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
-			}
 
 			// Add Lucee core Bundle
 			Bundle bundle;
 			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
 			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
-			Iterator<Future<Bundle>> futureIteratorCheck = futures.iterator();
-			Consumer<Future<Bundle>> consumer= futureBundle-> {
-				try {
-					Bundle tempBundle=futureBundle.get();
-					if(tempBundle!=null) {
-						bundles.add(tempBundle);
-					}
-				} catch (Exception eBundle) {
-					throw new RuntimeException(eBundle);
-				}
-			};
-			futureIteratorCheck.forEachRemaining(consumer);
-			executor.shutdown();
+//			Iterator<Future<Bundle>> futureIteratorCheck = futures.iterator();
+//			Consumer<Future<Bundle>> consumer= futureBundle-> {
+//				try {
+//					Bundle tempBundle=futureBundle.get();
+//					if(tempBundle!=null) {
+//						bundles.add(tempBundle);
+//						CFMLServlet.logStartTime("BundleLoader loaded osgibundle: "+tempBundle.getSymbolicName());
+//					}else{
+//						CFMLServlet.logStartTime("BundleLoader failed to load unknown osgibundle");
+//
+//					}
+//				} catch (Exception eBundle) {
+//					CFMLServlet.logStartTime("BundleLoader failed to load in future loop: "+eBundle.getMessage());
+//					throw new RuntimeException(eBundle);
+//				}
+//			};
+//			CFMLServlet.logStartTime("BundleLoader loadBundles before adding all bundles");
+//			futureIteratorCheck.forEachRemaining(consumer);
+//			executor.shutdown();
 
 			CFMLServlet.logStartTime("BundleLoader loadBundles after adding all bundles");
 			// Start the bundles
