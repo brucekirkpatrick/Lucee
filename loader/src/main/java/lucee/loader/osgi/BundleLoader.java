@@ -36,6 +36,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import lucee.commons.io.log.Log;
 import lucee.loader.servlet.CFMLServlet;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.Logger;
@@ -148,8 +149,8 @@ public class BundleLoader {
 				id = e.getKey() + "|" + e.getValue();
 				f = availableBundles.get(id);
 
-				if (f == null)
-					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
+//				if (f == null)
+//					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
 				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
 			}
 
@@ -170,9 +171,9 @@ public class BundleLoader {
 					 * RuntimeException(sb.toString());
 					 */
 				}
-				if (f == null) {
-					f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
-				}
+//				if (f == null) {
+//					f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+//				}
 				if (bc != null) {
 //					Bundle tempBundle = BundleUtil.addBundle(engFac, bc, f, null);
 //					bundles.add(tempBundle);

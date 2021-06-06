@@ -1144,37 +1144,40 @@ public class InstrumentationFactoryExternal {
 	     * @throws IOException If an I/O exception occurs.
 	     */
 	    private static File createJarFile() throws IOException {
-		InputStream inputStream = Installer.class.getResourceAsStream('/' + Installer.class.getName().replace('.', '/') + CLASS_FILE_EXTENSION);
-		if (inputStream == null) {
-		    throw new IllegalStateException("Cannot locate class file for Byte Buddy installer");
-		}
-		try {
-		    File agentJar = File.createTempFile(AGENT_FILE_NAME, JAR_FILE_EXTENSION);
-		    agentJar.deleteOnExit(); // Agent jar is required until VM shutdown due to lazy class loading.
-		    Manifest manifest = new Manifest();
-		    manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, MANIFEST_VERSION_VALUE);
-		    manifest.getMainAttributes().put(new Attributes.Name(AGENT_CLASS_PROPERTY), Installer.class.getName());
-		    manifest.getMainAttributes().put(new Attributes.Name(CAN_REDEFINE_CLASSES_PROPERTY), Boolean.TRUE.toString());
-		    manifest.getMainAttributes().put(new Attributes.Name(CAN_RETRANSFORM_CLASSES_PROPERTY), Boolean.TRUE.toString());
-		    manifest.getMainAttributes().put(new Attributes.Name(CAN_SET_NATIVE_METHOD_PREFIX), Boolean.TRUE.toString());
-		    JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(agentJar), manifest);
-		    try {
-			jarOutputStream.putNextEntry(new JarEntry(Installer.class.getName().replace('.', '/') + CLASS_FILE_EXTENSION));
-			byte[] buffer = new byte[BUFFER_SIZE];
-			int index;
-			while ((index = inputStream.read(buffer)) != END_OF_FILE) {
-			    jarOutputStream.write(buffer, START_INDEX, index);
-			}
-			jarOutputStream.closeEntry();
-		    }
-		    finally {
-			jarOutputStream.close();
-		    }
-		    return agentJar;
-		}
-		finally {
-		    inputStream.close();
-		}
+
+			throw new IllegalStateException("The java agent is missing in setenv.sh.  You must add: -javaagent:'/var/jetendo-server/luceevhosts/server/lucee-server/context/lucee-external-agent.jar'");
+
+//		InputStream inputStream = Installer.class.getResourceAsStream('/' + Installer.class.getName().replace('.', '/') + CLASS_FILE_EXTENSION);
+//		if (inputStream == null) {
+//		    throw new IllegalStateException("Cannot locate class file for Byte Buddy installer");
+//		}
+//		try {
+//		    File agentJar = File.createTempFile(AGENT_FILE_NAME, JAR_FILE_EXTENSION);
+//		    agentJar.deleteOnExit(); // Agent jar is required until VM shutdown due to lazy class loading.
+//		    Manifest manifest = new Manifest();
+//		    manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, MANIFEST_VERSION_VALUE);
+//		    manifest.getMainAttributes().put(new Attributes.Name(AGENT_CLASS_PROPERTY), Installer.class.getName());
+//		    manifest.getMainAttributes().put(new Attributes.Name(CAN_REDEFINE_CLASSES_PROPERTY), Boolean.TRUE.toString());
+//		    manifest.getMainAttributes().put(new Attributes.Name(CAN_RETRANSFORM_CLASSES_PROPERTY), Boolean.TRUE.toString());
+//		    manifest.getMainAttributes().put(new Attributes.Name(CAN_SET_NATIVE_METHOD_PREFIX), Boolean.TRUE.toString());
+//		    JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(agentJar), manifest);
+//		    try {
+//			jarOutputStream.putNextEntry(new JarEntry(Installer.class.getName().replace('.', '/') + CLASS_FILE_EXTENSION));
+//			byte[] buffer = new byte[BUFFER_SIZE];
+//			int index;
+//			while ((index = inputStream.read(buffer)) != END_OF_FILE) {
+//			    jarOutputStream.write(buffer, START_INDEX, index);
+//			}
+//			jarOutputStream.closeEntry();
+//		    }
+//		    finally {
+//			jarOutputStream.close();
+//		    }
+//		    return agentJar;
+//		}
+//		finally {
+//		    inputStream.close();
+//		}
 	    }
 
 	    @Override
