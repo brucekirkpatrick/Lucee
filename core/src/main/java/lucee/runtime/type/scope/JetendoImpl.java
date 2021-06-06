@@ -18,7 +18,7 @@
  */
 package lucee.runtime.type.scope;
 
-import com.jetendo.http.server.AIOHTTPServer;
+//import com.jetendo.http.server.AIOHTTPServer;
 import lucee.loader.servlet.CFMLServlet;
 import lucee.runtime.Component;
 import lucee.runtime.ComponentImpl;
@@ -41,7 +41,7 @@ import static lucee.loader.servlet.CFMLServlet.startEngineTime;
 import static lucee.runtime.Component.ACCESS_PRIVATE;
 import static lucee.runtime.Component.ACCESS_REMOTE;
 
-import com.jetendo.MyClass;
+//import com.jetendo.MyClass;
 
 /**
  * Server Scope
@@ -53,12 +53,12 @@ public final class JetendoImpl extends ScopeSupport  implements Jetendo, SharedS
     public static Component template=null;
     public static UDFPlus templateSetTag=null;
     public static UDFImpl templateGetString=null;
-    public static MyClass myClass;
+//    public static MyClass myClass;
 
     public static Component webServerTestComponent=null;
     public static UDFImpl webServerTestComponentIndex=null;
 
-    public static AIOHTTPServer webServer;
+//    public static AIOHTTPServer webServer;
 
     /*
     TODO: many cfcs and java static instances cached here
@@ -117,36 +117,37 @@ public final class JetendoImpl extends ScopeSupport  implements Jetendo, SharedS
     }
 
     public Boolean startWebServer(){
-        if(webServer==null) {
-            webServer = new AIOHTTPServer();
-            webServer.setJetendo(this);
-        }
+//        if(webServer==null) {
+//            webServer = new AIOHTTPServer();
+//            webServer.setJetendo(this);
+//        }
         Boolean result=false;
-        try {
-            result=webServer.startServer();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            result=webServer.startServer();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         return result;
     }
     public Boolean stopWebServer(){
         Boolean result=false;
-        if(webServer==null){
-            return true;
-        }
-        try {
-            result=webServer.stopServer();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        if(webServer==null){
+//            return true;
+//        }
+//        try {
+//            result=webServer.stopServer();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         return result;
     }
 
     public Double getMyClassStatic(){
-//        return 1.0D;
-        myClass=new MyClass();
-        return myClass.getNum();
+        return 1.0D;
+//        myClass=new MyClass();
+//        return myClass.getNum();
 //        return MyClass.staticField;
+
     }
     public Boolean memberBoolFunc(){
 
